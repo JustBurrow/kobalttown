@@ -4,7 +4,8 @@ import kr.lul.kobalttown.web.context.RequestContext;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 
-import static kr.lul.common.util.Texts.singleQuote;
+import static java.lang.String.format;
+import static java.util.Objects.requireNonNullElse;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -19,16 +20,16 @@ class FrontControllerImpl implements FrontController {
   // kr.lul.kobalttown.web.controller.FrontController
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
-  public String control(RequestContext context) throws Exception {
+  public void control(RequestContext context) throws Exception {
     if (log.isTraceEnabled()) {
       log.trace("args : context={}", context);
     }
 
-    String template = null;
+    String theme = null;
 
+    context.setViewname(format("layout/%s/layout", requireNonNullElse(theme, "basic")));
     if (log.isTraceEnabled()) {
-      log.trace("result : template={}", singleQuote(template));
+      log.trace("result : context={}", context);
     }
-    return template;
   }
 }

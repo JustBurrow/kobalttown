@@ -2,6 +2,7 @@ package kr.lul.kobalttown.web.support;
 
 import kr.lul.kobalttown.web.context.RequestContext;
 import kr.lul.kobalttown.web.context.Verb;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
@@ -41,22 +42,9 @@ public class ServletRequestContext implements RequestContext {
   }
 
   private void init() {
-    // Verb
-    switch (this.request.getHttpMethod()) {
-      case POST:
-        this.verb = Verb.CREATE;
-        break;
-      case GET:
-        this.verb = Verb.READ;
-        break;
-      case PATCH:
-        this.verb = Verb.UPDATE;
-        break;
-      case DELETE:
-        this.verb = Verb.DELETE;
-        break;
-      default:
-        throw new IllegalArgumentException(format("unsupported HTTP method : %s", this.request.getHttpMethod()));
+    this.verb = Verb.byAlias(this.request.getHttpMethod().name());
+    if (null == this.verb) {
+      throw new IllegalArgumentException(format("unsupported HTTP method : %s", this.request.getHttpMethod()));
     }
 
     // URL
@@ -82,6 +70,21 @@ public class ServletRequestContext implements RequestContext {
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public ModelMap getModel() {
+    return this.mav.getModel();
+  }
+
+  @Override
+  public void setViewname(String view) {
+    this.mav.setViewName(view);
+  }
+
+  @Override
+  public String getViewname() {
+    return this.mav.getViewName();
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

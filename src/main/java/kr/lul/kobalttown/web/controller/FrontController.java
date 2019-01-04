@@ -19,5 +19,5 @@ public interface FrontController {
    * @throws Exception
    */
   @RequestMapping("/**")
-  String control(RequestContext context) throws Exception;
+  void control(RequestContext context) throws Exception;
 }
