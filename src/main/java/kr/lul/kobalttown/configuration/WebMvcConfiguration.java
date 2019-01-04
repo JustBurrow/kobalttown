@@ -8,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @since 2019-01-04
  */
 @Configuration
+@EnableWebMvc
 @ComponentScan(basePackageClasses = {WebControllerAnchor.class})
 public class WebMvcConfiguration implements WebMvcConfigurer {
   private static final Logger log = getLogger(WebMvcConfiguration.class);
@@ -43,5 +45,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     }
 
     resolvers.add(new RequestContextResolver());
+
+    if (log.isTraceEnabled()) {
+      log.trace("result : resolvers={}", resolvers);
+    }
   }
 }
