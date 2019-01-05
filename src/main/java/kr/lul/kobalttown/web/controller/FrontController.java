@@ -10,6 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping
 public interface FrontController {
   /**
+   * 테마의 레이아웃 뷰 이름의 포맷.
+   *
+   * @see String#format(String, Object...)
+   */
+  String THEME_LAYOUT_FORMAT = "layout/%s/layout";
+
+  /**
    * 리퀘스트 처리.
    *
    * @param context 리퀘스트 정보.
@@ -19,5 +26,5 @@ public interface FrontController {
    * @throws Exception
    */
   @RequestMapping("/**")
-  void control(RequestContext context) throws Exception;
+  void handle(RequestContext context) throws Exception;
 }
