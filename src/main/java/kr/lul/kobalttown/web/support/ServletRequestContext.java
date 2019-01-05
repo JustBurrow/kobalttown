@@ -8,7 +8,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.StringJoiner;
@@ -65,11 +64,7 @@ public class ServletRequestContext implements RequestContext {
 
   @Override
   public Path getPath() {
-    try {
-      return Path.of(this.url.toURI());
-    } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
-    }
+    return Path.of(this.url.getPath());
   }
 
   @Override
