@@ -3,8 +3,8 @@ package kr.lul.kobalttown.domain;
 import kr.lul.kobalttown.web.context.Verb;
 
 import java.nio.file.Path;
-import java.util.StringJoiner;
 
+import static java.lang.String.format;
 import static kr.lul.common.util.Arguments.notNull;
 
 /**
@@ -38,9 +38,6 @@ public class BasicPapermark implements Papermark {
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
   public String toString() {
-    return new StringJoiner(", ", BasicPapermark.class.getSimpleName() + "[", "]")
-        .add("verb=" + this.verb)
-        .add("path=" + this.path)
-        .toString();
+    return format("%s %s", this.verb, this.path);
   }
 }

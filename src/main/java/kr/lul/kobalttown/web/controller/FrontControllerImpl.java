@@ -1,8 +1,8 @@
 package kr.lul.kobalttown.web.controller;
 
-import kr.lul.kobalttown.domain.GenericPaperLoader;
 import kr.lul.kobalttown.domain.Paper;
 import kr.lul.kobalttown.domain.Papermark;
+import kr.lul.kobalttown.loader.PaperLoaderDelegator;
 import kr.lul.kobalttown.web.context.PapermarkConverter;
 import kr.lul.kobalttown.web.context.RequestContext;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ class FrontControllerImpl implements FrontController {
   @Autowired
   private PapermarkConverter papermarkConverter;
   @Autowired
-  private GenericPaperLoader genericPaperLoader;
+  private PaperLoaderDelegator paperLoaderDelegator;
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.kobalttown.web.controller.FrontController
@@ -36,7 +36,7 @@ class FrontControllerImpl implements FrontController {
     }
 
     Papermark papermark = this.papermarkConverter.convert(context);
-    Paper paper = this.genericPaperLoader.load(papermark);
+    Paper paper = this.paperLoaderDelegator.load(papermark);
 
     context.setViewname(format(THEME_LAYOUT_FORMAT, requireNonNullElse(paper.getThemem(), Paper.DEFAULT_THEME)));
     if (log.isTraceEnabled()) {

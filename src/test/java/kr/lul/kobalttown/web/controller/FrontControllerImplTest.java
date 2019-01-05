@@ -2,14 +2,13 @@ package kr.lul.kobalttown.web.controller;
 
 import kr.lul.common.util.Enums;
 import kr.lul.kobalttown.domain.BasicPaper;
-import kr.lul.kobalttown.domain.GenericPaperLoader;
+import kr.lul.kobalttown.loader.BasicPaperLoader;
 import kr.lul.kobalttown.web.WebTestConfiguration;
 import kr.lul.kobalttown.web.context.RequestContext;
 import kr.lul.kobalttown.web.context.Verb;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +18,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -34,25 +35,28 @@ public class FrontControllerImplTest {
   private FrontController frontController;
 
   @MockBean
-  private GenericPaperLoader genericPaperLoader;
+  private BasicPaperLoader basicPapermarkLoader;
 
   @Before
   public void setUp() throws Exception {
     assertThat(this.frontController).isNotNull();
-    assertThat(this.genericPaperLoader).isNotNull();
+    assertThat(this.basicPapermarkLoader).isNotNull();
 
-    log.info("SETUP - frontController={}, genericPaperLoader={}", this.frontController, this.genericPaperLoader);
+    log.info("SETUP - frontController={}, basicPapermarkLoader={}", this.frontController, this.basicPapermarkLoader);
   }
 
   @Test
   public void test_handle_for_paper_theme() throws Exception {
     // GIVEN
-    RequestContext requestContext = new TestRequestContext(Enums.random(Verb.class), Paths.get("a", "b", "c"));
+    RequestContext requestContext = new TestRequestContext(Enums.random(Verb.class), Paths.get("/a", "b", "c"));
 
     BasicPaper paper = new BasicPaper();
     final String theme = "aaa";
     paper.setTheme(theme);
-    Mockito.when(this.genericPaperLoader.load(Mockito.any())).thenReturn(paper);
+    when(this.basicPapermarkLoader.isSupported(any()))
+        .thenReturn(true);
+    when(this.basicPapermarkLoader.load(any()))
+        .thenReturn(paper);
 
     log.info("GIVEN - requestContext={}", requestContext);
     log.info("GIVEN - paper={}", paper);
