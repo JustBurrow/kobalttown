@@ -1,8 +1,8 @@
 package kr.lul.kobalttown.web.context;
 
 import kr.lul.common.util.AssertionException;
-import kr.lul.kobalttown.domain.BasicPapermark;
 import kr.lul.kobalttown.domain.Papermark;
+import kr.lul.kobalttown.domain.VerbPathPapermark;
 import kr.lul.kobalttown.web.controller.TestRequestContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,8 +19,8 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author justburrow
  * @since 2019-01-05
  */
-public class BasicPapermarkConverterTest {
-  private static final Logger log = getLogger(BasicPapermarkConverterTest.class);
+public class VerbPathPapermarkConverterTest {
+  private static final Logger log = getLogger(VerbPathPapermarkConverterTest.class);
 
   private BasicPapermarkConverter converter;
 
@@ -52,9 +52,9 @@ public class BasicPapermarkConverterTest {
 
     // THEN
     assertThat(papermark)
-        .isInstanceOf(BasicPapermark.class);
-    assertThat((BasicPapermark) papermark)
-        .extracting(BasicPapermark::getVerb, BasicPapermark::getPath)
+        .isInstanceOf(VerbPathPapermark.class);
+    assertThat((VerbPathPapermark) papermark)
+        .extracting(VerbPathPapermark::getVerb, VerbPathPapermark::getPath)
         .containsSequence(Verb.READ, path);
   }
 }

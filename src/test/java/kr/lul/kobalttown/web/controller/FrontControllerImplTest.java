@@ -2,7 +2,7 @@ package kr.lul.kobalttown.web.controller;
 
 import kr.lul.common.util.Enums;
 import kr.lul.kobalttown.domain.BasicPaper;
-import kr.lul.kobalttown.loader.BasicPaperLoader;
+import kr.lul.kobalttown.loader.VerbPathPaperLoader;
 import kr.lul.kobalttown.web.WebTestConfiguration;
 import kr.lul.kobalttown.web.context.RequestContext;
 import kr.lul.kobalttown.web.context.Verb;
@@ -35,7 +35,7 @@ public class FrontControllerImplTest {
   private FrontController frontController;
 
   @MockBean
-  private BasicPaperLoader basicPapermarkLoader;
+  private VerbPathPaperLoader basicPapermarkLoader;
 
   @Before
   public void setUp() throws Exception {

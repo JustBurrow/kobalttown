@@ -13,11 +13,11 @@ import static kr.lul.common.util.Arguments.notNull;
  * @author justburrow
  * @since 2019-01-05
  */
-public class BasicPapermark implements Papermark {
+public class VerbPathPapermark implements Papermark {
   private Verb verb;
   private Path path;
 
-  public BasicPapermark(Verb verb, Path path) {
+  public VerbPathPapermark(Verb verb, Path path) {
     notNull(verb, "verb");
     notNull(path, "path");
 

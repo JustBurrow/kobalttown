@@ -24,7 +24,7 @@ class PaperLoaderDelegatorImpl implements PaperLoaderDelegator {
   private static final Logger log = getLogger(PaperLoaderDelegatorImpl.class);
 
   @Autowired
-  private BasicPaperLoader basicPapermarkLoader;
+  private VerbPathPaperLoader basicPapermarkLoader;
 
   private List<PaperLoader> loaders;
 
