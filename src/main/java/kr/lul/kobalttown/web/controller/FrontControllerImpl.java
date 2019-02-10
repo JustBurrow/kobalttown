@@ -38,7 +38,7 @@ class FrontControllerImpl implements FrontController {
     Papermark papermark = this.papermarkConverter.convert(context);
     Paper paper = this.paperLoaderDelegator.load(papermark);
 
-    context.setViewname(format(THEME_LAYOUT_FORMAT, requireNonNullElse(paper.getThemem(), Paper.DEFAULT_THEME)));
+    context.setViewname(format(THEME_LAYOUT_FORMAT, requireNonNullElse(paper.getTheme(), Paper.DEFAULT_THEME)));
     if (log.isTraceEnabled()) {
       log.trace("result : context={}", context);
     }

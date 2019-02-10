@@ -1,8 +1,8 @@
 package kr.lul.kobalttown.web.controller;
 
 import kr.lul.common.util.Enums;
-import kr.lul.kobalttown.domain.BasicPaper;
-import kr.lul.kobalttown.loader.VerbPathPaperLoader;
+import kr.lul.kobalttown.domain.DummyPaper;
+import kr.lul.kobalttown.loader.PaperLoaderDelegator;
 import kr.lul.kobalttown.web.WebTestConfiguration;
 import kr.lul.kobalttown.web.context.RequestContext;
 import kr.lul.kobalttown.web.context.Verb;
@@ -35,14 +35,14 @@ public class FrontControllerImplTest {
   private FrontController frontController;
 
   @MockBean
-  private VerbPathPaperLoader basicPapermarkLoader;
+  private PaperLoaderDelegator paperLoaderDelegator;
 
   @Before
   public void setUp() throws Exception {
     assertThat(this.frontController).isNotNull();
-    assertThat(this.basicPapermarkLoader).isNotNull();
+    assertThat(this.paperLoaderDelegator).isNotNull();
 
-    log.info("SETUP - frontController={}, basicPapermarkLoader={}", this.frontController, this.basicPapermarkLoader);
+    log.info("SETUP - frontController={}, basicPapermarkLoader={}", this.frontController, this.paperLoaderDelegator);
   }
 
   @Test
@@ -50,12 +50,11 @@ public class FrontControllerImplTest {
     // GIVEN
     RequestContext requestContext = new TestRequestContext(Enums.random(Verb.class), Paths.get("/a", "b", "c"));
 
-    BasicPaper paper = new BasicPaper();
     final String theme = "aaa";
-    paper.setTheme(theme);
-    when(this.basicPapermarkLoader.isSupported(any()))
+    DummyPaper paper = new DummyPaper(Paths.get("/a"), theme);
+    when(this.paperLoaderDelegator.isSupported(any()))
         .thenReturn(true);
-    when(this.basicPapermarkLoader.load(any()))
+    when(this.paperLoaderDelegator.load(any()))
         .thenReturn(paper);
 
     log.info("GIVEN - requestContext={}", requestContext);

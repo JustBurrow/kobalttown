@@ -5,32 +5,33 @@ import kr.lul.kobalttown.domain.PaperLoader;
 import kr.lul.kobalttown.domain.PaperNotFoundException;
 import kr.lul.kobalttown.domain.Papermark;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 import static java.lang.String.format;
 import static kr.lul.common.util.Arguments.notNull;
+import static kr.lul.common.util.Lists.immutable;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author justburrow
  * @since 2019-01-05
  */
-@Service
-class PaperLoaderDelegatorImpl implements PaperLoaderDelegator {
+public class PaperLoaderDelegatorImpl implements PaperLoaderDelegator {
   private static final Logger log = getLogger(PaperLoaderDelegatorImpl.class);
 
-  @Autowired
-  private VerbPathPaperLoader basicPapermarkLoader;
-
+  private final Object[] initLock = new Object[0];
   private List<PaperLoader> loaders;
 
-  @PostConstruct
-  private void postConstruct() {
-    this.loaders = List.of(this.basicPapermarkLoader);
+  public List<PaperLoader> init(PaperLoader... loaders) {
+    synchronized (this.initLock) {
+      if (null != this.loaders) {
+        throw new IllegalStateException(format("already initialized : %s", loaders));
+      }
+
+      this.loaders = immutable(loaders);
+    }
+    return this.loaders;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,6 +54,6 @@ class PaperLoaderDelegatorImpl implements PaperLoaderDelegator {
       }
     }
 
-    throw new PaperNotFoundException(format("paper does not exist : papermark=%s", papermark));
+    throw new PaperNotFoundException(papermark);
   }
 }

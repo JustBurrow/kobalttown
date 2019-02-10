@@ -23,7 +23,7 @@ public interface PaperLoader<M extends Papermark> {
    *
    * @param papermark 페이퍼마크.
    *
-   * @return 페이퍼마크에 해당하는 페이퍼. <b>not null</b>.
+   * @return 페이퍼마크에 해당하는 페이퍼. <b>{@code not null}</b>.
    *
    * @throws PaperNotFoundException 페이퍼를 찾지 못했을 때.
    */
