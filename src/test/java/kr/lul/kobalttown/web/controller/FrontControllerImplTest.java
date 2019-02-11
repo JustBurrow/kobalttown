@@ -2,6 +2,7 @@ package kr.lul.kobalttown.web.controller;
 
 import kr.lul.common.util.Enums;
 import kr.lul.kobalttown.domain.DummyPaper;
+import kr.lul.kobalttown.domain.PaperNotFoundException;
 import kr.lul.kobalttown.loader.PaperLoaderDelegator;
 import kr.lul.kobalttown.web.WebTestConfiguration;
 import kr.lul.kobalttown.web.context.RequestContext;
@@ -18,6 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -66,5 +68,20 @@ public class FrontControllerImplTest {
     // THEN
     assertThat(requestContext.getViewname())
         .contains(theme);
+  }
+
+  @Test
+  public void test_handle_for_404() throws Exception {
+    // Given
+    RequestContext context = new TestRequestContext(Enums.random(Verb.class), Paths.get("/a", "b", "c"));
+
+    when(this.paperLoaderDelegator.isSupported(any()))
+        .thenReturn(true);
+    when(this.paperLoaderDelegator.load(any()))
+        .thenReturn(null);
+
+    // When & Then
+    assertThatThrownBy(() -> this.frontController.handle(context))
+        .isInstanceOf(PaperNotFoundException.class);
   }
 }

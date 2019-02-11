@@ -83,7 +83,6 @@ public abstract class AbstractVerbPathPaperLoader implements VerbPathPaperLoader
         throw new IllegalArgumentException(format("unsupported verb : %s", papermark.getVerb()));
     }
 
-
     if (null == paper) {
       PaperNotFoundException e = new PaperNotFoundException(papermark);
       if (log.isInfoEnabled()) {

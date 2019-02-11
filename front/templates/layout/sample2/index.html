@@ -20,7 +20,7 @@
     <h1>sample2</h1>
     <p>Sample2 layout.</p>
     <h2>Paper</h2>
-    <table th:replace="paper/index :: paper">
+    <table th:replace="paper/index :: view(${paper})">
         <caption>paper</caption>
         <thead>
         <tr>

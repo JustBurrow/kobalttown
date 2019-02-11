@@ -1,7 +1,6 @@
 package kr.lul.kobalttown.domain;
 
 import java.nio.file.Path;
-import java.util.Map;
 
 /**
  * 코발트 타운으로 서비스하는 웹 문서의 단위.
@@ -28,9 +27,4 @@ public interface Paper {
    * @return 테마 이름.
    */
   String getTheme();
-
-  /**
-   * @return 어트리뷰트 모델.
-   */
-  Map<String, Object> toMap();
 }

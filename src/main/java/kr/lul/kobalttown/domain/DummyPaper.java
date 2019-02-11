@@ -1,11 +1,9 @@
 package kr.lul.kobalttown.domain;
 
 import java.nio.file.Path;
-import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-import static java.util.Map.entry;
 import static kr.lul.common.util.Texts.singleQuote;
 
 /**
@@ -20,10 +18,6 @@ public class DummyPaper implements Paper {
   private String theme;
 
   private String description;
-
-  public DummyPaper(Path path) {
-    this(path, "basic");
-  }
 
   public DummyPaper(Path path, String theme) {
     this(path, theme, "");
@@ -60,14 +54,6 @@ public class DummyPaper implements Paper {
   @Override
   public String getTheme() {
     return this.theme;
-  }
-
-  @Override
-  public Map<String, Object> toMap() {
-    return Map.ofEntries(entry("path", this.path),
-        entry("theme", this.theme),
-        entry("description", this.description)
-    );
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

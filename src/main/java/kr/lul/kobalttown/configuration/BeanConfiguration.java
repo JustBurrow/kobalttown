@@ -36,7 +36,7 @@ public class BeanConfiguration {
         path = path.resolve(randomAlphanumeric(1, 5));
       } while (ThreadLocalRandom.current().nextBoolean());
 
-      memory.addPaper(new DummyPaper(path, "sample2", format("seed=%d, path=\"%s\" sample page.", seed, path)));
+      memory.addPaper(new DummyPaper(path, "sample3", format("seed=%d, path=\"%s\" sample page.", seed, path)));
     }
   }
 
@@ -47,11 +47,11 @@ public class BeanConfiguration {
 
     DummyPaper paper;
 
-    paper = new DummyPaper(get("/"));
+    paper = new DummyPaper(get("/"), "basic");
     paper.setDescription("root page");
     memory.addPaper(paper);
 
-    paper = new DummyPaper(get("/a"));
+    paper = new DummyPaper(get("/a"), "basic");
     paper.setDescription("/a paper.");
     memory.addPaper(paper);
 

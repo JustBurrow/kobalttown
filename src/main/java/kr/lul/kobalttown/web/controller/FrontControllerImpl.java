@@ -1,6 +1,7 @@
 package kr.lul.kobalttown.web.controller;
 
 import kr.lul.kobalttown.domain.Paper;
+import kr.lul.kobalttown.domain.PaperNotFoundException;
 import kr.lul.kobalttown.domain.Papermark;
 import kr.lul.kobalttown.loader.PaperLoaderDelegator;
 import kr.lul.kobalttown.web.context.PapermarkConverter;
@@ -9,8 +10,6 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import static java.lang.String.format;
-import static java.util.Map.of;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -36,14 +35,15 @@ class FrontControllerImpl implements FrontController {
     }
 
     Papermark papermark = this.papermarkConverter.convert(context);
-    Paper paper = this.paperLoaderDelegator.load(papermark);
-
-    context.addModelAttributes(RESERVED_ATTRIBUTE_GROUP,
-        of(RESERVED_ATTRIBUTE_THEME, paper.getTheme(),
-            RESERVED_ATTRIBUTE_PAPER, paper)
-    );
-    context.addModelAttributes(paper.toMap());
-    context.setViewname(format(THEME_LAYOUT_FORMAT, paper.getTheme()));
+    try {
+      Paper paper = this.paperLoaderDelegator.load(papermark);
+      context.setPaper(paper);
+    } catch (PaperNotFoundException e) {
+      if (log.isInfoEnabled()) {
+        log.info(e.getMessage(), e);
+      }
+      throw e;
+    }
 
     if (log.isTraceEnabled()) {
       log.trace("result : context={}", context);

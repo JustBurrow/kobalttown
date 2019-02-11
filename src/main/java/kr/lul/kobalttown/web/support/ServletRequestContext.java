@@ -1,5 +1,6 @@
 package kr.lul.kobalttown.web.support;
 
+import kr.lul.kobalttown.domain.Paper;
 import kr.lul.kobalttown.web.context.RequestContext;
 import kr.lul.kobalttown.web.context.Verb;
 import org.springframework.ui.ModelMap;
@@ -10,7 +11,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.Map;
 import java.util.StringJoiner;
 
 import static java.lang.String.format;
@@ -85,21 +85,24 @@ public class ServletRequestContext implements RequestContext {
   }
 
   @Override
-  public void addModelAttributes(Map<String, ?> attributes) {
-    notNull(attributes, "attributes");
+  public void setPaper(Paper paper) {
+    notNull(paper, "paper");
 
-    for (Map.Entry<String, ?> entry : attributes.entrySet()) {
-      addModelAttributes(entry.getKey(), entry.getValue());
-    }
+    setViewname(format(THEME_LAYOUT_FORMAT, paper.getTheme()));
+
+    this.mav.addAttribute(ATTR_PAPER, paper);
   }
 
   @Override
-  public void addModelAttributes(String name, Object attribute) {
+  public void addModelAttribute(String name, Object attribute) {
     notEmpty(name, "name");
     notNull(attribute, "attribute");
 
+    if (RESERVED_ATTRIBUTE_NAMES.contains(name)) {
+      throw new IllegalArgumentException(format("reserved attribute name : '%s'", name));
+    }
     if (this.mav.containsAttribute(name)) {
-      throw new IllegalStateException(format("attribute already exists : name='%s', old=%s, new=%s",
+      throw new IllegalArgumentException(format("attribute already exists : name='%s', old=%s, new=%s",
           name, this.mav.getModel().get(name), attribute));
     }
 

@@ -1,15 +1,31 @@
 package kr.lul.kobalttown.web.context;
 
+import kr.lul.kobalttown.domain.Paper;
 import org.springframework.ui.ModelMap;
 
 import java.nio.file.Path;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * @author justburrow
  * @since 2018-12-25
  */
 public interface RequestContext {
+  /**
+   * {@link Paper}를 뷰에 전달할 때 사용하는 이름. 되도록 쓰지 말 것.
+   */
+  String ATTR_PAPER = "paper";
+  /**
+   * 예약된 어트리뷰트 이름.
+   */
+  Set<String> RESERVED_ATTRIBUTE_NAMES = Set.of(ATTR_PAPER);
+  /**
+   * 테마의 레이아웃 뷰 이름의 포맷.
+   *
+   * @see String#format(String, Object...)
+   */
+  String THEME_LAYOUT_FORMAT = "layout/%s/index";
+
   /**
    * @return
    */
@@ -35,18 +51,16 @@ public interface RequestContext {
    */
   String getViewname();
 
-  /**
-   * 뷰모델에 어트리뷰트를 추가한다.
-   *
-   * @param attributes 추가할 어트리뷰트.
-   */
-  void addModelAttributes(Map<String, ?> attributes);
+  void setPaper(Paper paper);
 
   /**
    * 뷰모델에 어트리뷰트를 추가한다.
    *
    * @param name      어트리뷰트 이름.
    * @param attribute 어트리뷰트.
+   *
+   * @throws IllegalArgumentException 예약된 어트리뷰트 이름을 사용한 경우.
+   * @see #RESERVED_ATTRIBUTE_NAMES 예약된 어트리뷰트 이름.
    */
-  void addModelAttributes(String name, Object attribute);
+  void addModelAttribute(String name, Object attribute) throws IllegalArgumentException;
 }

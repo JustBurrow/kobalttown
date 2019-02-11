@@ -1,13 +1,14 @@
 package kr.lul.kobalttown.web.controller;
 
+import kr.lul.kobalttown.domain.Paper;
 import kr.lul.kobalttown.web.context.RequestContext;
 import kr.lul.kobalttown.web.context.Verb;
 import org.springframework.ui.ModelMap;
 
 import java.nio.file.Path;
-import java.util.Map;
 import java.util.StringJoiner;
 
+import static java.lang.String.format;
 import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Texts.singleQuote;
 
@@ -69,13 +70,14 @@ public class TestRequestContext implements RequestContext {
   }
 
   @Override
-  public void addModelAttributes(Map<String, ?> attributes) {
-    notNull(attributes, "attributes");
-    this.modelMap.addAllAttributes(attributes);
+  public void setPaper(Paper paper) {
+    notNull(paper, "paper");
+
+    setViewname(format(THEME_LAYOUT_FORMAT, paper.getTheme()));
   }
 
   @Override
-  public void addModelAttributes(String name, Object attribute) {
+  public void addModelAttribute(String name, Object attribute) {
     this.modelMap.addAttribute(name, attribute);
   }
 

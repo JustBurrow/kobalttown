@@ -19,8 +19,8 @@
 </header>
 <main>
     <h1><code>kr.lul.kobalttown.domain.DummyPaper</code> : <code>sample</code></h1>
-    <div th:fragment="paper(attribute)" th:remove="tag">
-        <dl th:object="${attribute}">
+    <div th:fragment="view(paper)" th:remove="tag">
+        <dl th:object="${paper}">
             <dt>ID</dt>
             <dd th:text="*{id}">id</dd>
             <dt>PATH</dt>

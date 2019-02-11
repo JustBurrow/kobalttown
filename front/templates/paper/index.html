@@ -17,8 +17,8 @@
 </header>
 <main>
     <h1>PAPER</h1>
-    <div th:fragment="paper" th:remove="tag">
-        <div th:replace="paper/__${_.paper.class.name}__/__${_.theme}__/index :: paper(${_.paper})"></div>
+    <div th:fragment="view(paper)" th:remove="tag">
+        <div th:replace="paper/__${paper.class.name}__/__${paper.theme}__/index :: view(${paper})"></div>
     </div>
     <ol>
         <li>

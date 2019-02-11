@@ -75,9 +75,9 @@ public class InMemoryVerbPathPaperLoaderTest {
   public void test_read_exists() throws Exception {
     // Given
     final Path path = Paths.get("/", randomAlphanumeric(0, 10));
-    this.loader.addPaper(new DummyPaper(path));
+    this.loader.addPaper(new DummyPaper(path, "basic"));
     for (int i = 3 + this.random.nextInt(10); i >= 0; i--) {
-      this.loader.addPaper(new DummyPaper(Paths.get("/test", randomAlphanumeric(1, 100))));
+      this.loader.addPaper(new DummyPaper(Paths.get("/test", randomAlphanumeric(1, 100)), "basic"));
     }
     log.info(format("GIVEN - loader=%s", this.loader));
 
