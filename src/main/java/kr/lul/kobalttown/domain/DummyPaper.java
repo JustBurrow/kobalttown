@@ -4,6 +4,8 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+import static kr.lul.common.util.Texts.singleQuote;
+
 /**
  * 테스트용 더미 페이퍼.
  *
@@ -15,13 +17,29 @@ public class DummyPaper implements Paper {
   private Path path;
   private String theme;
 
+  private String description;
+
   public DummyPaper(Path path) {
     this(path, DEFAULT_THEME);
   }
 
   public DummyPaper(Path path, String theme) {
+    this(path, theme, "");
+  }
+
+  public DummyPaper(Path path, String theme, String description) {
     this.path = path;
     this.theme = theme;
+
+    setDescription(description);
+  }
+
+  public String getDescription() {
+    return this.description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,7 +84,8 @@ public class DummyPaper implements Paper {
   public String toString() {
     return new StringJoiner(", ", DummyPaper.class.getSimpleName() + "[", "]")
         .add("path=" + this.path)
-        .add("theme='" + this.theme + "'")
+        .add("theme=" + singleQuote(this.theme))
+        .add("description=" + singleQuote(this.description))
         .toString();
   }
 }

@@ -14,7 +14,7 @@ public interface FrontController {
    *
    * @see String#format(String, Object...)
    */
-  String THEME_LAYOUT_FORMAT = "layout/%s/layout";
+  String THEME_LAYOUT_FORMAT = "layout/%s/index";
 
   /**
    * 리퀘스트 처리.

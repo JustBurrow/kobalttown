@@ -26,15 +26,13 @@ public class InMemoryVerbPathPaperLoader extends AbstractVerbPathPaperLoader {
     this.papers = new HashMap<>();
   }
 
-  public Paper addPaper(Path path, Paper paper) {
+  public Paper addPaper(Paper paper) {
     if (log.isTraceEnabled()) {
-      log.trace("args : path={}, paper={}", path, paper);
+      log.trace("args : paper={}", paper);
     }
-
-    notNull(path, "path");
     notNull(paper, "paper");
 
-    Paper rv = this.papers.put(path, paper);
+    Paper rv = this.papers.put(paper.getPath(), paper);
 
     if (log.isTraceEnabled()) {
       log.trace("return : {}", rv);
