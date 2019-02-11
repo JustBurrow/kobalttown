@@ -8,9 +8,22 @@
     <title>Sample Layout</title>
 </head>
 <body>
+<header>
+    <nav th:remove="all">
+        <ol>
+            <li><a href="../../index.html">TEMPLATES</a></li>
+            <li><a href="../index.html">LAYOUT</a></li>
+        </ol>
+    </nav>
+</header>
 <main>
-    <h1>Sample Layout</h1>
+    <h1><code>sample</code></h1>
     <p>Sample layout.</p>
+    <h2>Paper</h2>
+    <dl th:replace="paper/index :: paper">
+        <dt>PAPER</dt>
+        <dd>paper</dd>
+    </dl>
 </main>
 </body>
 </html>

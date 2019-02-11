@@ -10,6 +10,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping
 public interface FrontController {
   /**
+   * 시스템에서 사용하기 위해 설정하는 어트리뷰트 이름. {@link java.util.Map} 타입.
+   */
+  String RESERVED_ATTRIBUTE_GROUP = "_";
+
+  /**
+   * {@link kr.lul.kobalttown.domain.Paper}출력에 사용할 테마.
+   */
+  String RESERVED_ATTRIBUTE_THEME = "theme";
+  /**
+   * 뷰에서 {@link kr.lul.kobalttown.domain.Paper}에 직접 접근할 수단을 제공한다. 함부로 쓰지 말 것.
+   */
+  @Deprecated
+  String RESERVED_ATTRIBUTE_PAPER = "paper";
+
+  /**
    * 테마의 레이아웃 뷰 이름의 포맷.
    *
    * @see String#format(String, Object...)

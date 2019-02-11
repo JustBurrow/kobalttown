@@ -10,9 +10,11 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.StringJoiner;
 
 import static java.lang.String.format;
+import static kr.lul.common.util.Arguments.notEmpty;
 import static kr.lul.common.util.Arguments.notNull;
 
 /**
@@ -80,6 +82,28 @@ public class ServletRequestContext implements RequestContext {
   @Override
   public String getViewname() {
     return this.mav.getViewName();
+  }
+
+  @Override
+  public void addModelAttributes(Map<String, ?> attributes) {
+    notNull(attributes, "attributes");
+
+    for (Map.Entry<String, ?> entry : attributes.entrySet()) {
+      addModelAttributes(entry.getKey(), entry.getValue());
+    }
+  }
+
+  @Override
+  public void addModelAttributes(String name, Object attribute) {
+    notEmpty(name, "name");
+    notNull(attribute, "attribute");
+
+    if (this.mav.containsAttribute(name)) {
+      throw new IllegalStateException(format("attribute already exists : name='%s', old=%s, new=%s",
+          name, this.mav.getModel().get(name), attribute));
+    }
+
+    this.mav.addAttribute(name, attribute);
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

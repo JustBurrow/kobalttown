@@ -5,12 +5,24 @@
     <meta name="author" content="justburrow" th:remove="all"/>
     <meta name="since" content="2019-01-04 17:48" th:remove="all"/>
     <meta charset="UTF-8"/>
-    <title>베이직 레이아웃</title>
+    <title>basic</title>
 </head>
 <body>
+<header>
+    <nav th:remove="all">
+        <ol>
+            <li><a href="../../index.html">TEMPLATES</a></li>
+            <li><a href="../index.html">LAYOUT</a></li>
+        </ol>
+    </nav>
+</header>
 <main>
-    <h1>베이직 레이아웃</h1>
+    <h1><code>basic</code></h1>
     <p>문서가 테마를 지정하지 않을 경우 이 레이아웃을 사용합니다.</p>
+    <section>
+        <h2>Paper</h2>
+        <p th:replace="paper/index :: paper">paper</p>
+    </section>
 </main>
 </body>
 </html>

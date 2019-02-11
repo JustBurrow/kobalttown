@@ -8,9 +8,33 @@
     <title>Sample2 Layout</title>
 </head>
 <body>
+<header>
+    <nav th:remove="all">
+        <ol>
+            <li><a href="../../index.html">TEMPLATES</a></li>
+            <li><a href="../index.html">LAYOUT</a></li>
+        </ol>
+    </nav>
+</header>
 <main>
-    <h1>Sample2 Layout</h1>
+    <h1>sample2</h1>
     <p>Sample2 layout.</p>
+    <h2>Paper</h2>
+    <table th:replace="paper/index :: paper">
+        <caption>paper</caption>
+        <thead>
+        <tr>
+            <th>PAPER</th>
+            <th>PAPER</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>paper</td>
+            <td>paper</td>
+        </tr>
+        </tbody>
+    </table>
 </main>
 </body>
 </html>

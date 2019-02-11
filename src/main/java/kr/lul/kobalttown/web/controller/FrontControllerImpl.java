@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import static java.lang.String.format;
-import static java.util.Objects.requireNonNullElse;
+import static java.util.Map.of;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -38,7 +38,13 @@ class FrontControllerImpl implements FrontController {
     Papermark papermark = this.papermarkConverter.convert(context);
     Paper paper = this.paperLoaderDelegator.load(papermark);
 
-    context.setViewname(format(THEME_LAYOUT_FORMAT, requireNonNullElse(paper.getTheme(), Paper.DEFAULT_THEME)));
+    context.addModelAttributes(RESERVED_ATTRIBUTE_GROUP,
+        of(RESERVED_ATTRIBUTE_THEME, paper.getTheme(),
+            RESERVED_ATTRIBUTE_PAPER, paper)
+    );
+    context.addModelAttributes(paper.toMap());
+    context.setViewname(format(THEME_LAYOUT_FORMAT, paper.getTheme()));
+
     if (log.isTraceEnabled()) {
       log.trace("result : context={}", context);
     }

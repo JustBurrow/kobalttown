@@ -5,6 +5,7 @@ import kr.lul.kobalttown.web.context.Verb;
 import org.springframework.ui.ModelMap;
 
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.StringJoiner;
 
 import static kr.lul.common.util.Arguments.notNull;
@@ -65,6 +66,17 @@ public class TestRequestContext implements RequestContext {
   @Override
   public String getViewname() {
     return this.viewname;
+  }
+
+  @Override
+  public void addModelAttributes(Map<String, ?> attributes) {
+    notNull(attributes, "attributes");
+    this.modelMap.addAllAttributes(attributes);
+  }
+
+  @Override
+  public void addModelAttributes(String name, Object attribute) {
+    this.modelMap.addAttribute(name, attribute);
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

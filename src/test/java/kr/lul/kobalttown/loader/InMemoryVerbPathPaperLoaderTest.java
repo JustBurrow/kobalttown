@@ -89,7 +89,7 @@ public class InMemoryVerbPathPaperLoaderTest {
     assertThat(paper)
         .isNotNull()
         .extracting(Paper::getPath, Paper::getTheme)
-        .containsSequence(path, Paper.DEFAULT_THEME);
+        .containsSequence(path, "basic");
   }
 
   @Test
