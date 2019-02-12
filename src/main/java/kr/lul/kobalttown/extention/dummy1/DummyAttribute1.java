@@ -1,14 +1,12 @@
 package kr.lul.kobalttown.extention.dummy1;
 
-import kr.lul.kobalttown.domain.Paper;
-
 import java.util.StringJoiner;
 
 /**
  * @author justburrow
  * @since 2019-02-11
  */
-public class DummyAttribute1 implements Paper.Attribute {
+public class DummyAttribute1 {
   private int i;
 
   public DummyAttribute1() {

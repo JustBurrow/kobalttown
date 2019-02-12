@@ -1,21 +1,37 @@
 package kr.lul.kobalttown.domain;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
 /**
  * 코발트 타운으로 서비스하는 웹 문서의 단위.
+ * 한번의 리퀘스트에 응답하는 데이터({@code org.springframework.ui.ModelMap}에 해당)와 메타 데이터를 포함한다.
  *
  * @author justburrow
  * @since 2019-01-05
  */
 public interface Paper {
   /**
-   * {@link Paper}가 제강하는 모델 어트리큐트의 마킹 인터페이스.
+   * 폴란드어로 종이조각이라는 뜻.
+   * 웹 페이지 렌더링의 일정 영역을 의미한다.
    *
-   * TODO 마킹 인터페이스로 괜찮은가? 페이퍼의 속성을 리스트와 맵 모두로 제고항 방법을 갖춰야 하지 않을까? 속성 사이를 순환할 가능성은 없는가?
+   * @see java.util.Map.Entry 맵 엔트리 역할.
    */
-  interface Attribute {
+  interface Kartka<V> {
+    /**
+     * 영역의 이름.
+     *
+     * @return 이름.
+     */
+    String getName();
+
+    /**
+     * 영역을 그릴 때 사용할 데이터.
+     *
+     * @return 값.
+     */
+    V getValue();
   }
 
   /**
@@ -37,8 +53,7 @@ public interface Paper {
    */
   String getTheme();
 
-  /**
-   * @return 어트리뷰트 맵.
-   */
-  Map<String, Attribute> getAttributeMap();
+  List<Kartka> getKartkas();
+
+  Map<String, Object> getAttributes();
 }

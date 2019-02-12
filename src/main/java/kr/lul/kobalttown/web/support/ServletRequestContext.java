@@ -14,7 +14,6 @@ import java.nio.file.Path;
 import java.util.StringJoiner;
 
 import static java.lang.String.format;
-import static kr.lul.common.util.Arguments.notEmpty;
 import static kr.lul.common.util.Arguments.notNull;
 
 /**
@@ -91,25 +90,6 @@ public class ServletRequestContext implements RequestContext {
     setViewname(format(THEME_LAYOUT_FORMAT, paper.getTheme()));
 
     this.mav.addAttribute(ATTR_PAPER, paper);
-//    for (Map.Entry<String, Paper.Attribute> entry : paper.getAttributeMap().entrySet()) {
-//      addAttribute(entry.getKey(), entry.getValue());
-//    }
-  }
-
-  @Override
-  public void addAttribute(String name, Paper.Attribute attribute) {
-    notEmpty(name, "name");
-    notNull(attribute, "attribute");
-
-    if (RESERVED_ATTRIBUTE_NAMES.contains(name)) {
-      throw new IllegalArgumentException(format("reserved attribute name : '%s'", name));
-    }
-    if (this.mav.containsAttribute(name)) {
-      throw new IllegalArgumentException(format("attribute already exists : name='%s', old=%s, new=%s",
-          name, this.mav.getModel().get(name), attribute));
-    }
-
-    this.mav.addAttribute(name, attribute);
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

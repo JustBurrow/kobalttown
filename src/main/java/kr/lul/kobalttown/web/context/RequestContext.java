@@ -52,15 +52,4 @@ public interface RequestContext {
   String getViewname();
 
   void setPaper(Paper paper);
-
-  /**
-   * 뷰모델에 어트리뷰트를 추가한다.
-   *
-   * @param name      어트리뷰트 이름.
-   * @param attribute 어트리뷰트.
-   *
-   * @throws IllegalArgumentException 예약된 어트리뷰트 이름을 사용한 경우.
-   * @see #RESERVED_ATTRIBUTE_NAMES 예약된 어트리뷰트 이름.
-   */
-  void addAttribute(String name, Paper.Attribute attribute) throws IllegalArgumentException;
 }

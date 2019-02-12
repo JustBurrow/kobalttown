@@ -10,9 +10,11 @@
 <body>
 <main>
     <h1><code>model</code></h1>
-    <section th:each="v : ${paper.attributeMap}">
-        <h2><code th:text="${v.key}">attributeName</code></h2>
-        <p th:text="${v.value}">attribute</p>
+    <!--/*@thymesVar id="paper" type="kr.lul.kobalttown.domain.Paper"*/-->
+    <section th:each="kartka : ${paper.kartkas}">
+        <!--/*@thymesVar id="kartka" type="kr.lul.kobalttown.domain.Paper.Kartka"*/-->
+        <h2><code th:text="${kartka.name}">attributeName</code></h2>
+        <p th:text="${kartka.value}">attribute</p>
     </section>
 </main>
 </body>

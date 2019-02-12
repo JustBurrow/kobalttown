@@ -1,11 +1,9 @@
 package kr.lul.kobalttown.domain;
 
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.StringJoiner;
+import java.util.*;
 
+import static java.util.stream.Collectors.toList;
 import static kr.lul.common.util.Arguments.notEmpty;
 import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Texts.singleQuote;
@@ -22,25 +20,21 @@ public class DummyPaper implements Paper {
   private String theme;
 
   private String description;
-  private Map<String, Attribute> attributeMap;
+
+  private Map<String, Object> attributeMap;
 
   public DummyPaper(Path path, String theme) {
     this(path, theme, "");
   }
 
   public DummyPaper(Path path, String theme, String description) {
-    this(path, theme, description, new HashMap<>());
-  }
-
-  public <V, K> DummyPaper(Path path, String theme, String description, HashMap<String, Attribute> attributeMap) {
     notNull(path, "path");
     notEmpty(theme, "theme");
-    notNull(attributeMap, "attributeMap");
 
     this.path = path;
     this.theme = theme;
     setDescription(description);
-    this.attributeMap = attributeMap;
+    this.attributeMap = new LinkedHashMap<>();
   }
 
   public String getDescription() {
@@ -52,7 +46,7 @@ public class DummyPaper implements Paper {
     this.description = description;
   }
 
-  public Attribute addAttribute(String name, Attribute attribute) {
+  public Object addAttribute(String name, Object attribute) {
     notEmpty(name, "name");
 
     return this.attributeMap.put(name, attribute);
@@ -77,7 +71,24 @@ public class DummyPaper implements Paper {
   }
 
   @Override
-  public Map<String, Attribute> getAttributeMap() {
+  public List<Kartka> getKartkas() {
+    return this.attributeMap.entrySet().stream()
+        .map(entry -> new Kartka() {
+          @Override
+          public String getName() {
+            return entry.getKey();
+          }
+
+          @Override
+          public Object getValue() {
+            return entry.getValue();
+          }
+        })
+        .collect(toList());
+  }
+
+  @Override
+  public Map<String, Object> getAttributes() {
     return this.attributeMap;
   }
 

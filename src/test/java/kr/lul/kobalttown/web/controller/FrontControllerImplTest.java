@@ -78,7 +78,7 @@ public class FrontControllerImplTest {
     when(this.paperLoaderDelegator.isSupported(any()))
         .thenReturn(true);
     when(this.paperLoaderDelegator.load(any()))
-        .thenReturn(null);
+        .thenThrow(PaperNotFoundException.class);
 
     // When & Then
     assertThatThrownBy(() -> this.frontController.handle(context))

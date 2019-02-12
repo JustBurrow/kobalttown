@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import static java.lang.String.format;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -40,7 +41,7 @@ class FrontControllerImpl implements FrontController {
       context.setPaper(paper);
     } catch (PaperNotFoundException e) {
       if (log.isInfoEnabled()) {
-        log.info(e.getMessage(), e);
+        log.info(format("papermark=%s, message=%s", papermark, e.getMessage()), e);
       }
       throw e;
     }
