@@ -91,10 +91,13 @@ public class ServletRequestContext implements RequestContext {
     setViewname(format(THEME_LAYOUT_FORMAT, paper.getTheme()));
 
     this.mav.addAttribute(ATTR_PAPER, paper);
+//    for (Map.Entry<String, Paper.Attribute> entry : paper.getAttributeMap().entrySet()) {
+//      addAttribute(entry.getKey(), entry.getValue());
+//    }
   }
 
   @Override
-  public void addModelAttribute(String name, Object attribute) {
+  public void addAttribute(String name, Paper.Attribute attribute) {
     notEmpty(name, "name");
     notNull(attribute, "attribute");
 

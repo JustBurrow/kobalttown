@@ -1,9 +1,13 @@
 package kr.lul.kobalttown.domain;
 
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+import static kr.lul.common.util.Arguments.notEmpty;
+import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Texts.singleQuote;
 
 /**
@@ -18,16 +22,25 @@ public class DummyPaper implements Paper {
   private String theme;
 
   private String description;
+  private Map<String, Attribute> attributeMap;
 
   public DummyPaper(Path path, String theme) {
     this(path, theme, "");
   }
 
   public DummyPaper(Path path, String theme, String description) {
+    this(path, theme, description, new HashMap<>());
+  }
+
+  public <V, K> DummyPaper(Path path, String theme, String description, HashMap<String, Attribute> attributeMap) {
+    notNull(path, "path");
+    notEmpty(theme, "theme");
+    notNull(attributeMap, "attributeMap");
+
     this.path = path;
     this.theme = theme;
-
     setDescription(description);
+    this.attributeMap = attributeMap;
   }
 
   public String getDescription() {
@@ -35,7 +48,14 @@ public class DummyPaper implements Paper {
   }
 
   public void setDescription(String description) {
+    notNull(description, "description");
     this.description = description;
+  }
+
+  public Attribute addAttribute(String name, Attribute attribute) {
+    notEmpty(name, "name");
+
+    return this.attributeMap.put(name, attribute);
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,6 +74,11 @@ public class DummyPaper implements Paper {
   @Override
   public String getTheme() {
     return this.theme;
+  }
+
+  @Override
+  public Map<String, Attribute> getAttributeMap() {
+    return this.attributeMap;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,6 +107,7 @@ public class DummyPaper implements Paper {
         .add("path=" + this.path)
         .add("theme=" + singleQuote(this.theme))
         .add("description=" + singleQuote(this.description))
+        .add("attributeMap=" + this.attributeMap)
         .toString();
   }
 }

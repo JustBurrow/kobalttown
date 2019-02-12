@@ -62,5 +62,5 @@ public interface RequestContext {
    * @throws IllegalArgumentException 예약된 어트리뷰트 이름을 사용한 경우.
    * @see #RESERVED_ATTRIBUTE_NAMES 예약된 어트리뷰트 이름.
    */
-  void addModelAttribute(String name, Object attribute) throws IllegalArgumentException;
+  void addAttribute(String name, Paper.Attribute attribute) throws IllegalArgumentException;
 }

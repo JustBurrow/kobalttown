@@ -77,7 +77,7 @@ public class TestRequestContext implements RequestContext {
   }
 
   @Override
-  public void addModelAttribute(String name, Object attribute) {
+  public void addAttribute(String name, Paper.Attribute attribute) {
     this.modelMap.addAttribute(name, attribute);
   }
 

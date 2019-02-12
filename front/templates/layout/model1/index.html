@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2019-02-11 19:11" th:remove="all"/>
+    <meta charset="UTF-8"/>
+    <title>model</title>
+</head>
+<body>
+<main>
+    <h1><code>model</code></h1>
+    <section th:each="v : ${paper.attributeMap}">
+        <h2><code th:text="${v.key}">attributeName</code></h2>
+        <p th:text="${v.value}">attribute</p>
+    </section>
+</main>
+</body>
+</html>
