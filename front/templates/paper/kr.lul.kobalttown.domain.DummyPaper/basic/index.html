@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2019-02-11 14:17" th:remove="all"/>
+    <meta charset="UTF-8"/>
+    <title>kr.lul.kobalttown.domain.DummyPaper : basic</title>
+</head>
+<body>
+<header>
+    <nav>
+        <ol>
+            <li><a href="../../../index.html">TEMPLATES</a></li>
+            <li><a href="../../index.html">PAPER</a></li>
+            <li><a href="../index.html">kr.lul.kobalttown.domain.DummyPaper</a></li>
+        </ol>
+    </nav>
+</header>
+<main>
+    <h1><code>kr.lul.kobalttown.domain.DummyPaper</code> : <code>basic</code></h1>
+    <div th:fragment="view(paper)" th:remove="tag">
+        <p th:text="${paper}">paper</p>
+    </div>
+</main>
+</body>
+</html>

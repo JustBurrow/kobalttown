@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2019-02-11 12:30" th:remove="all"/>
+    <meta charset="UTF-8"/>
+    <title>Sample Layout</title>
+</head>
+<body>
+<header>
+    <nav th:remove="all">
+        <ol>
+            <li><a href="../../index.html">TEMPLATES</a></li>
+            <li><a href="../index.html">LAYOUT</a></li>
+        </ol>
+    </nav>
+</header>
+<main>
+    <h1><code>sample</code></h1>
+    <p>Sample layout.</p>
+    <h2>Paper</h2>
+    <dl th:replace="paper/index :: view(${paper})">
+        <dt>PAPER</dt>
+        <dd>paper</dd>
+    </dl>
+</main>
+</body>
+</html>
