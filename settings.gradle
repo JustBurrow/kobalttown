@@ -2,5 +2,6 @@ rootProject.name = 'kobalttown'
 
 include 'common',
     'core',
+    'spring',
     'web',
     'runner'

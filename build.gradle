@@ -29,10 +29,6 @@ subprojects {
   }
 
   dependencies {
-    compile 'org.springframework.boot:spring-boot-starter-logging'
-
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-
     testCompile 'org.springframework.boot:spring-boot-starter-test'
   }
 
