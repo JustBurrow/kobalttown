@@ -16,7 +16,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author justburrow
  * @since 2019-01-05
  */
-public abstract class AbstractVerbPathPaperLoader implements VerbPathPaperLoader {
+public abstract class AbstractVerbPathPaperLoader<P extends Paper> implements VerbPathPaperLoader<P> {
   private static final Logger log = getLogger(AbstractVerbPathPaperLoader.class);
 
   /**
@@ -24,28 +24,28 @@ public abstract class AbstractVerbPathPaperLoader implements VerbPathPaperLoader
    *
    * @return 생성된 페이퍼.
    */
-  protected abstract Paper create(Path path);
+  protected abstract P create(Path path);
 
   /**
    * @param path 요청 경로.
    *
    * @return 경로에 해당하는 페이퍼.
    */
-  protected abstract Paper read(Path path);
+  protected abstract P read(Path path);
 
   /**
    * @param path 요청 경로.
    *
    * @return 갱신 결과에 관한 페이퍼.
    */
-  protected abstract Paper update(Path path);
+  protected abstract P update(Path path);
 
   /**
    * @param path 요청 경로.
    *
    * @return 삭제 결과에 관한 페이퍼.
    */
-  protected abstract Paper delete(Path path);
+  protected abstract P delete(Path path);
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.kobalttown.loader.VerbPathPaperLoader
@@ -59,13 +59,13 @@ public abstract class AbstractVerbPathPaperLoader implements VerbPathPaperLoader
   }
 
   @Override
-  public Paper load(VerbPathPapermark papermark) throws PaperNotFoundException {
+  public P load(VerbPathPapermark papermark) throws PaperNotFoundException {
     if (log.isTraceEnabled()) {
       log.trace("args : papermark={}", papermark);
     }
     notNull(papermark, "papermark");
 
-    final Paper paper;
+    final P paper;
     switch (papermark.getVerb()) {
       case CREATE:
         paper = create(papermark.getPath());

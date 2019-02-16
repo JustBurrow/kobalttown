@@ -17,7 +17,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author justburrow
  * @since 2019-02-10
  */
-public class InMemoryVerbPathPaperLoader extends AbstractVerbPathPaperLoader {
+public class InMemoryVerbPathPaperLoader extends AbstractVerbPathPaperLoader<Paper> {
   private static final Logger log = getLogger(InMemoryVerbPathPaperLoader.class);
 
   private final Map<Path, Paper> papers;

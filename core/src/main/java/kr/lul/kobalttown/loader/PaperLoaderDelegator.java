@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.loader;
 
-import kr.lul.kobalttown.domain.PaperLoader;
+import kr.lul.kobalttown.domain.GenericPaperLoader;
 import kr.lul.kobalttown.domain.Papermark;
 
 /**
@@ -9,7 +9,7 @@ import kr.lul.kobalttown.domain.Papermark;
  * @author justburrow
  * @since 2019-01-05
  */
-public interface PaperLoaderDelegator extends PaperLoader<Papermark> {
+public interface PaperLoaderDelegator extends GenericPaperLoader {
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.kobalttown.domain.PaperLoader
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
