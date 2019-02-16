@@ -1,5 +1,5 @@
 dependencies {
-  implementation project(':common')
+  compile project(':common')
 
-  implementation 'org.apache.commons:commons-lang3'
+  compile 'org.apache.commons:commons-lang3'
 }

@@ -6,6 +6,7 @@ import kr.lul.kobalttown.domain.PaperNotFoundException;
 import kr.lul.kobalttown.domain.Papermark;
 import org.slf4j.Logger;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -26,7 +27,7 @@ public class PaperLoaderDelegatorImpl implements PaperLoaderDelegator {
   public List<PaperLoader> init(PaperLoader... loaders) {
     synchronized (this.initLock) {
       if (null != this.loaders) {
-        throw new IllegalStateException(format("already initialized : %s", loaders));
+        throw new IllegalStateException(format("already initialized : %s", Arrays.toString(loaders)));
       }
 
       this.loaders = immutable(loaders);
