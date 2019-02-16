@@ -1,1 +1,6 @@
 rootProject.name = 'kobalttown'
+
+include 'common',
+    'core',
+    'web',
+    'runner'
