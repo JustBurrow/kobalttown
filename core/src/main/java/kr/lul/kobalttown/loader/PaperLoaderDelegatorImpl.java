@@ -6,10 +6,10 @@ import kr.lul.kobalttown.domain.PaperNotFoundException;
 import kr.lul.kobalttown.domain.Papermark;
 import org.slf4j.Logger;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.String.format;
+import static java.util.Collections.unmodifiableList;
 import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Lists.immutable;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -21,17 +21,29 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class PaperLoaderDelegatorImpl implements PaperLoaderDelegator {
   private static final Logger log = getLogger(PaperLoaderDelegatorImpl.class);
 
-  private final Object[] initLock = new Object[0];
   private List<PaperLoader> loaders;
 
-  public List<PaperLoader> init(PaperLoader... loaders) {
-    synchronized (this.initLock) {
-      if (null != this.loaders) {
-        throw new IllegalStateException(format("already initialized : %s", Arrays.toString(loaders)));
-      }
-
-      this.loaders = immutable(loaders);
+  private void checkStatus() {
+    if (null != this.loaders) {
+      throw new IllegalStateException(format("already initialized : %s", this.loaders));
     }
+  }
+
+  public List<PaperLoader> init(PaperLoader... loaders) {
+    notNull(loaders, "loaders");
+    checkStatus();
+
+    this.loaders = immutable(loaders);
+
+    return this.loaders;
+  }
+
+  public List<PaperLoader> init(List<PaperLoader> loaders) {
+    notNull(loaders, "loaders");
+    checkStatus();
+
+    this.loaders = unmodifiableList(loaders);
+
     return this.loaders;
   }
 

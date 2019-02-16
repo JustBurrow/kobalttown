@@ -2,4 +2,5 @@ dependencies {
   compile project(':common')
 
   compile 'org.apache.commons:commons-lang3'
+  compile 'org.reflections:reflections:0.9.11'
 }
