@@ -9,32 +9,32 @@ import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Texts.singleQuote;
 
 /**
- * 테스트용 더미 페이퍼.
+ * 범용 페이퍼.
  *
  * @author justburrow
  * @since 2019-02-10
  */
-@Deprecated(forRemoval = true)
-public class DummyPaper implements Paper {
+public class GenericPaper implements Paper {
+  public static final String DEFAULT_DESCRIPTION = "Some generic paper.";
   private Path path;
   private String theme;
 
   private String description;
 
-  private Map<String, Object> attributeMap;
+  private Map<String, Object> kartkaMap;
 
-  public DummyPaper(Path path, String theme) {
-    this(path, theme, "");
+  public GenericPaper(Path path, String theme) {
+    this(path, theme, DEFAULT_DESCRIPTION);
   }
 
-  public DummyPaper(Path path, String theme, String description) {
+  public GenericPaper(Path path, String theme, String description) {
     notNull(path, "path");
     notEmpty(theme, "theme");
 
     this.path = path;
     this.theme = theme;
     setDescription(description);
-    this.attributeMap = new LinkedHashMap<>();
+    this.kartkaMap = new LinkedHashMap<>();
   }
 
   public String getDescription() {
@@ -46,10 +46,10 @@ public class DummyPaper implements Paper {
     this.description = description;
   }
 
-  public Object addAttribute(String name, Object attribute) {
+  public Object addKartka(String name, Object kartka) {
     notEmpty(name, "name");
 
-    return this.attributeMap.put(name, attribute);
+    return this.kartkaMap.put(name, kartka);
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ public class DummyPaper implements Paper {
 
   @Override
   public List<Kartka> getKartkas() {
-    return this.attributeMap.entrySet().stream()
+    return this.kartkaMap.entrySet().stream()
         .map(entry -> new Kartka() {
           @Override
           public String getName() {
@@ -89,7 +89,7 @@ public class DummyPaper implements Paper {
 
   @Override
   public Map<String, Object> getAttributes() {
-    return this.attributeMap;
+    return this.kartkaMap;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,10 +100,10 @@ public class DummyPaper implements Paper {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof DummyPaper)) {
+    if (!(o instanceof GenericPaper)) {
       return false;
     }
-    DummyPaper that = (DummyPaper) o;
+    GenericPaper that = (GenericPaper) o;
     return Objects.equals(this.path, that.path);
   }
 
@@ -114,11 +114,11 @@ public class DummyPaper implements Paper {
 
   @Override
   public String toString() {
-    return new StringJoiner(", ", DummyPaper.class.getSimpleName() + "[", "]")
+    return new StringJoiner(", ", GenericPaper.class.getSimpleName() + "[", "]")
         .add("path=" + this.path)
         .add("theme=" + singleQuote(this.theme))
         .add("description=" + singleQuote(this.description))
-        .add("attributeMap=" + this.attributeMap)
+        .add("kartkaMap=" + this.kartkaMap)
         .toString();
   }
 }

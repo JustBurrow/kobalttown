@@ -1,7 +1,7 @@
 package kr.lul.kobalttown.web.controller;
 
 import kr.lul.common.util.Enums;
-import kr.lul.kobalttown.domain.DummyPaper;
+import kr.lul.kobalttown.domain.GenericPaper;
 import kr.lul.kobalttown.domain.PaperNotFoundException;
 import kr.lul.kobalttown.domain.Verb;
 import kr.lul.kobalttown.loader.PaperLoaderDelegator;
@@ -53,7 +53,7 @@ public class FrontControllerImplTest {
     RequestContext requestContext = new TestRequestContext(Enums.random(Verb.class), Paths.get("/a", "b", "c"));
 
     final String theme = "aaa";
-    DummyPaper paper = new DummyPaper(Paths.get("/a"), theme);
+    GenericPaper paper = new GenericPaper(Paths.get("/a"), theme);
     when(this.paperLoaderDelegator.isSupported(any()))
         .thenReturn(true);
     when(this.paperLoaderDelegator.load(any()))
