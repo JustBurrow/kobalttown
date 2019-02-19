@@ -50,5 +50,5 @@ gradle-app.setting
 .idea/
 
 # Application =========================================================================================================
-config/
-!config/sample-*
+#config/
+#!config/sample-*
