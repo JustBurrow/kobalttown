@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>로그인</title>
+</head>
+<body>
+<header>
+    <nav>
+        <a href="index-anonymous.html">Kobalttown</a>
+        <a href="signup.html">가입</a>
+    </nav>
+</header>
+<main>
+    <h1>로그인</h1>
+    <form id="login" action="index-user.html" method="post"></form>
+    <div>
+        <div>
+            <label for="username">Username</label>
+            <input id="username" form="login" name="username" placeholder="input id or email."/>
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" form="login" name="password" placeholder="input password."/>
+        </div>
+        <button form="login">로그인</button>
+    </div>
+</main>
+</body>
+</html>

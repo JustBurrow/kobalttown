@@ -8,3 +8,4 @@
 - `db/` : [DB](db/readme.md)
 - `doc/` : [개발문서](doc/readme.md)
 - `gradle/` : Gradle wrapper
+- `front/` : HTML 파일로 만든 프로토타입. 
