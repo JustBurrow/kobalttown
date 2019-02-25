@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>글쓰기</title>
+</head>
+<body>
+<header>
+    <nav>
+        <a href="index-anonymous.html">Kobalttown</a>
+        <form action="index-anonymous.html" method="post">
+            <button>로그아웃</button>
+        </form>
+    </nav>
+</header>
+<main>
+    <form id="create" action="detail.html" method="post"></form>
+    <article>
+        <h1><label for="title">TITLE</label><input id="title" form="create" name="title" placeholder="input title."/>
+        </h1>
+        <div>
+            <label for="body">BODY</label>
+            <textarea id="body" form="create" name="body"></textarea>
+        </div>
+    </article>
+    <div>
+        <button form="create">등록</button>
+    </div>
+</main>
+</body>
+</html>
