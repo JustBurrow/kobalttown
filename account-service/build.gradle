@@ -1,0 +1,6 @@
+dependencies {
+  implementation project(':account-domain')
+  implementation project(':account-dao')
+
+  testCompile project(path: ':account-dao', configuration: 'testArchives')
+}

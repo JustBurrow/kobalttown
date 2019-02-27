@@ -1,0 +1,10 @@
+dependencies {
+  implementation project(':account-service')
+  implementation project(':account-converter')
+  implementation project(':account-dto')
+
+  compile 'org.springframework:spring-tx'
+
+  testCompile project(path: ':account-service', configuration: 'testArchives')
+  testCompile project(path: ':account-converter', configuration: 'testArchives')
+}

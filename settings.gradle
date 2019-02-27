@@ -1,1 +1,23 @@
 rootProject.name = 'parent'
+
+include 'common-util',
+    'common-test',
+    'common-api'
+
+include 'support-spring-jpa',
+    'support-spring-web',
+    'support-spring-security'
+
+include 'account-domain',
+    'account-jpa',
+    'account-dao',
+    'account-service',
+    'account-dto',
+    'account-converter',
+    'account-borderline',
+    'account-api',
+    'account-web'
+
+include 'web-account'
+
+include 'runner-standalone'
