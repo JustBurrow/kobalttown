@@ -49,6 +49,11 @@ gradle-app.setting
 *.iml
 .idea/
 
+# Eclipse
+.classpath
+.project
+
 # Application =========================================================================================================
-#config/
-#!config/sample-*
+config/
+!config/readme.md
+!config/sample-*

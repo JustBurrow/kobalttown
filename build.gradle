@@ -31,6 +31,8 @@ subprojects {
   }
 
   dependencies {
+    testCompile project(':common-test')
+
     testCompile 'org.springframework.boot:spring-boot-starter-test'
   }
 }

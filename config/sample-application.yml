@@ -1,0 +1,8 @@
+spring:
+  thymeleaf:
+    cache: false
+logging:
+  level:
+    root: warn
+    kr.lul.kobalttown: trace
+    kr.lul.kobalttown.runner: info

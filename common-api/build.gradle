@@ -1,3 +1,5 @@
 dependencies {
-  testCompile project(':common-test')
+  compile project(':common-util')
+
+  compile 'javax.validation:validation-api'
 }

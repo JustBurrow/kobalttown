@@ -1,0 +1,4 @@
+dependencies {
+  compile project(':support-spring-web')
+  compile project(':support-spring-security')
+}

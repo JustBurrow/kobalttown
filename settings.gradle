@@ -2,9 +2,11 @@ rootProject.name = 'parent'
 
 include 'common-util',
     'common-test',
+    'common-validation',
     'common-api'
 
-include 'support-spring-jpa',
+include 'support-spring-boot',
+    'support-spring-jpa',
     'support-spring-web',
     'support-spring-security'
 
@@ -18,6 +20,8 @@ include 'account-domain',
     'account-api',
     'account-web'
 
-include 'web-account'
+include 'root-web'
+
+include 'configuration-web'
 
 include 'runner-standalone'

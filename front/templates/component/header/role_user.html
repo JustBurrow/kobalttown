@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2019-03-03 13:48" th:remove="all"/>
+    <meta charset="UTF-8"/>
+    <title>header - ROLE_USER</title>
+</head>
+<body>
+<header th:fragment="header">
+    <nav>
+        <a href="index-user.html" th:href="@{/}">Kobalttown</a>
+        <form action="index-anonymous.html" method="post"
+              th:action="@{/logout}">
+            <button th:title="${#authentication.name}">로그아웃</button>
+        </form>
+    </nav>
+</header>
+<main>
+    <h1>header - ROLE_USER</h1>
+</main>
+</body>
+</html>

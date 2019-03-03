@@ -1,5 +1,4 @@
 dependencies {
   compile 'org.springframework.boot:spring-boot-starter-web'
-
-  testCompile project(':common-test')
+  compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
 }
