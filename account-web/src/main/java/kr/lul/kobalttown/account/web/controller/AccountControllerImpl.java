@@ -2,7 +2,12 @@ package kr.lul.kobalttown.account.web.controller;
 
 import kr.lul.kobalttown.account.api.AccountApis.Inputs;
 import kr.lul.kobalttown.account.api.CreateAccountInput;
+import kr.lul.kobalttown.account.borderline.AccountBorderline;
+import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
+import kr.lul.kobalttown.account.dto.SimpleAccountDto;
+import kr.lul.kobalttown.account.web.configuration.AccountView;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,17 +25,40 @@ import static org.slf4j.LoggerFactory.getLogger;
 class AccountControllerImpl implements AccountController {
   private static final Logger log = getLogger(AccountControllerImpl.class);
 
-  private String doCreateForm(CreateAccountInput input, Model model) {
+  @Autowired
+  private AccountBorderline accountBorderline;
+
+  private String doCreateForm(Model model) {
+    if (log.isTraceEnabled()) {
+      log.trace("args : model={}", model);
+    }
+
     if (!model.containsAttribute(Inputs.CREATE_ATTR)) {
       model.addAttribute(Inputs.CREATE_ATTR, new CreateAccountInput());
     }
 
-    return "page/accounts/create";
+    return AccountView.VIEW_CREATE;
   }
 
   private String doCreate(CreateAccountInput input, BindingResult result, Model model) {
+    if (log.isTraceEnabled()) {
+      log.trace("args : input={}, result={}, model={}", input, result, model);
+    }
 
-    return "redirect:/login";
+    CreateAccountCmd cmd = new CreateAccountCmd(input.getId(), input.getPassword());
+    try {
+      SimpleAccountDto account = this.accountBorderline.create(cmd);
+
+      if (log.isTraceEnabled()) {
+        log.trace("result : account={}, model={}", account, model);
+      }
+      return "redirect:/login";
+    } catch (Exception e) {
+      if (log.isInfoEnabled()) {
+        log.info("fail to create account : " + input, e);
+      }
+      return doCreateForm(model);
+    }
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +70,7 @@ class AccountControllerImpl implements AccountController {
       log.trace("args : model={}", model);
     }
 
-    String template = doCreateForm(new CreateAccountInput(), model);
+    String template = doCreateForm(model);
 
     if (log.isTraceEnabled()) {
       log.trace("result : template={}, model={}", template, model);
@@ -59,7 +87,7 @@ class AccountControllerImpl implements AccountController {
 
     String template;
     if (result.hasErrors()) {
-      template = doCreateForm(input, model);
+      template = doCreateForm(model);
     } else {
       template = doCreate(input, result, model);
     }

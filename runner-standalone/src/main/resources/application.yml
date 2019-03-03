@@ -1,15 +1,16 @@
 spring:
   thymeleaf:
-    cache: true
-    check-template: true
-    check-template-location: true
-    enabled: true
-    enable-spring-el-compiler: false
     encoding: UTF-8
     mode: HTML
     prefix: 'file:front/templates/'
-    render-hidden-markers-before-checkboxes: false
     suffix: '.html'
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    idle-timeout: 12000
+    connection-test-query: SELECT 1
+  jpa:
+    database: mysql
+    open-in-view: false
 logging:
   pattern:
     console: '%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} - %clr(%5p) %clr(---){faint} %clr([%15.15t]){faint} %clr(%logger#%M [L.%L]){cyan} %clr(:){faint} %m%n%wEx'

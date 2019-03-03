@@ -15,6 +15,9 @@
     <h1>회원가입</h1>
     <!--/*@thymesVar id="account" type="kr.lul.kobalttown.account.api.CreateAccountInput"*/-->
     <div th:object="${account}">
+        <ul th:if="${#fields.hasErrors()}">
+            <li th:each="err : ${#fields.errors()}" th:text="${err}">err</li>
+        </ul>
         <form id="signup" action="../_/login.html" method="post"
               th:action="@{/accounts}"></form>
         <div>
@@ -22,12 +25,18 @@
             <input id="id" form="signup" name="id" placeholder="input ID."
                    required="required"
                    th:field="*{id}"/>
+            <ul th:if="${#fields.hasErrors('id')}">
+                <li th:each="err : ${#fields.errors('id')}" th:text="${err}">err</li>
+            </ul>
         </div>
         <div>
             <label for="password">Password</label>
             <input type="password" id="password" form="signup" name="password" placeholder="input password."
                    required="required"
                    th:field="*{password}"/>
+            <ul th:if="${#fields.hasErrors('password')}">
+                <li th:each="err : ${#fields.errors('password')}" th:text="${err}">err</li>
+            </ul>
         </div>
         <div>
             <label for="confirm">Password confirm</label>

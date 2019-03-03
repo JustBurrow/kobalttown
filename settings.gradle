@@ -22,6 +22,9 @@ include 'account-domain',
 
 include 'root-web'
 
-include 'configuration-web'
+include 'configuration-bean', 
+    'configuration-security',
+    'configuration-jpa',
+    'configuration-web'
 
 include 'runner-standalone'

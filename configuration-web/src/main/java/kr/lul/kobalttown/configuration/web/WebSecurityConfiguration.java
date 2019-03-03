@@ -1,15 +1,15 @@
 package kr.lul.kobalttown.configuration.web;
 
+import kr.lul.kobalttown.configuration.security.ConfigurationSecurityConfiguration;
 import kr.lul.kobalttown.configuration.web.security.AccountDetailsService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -19,17 +19,15 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @since 2019-03-03
  */
 @Configuration
+@ComponentScan(basePackageClasses = {ConfigurationSecurityConfiguration.class})
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   private static final Logger log = getLogger(WebSecurityConfiguration.class);
 
   @Autowired
+  private PasswordEncoder passwordEncoder;
+  @Autowired
   private AccountDetailsService accountDetailsService;
-
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
@@ -50,6 +48,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(AuthenticationManagerBuilder builder) throws Exception {
     builder.userDetailsService(this.accountDetailsService)
-        .passwordEncoder(passwordEncoder());
+        .passwordEncoder(this.passwordEncoder);
   }
 }

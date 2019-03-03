@@ -1,7 +1,9 @@
 dependencies {
   implementation project(':account-api')
-  implementation project(':account-dto')
+  compile project(':account-borderline')
 
   compile project(':support-spring-web')
   compile project(':support-spring-security')
+
+  testCompile project(path: ':account-borderline', configuration: 'testArchives')
 }

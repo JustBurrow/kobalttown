@@ -281,6 +281,33 @@ public abstract class Arguments {
     }
   }
 
+  /**
+   * 대상의 클래스를 검사한다.
+   *
+   * @param target 검사 대상.
+   * @param clz    기대하는 클래스.
+   */
+  public static void typeOf(Object target, Class clz) {
+    typeOf(target, clz, null);
+  }
+
+  /**
+   * 대상의 클래스를 검사한다.
+   *
+   * @param target     검사 대상.
+   * @param clz        기대하는 클래스.
+   * @param targetName 검사 대상의 이름.
+   */
+  public static void typeOf(Object target, Class clz, String targetName) {
+    if (null == clz) {
+      throw new AssertionException("clz is null.");
+    } else if (null == target || target.getClass().equals(clz)) {
+      return;
+    }
+
+    throw new AssertionException(format("%s is not instance of %s", name(targetName), clz.getName()));
+  }
+
   private Arguments() {
     throw new UnsupportedOperationException();
   }

@@ -1,6 +1,6 @@
 dependencies {
   implementation project(':account-domain')
-  implementation project(':account-jpa')
+  compile project(':account-jpa')
 
-  testCompile project(path: ':account-jpa', configuration: 'testArchives')
+  compile project(':support-spring-boot')
 }

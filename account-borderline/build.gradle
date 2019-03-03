@@ -1,8 +1,9 @@
 dependencies {
+  implementation project(':account-domain')
   implementation project(':account-service')
-  implementation project(':account-converter')
-  implementation project(':account-dto')
+  compile project(':account-converter')
 
+  compile project(':support-spring-boot')
   compile 'org.springframework:spring-tx'
 
   testCompile project(path: ':account-service', configuration: 'testArchives')
