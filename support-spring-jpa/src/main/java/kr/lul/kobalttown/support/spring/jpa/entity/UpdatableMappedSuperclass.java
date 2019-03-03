@@ -27,6 +27,9 @@ public abstract class UpdatableMappedSuperclass implements Updatable {
   @Column(name = COL_UPDATED_AT, nullable = false)
   private Instant updatedAt;
 
+  protected UpdatableMappedSuperclass() { // JPA only
+  }
+
   protected UpdatableMappedSuperclass(Instant createdAt) {
     notNull(createdAt, "createdAt");
 

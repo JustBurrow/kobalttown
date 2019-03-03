@@ -7,10 +7,10 @@
 <body>
 <div th:fragment="header" th:remove="tag">
     <div sec:authorize="hasRole('ROLE_ANONYMOUS')" th:remove="tag">
-        <header th:replace="component/header/role_anonymous : header"></header>
+        <header th:replace="component/header/role_anonymous :: header"></header>
     </div>
     <div sec:authorize="hasRole('ROLE_USER')" th:remove="tag">
-        <header th:replace="component/header/role_user : header"></header>
+        <header th:replace="component/header/role_user :: header"></header>
     </div>
 </div>
 <h1>Header</h1>

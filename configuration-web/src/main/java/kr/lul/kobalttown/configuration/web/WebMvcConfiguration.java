@@ -1,12 +1,16 @@
 package kr.lul.kobalttown.configuration.web;
 
+import kr.lul.kobalttown.configuration.web.support.AccountDetailsHandlerMethodArgumentResolverImpl;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -38,6 +42,15 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     if (log.isTraceEnabled()) {
       log.trace("result : registry={}", registry);
+    }
+  }
+
+  @Override
+  public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+    resolvers.add(new AccountDetailsHandlerMethodArgumentResolverImpl());
+
+    if (log.isTraceEnabled()) {
+      log.trace("result : resolvers={}", resolvers);
     }
   }
 }

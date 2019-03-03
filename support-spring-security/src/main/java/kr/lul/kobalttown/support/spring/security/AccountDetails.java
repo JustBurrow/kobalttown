@@ -1,9 +1,11 @@
-package kr.lul.kobalttown.configuration.web.security;
+package kr.lul.kobalttown.support.spring.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.Collection;
+
+import static java.util.Arrays.asList;
 
 /**
  * @author justburrow
@@ -12,6 +14,10 @@ import java.util.Collection;
 public class AccountDetails extends User {
   private int id;
 
+  public AccountDetails(int id, String username, String password, GrantedAuthority... authorities) {
+    this(id, username, password, asList(authorities));
+  }
+
   public AccountDetails(int id, String username, String password,
       Collection<? extends GrantedAuthority> authorities) {
     super(username, password, authorities);
@@ -19,10 +25,20 @@ public class AccountDetails extends User {
   }
 
   public AccountDetails(int id, String username, String password, boolean enabled, boolean accountNonExpired,
+      boolean credentialsNonExpired, boolean accountNonLocked, GrantedAuthority... authorities) {
+    this(id, username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked,
+        asList(authorities));
+  }
+
+  public AccountDetails(int id, String username, String password, boolean enabled, boolean accountNonExpired,
       boolean credentialsNonExpired, boolean accountNonLocked,
       Collection<? extends GrantedAuthority> authorities) {
     super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
     this.id = id;
+  }
+
+  public int getId() {
+    return this.id;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

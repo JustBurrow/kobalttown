@@ -10,10 +10,9 @@
 <header th:fragment="header">
     <nav>
         <a href="index-user.html" th:href="@{/}">Kobalttown</a>
-        <form action="index-anonymous.html" method="post"
-              th:action="@{/logout}">
-            <button th:title="${#authentication.name}">로그아웃</button>
-        </form>
+        <form id="header-logout" action="index-anonymous.html" method="post"
+              th:action="@{/logout}"></form>
+        <button form="header-logout" th:title="${#authentication.name}">로그아웃</button>
     </nav>
 </header>
 <main>

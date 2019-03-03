@@ -20,6 +20,9 @@ public abstract class CreatableMappedSuperclass implements Creatable {
   @Column(name = COL_CREATED_AT, nullable = false, updatable = false)
   private Instant createdAt;
 
+  protected CreatableMappedSuperclass() { // JPA only
+  }
+
   protected CreatableMappedSuperclass(Instant createdAt) {
     notNull(createdAt, "createdAt");
     this.createdAt = createdAt;
