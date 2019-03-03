@@ -1,4 +1,5 @@
 dependencies {
+  implementation project(':account-web')
   implementation project(':root-web')
   implementation project(':configuration-web')
 }
