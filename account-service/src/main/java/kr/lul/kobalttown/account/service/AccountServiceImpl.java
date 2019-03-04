@@ -6,7 +6,7 @@ import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.jpa.entity.AccountEntity;
 import kr.lul.kobalttown.account.jpa.entity.CredentialEntity;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
-import kr.lul.kobalttown.common.util.SecretHashEncoder;
+import kr.lul.kobalttown.support.spring.security.SecretHashEncoder;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

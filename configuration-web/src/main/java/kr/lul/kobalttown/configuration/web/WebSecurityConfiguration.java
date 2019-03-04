@@ -1,13 +1,9 @@
 package kr.lul.kobalttown.configuration.web;
 
-import kr.lul.kobalttown.account.jpa.AccountJpaConfiguration;
-import kr.lul.kobalttown.account.jpa.repository.CredentialRepository;
 import kr.lul.kobalttown.configuration.security.ConfigurationSecurityConfiguration;
-import kr.lul.kobalttown.configuration.web.security.AccountDetailsServiceImpl;
 import kr.lul.kobalttown.support.spring.security.AccountDetailsService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,8 +19,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @since 2019-03-03
  */
 @Configuration
-@ComponentScan(basePackageClasses = {ConfigurationWebConfiguration.class, ConfigurationSecurityConfiguration.class,
-    AccountJpaConfiguration.class})
+@ComponentScan(basePackageClasses = {ConfigurationSecurityConfiguration.class})
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   private static final Logger log = getLogger(WebSecurityConfiguration.class);
@@ -32,12 +27,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Autowired
   private PasswordEncoder passwordEncoder;
   @Autowired
-  private CredentialRepository credentialRepository;
-
-  @Bean
-  public AccountDetailsService accountDetailsService() {
-    return new AccountDetailsServiceImpl(this.credentialRepository);
-  }
+  private AccountDetailsService accountDetailsService;
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
@@ -57,7 +47,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(AuthenticationManagerBuilder builder) throws Exception {
-    builder.userDetailsService(accountDetailsService())
+    builder.userDetailsService(this.accountDetailsService)
         .passwordEncoder(this.passwordEncoder);
   }
 }

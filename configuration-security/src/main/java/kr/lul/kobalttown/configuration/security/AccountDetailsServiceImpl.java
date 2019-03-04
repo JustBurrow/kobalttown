@@ -1,4 +1,4 @@
-package kr.lul.kobalttown.configuration.web.security;
+package kr.lul.kobalttown.configuration.security;
 
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.jpa.entity.CredentialEntity;

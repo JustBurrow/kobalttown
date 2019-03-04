@@ -1,11 +1,6 @@
 dependencies {
-  implementation project(':account-domain')
-  compile project(':account-jpa')
-
   compile project(':support-spring-web')
-  compile project(':support-spring-security')
-
-  implementation project(':configuration-security')
+  compile project(':configuration-security')
 
   compile 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 }

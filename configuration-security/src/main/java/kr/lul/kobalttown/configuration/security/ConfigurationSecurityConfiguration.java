@@ -1,7 +1,13 @@
 package kr.lul.kobalttown.configuration.security;
 
-import kr.lul.kobalttown.common.util.SecretHashEncoder;
+import kr.lul.kobalttown.account.jpa.AccountJpaConfiguration;
+import kr.lul.kobalttown.account.jpa.repository.CredentialRepository;
+import kr.lul.kobalttown.configuration.jpa.ConfigurationJpaConfiguration;
+import kr.lul.kobalttown.support.spring.security.AccountDetailsService;
+import kr.lul.kobalttown.support.spring.security.SecretHashEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,7 +17,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @since 2019-03-03
  */
 @Configuration
+@ComponentScan(basePackageClasses = {ConfigurationJpaConfiguration.class, AccountJpaConfiguration.class})
 public class ConfigurationSecurityConfiguration {
+  @Autowired
+  private CredentialRepository credentialRepository;
+
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
@@ -19,18 +29,11 @@ public class ConfigurationSecurityConfiguration {
 
   @Bean
   public SecretHashEncoder secretHashEncoder() {
-    return new SecretHashEncoder() {
-      private PasswordEncoder passwordEncoder = passwordEncoder();
+    return new SecretHashEncoder(passwordEncoder());
+  }
 
-      @Override
-      public String encode(CharSequence plain) {
-        return this.passwordEncoder.encode(plain);
-      }
-
-      @Override
-      public boolean matches(CharSequence plain, String hash) {
-        return this.passwordEncoder.matches(plain, hash);
-      }
-    };
+  @Bean
+  public AccountDetailsService accountDetailsService() {
+    return new AccountDetailsServiceImpl(this.credentialRepository);
   }
 }
