@@ -1,4 +1,7 @@
 spring:
+  pid:
+    fail-on-write-error: true
+    file: kobalttown.pid
   thymeleaf:
     encoding: UTF-8
     mode: HTML
@@ -17,3 +20,4 @@ logging:
     file: '%d{yyyy-MM-dd HH:mm:ss.SSS} --- %p --- [%t] %logger --- %m%n%wEx'
   level:
     root: warn
+    kr.lul.kobalttown.support.spring: info

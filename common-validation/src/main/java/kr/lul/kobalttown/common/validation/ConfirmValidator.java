@@ -10,7 +10,7 @@ import java.util.Objects;
  * @since 2019-02-28
  */
 public class ConfirmValidator implements ConstraintValidator<Confirm, Object> {
-  private Object getField(Object obj, String name) throws Exception {
+  private Object getFieldValue(Object obj, String name) throws Exception {
     Class<?> type = obj.getClass();
 
     Field field = type.getDeclaredField(name);
@@ -34,8 +34,8 @@ public class ConfirmValidator implements ConstraintValidator<Confirm, Object> {
     Confirm annotation = value.getClass().getAnnotation(Confirm.class);
 
     try {
-      Object target = getField(value, annotation.target());
-      Object confirm = getField(value, annotation.confirm());
+      Object target = getFieldValue(value, annotation.target());
+      Object confirm = getFieldValue(value, annotation.confirm());
 
       return Objects.equals(target, confirm);
     } catch (Exception e) {

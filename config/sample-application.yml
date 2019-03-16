@@ -11,4 +11,3 @@ logging:
     root: info
     org.hibernate.SQL: debug
     kr.lul.kobalttown: trace
-    kr.lul.kobalttown.runner.standalone.StandaloneRunner: info
