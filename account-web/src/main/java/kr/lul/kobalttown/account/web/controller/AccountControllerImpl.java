@@ -4,6 +4,7 @@ import kr.lul.kobalttown.account.api.AccountApis.Inputs;
 import kr.lul.kobalttown.account.api.CreateAccountInput;
 import kr.lul.kobalttown.account.borderline.AccountBorderline;
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
+import kr.lul.kobalttown.account.domain.UsedNicknameException;
 import kr.lul.kobalttown.account.dto.SimpleAccountDto;
 import kr.lul.kobalttown.account.web.configuration.AccountView;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.validation.Valid;
@@ -45,7 +47,7 @@ class AccountControllerImpl implements AccountController {
       log.trace("args : input={}, result={}, model={}", input, result, model);
     }
 
-    CreateAccountCmd cmd = new CreateAccountCmd(input.getId(), input.getPassword());
+    CreateAccountCmd cmd = new CreateAccountCmd(input.getNickname(), input.getPassword());
     try {
       SimpleAccountDto account = this.accountBorderline.create(cmd);
 
@@ -53,10 +55,14 @@ class AccountControllerImpl implements AccountController {
         log.trace("result : account={}, model={}", account, model);
       }
       return "redirect:/login";
-    } catch (Exception e) {
+    } catch (UsedNicknameException e) {
       if (log.isInfoEnabled()) {
         log.info("fail to create account : " + input, e);
       }
+
+      result.addError(new FieldError(Inputs.CREATE_ATTR, "nickname", input.getNickname(), false,
+          new String[]{"{err.account.create.used-nickname}"}, null, "used nickname."));
+
       return doCreateForm(model);
     }
   }
@@ -85,12 +91,9 @@ class AccountControllerImpl implements AccountController {
       log.trace("args : input={}, result={}, model={}", input, result, model);
     }
 
-    String template;
-    if (result.hasErrors()) {
-      template = doCreateForm(model);
-    } else {
-      template = doCreate(input, result, model);
-    }
+    final String template = result.hasErrors()
+        ? doCreateForm(model)
+        : doCreate(input, result, model);
 
     if (log.isTraceEnabled()) {
       log.trace("result : template={}, model={}", template, model);

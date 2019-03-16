@@ -3,6 +3,7 @@ package kr.lul.kobalttown.account.borderline;
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
 import kr.lul.kobalttown.account.converter.AccountConverter;
 import kr.lul.kobalttown.account.domain.Account;
+import kr.lul.kobalttown.account.domain.UsedNicknameException;
 import kr.lul.kobalttown.account.dto.SimpleAccountDto;
 import kr.lul.kobalttown.account.service.AccountService;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
@@ -38,7 +39,7 @@ class AccountBorderlineImpl implements AccountBorderline {
   // kr.lul.kobalttown.account.borderline.AccountBorderline
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
-  public SimpleAccountDto create(CreateAccountCmd cmd) {
+  public SimpleAccountDto create(CreateAccountCmd cmd) throws UsedNicknameException {
     if (log.isTraceEnabled()) {
       log.trace("args : cmd={}", cmd);
     }

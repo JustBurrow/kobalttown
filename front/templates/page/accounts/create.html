@@ -21,17 +21,17 @@
         <form id="signup" action="../_/login.html" method="post"
               th:action="@{/accounts}"></form>
         <div>
-            <label for="id">ID</label>
-            <input id="id" form="signup" name="id" placeholder="input ID."
+            <label for="nickname">ID</label>
+            <input id="nickname" form="signup" name="nickname" placeholder="Input nickname."
                    required="required"
-                   th:field="*{id}"/>
-            <ul th:if="${#fields.hasErrors('id')}">
-                <li th:each="err : ${#fields.errors('id')}" th:text="${err}">err</li>
+                   th:field="*{nickname}"/>
+            <ul th:if="${#fields.hasErrors('nickname')}">
+                <li th:each="err : ${#fields.errors('nickname')}" th:text="${err}">err</li>
             </ul>
         </div>
         <div>
             <label for="password">Password</label>
-            <input type="password" id="password" form="signup" name="password" placeholder="input password."
+            <input type="password" id="password" form="signup" name="password" placeholder="Input password."
                    required="required"
                    th:field="*{password}"/>
             <ul th:if="${#fields.hasErrors('password')}">
@@ -40,7 +40,7 @@
         </div>
         <div>
             <label for="confirm">Password confirm</label>
-            <input type="password" id="confirm" form="signup" name="confirm" placeholder="input password again."
+            <input type="password" id="confirm" form="signup" name="confirm" placeholder="Input password again."
                    required="required"
                    th:field="*{confirm}"/>
         </div>

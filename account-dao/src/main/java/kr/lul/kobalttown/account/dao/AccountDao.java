@@ -11,4 +11,6 @@ public interface AccountDao {
   Account create(Account account);
 
   Credential create(Credential credential);
+
+  boolean isUsedNickname(String nickname);
 }

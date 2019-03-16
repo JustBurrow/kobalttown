@@ -26,6 +26,7 @@ hs_err_pid*
 *.bak
 *.tmp
 *.swp
+*.pid
 !**/.gitlock
 
 # macOS

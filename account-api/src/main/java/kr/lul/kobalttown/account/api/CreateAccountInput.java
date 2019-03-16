@@ -13,22 +13,22 @@ import static kr.lul.kobalttown.common.util.Texts.singleQuote;
  */
 @Confirm(target = "password")
 public class CreateAccountInput {
-  @NotEmpty
-  private String id;
-  @NotEmpty
+  @NotEmpty(message = "{err.account.create.nickname-required}")
+  private String nickname;
+  @NotEmpty(message = "{err.account.create.password-required}")
   private String password;
-  @NotEmpty
+  @NotEmpty(message = "{err.account.create.confirm-required}")
   private String confirm;
 
   public CreateAccountInput() {
   }
 
-  public String getId() {
-    return this.id;
+  public String getNickname() {
+    return this.nickname;
   }
 
-  public void setId(String id) {
-    this.id = id;
+  public void setNickname(String nickname) {
+    this.nickname = nickname;
   }
 
   public String getPassword() {
@@ -53,7 +53,7 @@ public class CreateAccountInput {
   @Override
   public String toString() {
     return new StringJoiner(", ", CreateAccountInput.class.getSimpleName() + "[", "]")
-        .add("id=" + singleQuote(this.id))
+        .add("nickname=" + singleQuote(this.nickname))
         .add("password=[ PROTECTED ], confirm=[ PROTECTED ]")
         .toString();
   }

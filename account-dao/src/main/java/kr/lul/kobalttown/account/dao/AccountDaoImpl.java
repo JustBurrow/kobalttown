@@ -58,4 +58,18 @@ class AccountDaoImpl implements AccountDao {
     }
     return credential;
   }
+
+  @Override
+  public boolean isUsedNickname(String nickname) {
+    if (log.isTraceEnabled()) {
+      log.trace("args : nickname={}", nickname);
+    }
+
+    boolean exists = this.accountRepository.existsByNickname(nickname);
+
+    if (log.isTraceEnabled()) {
+      log.trace("return : {}", exists);
+    }
+    return exists;
+  }
 }

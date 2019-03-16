@@ -1,4 +1,5 @@
 dependencies {
+  implementation project(':account-domain')
   implementation project(':account-api')
   compile project(':account-borderline')
 

@@ -3,6 +3,7 @@ package kr.lul.kobalttown.account.service;
 import kr.lul.kobalttown.account.dao.AccountDao;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
+import kr.lul.kobalttown.account.domain.UsedNicknameException;
 import kr.lul.kobalttown.account.jpa.entity.AccountEntity;
 import kr.lul.kobalttown.account.jpa.entity.CredentialEntity;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
@@ -13,8 +14,10 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 
+import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static kr.lul.kobalttown.common.util.Arguments.notNull;
+import static kr.lul.kobalttown.common.util.Texts.singleQuote;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -52,11 +55,15 @@ class AccountServiceImpl implements AccountService {
   // kr.lul.kobalttown.account.service.AccountService
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
-  public Account create(CreateAccountParams params) {
+  public Account create(CreateAccountParams params) throws UsedNicknameException {
     if (log.isTraceEnabled()) {
       log.trace("args : params={}", params);
     }
     notNull(params, "params");
+
+    if (this.accountDao.isUsedNickname(params.getNickname())) {
+      throw new UsedNicknameException(format("nickname=%s", singleQuote(params.getNickname())));
+    }
 
     Account account = initAccount(params);
     account = this.accountDao.create(account);
