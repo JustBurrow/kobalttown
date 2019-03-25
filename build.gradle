@@ -17,6 +17,9 @@ buildscript {
 allprojects {
   group 'kr.lul.kobalttown'
   version '0.0.1.SNAPSHOT'
+
+  apply plugin: 'idea'
+  apply plugin: 'eclipse'
 }
 
 subprojects {
