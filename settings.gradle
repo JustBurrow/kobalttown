@@ -20,9 +20,12 @@ include 'account-domain',
     'account-api',
     'account-web'
 
+include 'article-domain',
+    'article-jpa'
+
 include 'root-web'
 
-include 'configuration-bean', 
+include 'configuration-bean',
     'configuration-security',
     'configuration-jpa',
     'configuration-web'

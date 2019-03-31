@@ -1,0 +1,5 @@
+dependencies {
+  compile project(':account-domain')
+
+  testCompile project(path: ':account-domain', configuration: 'testArchives')
+}
