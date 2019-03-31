@@ -1,0 +1,6 @@
+dependencies {
+  implementation project(':account-domain')
+  compile project(':account-jpa')
+
+  compile project(':support-spring-boot')
+}

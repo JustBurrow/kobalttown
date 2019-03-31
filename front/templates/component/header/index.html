@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Navbar</title>
+</head>
+<body>
+<div th:fragment="header" th:remove="tag">
+    <div sec:authorize="hasRole('ROLE_ANONYMOUS')" th:remove="tag">
+        <header th:replace="component/header/role_anonymous :: header"></header>
+    </div>
+    <div sec:authorize="hasRole('ROLE_USER')" th:remove="tag">
+        <header th:replace="component/header/role_user :: header"></header>
+    </div>
+</div>
+<h1>Header</h1>
+<section>
+    <h2><code>ROLE_ANONYMOUS</code></h2>
+    <iframe src="role_anonymous.html"></iframe>
+</section>
+<section>
+    <h2><code>ROLE_USER</code></h2>
+    <iframe src="role_user.html"></iframe>
+</section>
+</body>
+</html>

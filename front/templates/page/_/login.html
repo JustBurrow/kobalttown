@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>로그인</title>
+</head>
+<body>
+<header>
+    <nav>
+        <a href="index-anonymous.html" th:href="@{/}">Kobalttown</a>
+        <a href="../accounts/create.html" th:href="@{/signup}">가입</a>
+    </nav>
+</header>
+<main>
+    <h1>로그인</h1>
+    <form id="login" action="index-user.html" method="post"
+          th:action="@{/login}"></form>
+    <div>
+        <div>
+            <label for="username">Username</label>
+            <input id="username" form="login" name="username" placeholder="input id."/>
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" form="login" name="password" placeholder="input password."/>
+        </div>
+        <button form="login">로그인</button>
+    </div>
+</main>
+</body>
+</html>

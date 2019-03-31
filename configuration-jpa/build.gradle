@@ -1,0 +1,6 @@
+dependencies {
+  compile project(':support-spring-jpa')
+
+  compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+  compile 'mysql:mysql-connector-java'
+}

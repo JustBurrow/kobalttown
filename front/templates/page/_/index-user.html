@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Kobalttown 유저 인덱스(루트)</title>
+</head>
+<body>
+<header th:replace="component/header/role_user :: header">
+    <nav>
+        <a href="index-user.html">Kobalttown</a>
+        <form action="index-anonymous.html" method="post">
+            <button>로그아웃</button>
+        </form>
+    </nav>
+</header>
+<main>
+    <h1>Kobalttown 유저 인덱스(루트)</h1>
+    <div>
+        <form id="search" action="index-user.html" method="get"></form>
+        <input id="search-query" form="search"/>
+        <button form="search">검색</button>
+    </div>
+    <div>
+        <a href="index-user.html" th:href="@{/}">맨처음</a>
+        <ol start="10">
+            <li><a href="index-user.html?page=10">이전 블록</a></li>
+            <li><a href="index-user.html?page=11">11</a></li>
+            <li><a href="index-user.html?page=12">12</a></li>
+            <li><span>현재 페이지</span></li>
+            <li><a href="index-user.html?page=14">14</a></li>
+            <li><a href="index-user.html?page=15">15</a></li>
+            <li><a href="index-user.html?page=16">다음 블록</a></li>
+        </ol>
+        <a href="../articles/create.html">글 쓰기</a>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>TITLE</th>
+            <th>SUMMARY</th>
+            <th>작성일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><a href="../articles/detail.html">998</a></td>
+            <td>타이틀 타이틀 타이틀</td>
+            <td>앞문장 앞문장 앞문장 앞문장 앞문장</td>
+            <td>
+                <time datetime="2019-02-24T08:11:11.123">2019-02-24 08:11:11</time>
+            </td>
+        </tr>
+        <tr>
+            <td><a href="../articles/detail.html">997</a></td>
+            <td>타이틀 타이틀 타이틀</td>
+            <td>앞문장 앞문장 앞문장 앞문장 앞문장</td>
+            <td>
+                <time datetime="2019-02-24T08:11:11.123">2019-02-24 08:11:11</time>
+            </td>
+        </tr>
+        <tr>
+            <td><a href="../articles/detail.html">996</a></td>
+            <td>타이틀 타이틀 타이틀</td>
+            <td>앞문장 앞문장 앞문장 앞문장 앞문장</td>
+            <td>
+                <time datetime="2019-02-24T08:11:11.123">2019-02-24 08:11:11</time>
+            </td>
+        </tr>
+        <tr>
+            <td><a href="../articles/detail.html">995</a></td>
+            <td>타이틀 타이틀 타이틀</td>
+            <td>앞문장 앞문장 앞문장 앞문장 앞문장</td>
+            <td>
+                <time datetime="2019-02-24T08:11:11.123">2019-02-24 08:11:11</time>
+            </td>
+        </tr>
+        <tr>
+            <td><a href="../articles/detail.html">994</a></td>
+            <td>타이틀 타이틀 타이틀</td>
+            <td>앞문장 앞문장 앞문장 앞문장 앞문장</td>
+            <td>
+                <time datetime="2019-02-24T08:11:11.123">2019-02-24 08:11:11</time>
+            </td>
+        </tr>
+        <tr>
+            <td><a href="../articles/detail.html">993</a></td>
+            <td>타이틀 타이틀 타이틀</td>
+            <td>앞문장 앞문장 앞문장 앞문장 앞문장</td>
+            <td>
+                <time datetime="2019-02-24T08:11:11.123">2019-02-24 08:11:11</time>
+            </td>
+        </tr>
+        <tr>
+            <td><a href="../articles/detail.html">992</a></td>
+            <td>타이틀 타이틀 타이틀</td>
+            <td>앞문장 앞문장 앞문장 앞문장 앞문장</td>
+            <td>
+                <time datetime="2019-02-24T08:11:11.123">2019-02-24 08:11:11</time>
+            </td>
+        </tr>
+        <tr>
+            <td><a href="../articles/detail.html">991</a></td>
+            <td>타이틀 타이틀 타이틀</td>
+            <td>앞문장 앞문장 앞문장 앞문장 앞문장</td>
+            <td>
+                <time datetime="2019-02-24T08:11:11.123">2019-02-24 08:11:11</time>
+            </td>
+        </tr>
+        <tr>
+            <td><a href="../articles/detail.html">990</a></td>
+            <td>타이틀 타이틀 타이틀</td>
+            <td>앞문장 앞문장 앞문장 앞문장 앞문장</td>
+            <td>
+                <time datetime="2019-02-24T08:11:11.123">2019-02-24 08:11:11</time>
+            </td>
+        </tr>
+        <tr>
+            <td><a href="../articles/detail.html">989</a></td>
+            <td>타이틀 타이틀 타이틀</td>
+            <td>앞문장 앞문장 앞문장 앞문장 앞문장</td>
+            <td>
+                <time datetime="2019-02-24T08:11:11.123">2019-02-24 08:11:11</time>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div>
+        <a href="index-user.html" th:href="@{/}">맨처음</a>
+        <ol start="10">
+            <li><a href="index-user.html?page=10">이전 블록</a></li>
+            <li><a href="index-user.html?page=11">11</a></li>
+            <li><a href="index-user.html?page=12">12</a></li>
+            <li><span>현재 페이지</span></li>
+            <li><a href="index-user.html?page=14">14</a></li>
+            <li><a href="index-user.html?page=15">15</a></li>
+            <li><a href="index-user.html?page=16">다음 블록</a></li>
+        </ol>
+        <a href="../articles/create.html">글 쓰기</a>
+    </div>
+</main>
+</body>
+</html>

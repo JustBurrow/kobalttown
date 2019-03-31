@@ -1,0 +1,9 @@
+dependencies {
+  implementation project(':account-domain')
+  compile project(':account-dto')
+
+  compile project(':support-spring-boot')
+
+  testCompile project(path: ':account-domain', configuration: 'testArchives')
+  testCompile project(path: ':account-dto', configuration: 'testArchives')
+}

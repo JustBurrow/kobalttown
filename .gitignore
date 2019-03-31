@@ -26,6 +26,7 @@ hs_err_pid*
 *.bak
 *.tmp
 *.swp
+*.pid
 !**/.gitlock
 
 # macOS
@@ -49,6 +50,11 @@ gradle-app.setting
 *.iml
 .idea/
 
+# Eclipse
+.classpath
+.project
+
 # Application =========================================================================================================
 config/
+!config/readme.md
 !config/sample-*

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Kobalttown 익명 인덱스(루트)</title>
+</head>
+<body>
+<header th:replace="component/header/role_anonymous :: header">
+    <nav>
+        <a href="index-anonymous.html" th:href="@{/}">Kobalttown</a>
+        <a href="../accounts/create.html" th:href="@{/signup}">가입</a>
+        <a href="login.html" th:href="@{/login}">로그인</a>
+    </nav>
+</header>
+<main>
+    <h1>Kobalttown 익명 인덱스(루트)</h1>
+    <p>익명 게시판이니까 로그인 하기 전에는 아무것도 보여주지 않는다.</p>
+    <div><a href="../accounts/create.html" th:href="@{/signup}">가입</a></div>
+    <div><a href="login.html" th:href="@{/login}">로그인</a></div>
+</main>
+</body>
+</html>

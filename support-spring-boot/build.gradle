@@ -1,0 +1,5 @@
+dependencies {
+  implementation project(':common-util')
+  
+  compile 'org.springframework.boot:spring-boot-starter'
+}

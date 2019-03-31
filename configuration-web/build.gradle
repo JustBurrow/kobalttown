@@ -1,0 +1,6 @@
+dependencies {
+  compile project(':support-spring-web')
+  compile project(':configuration-security')
+
+  compile 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+}

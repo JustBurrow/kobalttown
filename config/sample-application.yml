@@ -1,0 +1,13 @@
+spring:
+  thymeleaf:
+    cache: false
+  datasource:
+    jdbc-url: jdbc:mysql://localhost/kobalttown?connectionCollation=utf8mb4_bin&allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: ''
+    maximum-pool-size: 1
+logging:
+  level:
+    root: info
+    org.hibernate.SQL: debug
+    kr.lul.kobalttown: trace
