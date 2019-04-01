@@ -1,0 +1,48 @@
+package kr.lul.kobalttown.article.jpa.repository;
+
+import kr.lul.kobalttown.article.jpa.ArticleJpaTestConfiguration;
+import kr.lul.kobalttown.article.jpa.entity.ArticleEntity;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.slf4j.LoggerFactory.getLogger;
+
+/**
+ * @author justburrow
+ * @since 2019-04-01
+ */
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = ArticleJpaTestConfiguration.class)
+@DataJpaTest
+public class ArticleRepositoryTest {
+  private static final Logger log = getLogger(ArticleRepositoryTest.class);
+
+  @Autowired
+  private ArticleRepository articleRepository;
+
+  @Before
+  public void setUp() throws Exception {
+    assertThat(this.articleRepository).isNotNull();
+  }
+
+  @Test
+  public void test_findAll() throws Exception {
+    // When
+    List<ArticleEntity> list = this.articleRepository.findAll();
+    log.info("WHEN - list={}", list);
+
+    // Then
+    assertThat(list)
+        .isNotNull()
+        .isEmpty();
+  }
+}

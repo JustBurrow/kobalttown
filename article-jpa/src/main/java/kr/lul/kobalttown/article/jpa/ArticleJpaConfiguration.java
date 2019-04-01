@@ -1,5 +1,7 @@
 package kr.lul.kobalttown.article.jpa;
 
+import kr.lul.kobalttown.account.jpa.AccountJpaConfiguration;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -7,5 +9,6 @@ import org.springframework.context.annotation.Configuration;
  * @since 2019-03-31
  */
 @Configuration
+@ComponentScan(basePackageClasses = {AccountJpaConfiguration.class})
 public class ArticleJpaConfiguration {
 }

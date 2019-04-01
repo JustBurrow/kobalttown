@@ -23,20 +23,21 @@ import static kr.lul.kobalttown.common.util.Texts.singleQuote;
  */
 @Entity(name = E.NAME)
 @Table(name = T.NAME,
-    indexes = @Index(name = T.FK_ARTICLE_PK_ACCOUNT, columnList = T.FK_ARTICLE_PK_ACCOUNT_COLUMNS))
+    indexes = @Index(name = T.FK_ARTICLE_CREATOR_PK_ACCOUNT, columnList = T.FK_ARTICLE_CREATOR_PK_ACCOUNT_COLUMNS))
 public class ArticleEntity extends CreatableMappedSuperclass implements Article {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = T.COL_ID, nullable = false, insertable = false, updatable = false)
   private long id;
-  @Column
+  @Column(name = T.COL_TITLE, nullable = false, updatable = false)
   private String title;
-  @Column
+  @Column(name = T.COL_SUMMARY, nullable = false, updatable = false)
   private String summary;
-  @Column
+  @Column(name = T.COL_BODY, nullable = false, updatable = false)
   private String body;
   @ManyToOne(targetEntity = AccountEntity.class)
-  @JoinColumn(referencedColumnName = AccountMapping.T.COL_ID)
+  @JoinColumn(name = T.COL_CREATOR, nullable = false, updatable = false,
+      foreignKey = @ForeignKey(name = T.FK_ARTICLE_CREATOR_PK_ACCOUNT), referencedColumnName = AccountMapping.T.COL_ID)
   private Account creator;
 
   private ArticleEntity() { // JPA only

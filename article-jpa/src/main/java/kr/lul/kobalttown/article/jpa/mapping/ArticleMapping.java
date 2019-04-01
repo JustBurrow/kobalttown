@@ -32,8 +32,8 @@ public final class ArticleMapping {
     public static final String COL_CREATOR = E.ATTR_CREATOR;
     public static final String COL_CREATED_AT = CreatableMappedSuperclass.COL_CREATED_AT;
 
-    public static final String FK_ARTICLE_PK_ACCOUNT = "FK_ARTICLE_PK_ACCOUNT";
-    public static final String FK_ARTICLE_PK_ACCOUNT_COLUMNS = COL_CREATOR + " ASC";
+    public static final String FK_ARTICLE_CREATOR_PK_ACCOUNT = "FK_ARTICLE_CREATOR_PK_ACCOUNT";
+    public static final String FK_ARTICLE_CREATOR_PK_ACCOUNT_COLUMNS = COL_CREATOR + " ASC";
 
     public T() {
       throw new UnsupportedOperationException();
