@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
 buildscript {
   repositories {
     mavenCentral()
@@ -35,13 +37,20 @@ subprojects {
     mavenCentral()
     jcenter()
   }
+  
+  dependencyManagement {
+    imports {
+      mavenBom SpringBootPlugin.BOM_COORDINATES
+    }
+  }
 
   dependencies {
     testCompile project(':common-test')
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'org.apache.commons:commons-lang3'
   }
-  
+
   bootJar.enabled = false
   jar.enabled = true
 }
