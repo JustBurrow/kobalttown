@@ -4,5 +4,6 @@ dependencies {
 
   testCompile project(path: ':account-domain', configuration: 'testArchives')
   testCompile project(':configuration-jpa')
+  testCompile 'org.springframework.security:spring-security-core'
   testCompile 'com.h2database:h2'
 }
