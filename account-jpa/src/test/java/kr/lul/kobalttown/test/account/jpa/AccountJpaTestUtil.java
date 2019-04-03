@@ -5,6 +5,7 @@ import kr.lul.kobalttown.account.jpa.entity.CredentialEntity;
 import kr.lul.kobalttown.account.jpa.repository.AccountRepository;
 import kr.lul.kobalttown.account.jpa.repository.CredentialRepository;
 import kr.lul.kobalttown.common.util.TimeProvider;
+import kr.lul.kobalttown.test.account.domain.AccountDomainTestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -13,14 +14,13 @@ import java.time.Instant;
 
 import static java.lang.String.format;
 import static kr.lul.kobalttown.common.util.Arguments.*;
-import static kr.lul.kobalttown.test.account.domain.AccountUtils.nickname;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author justburrow
  * @since 2019-04-02
  */
-public class AccountJpaTestUtil {
+public class AccountJpaTestUtil extends AccountDomainTestUtil {
   public static final String DEFAULT_PASSWORD = "TZ90iMwwKsbi5aacSn18DKWrsdOFNW4XHv7gSMbl9NAuX4Y1cp";
 
   @Autowired
