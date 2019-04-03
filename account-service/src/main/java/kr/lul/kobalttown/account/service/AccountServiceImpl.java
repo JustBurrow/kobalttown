@@ -41,13 +41,10 @@ class AccountServiceImpl implements AccountService {
     }
   }
 
-  private Account initAccount(CreateAccountParams params) {
-    return new AccountEntity(params.getTimestampMillis(), params.getNickname());
-  }
-
   private Credential initCredential(Account account, CreateAccountParams params) {
     return new CredentialEntity(account,
-        params.getNickname(), this.secretHashEncoder.encode(new String(params.getPassword(), UTF_8)),
+        params.getNickname(),
+        this.secretHashEncoder.encode(new String(params.getPassword(), UTF_8)),
         params.getTimestampMillis());
   }
 
@@ -65,7 +62,7 @@ class AccountServiceImpl implements AccountService {
       throw new UsedNicknameException(format("nickname=%s", singleQuote(params.getNickname())));
     }
 
-    Account account = initAccount(params);
+    Account account = new AccountEntity(params.getNickname(), params.getTimestampMillis());
     account = this.accountDao.create(account);
 
     Credential credential = initCredential(account, params);

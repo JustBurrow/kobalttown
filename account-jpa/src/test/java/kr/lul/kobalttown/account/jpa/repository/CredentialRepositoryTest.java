@@ -4,8 +4,7 @@ import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.jpa.AccountJpaTestConfiguration;
 import kr.lul.kobalttown.account.jpa.entity.AccountEntity;
 import kr.lul.kobalttown.account.jpa.entity.CredentialEntity;
-import kr.lul.kobalttown.test.account.jpa.AccountEntityUtil;
-import kr.lul.kobalttown.test.account.jpa.CredentialEntityUtil;
+import kr.lul.kobalttown.test.account.jpa.AccountJpaTestUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,17 +34,14 @@ public class CredentialRepositoryTest {
   @Autowired
   private CredentialRepository credentialRepository;
   @Autowired
-  private CredentialEntityUtil credentialEntityUtil;
-  @Autowired
-  private AccountEntityUtil accountEntityUtil;
+  private AccountJpaTestUtil accountJpaTestUtil;
   @Autowired
   private AccountRepository accountRepository;
 
   @Before
   public void setUp() throws Exception {
     assertThat(this.credentialRepository).isNotNull();
-    assertThat(this.credentialEntityUtil).isNotNull();
-    assertThat(this.accountEntityUtil).isNotNull();
+    assertThat(this.accountJpaTestUtil).isNotNull();
     assertThat(this.accountRepository).isNotNull();
   }
 
@@ -70,8 +66,8 @@ public class CredentialRepositoryTest {
   @Test
   public void test_save() throws Exception {
     // Given
-    AccountEntity account = this.accountRepository.save(this.accountEntityUtil.freshAccount());
-    CredentialEntity credential = this.credentialEntityUtil.freshCredential(account);
+    AccountEntity account = this.accountRepository.save(this.accountJpaTestUtil.prePersistAccount());
+    CredentialEntity credential = this.accountJpaTestUtil.prePersistCredential(account);
     log.info("GIVEN - credential={}", credential);
     long id = credential.getId();
     String publicKey = credential.getPublicKey();

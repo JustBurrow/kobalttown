@@ -3,7 +3,7 @@ package kr.lul.kobalttown.account.jpa.repository;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.jpa.AccountJpaTestConfiguration;
 import kr.lul.kobalttown.account.jpa.entity.AccountEntity;
-import kr.lul.kobalttown.test.account.jpa.AccountEntityUtil;
+import kr.lul.kobalttown.test.account.jpa.AccountJpaTestUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +33,7 @@ public class AccountRepositoryTest {
   @Autowired
   private AccountRepository accountRepository;
   @Autowired
-  private AccountEntityUtil accountEntityUtil;
+  private AccountJpaTestUtil accountJpaTestUtil;
 
   @Before
   public void setUp() throws Exception {
@@ -61,7 +61,7 @@ public class AccountRepositoryTest {
   @Test
   public void test_save() throws Exception {
     // Given
-    AccountEntity account = this.accountEntityUtil.freshAccount();
+    AccountEntity account = this.accountJpaTestUtil.prePersistAccount();
     String nickname = account.getNickname();
     Instant createdAt = account.getCreatedAt();
     log.info("GIVEN - account={}", account);

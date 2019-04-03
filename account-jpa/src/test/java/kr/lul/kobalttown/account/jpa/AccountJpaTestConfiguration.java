@@ -3,8 +3,7 @@ package kr.lul.kobalttown.account.jpa;
 import kr.lul.kobalttown.common.util.SystemTimeProvider;
 import kr.lul.kobalttown.common.util.TimeProvider;
 import kr.lul.kobalttown.configuration.jpa.ConfigurationJpaConfiguration;
-import kr.lul.kobalttown.test.account.jpa.AccountEntityUtil;
-import kr.lul.kobalttown.test.account.jpa.CredentialEntityUtil;
+import kr.lul.kobalttown.test.account.jpa.AccountJpaTestUtil;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,12 +27,7 @@ public class AccountJpaTestConfiguration {
   }
 
   @Bean
-  public AccountEntityUtil accountEntityUtil() {
-    return new AccountEntityUtil();
-  }
-
-  @Bean
-  public CredentialEntityUtil credentialEntityUtil() {
-    return new CredentialEntityUtil();
+  public AccountJpaTestUtil accountEntityUtil() {
+    return new AccountJpaTestUtil();
   }
 }
