@@ -13,8 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @author justburrow
  * @since 2019-04-01
  */
-@SpringBootApplication(scanBasePackageClasses = {ConfigurationJpaConfiguration.class,
-    AccountJpaConfiguration.class})
+@SpringBootApplication(scanBasePackageClasses = {ConfigurationJpaConfiguration.class, AccountJpaConfiguration.class})
 public class AccountJpaTestConfiguration {
   @Bean
   public TimeProvider timeProvider() {

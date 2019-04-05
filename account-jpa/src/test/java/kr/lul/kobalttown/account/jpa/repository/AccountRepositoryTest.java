@@ -38,6 +38,7 @@ public class AccountRepositoryTest {
   @Before
   public void setUp() throws Exception {
     assertThat(this.accountRepository).isNotNull();
+    assertThat(this.accountJpaTestUtil).isNotNull();
   }
 
   @Test

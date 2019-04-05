@@ -3,7 +3,8 @@ dependencies {
   compile project(':account-jpa')
   compile project(':support-spring-jpa')
 
-  testCompile project(path: ':account-domain', configuration: 'testArchives')
+  testImplementation project(path: ':article-domain', configuration: 'testArchives')
+  testImplementation project(path: ':account-jpa', configuration: 'testArchives')
   testCompile project(':configuration-jpa')
   testCompile 'com.h2database:h2'
 }
