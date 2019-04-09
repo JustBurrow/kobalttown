@@ -19,6 +19,7 @@ import java.time.Instant;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -88,5 +89,11 @@ public class ArticleRepositoryTest {
         .isGreaterThan(0L);
     assertThat(article.getCreatedAt())
         .isAfter(this.before);
+  }
+
+  @Test
+  public void test_save_with_null() throws Exception {
+    assertThatThrownBy(() -> this.articleRepository.save(null))
+        .isNotNull();
   }
 }

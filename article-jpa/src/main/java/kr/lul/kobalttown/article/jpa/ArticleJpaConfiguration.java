@@ -9,6 +9,6 @@ import org.springframework.context.annotation.Configuration;
  * @since 2019-03-31
  */
 @Configuration
-@ComponentScan(basePackageClasses = {AccountJpaConfiguration.class})
+@ComponentScan(basePackageClasses = AccountJpaConfiguration.class)
 public class ArticleJpaConfiguration {
 }

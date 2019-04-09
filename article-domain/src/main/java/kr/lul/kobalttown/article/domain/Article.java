@@ -13,6 +13,7 @@ import static java.lang.String.format;
 public interface Article extends Creatable {
   int TITLE_MAX_LENGTH = 20;
   int SUMMARY_MAX_LENGTH = 64;
+  int BODY_MAX_LENGTH = 65_535;
 
   /**
    * 문자열이 제목으로 사용할 수 있는지 확인한다.

@@ -35,7 +35,8 @@ public class ArticleEntity extends CreatableMappedSuperclass implements Article 
   @Column(name = T.COL_SUMMARY, length = SUMMARY_MAX_LENGTH,
       nullable = false, updatable = false)
   private String summary;
-  @Column(name = T.COL_BODY, nullable = false, updatable = false)
+  @Column(name = T.COL_BODY, length = BODY_MAX_LENGTH,
+      nullable = false, updatable = false)
   private String body;
   @ManyToOne(targetEntity = AccountEntity.class)
   @JoinColumn(name = T.COL_CREATOR,
