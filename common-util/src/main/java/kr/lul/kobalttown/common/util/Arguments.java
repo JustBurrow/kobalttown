@@ -165,6 +165,60 @@ public abstract class Arguments {
   }
 
   /**
+   * 대상이 0 보다 크면 실패.
+   *
+   * @param target 대상.
+   *
+   * @throws AssertionException 대상이 0보다 클 때.
+   */
+  public static void notPositive(int target) throws AssertionException {
+    if (0 < target) {
+      throw new AssertionException(format("%s is positive : %d", DEFAULT_TARGET_NAME, target));
+    }
+  }
+
+  /**
+   * 대상이 0 보다 크면 실패.
+   *
+   * @param target     대상.
+   * @param targetName 대상의 이름.
+   *
+   * @throws AssertionException 대상이 0보다 클 때.
+   */
+  public static void notPositive(int target, String targetName) throws AssertionException {
+    if (0 < target) {
+      throw new AssertionException(format("%s is positive : %d", name(targetName), target));
+    }
+  }
+
+  /**
+   * 대상이 0 보다 크면 실패.
+   *
+   * @param target 대상.
+   *
+   * @throws AssertionException 대상이 0보다 클 때.
+   */
+  public static void notPositive(long target) throws AssertionException {
+    if (0 < target) {
+      throw new AssertionException(format("%s is positive : %d", DEFAULT_TARGET_NAME, target));
+    }
+  }
+
+  /**
+   * 대상이 0 보다 크면 실패.
+   *
+   * @param target     대상.
+   * @param targetName 대상의 이름.
+   *
+   * @throws AssertionException 대상이 0보다 클 때.
+   */
+  public static void notPositive(long target, String targetName) throws AssertionException {
+    if (0 < target) {
+      throw new AssertionException(format("%s is positive : %d", name(targetName), target));
+    }
+  }
+
+  /**
    * 단정 대상이 {@code null} 이거나 빈 문자열이면 실패.
    *
    * @param target 단정 대상.

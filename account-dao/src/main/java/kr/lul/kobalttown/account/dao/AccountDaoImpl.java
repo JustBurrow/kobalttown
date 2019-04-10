@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static kr.lul.kobalttown.common.util.Arguments.typeOf;
+import static kr.lul.kobalttown.common.util.Arguments.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -34,6 +34,8 @@ class AccountDaoImpl implements AccountDao {
     if (log.isTraceEnabled()) {
       log.trace("args : account={}", account);
     }
+    notNull(account, "account");
+    notPositive(account.getId(), "account.id");
     typeOf(account, AccountEntity.class, "account");
 
     account = this.accountRepository.saveAndFlush((AccountEntity) account);
@@ -49,6 +51,7 @@ class AccountDaoImpl implements AccountDao {
     if (log.isTraceEnabled()) {
       log.trace("args : credential={}", credential);
     }
+    notNull(credential, "credential");
     typeOf(credential, CredentialEntity.class, "credential");
 
     credential = this.credentialRepository.saveAndFlush((CredentialEntity) credential);
@@ -64,6 +67,7 @@ class AccountDaoImpl implements AccountDao {
     if (log.isTraceEnabled()) {
       log.trace("args : nickname={}", nickname);
     }
+    notEmpty(nickname, "nickname");
 
     boolean exists = this.accountRepository.existsByNickname(nickname);
 

@@ -28,7 +28,7 @@ public class AccountJpaTestUtil extends AccountDomainTestUtil {
   @Autowired
   private CredentialRepository credentialRepository;
   @Autowired
-  private TimeProvider timeProvider;
+  protected TimeProvider timeProvider;
   @Autowired
   private PasswordEncoder passwordEncoder;
 
@@ -36,7 +36,9 @@ public class AccountJpaTestUtil extends AccountDomainTestUtil {
   @PostConstruct
   private void postConstruct() {
     assertThat(this.accountRepository).isNotNull();
+    assertThat(this.credentialRepository).isNotNull();
     assertThat(this.timeProvider).isNotNull();
+    assertThat(this.passwordEncoder).isNotNull();
   }
 
   /**
