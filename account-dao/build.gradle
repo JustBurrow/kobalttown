@@ -1,9 +1,7 @@
 dependencies {
   implementation project(':account-domain')
   implementation project(':account-jpa')
-
-  implementation project(':support-spring-boot')
-
+  
   testImplementation project(path: ':account-jpa', configuration: 'testArchives')
   testImplementation project(':configuration-jpa')
   testImplementation 'mysql:mysql-connector-java'

@@ -1,0 +1,7 @@
+dependencies {
+  implementation project(':article-jpa')
+
+  testImplementation project(path: ':article-jpa', configuration: 'testArchives')
+  testImplementation project(':configuration-jpa')
+  testImplementation 'mysql:mysql-connector-java'
+}
