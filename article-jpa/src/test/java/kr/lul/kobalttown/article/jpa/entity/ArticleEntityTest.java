@@ -4,8 +4,6 @@ import kr.lul.kobalttown.account.jpa.entity.AccountEntity;
 import kr.lul.kobalttown.article.jpa.ArticleJpaTestConfiguration;
 import kr.lul.kobalttown.common.util.AssertionException;
 import kr.lul.kobalttown.common.util.TimeProvider;
-import kr.lul.kobalttown.test.account.jpa.AccountJpaTestUtil;
-import kr.lul.kobalttown.test.article.jpa.ArticleJpaTestUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,14 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import test.kr.lul.kobalttown.account.jpa.AccountJpaTestUtil;
+import test.kr.lul.kobalttown.article.jpa.ArticleJpaTestUtil;
 
 import java.time.Instant;
 
-import static kr.lul.kobalttown.test.article.domain.ArticleDomainTestUtil.title;
-import static kr.lul.kobalttown.test.article.jpa.ArticleJpaTestUtil.body;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.slf4j.LoggerFactory.getLogger;
+import static test.kr.lul.kobalttown.article.domain.ArticleDomainTestUtil.title;
+import static test.kr.lul.kobalttown.article.jpa.ArticleJpaTestUtil.body;
 
 /**
  * @author justburrow

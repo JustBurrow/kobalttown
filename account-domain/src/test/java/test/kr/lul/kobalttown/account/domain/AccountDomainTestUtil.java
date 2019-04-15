@@ -1,4 +1,4 @@
-package kr.lul.kobalttown.test.account.domain;
+package test.kr.lul.kobalttown.account.domain;
 
 import org.apache.commons.lang3.RandomStringUtils;
 

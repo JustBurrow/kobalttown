@@ -1,4 +1,4 @@
-package kr.lul.kobalttown.test.article.domain;
+package test.kr.lul.kobalttown.article.domain;
 
 import org.junit.Before;
 import org.junit.Test;

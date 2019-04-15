@@ -1,12 +1,12 @@
-package kr.lul.kobalttown.test.account.dao;
+package test.kr.lul.kobalttown.account.dao;
 
 import kr.lul.kobalttown.account.dao.AccountDao;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.jpa.entity.AccountEntity;
-import kr.lul.kobalttown.test.account.jpa.AccountJpaTestUtil;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import test.kr.lul.kobalttown.account.jpa.AccountJpaTestUtil;
 
 import javax.annotation.PostConstruct;
 

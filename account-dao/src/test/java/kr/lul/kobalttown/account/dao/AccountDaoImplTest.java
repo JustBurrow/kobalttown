@@ -7,7 +7,6 @@ import kr.lul.kobalttown.account.jpa.entity.CredentialEntity;
 import kr.lul.kobalttown.account.jpa.repository.AccountRepository;
 import kr.lul.kobalttown.common.util.AssertionException;
 import kr.lul.kobalttown.common.util.TimeProvider;
-import kr.lul.kobalttown.test.account.dao.AccountDaoTestUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,13 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import test.kr.lul.kobalttown.account.dao.AccountDaoTestUtil;
 
 import java.time.Instant;
 
-import static kr.lul.kobalttown.test.account.domain.AccountDomainTestUtil.nickname;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.slf4j.LoggerFactory.getLogger;
+import static test.kr.lul.kobalttown.account.domain.AccountDomainTestUtil.nickname;
 
 /**
  * @author justburrow

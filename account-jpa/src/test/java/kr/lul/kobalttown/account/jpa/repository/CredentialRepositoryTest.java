@@ -4,7 +4,6 @@ import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.jpa.AccountJpaTestConfiguration;
 import kr.lul.kobalttown.account.jpa.entity.AccountEntity;
 import kr.lul.kobalttown.account.jpa.entity.CredentialEntity;
-import kr.lul.kobalttown.test.account.jpa.AccountJpaTestUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import test.kr.lul.kobalttown.account.jpa.AccountJpaTestUtil;
 
 import java.time.Instant;
 import java.util.List;

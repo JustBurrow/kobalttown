@@ -1,4 +1,4 @@
-package kr.lul.kobalttown.test.account.jpa;
+package test.kr.lul.kobalttown.account.jpa;
 
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
@@ -22,7 +22,6 @@ import java.time.Instant;
 import static java.lang.Thread.sleep;
 import static kr.lul.kobalttown.account.domain.Account.NICKNAME_REGEX;
 import static kr.lul.kobalttown.account.domain.Account.validateNickname;
-import static kr.lul.kobalttown.test.account.jpa.AccountJpaTestUtil.DEFAULT_PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -147,7 +146,7 @@ public class AccountJpaTestUtilTest {
         .containsSequence(account, account.getNickname());
     assertThat(credential.getId())
         .isLessThanOrEqualTo(0L);
-    assertThat(this.passwordEncoder.matches(DEFAULT_PASSWORD, credential.getSecretHash()))
+    assertThat(this.passwordEncoder.matches(AccountJpaTestUtil.DEFAULT_PASSWORD, credential.getSecretHash()))
         .isTrue();
     assertThat(credential.getCreatedAt())
         .isAfter(this.before);
@@ -167,7 +166,7 @@ public class AccountJpaTestUtilTest {
         .isGreaterThan(0L);
     assertThat(credential.getPublicKey())
         .isEqualTo(account.getNickname());
-    assertThat(this.passwordEncoder.matches(DEFAULT_PASSWORD, credential.getSecretHash()))
+    assertThat(this.passwordEncoder.matches(AccountJpaTestUtil.DEFAULT_PASSWORD, credential.getSecretHash()))
         .isTrue();
     assertThat(credential.getCreatedAt())
         .isAfter(this.before)

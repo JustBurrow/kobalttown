@@ -1,4 +1,4 @@
-package kr.lul.kobalttown.test.account.dao;
+package test.kr.lul.kobalttown.account.dao;
 
 import kr.lul.kobalttown.account.dao.AccountDaoTestConfiguration;
 import kr.lul.kobalttown.account.domain.Account;

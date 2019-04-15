@@ -1,13 +1,13 @@
-package kr.lul.kobalttown.test.account.jpa;
+package test.kr.lul.kobalttown.account.jpa;
 
 import kr.lul.kobalttown.account.jpa.entity.AccountEntity;
 import kr.lul.kobalttown.account.jpa.entity.CredentialEntity;
 import kr.lul.kobalttown.account.jpa.repository.AccountRepository;
 import kr.lul.kobalttown.account.jpa.repository.CredentialRepository;
 import kr.lul.kobalttown.common.util.TimeProvider;
-import kr.lul.kobalttown.test.account.domain.AccountDomainTestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import test.kr.lul.kobalttown.account.domain.AccountDomainTestUtil;
 
 import javax.annotation.PostConstruct;
 import java.time.Instant;

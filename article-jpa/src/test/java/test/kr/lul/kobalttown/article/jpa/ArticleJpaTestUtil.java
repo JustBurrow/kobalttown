@@ -1,12 +1,12 @@
-package kr.lul.kobalttown.test.article.jpa;
+package test.kr.lul.kobalttown.article.jpa;
 
 import kr.lul.kobalttown.account.jpa.entity.AccountEntity;
 import kr.lul.kobalttown.article.jpa.entity.ArticleEntity;
 import kr.lul.kobalttown.common.util.TimeProvider;
-import kr.lul.kobalttown.test.account.jpa.AccountJpaTestUtil;
-import kr.lul.kobalttown.test.article.domain.ArticleDomainTestUtil;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import test.kr.lul.kobalttown.account.jpa.AccountJpaTestUtil;
+import test.kr.lul.kobalttown.article.domain.ArticleDomainTestUtil;
 
 import java.time.Instant;
 
