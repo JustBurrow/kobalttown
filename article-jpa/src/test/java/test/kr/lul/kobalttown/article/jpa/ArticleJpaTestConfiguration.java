@@ -1,6 +1,6 @@
-package kr.lul.kobalttown.article.jpa;
+package test.kr.lul.kobalttown.article.jpa;
 
-import kr.lul.kobalttown.account.jpa.AccountJpaConfiguration;
+import kr.lul.kobalttown.article.jpa.ArticleJpaConfiguration;
 import kr.lul.kobalttown.common.util.SystemTimeProvider;
 import kr.lul.kobalttown.common.util.TimeProvider;
 import kr.lul.kobalttown.configuration.jpa.ConfigurationJpaConfiguration;
@@ -11,17 +11,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import test.kr.lul.kobalttown.account.jpa.AccountJpaTestUtil;
-import test.kr.lul.kobalttown.article.jpa.ArticleJpaTestUtil;
 
 /**
  * @author justburrow
  * @since 2019-04-01
  */
 @SpringBootApplication(scanBasePackageClasses = {ConfigurationJpaConfiguration.class, ArticleJpaConfiguration.class})
-@EnableJpaRepositories(basePackageClasses = {ArticleJpaConfiguration.class,
-    AccountJpaConfiguration.class})
-@EntityScan(basePackageClasses = {ArticleJpaConfiguration.class,
-    AccountJpaConfiguration.class})
+@EnableJpaRepositories(basePackages = ConfigurationJpaConfiguration.JPA_BASE_SCAN_PACKAGE)
+@EntityScan(basePackages = ConfigurationJpaConfiguration.JPA_BASE_SCAN_PACKAGE)
 public class ArticleJpaTestConfiguration {
   @Bean
   public TimeProvider timeProvider() {

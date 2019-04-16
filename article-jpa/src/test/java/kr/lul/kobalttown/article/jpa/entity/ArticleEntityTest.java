@@ -1,7 +1,6 @@
 package kr.lul.kobalttown.article.jpa.entity;
 
 import kr.lul.kobalttown.account.jpa.entity.AccountEntity;
-import kr.lul.kobalttown.article.jpa.ArticleJpaTestConfiguration;
 import kr.lul.kobalttown.common.util.AssertionException;
 import kr.lul.kobalttown.common.util.TimeProvider;
 import org.junit.Before;
@@ -13,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import test.kr.lul.kobalttown.account.jpa.AccountJpaTestUtil;
+import test.kr.lul.kobalttown.article.jpa.ArticleJpaTestConfiguration;
 import test.kr.lul.kobalttown.article.jpa.ArticleJpaTestUtil;
 
 import java.time.Instant;

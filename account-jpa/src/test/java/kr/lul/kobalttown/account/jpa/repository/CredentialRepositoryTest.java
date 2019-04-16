@@ -1,7 +1,6 @@
 package kr.lul.kobalttown.account.jpa.repository;
 
 import kr.lul.kobalttown.account.domain.Credential;
-import kr.lul.kobalttown.account.jpa.AccountJpaTestConfiguration;
 import kr.lul.kobalttown.account.jpa.entity.AccountEntity;
 import kr.lul.kobalttown.account.jpa.entity.CredentialEntity;
 import org.junit.Before;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import test.kr.lul.kobalttown.account.jpa.AccountJpaTestConfiguration;
 import test.kr.lul.kobalttown.account.jpa.AccountJpaTestUtil;
 
 import java.time.Instant;

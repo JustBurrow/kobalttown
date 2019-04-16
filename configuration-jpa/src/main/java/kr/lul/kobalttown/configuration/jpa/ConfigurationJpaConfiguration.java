@@ -20,9 +20,11 @@ import javax.sql.DataSource;
  * @since 2019-03-03
  */
 @Configuration
-@EnableJpaRepositories(basePackages = "kr.lul.kobalttown")
+@EnableJpaRepositories(basePackages = ConfigurationJpaConfiguration.JPA_BASE_SCAN_PACKAGE)
 @EnableTransactionManagement
 public class ConfigurationJpaConfiguration {
+  public static final String JPA_BASE_SCAN_PACKAGE = "kr.lul.kobalttown";
+
   @Bean
   @ConfigurationProperties("spring.datasource")
   public DataSource dataSource() {
@@ -43,7 +45,7 @@ public class ConfigurationJpaConfiguration {
 
     LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
     factory.setDataSource(dataSource());
-    factory.setPackagesToScan("kr.lul.kobalttown");
+    factory.setPackagesToScan(JPA_BASE_SCAN_PACKAGE);
     factory.setJpaVendorAdapter(adapter);
 
     return factory;

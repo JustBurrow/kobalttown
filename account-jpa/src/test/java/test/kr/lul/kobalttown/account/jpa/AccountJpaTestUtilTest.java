@@ -2,7 +2,6 @@ package test.kr.lul.kobalttown.account.jpa;
 
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
-import kr.lul.kobalttown.account.jpa.AccountJpaTestConfiguration;
 import kr.lul.kobalttown.account.jpa.entity.AccountEntity;
 import kr.lul.kobalttown.account.jpa.entity.CredentialEntity;
 import kr.lul.kobalttown.common.util.AssertionException;

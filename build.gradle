@@ -37,7 +37,7 @@ subprojects {
     mavenCentral()
     jcenter()
   }
-  
+
   dependencyManagement {
     imports {
       mavenBom SpringBootPlugin.BOM_COORDINATES
@@ -45,6 +45,8 @@ subprojects {
   }
 
   dependencies {
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
     testCompile project(':common-test')
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'

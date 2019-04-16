@@ -1,6 +1,5 @@
 package test.kr.lul.kobalttown.account.dao;
 
-import kr.lul.kobalttown.account.dao.AccountDaoTestConfiguration;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.jpa.repository.AccountRepository;
