@@ -1,11 +1,12 @@
 dependencies {
-  compile project(':account-web')
-  compile project(':root-web')
-  compile project(':configuration-web')
-  compile project(':configuration-bean')
-  compile project(':configuration-jpa')
+  api project(':account-web')
+  api project(':root-web')
+  api project(':configuration-web')
+  api project(':configuration-bean')
+  api project(':configuration-jpa')
+  api project(':support-spring-boot')
 
-  compile 'org.springframework.boot:spring-boot-starter-actuator'
+  api 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 bootJar.enabled = true

@@ -1,7 +1,7 @@
 dependencies {
-  implementation project(':common-api')
-  implementation project(':common-validation')
-  implementation project(':account-dto')
+  api project(':common-api')
+  api project(':common-validation')
+  api project(':account-dto')
 
   testCompile project(path: ':account-dto', configuration: 'testArchives')
 }

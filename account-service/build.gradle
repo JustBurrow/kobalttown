@@ -1,10 +1,9 @@
 dependencies {
-  implementation project(':account-domain')
-  compile project(':account-dao')
-  compile project(':configuration-bean')
-  compile project(':configuration-security')
+  api project(':account-domain')
+  implementation project(':account-jpa')
+  implementation project(':account-dao')
+  api project(':configuration-bean')
+  api project(':configuration-security')
 
-  compile project(':support-spring-boot')
-
-  testCompile project(path: ':account-dao', configuration: 'testArchives')
+  testImplementation project(path: ':account-dao', configuration: 'testArchives')
 }

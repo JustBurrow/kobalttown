@@ -1,5 +1,5 @@
 dependencies {
-  compile project(':account-domain')
+  api project(':account-domain')
 
-  testCompile project(path: ':account-domain', configuration: 'testArchives')
+  testImplementation project(path: ':account-domain', configuration: 'testArchives')
 }

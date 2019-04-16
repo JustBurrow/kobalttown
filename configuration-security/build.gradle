@@ -1,8 +1,7 @@
 dependencies {
-  implementation project(':common-util')
-  implementation project(':account-domain')
-  compile project(':account-jpa')
+  api project(':account-domain')
+  implementation project(':account-jpa')
 
-  compile project(':support-spring-security')
-  compile project(':configuration-jpa')
+  api project(':support-spring-security')
+  api project(':configuration-jpa')
 }

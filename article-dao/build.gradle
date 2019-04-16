@@ -1,5 +1,7 @@
 dependencies {
+  api project(':article-domain')
   implementation project(':article-jpa')
+  api project(':support-spring-boot')
 
   testImplementation project(path: ':article-jpa', configuration: 'testArchives')
   testImplementation project(':configuration-jpa')

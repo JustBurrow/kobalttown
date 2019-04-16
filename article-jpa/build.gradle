@@ -1,10 +1,10 @@
 dependencies {
-  compile project(':article-domain')
-  compile project(':account-jpa')
-  compile project(':support-spring-jpa')
+  api project(':article-domain')
+  implementation project(':account-jpa')
+  api project(':support-spring-jpa')
 
-  testImplementation project(path: ':article-domain', configuration: 'testArchives')
-  testImplementation project(path: ':account-jpa', configuration: 'testArchives')
+  testCompile project(path: ':article-domain', configuration: 'testArchives')
+  testCompile project(path: ':account-jpa', configuration: 'testArchives')
   testCompile project(':configuration-jpa')
-  testCompile 'com.h2database:h2'
+  testImplementation 'com.h2database:h2'
 }

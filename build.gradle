@@ -26,6 +26,7 @@ allprojects {
 
 subprojects {
   apply plugin: 'java'
+  apply plugin: 'java-library'
   apply plugin: 'org.springframework.boot'
   apply plugin: 'io.spring.dependency-management'
   apply plugin: 'com.github.hauner.jarTest'
@@ -47,10 +48,10 @@ subprojects {
   dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    testCompile project(':common-test')
+    testImplementation project(':common-test')
 
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
-    testCompile 'org.apache.commons:commons-lang3'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.apache.commons:commons-lang3'
   }
 
   bootJar.enabled = false

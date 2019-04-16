@@ -1,8 +1,8 @@
 dependencies {
-  implementation project(':account-domain')
+  api project(':account-domain')
   implementation project(':account-jpa')
-  
-  testImplementation project(path: ':account-jpa', configuration: 'testArchives')
-  testImplementation project(':configuration-jpa')
-  testImplementation 'mysql:mysql-connector-java'
+
+  testCompile project(path: ':account-jpa', configuration: 'testArchives')
+  testCompile project(':configuration-jpa')
+  testCompile 'mysql:mysql-connector-java'
 }
