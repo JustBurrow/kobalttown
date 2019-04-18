@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static kr.lul.kobalttown.common.util.Arguments.notNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -24,6 +25,8 @@ class ArticleDaoImpl implements ArticleDao {
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
   public Article create(Article article) {
+    notNull(article, "article");
+
     return null;
   }
 }

@@ -2,7 +2,6 @@ dependencies {
   api project(':account-web')
   api project(':root-web')
   api project(':configuration-web')
-  api project(':configuration-bean')
   api project(':configuration-jpa')
   api project(':support-spring-boot')
 

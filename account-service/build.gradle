@@ -2,8 +2,7 @@ dependencies {
   api project(':account-domain')
   implementation project(':account-jpa')
   implementation project(':account-dao')
-  api project(':configuration-bean')
   api project(':configuration-security')
 
-  testImplementation project(path: ':account-dao', configuration: 'testArchives')
+  testImplementation project(':test-util')
 }

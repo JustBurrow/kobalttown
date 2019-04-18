@@ -3,6 +3,8 @@ package kr.lul.kobalttown.article.jpa.entity;
 import kr.lul.kobalttown.account.jpa.entity.AccountEntity;
 import kr.lul.kobalttown.common.util.AssertionException;
 import kr.lul.kobalttown.common.util.TimeProvider;
+import kr.lul.kobalttown.test.account.AccountJpaTestUtil;
+import kr.lul.kobalttown.test.article.ArticleJpaTestUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,25 +13,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import test.kr.lul.kobalttown.account.jpa.AccountJpaTestUtil;
-import test.kr.lul.kobalttown.article.jpa.ArticleJpaTestConfiguration;
-import test.kr.lul.kobalttown.article.jpa.ArticleJpaTestUtil;
+import test.configuration.ArticleJpaTestConfiguration;
 
 import java.time.Instant;
 
+import static kr.lul.kobalttown.test.article.ArticleDomainTestUtil.body;
+import static kr.lul.kobalttown.test.article.ArticleDomainTestUtil.title;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.slf4j.LoggerFactory.getLogger;
-import static test.kr.lul.kobalttown.article.domain.ArticleDomainTestUtil.title;
-import static test.kr.lul.kobalttown.article.jpa.ArticleJpaTestUtil.body;
 
 /**
  * @author justburrow
  * @since 2019-04-10
  */
 @RunWith(SpringRunner.class)
-@DataJpaTest
 @ContextConfiguration(classes = ArticleJpaTestConfiguration.class)
+@DataJpaTest
 public class ArticleEntityTest {
   private static final Logger log = getLogger(ArticleEntityTest.class);
 

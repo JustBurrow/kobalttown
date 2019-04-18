@@ -2,8 +2,7 @@ dependencies {
   api project(':account-domain')
   api project(':support-spring-jpa')
 
-  testCompile project(path: ':account-domain', configuration: 'testArchives')
-  testCompile project(':configuration-jpa')
-  testCompile 'org.springframework.security:spring-security-core'
+  testImplementation project(':test-util')
+  testImplementation project(':configuration-jpa')
   testImplementation 'com.h2database:h2'
 }

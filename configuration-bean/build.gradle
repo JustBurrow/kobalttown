@@ -1,5 +1,0 @@
-dependencies {
-  api project(':common-util')
-
-  api 'org.springframework:spring-context'
-}

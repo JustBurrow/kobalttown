@@ -26,9 +26,10 @@ include 'article-domain',
 
 include 'root-web'
 
-include 'configuration-bean',
-    'configuration-security',
+include 'configuration-security',
     'configuration-jpa',
     'configuration-web'
+
+include 'test-util'
 
 include 'runner-standalone'

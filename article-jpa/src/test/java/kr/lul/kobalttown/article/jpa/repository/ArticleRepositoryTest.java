@@ -4,6 +4,7 @@ import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.article.domain.Article;
 import kr.lul.kobalttown.article.jpa.entity.ArticleEntity;
 import kr.lul.kobalttown.common.util.TimeProvider;
+import kr.lul.kobalttown.test.article.ArticleJpaTestUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,8 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import test.kr.lul.kobalttown.article.jpa.ArticleJpaTestConfiguration;
-import test.kr.lul.kobalttown.article.jpa.ArticleJpaTestUtil;
+import test.configuration.ArticleJpaTestConfiguration;
 
 import java.time.Instant;
 import java.util.List;
