@@ -129,8 +129,8 @@ public class AccountDaoImplTest {
 
     // When & Then
     assertThatThrownBy(() -> this.accountDao.create(account))
-        .isNotNull()
-        .isInstanceOf(AssertionException.class);
+        .isInstanceOf(AssertionException.class)
+        .hasMessageStartingWith("account.id is positive");
   }
 
   @Test

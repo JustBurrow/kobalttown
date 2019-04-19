@@ -19,6 +19,6 @@ public class ArticleDomainTestUtil {
   }
 
   public static String body() {
-    return random(current().nextInt(1, 10000));
+    return random(current().nextInt(1, 5000));
   }
 }

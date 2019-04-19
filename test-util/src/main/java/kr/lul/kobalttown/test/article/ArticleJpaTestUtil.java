@@ -2,6 +2,7 @@ package kr.lul.kobalttown.test.article;
 
 import kr.lul.kobalttown.account.jpa.entity.AccountEntity;
 import kr.lul.kobalttown.article.jpa.entity.ArticleEntity;
+import kr.lul.kobalttown.article.jpa.repository.ArticleRepository;
 import kr.lul.kobalttown.common.util.TimeProvider;
 import kr.lul.kobalttown.test.account.AccountJpaTestUtil;
 import org.slf4j.Logger;
@@ -20,6 +21,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class ArticleJpaTestUtil extends ArticleDomainTestUtil {
   private static final Logger log = getLogger(ArticleJpaTestUtil.class);
 
+  @Autowired
+  private ArticleRepository articleRepository;
   @Autowired
   private AccountJpaTestUtil accountJpaTestUtil;
   @Autowired
@@ -52,5 +55,9 @@ public class ArticleJpaTestUtil extends ArticleDomainTestUtil {
     notNull(createdAt, "createdAt");
 
     return new ArticleEntity(title, body, author, createdAt);
+  }
+
+  public ArticleEntity persistedArticle() {
+    return this.articleRepository.save(prePersistArticle());
   }
 }

@@ -10,6 +10,7 @@ import kr.lul.kobalttown.configuration.jpa.ConfigurationJpaConfiguration;
 import kr.lul.kobalttown.test.account.AccountDaoTestUtil;
 import kr.lul.kobalttown.test.account.AccountDomainTestUtil;
 import kr.lul.kobalttown.test.account.AccountJpaTestUtil;
+import kr.lul.kobalttown.test.article.ArticleDaoTestUtil;
 import kr.lul.kobalttown.test.article.ArticleDomainTestUtil;
 import kr.lul.kobalttown.test.article.ArticleJpaTestUtil;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -58,5 +59,10 @@ public class TestUtilTestConfiguration {
   @Bean
   public ArticleJpaTestUtil articleJpaTestUtil() {
     return new ArticleJpaTestUtil();
+  }
+
+  @Bean
+  public ArticleDaoTestUtil articleDaoTestUtil() {
+    return new ArticleDaoTestUtil();
   }
 }
