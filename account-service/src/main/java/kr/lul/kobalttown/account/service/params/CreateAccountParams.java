@@ -5,6 +5,8 @@ import kr.lul.kobalttown.common.util.AbstractTrackingContext;
 import java.time.Instant;
 import java.util.UUID;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 /**
  * @author justburrow
  * @since 2019-03-03
@@ -38,6 +40,10 @@ public class CreateAccountParams extends AbstractTrackingContext<UUID> {
 
   public void setPassword(byte[] password) {
     this.password = password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password.getBytes(UTF_8);
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

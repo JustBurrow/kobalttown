@@ -41,7 +41,7 @@ public class AccountDaoImplTest {
   @Autowired
   private AccountRepository accountRepository;
   @Autowired
-  private AccountDaoTestUtil accountDaoTestUtil;
+  private AccountDaoTestUtil testUtil;
   @Autowired
   private TimeProvider timeProvider;
 
@@ -51,7 +51,7 @@ public class AccountDaoImplTest {
   public void setUp() throws Exception {
     assertThat(this.accountDao).isNotNull();
     assertThat(this.accountRepository).isNotNull();
-    assertThat(this.accountDaoTestUtil).isNotNull();
+    assertThat(this.testUtil).isNotNull();
     assertThat(this.timeProvider).isNotNull();
 
     this.before = this.timeProvider.now();
@@ -67,7 +67,7 @@ public class AccountDaoImplTest {
   @Test
   public void test_create_account() throws Exception {
     // Given
-    AccountEntity account = this.accountDaoTestUtil.prePersistAccount();
+    AccountEntity account = this.testUtil.prePersistAccount();
     int id = account.getId();
     String nickname = account.getNickname();
     Instant createdAt = account.getCreatedAt();
@@ -124,7 +124,7 @@ public class AccountDaoImplTest {
   @Test
   public void test_create_account_with_created_account() throws Exception {
     // Given
-    Account account = this.accountDaoTestUtil.createdAccount();
+    Account account = this.testUtil.createdAccount();
     log.info("GIVEN - account={}", account);
 
     // When & Then
@@ -143,8 +143,8 @@ public class AccountDaoImplTest {
   @Test
   public void test_create_credential() throws Exception {
     // Given
-    Account account = this.accountDaoTestUtil.createdAccount();
-    CredentialEntity credential = this.accountDaoTestUtil.prePersistCredential((AccountEntity) account);
+    Account account = this.testUtil.createdAccount();
+    CredentialEntity credential = this.testUtil.prePersistCredential((AccountEntity) account);
     long id = credential.getId();
     String publicKey = credential.getPublicKey();
     String secretHash = credential.getSecretHash();
@@ -218,7 +218,7 @@ public class AccountDaoImplTest {
   @Test
   public void test_isUsedNickname_with_used() throws Exception {
     // Given
-    Account account = this.accountDaoTestUtil.createdAccount();
+    Account account = this.testUtil.createdAccount();
     log.info("GIVEN - account={}", account);
 
     // When & Then
@@ -238,5 +238,56 @@ public class AccountDaoImplTest {
     // When & Then
     assertThat(this.accountDao.isUsedNickname(nickname))
         .isFalse();
+  }
+
+  @Test
+  public void test_readCredentials_with_null() throws Exception {
+    assertThatThrownBy(() -> this.accountDao.readCredentials(null))
+        .isInstanceOf(AssertionException.class)
+        .hasMessage("account is null.");
+  }
+
+  @Test
+  public void test_readCredentials_with_non_jpa_entity() throws Exception {
+    assertThatThrownBy(() -> this.accountDao.readCredentials(new Account() {
+      @Override
+      public int getId() {
+        return 1;
+      }
+
+      @Override
+      public String getNickname() {
+        return null;
+      }
+
+      @Override
+      public String simpleToString() {
+        return null;
+      }
+
+      @Override
+      public Instant getUpdatedAt() {
+        return null;
+      }
+
+      @Override
+      public Instant getCreatedAt() {
+        return null;
+      }
+    }))
+        .isInstanceOf(AssertionException.class)
+        .hasMessageContaining("is not instance of");
+  }
+
+  @Test
+  public void test_readCredentials_with_pre_persisted() throws Exception {
+    // Given
+    AccountEntity account = this.testUtil.prePersistAccount();
+    log.info("GIVEN - account={}", account);
+
+    // When & Then
+    assertThatThrownBy(() -> this.accountDao.readCredentials(account))
+        .isInstanceOf(AssertionException.class)
+        .hasMessageStartingWith("account.id is not positive");
   }
 }

@@ -16,6 +16,7 @@ import javax.annotation.PostConstruct;
 
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static kr.lul.kobalttown.common.util.Arguments.notEmpty;
 import static kr.lul.kobalttown.common.util.Arguments.notNull;
 import static kr.lul.kobalttown.common.util.Texts.singleQuote;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -57,6 +58,8 @@ class AccountServiceImpl implements AccountService {
       log.trace("args : params={}", params);
     }
     notNull(params, "params");
+    notEmpty(params.getNickname(), "params.nickname");
+    notEmpty(params.getPassword(), "params.password");
 
     if (this.accountDao.isUsedNickname(params.getNickname())) {
       throw new UsedNicknameException(format("nickname=%s", singleQuote(params.getNickname())));

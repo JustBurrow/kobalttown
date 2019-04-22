@@ -10,6 +10,9 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static kr.lul.kobalttown.common.util.Arguments.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -75,5 +78,22 @@ class AccountDaoImpl implements AccountDao {
       log.trace("return : {}", exists);
     }
     return exists;
+  }
+
+  @Override
+  public List<Credential> readCredentials(Account account) {
+    if (log.isTraceEnabled()) {
+      log.trace("args : account={}", account);
+    }
+    notNull(account, "account");
+    positive(account.getId(), "account.id");
+    typeOf(account, AccountEntity.class, "account");
+
+    List<Credential> credentials = new ArrayList<>(this.credentialRepository.findAllByAccount((AccountEntity) account));
+
+    if (log.isTraceEnabled()) {
+      log.trace("return : {}", credentials);
+    }
+    return credentials;
   }
 }

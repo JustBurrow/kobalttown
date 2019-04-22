@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import java.time.Instant;
 
 import static java.lang.String.format;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static kr.lul.kobalttown.common.util.Arguments.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class AccountJpaTestUtil extends AccountDomainTestUtil {
   public static final String DEFAULT_PASSWORD = "TZ90iMwwKsbi5aacSn18DKWrsdOFNW4XHv7gSMbl9NAuX4Y1cp";
+  public static final byte[] DEFAULT_PASSWORD_BYTES = DEFAULT_PASSWORD.getBytes(UTF_8);
 
   @Autowired
   private AccountRepository accountRepository;

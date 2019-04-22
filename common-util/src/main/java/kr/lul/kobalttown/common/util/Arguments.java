@@ -250,6 +250,37 @@ public abstract class Arguments {
   }
 
   /**
+   * 대상 배열이 {@code null}이거나 길이가 0이면 실패.
+   *
+   * @param target 단정 대상.
+   *
+   * @throws AssertionException 대상이 {@code null}이거나 길이가 0일 때.
+   */
+  public static void notEmpty(byte[] target) throws AssertionException {
+    if (null == target) {
+      throw new AssertionException(DEFAULT_TARGET_NAME + " is null.");
+    } else if (0 == target.length) {
+      throw new AssertionException(DEFAULT_TARGET_NAME + " is empty.");
+    }
+  }
+
+  /**
+   * 대상 배열이 {@code null}이거나 길이가 0이면 실패.
+   *
+   * @param target     단정 대상.
+   * @param targetName 단정 대상의 이름.
+   *
+   * @throws AssertionException 대상이 {@code null}이거나 길이가 0일 때.
+   */
+  public static void notEmpty(byte[] target, String targetName) throws AssertionException {
+    if (null == target) {
+      throw new AssertionException(name(targetName) + " is null.");
+    } else if (0 == target.length) {
+      throw new AssertionException(name(targetName) + " is empty.");
+    }
+  }
+
+  /**
    * 단정 대상 문자열이 지정한 패턴이 아니면 실패.
    *
    * @param target  단정 대상.

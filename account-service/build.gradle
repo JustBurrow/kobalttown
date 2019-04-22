@@ -2,7 +2,10 @@ dependencies {
   api project(':account-domain')
   implementation project(':account-jpa')
   implementation project(':account-dao')
-  api project(':configuration-security')
+  api project(':support-spring-security')
 
   testImplementation project(':test-util')
+  testImplementation project(':configuration-jpa')
+  testImplementation project(':configuration-security')
+  testImplementation 'mysql:mysql-connector-java'
 }

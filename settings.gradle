@@ -22,7 +22,8 @@ include 'account-domain',
 
 include 'article-domain',
     'article-jpa',
-    'article-dao'
+    'article-dao',
+    'article-service'
 
 include 'root-web'
 
