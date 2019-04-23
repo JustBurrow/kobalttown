@@ -1,13 +1,15 @@
 dependencies {
   api project(':common-util')
-  
+
   implementation project(':account-domain')
   implementation project(':account-jpa')
   implementation project(':account-dao')
+  implementation project(':account-service')
 
   implementation project(':article-domain')
   implementation project(':article-jpa')
   implementation project(':article-dao')
+  implementation project(':article-service')
 
   implementation project(':configuration-jpa')
 
