@@ -1,6 +1,7 @@
 package kr.lul.kobalttown.common.util;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.regex.PatternSyntaxException;
 
 import static java.lang.String.format;
@@ -391,6 +392,53 @@ public abstract class Arguments {
     }
 
     throw new AssertionException(format("%s is not instance of %s", name(targetName), clz.getName()));
+  }
+
+  /**
+   * 대상이 컬렉션에 포함되어 있는지 시험한다.
+   *
+   * @param target     시험 대상.
+   * @param collection 컬렉션.
+   * @param <T>        대상의 타입.
+   *
+   * @throws AssertionException 시험 대상이 컬렉션에 포함되어있지 않을 때.
+   */
+  public static <T> void in(T target, Collection<T> collection) throws AssertionException {
+    if (null == target) {
+      throw new AssertionException("target is null.");
+    }
+    if (null == collection) {
+      throw new AssertionException("collection is null.");
+    }
+
+    if (!collection.contains(target)) {
+      throw new AssertionException(format("%s is not in collection : target=%s, collection=%s",
+          DEFAULT_TARGET_NAME, target, collection));
+    }
+  }
+
+  /**
+   * 대상이 컬렉션에 포함되어 있는지 시험한다.
+   *
+   * @param target     시험 대상.
+   * @param collection 컬렉션.
+   * @param targetName 시험 대상의 이름.
+   * @param <T>        대상의 타입.
+   *
+   * @throws AssertionException 시험 대상이 컬렉션에 포함되어있지 않을 때.
+   */
+  public static <T> void in(T target, Collection<T> collection, String targetName) throws AssertionException {
+    if (null == target) {
+      throw new AssertionException("target is null.");
+    }
+    if (null == collection) {
+      throw new AssertionException("collection is null.");
+    }
+
+    if (!collection.contains(target)) {
+      throw new AssertionException(format("%s is not in collection : target=%s, collection=%s",
+          name(targetName), target, collection));
+    }
   }
 
   private Arguments() {

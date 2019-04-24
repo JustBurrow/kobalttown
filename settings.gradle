@@ -1,4 +1,4 @@
-rootProject.name = 'parent'
+rootProject.name = 'kobalttown'
 
 include 'common-util',
     'common-test',
@@ -23,7 +23,9 @@ include 'account-domain',
 include 'article-domain',
     'article-jpa',
     'article-dao',
-    'article-service'
+    'article-service',
+    'article-dto',
+    'article-converter'
 
 include 'root-web'
 

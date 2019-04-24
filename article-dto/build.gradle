@@ -1,0 +1,6 @@
+dependencies {
+  api project(':common-util')
+  api project(':account-dto')
+
+  testImplementation project(':common-test')
+}
