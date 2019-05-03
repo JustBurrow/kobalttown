@@ -25,14 +25,13 @@ public class AccountJpaTestUtil extends AccountDomainTestUtil {
   public static final byte[] DEFAULT_PASSWORD_BYTES = DEFAULT_PASSWORD.getBytes(UTF_8);
 
   @Autowired
-  private AccountRepository accountRepository;
+  protected AccountRepository accountRepository;
   @Autowired
-  private CredentialRepository credentialRepository;
+  protected CredentialRepository credentialRepository;
   @Autowired
   protected TimeProvider timeProvider;
   @Autowired
   private PasswordEncoder passwordEncoder;
-
 
   @PostConstruct
   private void postConstruct() {
@@ -140,5 +139,17 @@ public class AccountJpaTestUtil extends AccountDomainTestUtil {
         account.getNickname(),
         this.passwordEncoder.encode(DEFAULT_PASSWORD),
         this.timeProvider.now()));
+  }
+
+  /**
+   * @return 사용되지 않은 별명.
+   */
+  public String unusedNickname() {
+    String nickname;
+    do {
+      nickname = nickname();
+    } while (this.accountRepository.existsByNickname(nickname));
+
+    return nickname;
   }
 }

@@ -19,6 +19,13 @@ public class CreateAccountParams extends AbstractTrackingContext<UUID> {
     super(trackingId, timestamp);
   }
 
+  public CreateAccountParams(UUID trackingId, Instant timestamp, String nickname, String password) {
+    super(trackingId, timestamp);
+
+    setNickname(nickname);
+    setPassword(password);
+  }
+
   public CreateAccountParams(UUID trackingId, Instant timestamp, String nickname, byte[] password) {
     super(trackingId, timestamp);
 

@@ -2,6 +2,4 @@ dependencies {
   api project(':common-api')
   api project(':common-validation')
   api project(':account-dto')
-
-  testCompile project(path: ':account-dto', configuration: 'testArchives')
 }

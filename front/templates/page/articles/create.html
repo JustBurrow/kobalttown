@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <title>글쓰기</title>
@@ -14,13 +14,18 @@
     </nav>
 </header>
 <main>
-    <form id="create" action="detail.html" method="post"></form>
-    <article>
-        <h1><label for="title">TITLE</label><input id="title" form="create" name="title" placeholder="input title."/>
+    <form id="create" action="detail.html" method="post"
+          th:action="@{/articles}"></form>
+    <!--/*@thymesVar id="article" type="kr.lul.kobalttown.article.web.CreateArticleInput"*/-->
+    <article th:object="${article}">
+        <h1><label for="title">TITLE</label>
+            <input id="title" form="create" name="title" placeholder="input title."
+                   th:field="*{title}"/>
         </h1>
         <div>
             <label for="body">BODY</label>
-            <textarea id="body" form="create" name="body"></textarea>
+            <textarea id="body" form="create" name="body"
+                      th:field="*{body}"></textarea>
         </div>
     </article>
     <div>

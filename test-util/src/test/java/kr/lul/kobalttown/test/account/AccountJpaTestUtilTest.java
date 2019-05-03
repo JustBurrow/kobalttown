@@ -4,6 +4,7 @@ import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.jpa.entity.AccountEntity;
 import kr.lul.kobalttown.account.jpa.entity.CredentialEntity;
+import kr.lul.kobalttown.account.jpa.repository.AccountRepository;
 import kr.lul.kobalttown.common.util.AssertionException;
 import kr.lul.kobalttown.common.util.TimeProvider;
 import org.junit.Before;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.Repeat;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import test.configuration.TestUtilTestConfiguration;
@@ -39,6 +41,8 @@ public class AccountJpaTestUtilTest {
   @Autowired
   private AccountJpaTestUtil accountJpaTestUtil;
   @Autowired
+  private AccountRepository accountRepository;
+  @Autowired
   private TimeProvider timeProvider;
   @Autowired
   private PasswordEncoder passwordEncoder;
@@ -48,7 +52,9 @@ public class AccountJpaTestUtilTest {
   @Before
   public void setUp() throws Exception {
     assertThat(this.accountJpaTestUtil).isNotNull();
+    assertThat(this.accountRepository).isNotNull();
     assertThat(this.timeProvider).isNotNull();
+    assertThat(this.passwordEncoder).isNotNull();
 
     this.before = this.timeProvider.now();
     sleep(1L);
@@ -223,5 +229,17 @@ public class AccountJpaTestUtilTest {
     assertThat(credential.getCreatedAt())
         .isAfter(this.before)
         .isAfterOrEqualTo(account.getCreatedAt());
+  }
+
+  @Test
+  @Repeat(1000)
+  public void test_unusedNickname() throws Exception {
+    // When
+    String nickname = this.accountJpaTestUtil.unusedNickname();
+    log.info("WHEN - nickname={}", nickname);
+
+    // Then
+    assertThat(this.accountRepository.existsByNickname(nickname))
+        .isFalse();
   }
 }

@@ -66,6 +66,22 @@ class AccountDaoImpl implements AccountDao {
   }
 
   @Override
+  public Account read(int id) {
+    if (log.isTraceEnabled()) {
+      log.trace("args : id={}", id);
+    }
+
+    final Account account = 0 < id
+        ? this.accountRepository.findOneById(id)
+        : null;
+
+    if (log.isTraceEnabled()) {
+      log.trace("return : {}", account);
+    }
+    return account;
+  }
+
+  @Override
   public boolean isUsedNickname(String nickname) {
     if (log.isTraceEnabled()) {
       log.trace("args : nickname={}", nickname);

@@ -2,14 +2,17 @@ package test.configuration;
 
 import kr.lul.kobalttown.account.dao.AccountDaoConfiguration;
 import kr.lul.kobalttown.account.jpa.AccountJpaConfiguration;
+import kr.lul.kobalttown.account.service.AccountServiceConfiguration;
 import kr.lul.kobalttown.article.dao.ArticleDaoConfiguration;
 import kr.lul.kobalttown.article.jpa.ArticleJpaConfiguration;
 import kr.lul.kobalttown.common.util.SystemTimeProvider;
 import kr.lul.kobalttown.common.util.TimeProvider;
 import kr.lul.kobalttown.configuration.jpa.ConfigurationJpaConfiguration;
+import kr.lul.kobalttown.support.spring.security.SecretHashEncoder;
 import kr.lul.kobalttown.test.account.AccountDaoTestUtil;
 import kr.lul.kobalttown.test.account.AccountDomainTestUtil;
 import kr.lul.kobalttown.test.account.AccountJpaTestUtil;
+import kr.lul.kobalttown.test.account.AccountServiceTestUtil;
 import kr.lul.kobalttown.test.article.ArticleDaoTestUtil;
 import kr.lul.kobalttown.test.article.ArticleDomainTestUtil;
 import kr.lul.kobalttown.test.article.ArticleJpaTestUtil;
@@ -23,7 +26,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @since 2019-04-17
  */
 @SpringBootApplication(scanBasePackageClasses = {AccountJpaConfiguration.class, AccountDaoConfiguration.class,
-    ArticleJpaConfiguration.class, ArticleDaoConfiguration.class,
+    AccountServiceConfiguration.class,
+    ArticleJpaConfiguration.class, ArticleDaoConfiguration.class, AccountServiceConfiguration.class,
     ConfigurationJpaConfiguration.class})
 public class TestUtilTestConfiguration {
   @Bean
@@ -34,6 +38,11 @@ public class TestUtilTestConfiguration {
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
+  }
+
+  @Bean
+  public SecretHashEncoder secretHashEncoder() {
+    return new SecretHashEncoder(passwordEncoder());
   }
 
   @Bean
@@ -49,6 +58,11 @@ public class TestUtilTestConfiguration {
   @Bean
   public AccountDaoTestUtil accountDaoTestUtil() {
     return new AccountDaoTestUtil();
+  }
+
+  @Bean
+  public AccountServiceTestUtil accountServiceTestUtil() {
+    return new AccountServiceTestUtil();
   }
 
   @Bean

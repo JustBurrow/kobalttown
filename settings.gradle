@@ -25,7 +25,10 @@ include 'article-domain',
     'article-dao',
     'article-service',
     'article-dto',
-    'article-converter'
+    'article-converter',
+    'article-borderline',
+    'article-api',
+    'article-web'
 
 include 'root-web'
 

@@ -1,6 +1,6 @@
 package test.configuration;
 
-import kr.lul.kobalttown.account.dao.AccountDaoConfiguration;
+import kr.lul.kobalttown.account.service.AccountServiceConfiguration;
 import kr.lul.kobalttown.article.service.ArticleServiceConfiguration;
 import kr.lul.kobalttown.common.util.MillisSystemTimeProvider;
 import kr.lul.kobalttown.common.util.TimeProvider;
@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Bean;
  * @since 2019-04-20
  */
 @SpringBootApplication(scanBasePackageClasses = {ArticleServiceConfiguration.class,
-    AccountDaoConfiguration.class,
+    AccountServiceConfiguration.class,
     ConfigurationJpaConfiguration.class, ConfigurationSecurityConfiguration.class})
 public class ArticleServiceTestConfiguration {
   @Bean

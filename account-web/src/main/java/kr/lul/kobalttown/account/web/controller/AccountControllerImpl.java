@@ -6,7 +6,7 @@ import kr.lul.kobalttown.account.borderline.AccountBorderline;
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
 import kr.lul.kobalttown.account.domain.UsedNicknameException;
 import kr.lul.kobalttown.account.dto.SimpleAccountDto;
-import kr.lul.kobalttown.account.web.configuration.AccountView;
+import kr.lul.kobalttown.account.web.view.AccountView;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,7 +39,7 @@ class AccountControllerImpl implements AccountController {
       model.addAttribute(Inputs.CREATE_ATTR, new CreateAccountInput());
     }
 
-    return AccountView.VIEW_CREATE;
+    return AccountView.CREATE_FORM;
   }
 
   private String doCreate(CreateAccountInput input, BindingResult result, Model model) {

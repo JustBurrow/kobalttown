@@ -2,6 +2,7 @@ package kr.lul.kobalttown.article.service;
 
 import kr.lul.kobalttown.article.dao.ArticleDao;
 import kr.lul.kobalttown.article.domain.Article;
+import kr.lul.kobalttown.article.domain.CreateArticleException;
 import kr.lul.kobalttown.article.jpa.entity.ArticleEntity;
 import kr.lul.kobalttown.article.service.params.CreateArticleParams;
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ class ArticleServiceImpl implements ArticleService {
   // kr.lul.kobalttown.article.service.ArticleService
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
-  public Article create(CreateArticleParams params) {
+  public Article create(CreateArticleParams params) throws CreateArticleException {
     if (log.isTraceEnabled()) {
       log.trace("args : params={}", params);
     }

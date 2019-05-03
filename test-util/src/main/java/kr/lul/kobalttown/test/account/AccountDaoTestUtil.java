@@ -20,7 +20,7 @@ public class AccountDaoTestUtil extends AccountJpaTestUtil {
   private static final Logger log = getLogger(AccountDaoTestUtil.class);
 
   @Autowired
-  private AccountDao accountDao;
+  protected AccountDao accountDao;
 
   @PostConstruct
   private void postConstruct() {

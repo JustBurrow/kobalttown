@@ -3,6 +3,7 @@ package kr.lul.kobalttown.account.service;
 import kr.lul.kobalttown.account.dao.AccountDao;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
+import kr.lul.kobalttown.account.jpa.repository.AccountRepository;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
 import kr.lul.kobalttown.common.util.AssertionException;
 import kr.lul.kobalttown.common.util.Creatable;
@@ -46,12 +47,15 @@ public class AccountServiceImplTest {
   @Autowired
   private AccountDao accountDao;
   @Autowired
+  private AccountRepository accountRepository;
+
+  @Autowired
   private SecretHashEncoder secretHashEncoder;
+  @Autowired
+  private TimeProvider timeProvider;
 
   @Autowired
   private AccountServiceTestUtil testUtil;
-  @Autowired
-  private TimeProvider timeProvider;
 
   private Instant before;
 
@@ -59,9 +63,12 @@ public class AccountServiceImplTest {
   public void setUp() throws Exception {
     assertThat(this.accountService).isNotNull();
     assertThat(this.accountDao).isNotNull();
-    assertThat(this.secretHashEncoder).isNotNull();
-    assertThat(this.testUtil).isNotNull();
+    assertThat(this.accountRepository).isNotNull();
+
     assertThat(this.timeProvider).isNotNull();
+    assertThat(this.secretHashEncoder).isNotNull();
+
+    assertThat(this.testUtil).isNotNull();
 
     this.before = this.timeProvider.now();
   }
@@ -181,5 +188,41 @@ public class AccountServiceImplTest {
     assertThatThrownBy(() -> this.accountService.create(params))
         .isInstanceOf(AssertionException.class)
         .hasMessage("params.password is empty.");
+  }
+
+  @Test
+  public void test_read_with_0() throws Exception {
+    assertThatThrownBy(() -> this.accountService.read(0))
+        .isInstanceOf(AssertionException.class)
+        .hasMessageStartingWith("id is not positive");
+  }
+
+  @Test
+  public void test_read_with_negative_1() throws Exception {
+    assertThatThrownBy(() -> this.accountService.read(-1))
+        .isInstanceOf(AssertionException.class)
+        .hasMessageStartingWith("id is not positive");
+  }
+
+  @Test
+  public void test_read() throws Exception {
+    // Given
+    Account account = this.testUtil.createdAccount();
+    final int id = account.getId();
+    final String nickname = account.getNickname();
+    final Instant createdAt = account.getCreatedAt();
+    final Instant updatedAt = account.getUpdatedAt();
+    this.accountRepository.flush();
+    log.info("GIVEN - account={}", account);
+
+    // When
+    Account actual = this.accountService.read(id);
+    log.info("WHEN - actual={}", actual);
+
+    // Then
+    assertThat(actual)
+        .isNotNull()
+        .extracting(Account::getId, Account::getNickname, Account::getCreatedAt, Account::getUpdatedAt)
+        .containsSequence(id, nickname, createdAt, updatedAt);
   }
 }

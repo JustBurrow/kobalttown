@@ -10,6 +10,8 @@ dependencies {
   implementation project(':article-jpa')
   implementation project(':article-dao')
   implementation project(':article-service')
+  implementation project(':article-converter')
+  implementation project(':article-borderline')
 
   implementation project(':configuration-jpa')
 

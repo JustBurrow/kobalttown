@@ -18,8 +18,8 @@ public class CreateArticleParams extends AbstractTrackingContext<UUID> {
   private String body;
 
 
-  public CreateArticleParams(TrackingContext<UUID> context, Account creator, String title, String body) {
-    this(context.getTrackingId(), context.getTimestamp(), creator, title, body);
+  public CreateArticleParams(TrackingContext<UUID> trackingId, Account creator, String title, String body) {
+    this(trackingId.getTrackingId(), trackingId.getTimestamp(), creator, title, body);
   }
 
   public CreateArticleParams(UUID trackingId, Instant timestamp, Account creator, String title, String body) {

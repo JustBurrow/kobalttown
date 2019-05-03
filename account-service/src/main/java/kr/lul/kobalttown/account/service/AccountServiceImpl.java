@@ -16,8 +16,7 @@ import javax.annotation.PostConstruct;
 
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static kr.lul.kobalttown.common.util.Arguments.notEmpty;
-import static kr.lul.kobalttown.common.util.Arguments.notNull;
+import static kr.lul.kobalttown.common.util.Arguments.*;
 import static kr.lul.kobalttown.common.util.Texts.singleQuote;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -73,6 +72,21 @@ class AccountServiceImpl implements AccountService {
 
     if (log.isTraceEnabled()) {
       log.trace("result : account={}, credential={}", account, credential);
+    }
+    return account;
+  }
+
+  @Override
+  public Account read(int id) {
+    if (log.isTraceEnabled()) {
+      log.trace("args : id={}", id);
+    }
+    positive(id, "id");
+
+    Account account = this.accountDao.read(id);
+
+    if (log.isTraceEnabled()) {
+      log.trace("return : {}", account);
     }
     return account;
   }

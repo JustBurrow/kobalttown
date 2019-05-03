@@ -14,6 +14,8 @@ public interface AccountDao {
 
   Credential create(Credential credential);
 
+  Account read(int id);
+
   boolean isUsedNickname(String nickname);
 
   List<Credential> readCredentials(Account account);

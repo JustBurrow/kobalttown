@@ -2,7 +2,6 @@ package kr.lul.kobalttown.test.article;
 
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.article.service.params.CreateArticleParams;
-import kr.lul.kobalttown.common.util.TimeProvider;
 import kr.lul.kobalttown.test.account.AccountServiceTestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,9 +15,7 @@ import static java.util.UUID.randomUUID;
  */
 public class ArticleServiceTestUtil extends ArticleDaoTestUtil {
   @Autowired
-  private AccountServiceTestUtil accountServiceTestUtil;
-  @Autowired
-  private TimeProvider timeProvider;
+  protected AccountServiceTestUtil accountServiceTestUtil;
 
   public CreateArticleParams createArticleParams() {
     return createArticleParams(randomUUID());
