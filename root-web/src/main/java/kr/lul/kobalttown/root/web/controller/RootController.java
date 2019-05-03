@@ -11,16 +11,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author justburrow
  * @since 2019-03-03
  */
+@PreAuthorize("permitAll()")
 @RequestMapping
 public interface RootController {
   @GetMapping
   String index(AccountDetails user, Model model);
 
+  @PreAuthorize("isAnonymous()")
   @GetMapping("/signup")
-  @PreAuthorize("hasRole('ROEL_ANONYMOUS')")
   String signupForm();
 
+  @PreAuthorize("isAnonymous()")
   @PostMapping("/signup")
-  @PreAuthorize("hasRole('ROEL_ANONYMOUS')")
   String signup();
 }
