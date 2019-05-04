@@ -1,4 +1,4 @@
-package kr.lul.kobalttown.root.web.configuration;
+package kr.lul.kobalttown.root.web.view;
 
 /**
  * @author justburrow

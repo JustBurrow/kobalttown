@@ -33,7 +33,8 @@
         </ol>
         <a href="../articles/create.html" th:href="@{/articles/create}">글 쓰기</a>
     </div>
-    <table>
+    <!--/*@thymesVar id="page" type="org.springframework.data.domain.Page<kr.lul.kobalttown.article.dto.SummaryArticleDto>"*/-->
+    <table th:replace="component/article/list :: table(${page})">
         <thead>
         <tr>
             <th>ID</th>

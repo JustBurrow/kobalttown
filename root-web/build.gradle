@@ -2,4 +2,6 @@ dependencies {
   api project(':common-util')
   api project(':support-spring-web')
   api project(':support-spring-security')
+
+  implementation project(':article-borderline')
 }

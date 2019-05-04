@@ -5,8 +5,10 @@ import kr.lul.kobalttown.article.domain.Article;
 import kr.lul.kobalttown.article.domain.CreateArticleException;
 import kr.lul.kobalttown.article.jpa.entity.ArticleEntity;
 import kr.lul.kobalttown.article.service.params.CreateArticleParams;
+import kr.lul.kobalttown.article.service.params.ListArticleParams;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import static kr.lul.kobalttown.common.util.Arguments.notNull;
@@ -59,5 +61,19 @@ class ArticleServiceImpl implements ArticleService {
       log.trace("return : {}", article);
     }
     return article;
+  }
+
+  @Override
+  public Page<Article> list(ListArticleParams params) {
+    if (log.isTraceEnabled()) {
+      log.trace("args : params={}", params);
+    }
+
+    Page<Article> page = this.articleDao.list(params.getPage(), params.getPageSize());
+
+    if (log.isTraceEnabled()) {
+      log.trace("return : {}", page);
+    }
+    return page;
   }
 }

@@ -30,7 +30,15 @@ public class AccountTrackingContext extends AbstractTrackingContext<UUID> {
   public AccountTrackingContext(UUID trackingId, Instant timestamp, int account) {
     super(trackingId, timestamp);
     positive(account, "account");
+
     this.account = account;
+  }
+
+  public AccountTrackingContext(AccountTrackingContext ctx) {
+    super(ctx.trackingId, ctx.timestamp);
+    positive(ctx.account, "ctx.account");
+
+    this.account = ctx.account;
   }
 
   public int getAccount() {
