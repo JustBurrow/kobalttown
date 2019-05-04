@@ -1,0 +1,5 @@
+dependencies {
+  api project(':account-domain')
+
+  testImplementation project(path: ':account-domain', configuration: 'testArchives')
+}

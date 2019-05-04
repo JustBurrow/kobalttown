@@ -1,0 +1,21 @@
+dependencies {
+  api project(':common-util')
+
+  implementation project(':account-domain')
+  implementation project(':account-jpa')
+  implementation project(':account-dao')
+  implementation project(':account-service')
+
+  implementation project(':article-domain')
+  implementation project(':article-jpa')
+  implementation project(':article-dao')
+  implementation project(':article-service')
+  implementation project(':article-converter')
+  implementation project(':article-borderline')
+
+  implementation project(':configuration-jpa')
+
+  api 'org.springframework.boot:spring-boot-starter-test'
+  api 'org.springframework.security:spring-security-core'
+  implementation 'org.apache.commons:commons-lang3'
+}

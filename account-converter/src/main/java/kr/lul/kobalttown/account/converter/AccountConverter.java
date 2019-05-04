@@ -14,12 +14,15 @@ import java.util.Set;
 public interface AccountConverter extends Converter<Account> {
   Set<Class> SUPPORT_TYPES = Set.of(SimpleAccountDto.class, SummaryAccountDto.class);
 
+  SimpleAccountDto simple(Account account);
+
+  SummaryAccountDto summary(Account account);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // kr.lul.kobalttown.common.util.Converter
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
   default Set<Class> supportsTarget() {
     return SUPPORT_TYPES;
   }
-
-  SummaryAccountDto toSummaryAccountDto(Account account);
-
-  SimpleAccountDto toSimpleAccountDto(Account account);
 }

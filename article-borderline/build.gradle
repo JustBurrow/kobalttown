@@ -1,0 +1,12 @@
+dependencies {
+  api project(':article-domain')
+  api project(':article-converter')
+  implementation project(':article-service')
+  implementation project(':account-service')
+  api project(':support-spring-security')
+  api project(':support-spring-jpa')
+
+  testImplementation project(':test-util')
+  testImplementation project(':configuration-jpa')
+  testImplementation project(':configuration-security')
+}

@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.account.web.controller;
 
-import kr.lul.kobalttown.account.api.AccountApis;
+import kr.lul.kobalttown.account.api.AccountApis.Inputs;
 import kr.lul.kobalttown.account.api.CreateAccountInput;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
@@ -20,13 +20,15 @@ import static kr.lul.kobalttown.account.api.AccountApis.NAMESPACE;
  * @author justburrow
  * @since 2019-02-28
  */
+@PreAuthorize("isAuthenticated()")
 @RequestMapping(NAMESPACE)
 public interface AccountController {
+  @PreAuthorize("isAnonymous()")
   @GetMapping({CREATE_FORM})
   String createForm(Model model);
 
+  @PreAuthorize("isAnonymous()")
   @PostMapping(CREATE)
-  @PreAuthorize("hasRole('ROLE_ANNONYMOUS')")
-  String create(@ModelAttribute(AccountApis.Inputs.CREATE_ATTR) @Valid CreateAccountInput input, BindingResult result,
+  String create(@ModelAttribute(Inputs.CREATE_ATTR) @Valid CreateAccountInput input, BindingResult result,
       Model model);
 }

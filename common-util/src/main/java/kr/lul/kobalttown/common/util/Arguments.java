@@ -1,6 +1,7 @@
 package kr.lul.kobalttown.common.util;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.regex.PatternSyntaxException;
 
 import static java.lang.String.format;
@@ -165,6 +166,60 @@ public abstract class Arguments {
   }
 
   /**
+   * 대상이 0 보다 크면 실패.
+   *
+   * @param target 대상.
+   *
+   * @throws AssertionException 대상이 0보다 클 때.
+   */
+  public static void notPositive(int target) throws AssertionException {
+    if (0 < target) {
+      throw new AssertionException(format("%s is positive : %d", DEFAULT_TARGET_NAME, target));
+    }
+  }
+
+  /**
+   * 대상이 0 보다 크면 실패.
+   *
+   * @param target     대상.
+   * @param targetName 대상의 이름.
+   *
+   * @throws AssertionException 대상이 0보다 클 때.
+   */
+  public static void notPositive(int target, String targetName) throws AssertionException {
+    if (0 < target) {
+      throw new AssertionException(format("%s is positive : %d", name(targetName), target));
+    }
+  }
+
+  /**
+   * 대상이 0 보다 크면 실패.
+   *
+   * @param target 대상.
+   *
+   * @throws AssertionException 대상이 0보다 클 때.
+   */
+  public static void notPositive(long target) throws AssertionException {
+    if (0 < target) {
+      throw new AssertionException(format("%s is positive : %d", DEFAULT_TARGET_NAME, target));
+    }
+  }
+
+  /**
+   * 대상이 0 보다 크면 실패.
+   *
+   * @param target     대상.
+   * @param targetName 대상의 이름.
+   *
+   * @throws AssertionException 대상이 0보다 클 때.
+   */
+  public static void notPositive(long target, String targetName) throws AssertionException {
+    if (0 < target) {
+      throw new AssertionException(format("%s is positive : %d", name(targetName), target));
+    }
+  }
+
+  /**
    * 단정 대상이 {@code null} 이거나 빈 문자열이면 실패.
    *
    * @param target 단정 대상.
@@ -191,6 +246,37 @@ public abstract class Arguments {
     if (null == target) {
       throw new AssertionException(name(targetName) + " is null.");
     } else if (target.isEmpty()) {
+      throw new AssertionException(name(targetName) + " is empty.");
+    }
+  }
+
+  /**
+   * 대상 배열이 {@code null}이거나 길이가 0이면 실패.
+   *
+   * @param target 단정 대상.
+   *
+   * @throws AssertionException 대상이 {@code null}이거나 길이가 0일 때.
+   */
+  public static void notEmpty(byte[] target) throws AssertionException {
+    if (null == target) {
+      throw new AssertionException(DEFAULT_TARGET_NAME + " is null.");
+    } else if (0 == target.length) {
+      throw new AssertionException(DEFAULT_TARGET_NAME + " is empty.");
+    }
+  }
+
+  /**
+   * 대상 배열이 {@code null}이거나 길이가 0이면 실패.
+   *
+   * @param target     단정 대상.
+   * @param targetName 단정 대상의 이름.
+   *
+   * @throws AssertionException 대상이 {@code null}이거나 길이가 0일 때.
+   */
+  public static void notEmpty(byte[] target, String targetName) throws AssertionException {
+    if (null == target) {
+      throw new AssertionException(name(targetName) + " is null.");
+    } else if (0 == target.length) {
       throw new AssertionException(name(targetName) + " is empty.");
     }
   }
@@ -306,6 +392,53 @@ public abstract class Arguments {
     }
 
     throw new AssertionException(format("%s is not instance of %s", name(targetName), clz.getName()));
+  }
+
+  /**
+   * 대상이 컬렉션에 포함되어 있는지 시험한다.
+   *
+   * @param target     시험 대상.
+   * @param collection 컬렉션.
+   * @param <T>        대상의 타입.
+   *
+   * @throws AssertionException 시험 대상이 컬렉션에 포함되어있지 않을 때.
+   */
+  public static <T> void in(T target, Collection<T> collection) throws AssertionException {
+    if (null == target) {
+      throw new AssertionException("target is null.");
+    }
+    if (null == collection) {
+      throw new AssertionException("collection is null.");
+    }
+
+    if (!collection.contains(target)) {
+      throw new AssertionException(format("%s is not in collection : target=%s, collection=%s",
+          DEFAULT_TARGET_NAME, target, collection));
+    }
+  }
+
+  /**
+   * 대상이 컬렉션에 포함되어 있는지 시험한다.
+   *
+   * @param target     시험 대상.
+   * @param collection 컬렉션.
+   * @param targetName 시험 대상의 이름.
+   * @param <T>        대상의 타입.
+   *
+   * @throws AssertionException 시험 대상이 컬렉션에 포함되어있지 않을 때.
+   */
+  public static <T> void in(T target, Collection<T> collection, String targetName) throws AssertionException {
+    if (null == target) {
+      throw new AssertionException("target is null.");
+    }
+    if (null == collection) {
+      throw new AssertionException("collection is null.");
+    }
+
+    if (!collection.contains(target)) {
+      throw new AssertionException(format("%s is not in collection : target=%s, collection=%s",
+          name(targetName), target, collection));
+    }
   }
 
   private Arguments() {

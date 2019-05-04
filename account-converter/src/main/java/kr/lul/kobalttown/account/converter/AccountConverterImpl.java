@@ -38,24 +38,12 @@ class AccountConverterImpl implements AccountConverter {
   // kr.lul.kobalttown.account.converter.AccountConverter
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
-  public <T> T convert(Account account, Class<T> targetType) {
+  public SimpleAccountDto simple(Account account) {
     if (log.isTraceEnabled()) {
-      log.trace("args : account={}, targetType={}", account, targetType);
-    }
-    notNull(targetType, "targetType");
-    if (null == account) {
-      return null;
+      log.trace("args : account={}", account);
     }
 
-    T dto;
-    if (SimpleAccountDto.class == targetType) {
-      dto = (T) toSimpleAccountDto(account);
-    } else if (SummaryAccountDto.class == targetType) {
-      dto = (T) toSummaryAccountDto(account);
-    } else {
-      throw new IllegalArgumentException(format("unsupported target type : target=%s, supports=%s",
-          targetType, SUPPORT_TYPES));
-    }
+    SimpleAccountDto dto = new SimpleAccountDto(account.getId(), account.getNickname());
 
     if (log.isTraceEnabled()) {
       log.trace("return : {}", dto);
@@ -64,7 +52,7 @@ class AccountConverterImpl implements AccountConverter {
   }
 
   @Override
-  public SummaryAccountDto toSummaryAccountDto(Account account) {
+  public SummaryAccountDto summary(Account account) {
     if (log.isTraceEnabled()) {
       log.trace("args : account={}", account);
     }
@@ -80,12 +68,24 @@ class AccountConverterImpl implements AccountConverter {
   }
 
   @Override
-  public SimpleAccountDto toSimpleAccountDto(Account account) {
+  public <T> T convert(Account account, Class<T> targetType) {
     if (log.isTraceEnabled()) {
-      log.trace("args : account={}", account);
+      log.trace("args : account={}, targetType={}", account, targetType);
+    }
+    notNull(targetType, "targetType");
+    if (null == account) {
+      return null;
     }
 
-    SimpleAccountDto dto = new SimpleAccountDto(account.getId(), account.getNickname());
+    T dto;
+    if (SimpleAccountDto.class == targetType) {
+      dto = (T) simple(account);
+    } else if (SummaryAccountDto.class == targetType) {
+      dto = (T) summary(account);
+    } else {
+      throw new IllegalArgumentException(format("unsupported target type : target=%s, supports=%s",
+          targetType, SUPPORT_TYPES));
+    }
 
     if (log.isTraceEnabled()) {
       log.trace("return : {}", dto);

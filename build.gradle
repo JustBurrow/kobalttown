@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
 buildscript {
   repositories {
     mavenCentral()
@@ -8,7 +10,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.3.RELEASE"
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.4.RELEASE"
     classpath 'io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE'
     classpath "gradle.plugin.gradle-plugins:jartest:1.0.1"
   }
@@ -24,6 +26,7 @@ allprojects {
 
 subprojects {
   apply plugin: 'java'
+  apply plugin: 'java-library'
   apply plugin: 'org.springframework.boot'
   apply plugin: 'io.spring.dependency-management'
   apply plugin: 'com.github.hauner.jarTest'
@@ -36,12 +39,21 @@ subprojects {
     jcenter()
   }
 
-  dependencies {
-    testCompile project(':common-test')
-
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
+  dependencyManagement {
+    imports {
+      mavenBom SpringBootPlugin.BOM_COORDINATES
+    }
   }
-  
+
+  dependencies {
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testImplementation project(':common-test')
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.apache.commons:commons-lang3'
+  }
+
   bootJar.enabled = false
   jar.enabled = true
 }

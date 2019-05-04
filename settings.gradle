@@ -1,4 +1,4 @@
-rootProject.name = 'parent'
+rootProject.name = 'kobalttown'
 
 include 'common-util',
     'common-test',
@@ -20,11 +20,22 @@ include 'account-domain',
     'account-api',
     'account-web'
 
+include 'article-domain',
+    'article-jpa',
+    'article-dao',
+    'article-service',
+    'article-dto',
+    'article-converter',
+    'article-borderline',
+    'article-api',
+    'article-web'
+
 include 'root-web'
 
-include 'configuration-bean', 
-    'configuration-security',
+include 'configuration-security',
     'configuration-jpa',
     'configuration-web'
+
+include 'test-util'
 
 include 'runner-standalone'

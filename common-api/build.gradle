@@ -1,5 +1,5 @@
 dependencies {
-  compile project(':common-util')
+  implementation project(':common-util')
 
-  compile 'javax.validation:validation-api'
+  implementation 'javax.validation:validation-api'
 }

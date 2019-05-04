@@ -1,5 +1,5 @@
 dependencies {
-  implementation project(':account-domain')
+  api project(':common-util')
 
-  testCompile project(':common-test')
+  testImplementation project(':common-test')
 }

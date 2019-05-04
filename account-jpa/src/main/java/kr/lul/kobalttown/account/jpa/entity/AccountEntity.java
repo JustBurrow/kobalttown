@@ -29,7 +29,7 @@ public class AccountEntity extends UpdatableMappedSuperclass implements Account 
   private AccountEntity() { // JPA only
   }
 
-  public AccountEntity(Instant createdAt, String nickname) {
+  public AccountEntity(String nickname, Instant createdAt) {
     super(createdAt);
     validateNickname(nickname);
 

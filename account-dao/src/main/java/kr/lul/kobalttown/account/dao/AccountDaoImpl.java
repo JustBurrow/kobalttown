@@ -10,7 +10,10 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static kr.lul.kobalttown.common.util.Arguments.typeOf;
+import java.util.ArrayList;
+import java.util.List;
+
+import static kr.lul.kobalttown.common.util.Arguments.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -34,6 +37,8 @@ class AccountDaoImpl implements AccountDao {
     if (log.isTraceEnabled()) {
       log.trace("args : account={}", account);
     }
+    notNull(account, "account");
+    notPositive(account.getId(), "account.id");
     typeOf(account, AccountEntity.class, "account");
 
     account = this.accountRepository.saveAndFlush((AccountEntity) account);
@@ -49,6 +54,7 @@ class AccountDaoImpl implements AccountDao {
     if (log.isTraceEnabled()) {
       log.trace("args : credential={}", credential);
     }
+    notNull(credential, "credential");
     typeOf(credential, CredentialEntity.class, "credential");
 
     credential = this.credentialRepository.saveAndFlush((CredentialEntity) credential);
@@ -60,10 +66,27 @@ class AccountDaoImpl implements AccountDao {
   }
 
   @Override
+  public Account read(int id) {
+    if (log.isTraceEnabled()) {
+      log.trace("args : id={}", id);
+    }
+
+    final Account account = 0 < id
+        ? this.accountRepository.findOneById(id)
+        : null;
+
+    if (log.isTraceEnabled()) {
+      log.trace("return : {}", account);
+    }
+    return account;
+  }
+
+  @Override
   public boolean isUsedNickname(String nickname) {
     if (log.isTraceEnabled()) {
       log.trace("args : nickname={}", nickname);
     }
+    notEmpty(nickname, "nickname");
 
     boolean exists = this.accountRepository.existsByNickname(nickname);
 
@@ -71,5 +94,22 @@ class AccountDaoImpl implements AccountDao {
       log.trace("return : {}", exists);
     }
     return exists;
+  }
+
+  @Override
+  public List<Credential> readCredentials(Account account) {
+    if (log.isTraceEnabled()) {
+      log.trace("args : account={}", account);
+    }
+    notNull(account, "account");
+    positive(account.getId(), "account.id");
+    typeOf(account, AccountEntity.class, "account");
+
+    List<Credential> credentials = new ArrayList<>(this.credentialRepository.findAllByAccount((AccountEntity) account));
+
+    if (log.isTraceEnabled()) {
+      log.trace("return : {}", credentials);
+    }
+    return credentials;
   }
 }

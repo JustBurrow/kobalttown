@@ -1,5 +1,5 @@
 dependencies {
-  implementation project(':common-util')
-  compile project(':support-spring-web')
-  compile project(':support-spring-security')
+  api project(':common-util')
+  api project(':support-spring-web')
+  api project(':support-spring-security')
 }

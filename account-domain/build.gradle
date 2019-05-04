@@ -1,5 +1,5 @@
 dependencies {
-  compile project(':common-util')
+  api project(':common-util')
 
-  testCompile project(':common-test')
+  testImplementation project(':common-test')
 }
