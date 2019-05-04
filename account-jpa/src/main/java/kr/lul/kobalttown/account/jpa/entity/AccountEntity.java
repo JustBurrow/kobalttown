@@ -26,7 +26,7 @@ public class AccountEntity extends UpdatableMappedSuperclass implements Account 
   @Column(name = T.COL_NICKNAME, nullable = false, unique = true, updatable = false)
   private String nickname;
 
-  private AccountEntity() { // JPA only
+  public AccountEntity() { // JPA only
   }
 
   public AccountEntity(String nickname, Instant createdAt) {
