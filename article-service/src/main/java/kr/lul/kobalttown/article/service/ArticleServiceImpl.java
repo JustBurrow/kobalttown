@@ -44,4 +44,20 @@ class ArticleServiceImpl implements ArticleService {
     }
     return article;
   }
+
+  @Override
+  public Article read(long id) {
+    if (log.isTraceEnabled()) {
+      log.trace("args : id={}", id);
+    }
+
+    Article article = 0L < id
+        ? this.articleDao.read(id)
+        : null;
+
+    if (log.isTraceEnabled()) {
+      log.trace("return : {}", article);
+    }
+    return article;
+  }
 }

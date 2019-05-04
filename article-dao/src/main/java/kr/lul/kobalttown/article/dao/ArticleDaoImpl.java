@@ -40,4 +40,18 @@ class ArticleDaoImpl implements ArticleDao {
     }
     return result;
   }
+
+  @Override
+  public Article read(long id) {
+    if (log.isTraceEnabled()) {
+      log.trace("args : id={}", id);
+    }
+
+    Article article = this.articleRepository.getOne(id);
+
+    if (log.isTraceEnabled()) {
+      log.trace("return : {}", article);
+    }
+    return article;
+  }
 }

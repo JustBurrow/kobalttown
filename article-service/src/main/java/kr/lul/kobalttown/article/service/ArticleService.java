@@ -10,4 +10,6 @@ import kr.lul.kobalttown.article.service.params.CreateArticleParams;
  */
 public interface ArticleService {
   Article create(CreateArticleParams params) throws CreateArticleException;
+
+  Article read(long id);
 }

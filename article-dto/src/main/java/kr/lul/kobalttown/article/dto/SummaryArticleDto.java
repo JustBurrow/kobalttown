@@ -1,7 +1,5 @@
 package kr.lul.kobalttown.article.dto;
 
-import kr.lul.kobalttown.account.dto.SimpleAccountDto;
-
 import java.time.ZonedDateTime;
 import java.util.StringJoiner;
 
@@ -15,18 +13,15 @@ public class SummaryArticleDto {
   private long id;
   private String title;
   private String summary;
-  private SimpleAccountDto author;
   private ZonedDateTime createdAt;
 
   public SummaryArticleDto() {
   }
 
-  public SummaryArticleDto(long id, String title, String summary, SimpleAccountDto author,
-      ZonedDateTime createdAt) {
+  public SummaryArticleDto(long id, String title, String summary, ZonedDateTime createdAt) {
     this.id = id;
     this.title = title;
     this.summary = summary;
-    this.author = author;
     this.createdAt = createdAt;
   }
 
@@ -54,14 +49,6 @@ public class SummaryArticleDto {
     this.summary = summary;
   }
 
-  public SimpleAccountDto getAuthor() {
-    return this.author;
-  }
-
-  public void setAuthor(SimpleAccountDto author) {
-    this.author = author;
-  }
-
   public ZonedDateTime getCreatedAt() {
     return this.createdAt;
   }
@@ -79,7 +66,6 @@ public class SummaryArticleDto {
         .add("id=" + this.id)
         .add("title=" + singleQuote(this.title))
         .add("summary=" + singleQuote(this.summary))
-        .add("author=" + this.author)
         .add("createdAt=" + this.createdAt)
         .toString();
   }

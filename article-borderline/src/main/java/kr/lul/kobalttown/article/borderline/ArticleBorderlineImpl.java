@@ -3,6 +3,7 @@ package kr.lul.kobalttown.article.borderline;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.service.AccountService;
 import kr.lul.kobalttown.article.borderline.command.CreateArticleCmd;
+import kr.lul.kobalttown.article.borderline.command.ReadArticleCmd;
 import kr.lul.kobalttown.article.converter.ArticleConverter;
 import kr.lul.kobalttown.article.domain.Article;
 import kr.lul.kobalttown.article.domain.CreateArticleException;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static kr.lul.kobalttown.common.util.Arguments.notNull;
+import static kr.lul.kobalttown.common.util.Arguments.positive;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -46,6 +48,24 @@ class ArticleBorderlineImpl implements ArticleBorderline {
         creator, cmd.getTitle(), cmd.getBody());
     Article article = this.articleService.create(params);
     DetailArticleDto dto = this.articleConverter.convert(article, DetailArticleDto.class);
+
+    if (log.isTraceEnabled()) {
+      log.trace("return : {}", dto);
+    }
+    return dto;
+  }
+
+  @Override
+  public DetailArticleDto read(ReadArticleCmd cmd) {
+    if (log.isTraceEnabled()) {
+      log.trace("args : cmd={}", cmd);
+    }
+    notNull(cmd, "cmd");
+    positive(cmd.getAccount(), "cmd.account");
+    positive(cmd.getArticle(), "cmd.article");
+
+    Article article = this.articleService.read(cmd.getArticle());
+    DetailArticleDto dto = this.articleConverter.detail(article);
 
     if (log.isTraceEnabled()) {
       log.trace("return : {}", dto);

@@ -1,6 +1,5 @@
 package kr.lul.kobalttown.article.converter;
 
-import kr.lul.kobalttown.account.converter.AccountConverter;
 import kr.lul.kobalttown.article.domain.Article;
 import kr.lul.kobalttown.article.dto.DetailArticleDto;
 import kr.lul.kobalttown.article.dto.SimpleArticleDto;
@@ -24,8 +23,6 @@ class ArticleConverterImpl implements ArticleConverter {
   private static final Logger log = getLogger(ArticleConverterImpl.class);
 
   @Autowired
-  private AccountConverter accountConverter;
-  @Autowired
   private TimeProvider timeProvider;
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,7 +36,7 @@ class ArticleConverterImpl implements ArticleConverter {
 
     SimpleArticleDto dto = null == article
         ? null
-        : new SimpleArticleDto(article.getId(), article.getTitle(), this.accountConverter.simple(article.getCreator()));
+        : new SimpleArticleDto(article.getId(), article.getTitle());
 
     if (log.isTraceEnabled()) {
       log.trace("return : {}", dto);
@@ -56,7 +53,6 @@ class ArticleConverterImpl implements ArticleConverter {
     SummaryArticleDto dto = null == article
         ? null
         : new SummaryArticleDto(article.getId(), article.getTitle(), article.getSummary(),
-        this.accountConverter.simple(article.getCreator()),
         this.timeProvider.zonedDateTime(article.getCreatedAt()));
 
     if (log.isTraceEnabled()) {
@@ -75,7 +71,6 @@ class ArticleConverterImpl implements ArticleConverter {
         ? null
         : new DetailArticleDto(article.getId(), article.getTitle(),
         article.getSummary(), article.getBody(),
-        this.accountConverter.simple(article.getCreator()),
         this.timeProvider.zonedDateTime(article.getCreatedAt()));
 
     if (log.isTraceEnabled()) {

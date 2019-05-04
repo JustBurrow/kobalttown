@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 import test.configuration.ArticleBorderlineTestConfiguration;
 
 import java.time.Instant;
@@ -29,6 +30,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ArticleBorderlineTestConfiguration.class)
+@Transactional
 public class ArticleBorderlineImplTest {
   private static final Logger log = getLogger(ArticleBorderlineImplTest.class);
 
@@ -80,11 +82,8 @@ public class ArticleBorderlineImplTest {
     // Then
     assertThat(dto)
         .isNotNull()
-        .extracting(DetailArticleDto::getTitle, DetailArticleDto::getBody,
-            DetailArticleDto::getAuthor, DetailArticleDto::getCreatedAt)
-        .containsSequence(title, body,
-            this.accountConverter.simple(this.accountService.read(creator)),
-            this.timeProvider.zonedDateTime(timestamp));
+        .extracting(DetailArticleDto::getTitle, DetailArticleDto::getBody, DetailArticleDto::getCreatedAt)
+        .containsSequence(title, body, this.timeProvider.zonedDateTime(timestamp));
     assertThat(dto.getId())
         .isGreaterThan(0L);
     assertThat(dto.getBody())

@@ -8,4 +8,6 @@ import kr.lul.kobalttown.article.domain.Article;
  */
 public interface ArticleDao {
   Article create(Article article);
+
+  Article read(long id);
 }

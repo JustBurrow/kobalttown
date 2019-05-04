@@ -12,7 +12,7 @@ import static kr.lul.kobalttown.common.util.Arguments.notNull;
 public class AbstractTrackingContext<ID> implements TrackingContext<ID> {
   protected final ID trackingId;
   protected final Instant timestamp;
-  protected final Instant timestampMillis;
+  private final Instant timestampMillis;
 
   public AbstractTrackingContext(ID trackingId, Instant timestamp) {
     notNull(trackingId, "trackingId");

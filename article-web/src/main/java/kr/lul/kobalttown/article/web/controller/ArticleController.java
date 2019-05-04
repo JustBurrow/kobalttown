@@ -2,16 +2,14 @@ package kr.lul.kobalttown.article.web.controller;
 
 import kr.lul.kobalttown.article.web.ArticleApis;
 import kr.lul.kobalttown.article.web.ArticleApis.ApiNames;
-import kr.lul.kobalttown.article.web.ArticleApis.Inputs;
+import kr.lul.kobalttown.article.web.ArticleApis.Attributes;
 import kr.lul.kobalttown.article.web.CreateArticleInput;
+import kr.lul.kobalttown.common.api.NotFoundApiException;
 import kr.lul.kobalttown.support.spring.security.AccountDetails;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -41,6 +39,17 @@ public interface ArticleController {
    */
   @PostMapping(ApiNames.CREATE)
   String create(AccountDetails user,
-      @ModelAttribute(Inputs.CREATE_ATTR) @Valid CreateArticleInput input, BindingResult result,
+      @ModelAttribute(Attributes.CREATE_ATTR) @Valid CreateArticleInput input, BindingResult result,
       Model model);
+
+  /**
+   * @param id    글 ID.
+   * @param model 모델.
+   *
+   * @return 글 상세 뷰 템플릿.
+   *
+   * @throws NotFoundApiException ID에 해당하는 글이 없을 때.
+   */
+  @GetMapping(ApiNames.READ)
+  String read(AccountDetails user, @PathVariable(Attributes.ID_ATTR) long id, Model model) throws NotFoundApiException;
 }

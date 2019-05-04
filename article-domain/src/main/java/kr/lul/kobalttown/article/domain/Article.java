@@ -83,6 +83,7 @@ public interface Article extends Creatable {
   /**
    * @return 작성자.
    */
+  @Deprecated
   default Account getAuthor() {
     return getCreator();
   }

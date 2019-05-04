@@ -6,8 +6,8 @@ import kr.lul.kobalttown.common.api.Verbs;
 
 import java.util.Map;
 
-import static kr.lul.kobalttown.account.api.AccountApis.Inputs.CREATE_ATTR;
-import static kr.lul.kobalttown.account.api.AccountApis.Inputs.CREATE_TYPE;
+import static kr.lul.kobalttown.account.api.AccountApis.Attributes.CREATE_ATTR;
+import static kr.lul.kobalttown.account.api.AccountApis.Attributes.CREATE_TYPE;
 
 /**
  * @author justburrow
@@ -34,11 +34,11 @@ public final class AccountApis {
     }
   }
 
-  public static final class Inputs {
+  public static final class Attributes {
     public static final String CREATE_ATTR = "account";
     public static final Class CREATE_TYPE = CreateAccountInput.class;
 
-    protected Inputs() {
+    protected Attributes() {
       throw new UnsupportedOperationException();
     }
   }
