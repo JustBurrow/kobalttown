@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sd="http://www.thymeleaf.org/spring-data">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sd="http://www.thymeleaf.org/spring-data"
+      th:lang="${#locale}">
 <head>
     <meta charset="UTF-8"/>
     <title>Kobalttown 유저 인덱스(루트)</title>
@@ -17,7 +18,7 @@
     <h1>Kobalttown 유저 인덱스(루트)</h1>
     <div>
         <div th:replace="component/article/pager :: default(${page})">
-            <div sd:pagination-summary="">info</div>
+            <div>info</div>
             <div>
                 <ol sd:pagination-split="7" sd:pagination="full">
                     <li><a href="index-user.html?page=10">이전 블록</a></li>
