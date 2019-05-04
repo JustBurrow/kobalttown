@@ -6,6 +6,7 @@ dependencies {
   implementation project(':support-spring-boot')
   implementation 'org.springframework:spring-tx'
 
-  testCompile project(path: ':account-service', configuration: 'testArchives')
-  testCompile project(path: ':account-converter', configuration: 'testArchives')
+  testImplementation project(':configuration-jpa')
+  testImplementation project(':configuration-security')
+  testImplementation project(':test-util')
 }

@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.account.web.controller;
 
-import kr.lul.kobalttown.account.api.AccountApis.Inputs;
+import kr.lul.kobalttown.account.api.AccountApis.Attributes;
 import kr.lul.kobalttown.account.api.CreateAccountInput;
 import kr.lul.kobalttown.account.borderline.AccountBorderline;
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
@@ -35,8 +35,8 @@ class AccountControllerImpl implements AccountController {
       log.trace("args : model={}", model);
     }
 
-    if (!model.containsAttribute(Inputs.CREATE_ATTR)) {
-      model.addAttribute(Inputs.CREATE_ATTR, new CreateAccountInput());
+    if (!model.containsAttribute(Attributes.CREATE_ATTR)) {
+      model.addAttribute(Attributes.CREATE_ATTR, new CreateAccountInput());
     }
 
     return AccountView.CREATE_FORM;
@@ -60,7 +60,7 @@ class AccountControllerImpl implements AccountController {
         log.info("fail to create account : " + input, e);
       }
 
-      result.addError(new FieldError(Inputs.CREATE_ATTR, "nickname", input.getNickname(), false,
+      result.addError(new FieldError(Attributes.CREATE_ATTR, "nickname", input.getNickname(), false,
           new String[]{"{err.account.create.used-nickname}"}, null, "used nickname."));
 
       return doCreateForm(model);
@@ -85,7 +85,7 @@ class AccountControllerImpl implements AccountController {
   }
 
   @Override
-  public String create(@ModelAttribute(Inputs.CREATE_ATTR) @Valid CreateAccountInput input, BindingResult result,
+  public String create(@ModelAttribute(Attributes.CREATE_ATTR) @Valid CreateAccountInput input, BindingResult result,
       Model model) {
     if (log.isTraceEnabled()) {
       log.trace("args : input={}, result={}, model={}", input, result, model);

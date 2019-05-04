@@ -72,7 +72,7 @@ class AccountDaoImpl implements AccountDao {
     }
 
     final Account account = 0 < id
-        ? this.accountRepository.findOneById(id)
+        ? this.accountRepository.getOne(id)
         : null;
 
     if (log.isTraceEnabled()) {

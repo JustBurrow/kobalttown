@@ -5,10 +5,10 @@
     <title>글쓰기</title>
 </head>
 <body>
-<header>
+<header th:replace="component/header/role_user :: header">
     <nav>
-        <a href="../_/index-anonymous.html">Kobalttown</a>
-        <form action="../_/index-anonymous.html" method="post">
+        <a href="index-user.html">Kobalttown</a>
+        <form action="index-anonymous.html" method="post">
             <button>로그아웃</button>
         </form>
     </nav>

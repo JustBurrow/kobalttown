@@ -1,7 +1,6 @@
 package kr.lul.kobalttown.article.converter;
 
 import kr.lul.kobalttown.account.converter.AccountConverter;
-import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.article.domain.Article;
 import kr.lul.kobalttown.article.dto.DetailArticleDto;
 import kr.lul.kobalttown.article.dto.SimpleArticleDto;
@@ -64,7 +63,6 @@ public class ArticleConverterImplTest {
     Article article = this.testUtil.createdArticle();
     long id = article.getId();
     String title = article.getTitle();
-    Account creator = article.getCreator();
     log.info("GIVEN - article={}", article);
 
     // When
@@ -74,8 +72,8 @@ public class ArticleConverterImplTest {
     // Then
     assertThat(dto)
         .isNotNull()
-        .extracting(SimpleArticleDto::getId, SimpleArticleDto::getTitle, SimpleArticleDto::getAuthor)
-        .containsSequence(id, title, this.accountConverter.simple(creator));
+        .extracting(SimpleArticleDto::getId, SimpleArticleDto::getTitle)
+        .containsSequence(id, title);
   }
 
   @Test
@@ -91,7 +89,6 @@ public class ArticleConverterImplTest {
     long id = article.getId();
     String title = article.getTitle();
     String summary = article.getSummary();
-    Account creator = article.getCreator();
     Instant createdAt = article.getCreatedAt();
     log.info("GIVEN - article={}", article);
 
@@ -103,9 +100,8 @@ public class ArticleConverterImplTest {
     assertThat(dto)
         .isNotNull()
         .extracting(SummaryArticleDto::getId, SummaryArticleDto::getTitle, SummaryArticleDto::getSummary,
-            SummaryArticleDto::getAuthor, SummaryArticleDto::getCreatedAt)
+            SummaryArticleDto::getCreatedAt)
         .containsSequence(id, title, summary,
-            this.accountConverter.simple(creator),
             this.timeProvider.zonedDateTime(createdAt));
   }
 
@@ -123,7 +119,6 @@ public class ArticleConverterImplTest {
     String title = article.getTitle();
     String summary = article.getSummary();
     String body = article.getBody();
-    Account creator = article.getCreator();
     Instant createdAt = article.getCreatedAt();
     log.info("GIVEN - article={}", article);
 
@@ -136,9 +131,8 @@ public class ArticleConverterImplTest {
         .isNotNull()
         .extracting(DetailArticleDto::getId, DetailArticleDto::getTitle,
             DetailArticleDto::getSummary, DetailArticleDto::getBody,
-            DetailArticleDto::getAuthor, DetailArticleDto::getCreatedAt)
+            DetailArticleDto::getCreatedAt)
         .containsSequence(id, title, summary, body,
-            this.accountConverter.simple(creator),
             this.timeProvider.zonedDateTime(createdAt));
   }
 
@@ -173,7 +167,6 @@ public class ArticleConverterImplTest {
     Article article = this.testUtil.createdArticle();
     long id = article.getId();
     String title = article.getTitle();
-    Account creator = article.getCreator();
     log.info("GIVEN - article={}", article);
 
     // When
@@ -183,8 +176,8 @@ public class ArticleConverterImplTest {
     // Then
     assertThat(dto)
         .isNotNull()
-        .extracting(SimpleArticleDto::getId, SimpleArticleDto::getTitle, SimpleArticleDto::getAuthor)
-        .containsSequence(id, title, this.accountConverter.simple(creator));
+        .extracting(SimpleArticleDto::getId, SimpleArticleDto::getTitle)
+        .containsSequence(id, title);
   }
 
   @Test
@@ -194,7 +187,6 @@ public class ArticleConverterImplTest {
     long id = article.getId();
     String title = article.getTitle();
     String summary = article.getSummary();
-    Account creator = article.getCreator();
     Instant createdAt = article.getCreatedAt();
     log.info("GIVEN - article={}", article);
 
@@ -206,9 +198,8 @@ public class ArticleConverterImplTest {
     assertThat(dto)
         .isNotNull()
         .extracting(SummaryArticleDto::getId, SummaryArticleDto::getTitle, SummaryArticleDto::getSummary,
-            SummaryArticleDto::getAuthor, SummaryArticleDto::getCreatedAt)
+            SummaryArticleDto::getCreatedAt)
         .containsSequence(id, title, summary,
-            this.accountConverter.simple(creator),
             this.timeProvider.zonedDateTime(createdAt));
   }
 
@@ -220,7 +211,6 @@ public class ArticleConverterImplTest {
     String title = article.getTitle();
     String summary = article.getSummary();
     String body = article.getBody();
-    Account creator = article.getCreator();
     Instant createdAt = article.getCreatedAt();
     log.info("GIVEN - article={}", article);
 
@@ -231,11 +221,10 @@ public class ArticleConverterImplTest {
     // Then
     assertThat(dto)
         .isNotNull()
-        .extracting(DetailArticleDto::getId, DetailArticleDto::getTitle,
-            DetailArticleDto::getSummary, DetailArticleDto::getBody,
-            DetailArticleDto::getAuthor, DetailArticleDto::getCreatedAt)
+        .extracting(DetailArticleDto::getId,
+            DetailArticleDto::getTitle, DetailArticleDto::getSummary, DetailArticleDto::getBody,
+            DetailArticleDto::getCreatedAt)
         .containsSequence(id, title, summary, body,
-            this.accountConverter.simple(creator),
             this.timeProvider.zonedDateTime(createdAt));
   }
 }

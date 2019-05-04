@@ -2,13 +2,15 @@ package kr.lul.kobalttown.article.web.controller;
 
 import kr.lul.kobalttown.article.borderline.ArticleBorderline;
 import kr.lul.kobalttown.article.borderline.command.CreateArticleCmd;
+import kr.lul.kobalttown.article.borderline.command.ReadArticleCmd;
 import kr.lul.kobalttown.article.domain.CreateArticleException;
 import kr.lul.kobalttown.article.domain.CreateArticleFieldException;
 import kr.lul.kobalttown.article.dto.DetailArticleDto;
 import kr.lul.kobalttown.article.web.ArticleApis;
-import kr.lul.kobalttown.article.web.ArticleApis.Inputs;
+import kr.lul.kobalttown.article.web.ArticleApis.Attributes;
 import kr.lul.kobalttown.article.web.CreateArticleInput;
 import kr.lul.kobalttown.article.web.view.ArticleView;
+import kr.lul.kobalttown.common.api.NotFoundApiException;
 import kr.lul.kobalttown.common.util.TimeProvider;
 import kr.lul.kobalttown.support.spring.security.AccountDetails;
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.validation.Valid;
 import java.util.UUID;
@@ -47,8 +50,8 @@ class ArticleControllerImpl implements ArticleController {
       log.trace("args : model={}", model);
     }
 
-    if (!model.containsAttribute(Inputs.CREATE_ATTR)) {
-      model.addAttribute(Inputs.CREATE_ATTR, new CreateArticleInput());
+    if (!model.containsAttribute(Attributes.CREATE_ATTR)) {
+      model.addAttribute(Attributes.CREATE_ATTR, new CreateArticleInput());
     }
 
     String template = ArticleView.CREATE_FORM;
@@ -73,10 +76,10 @@ class ArticleControllerImpl implements ArticleController {
       DetailArticleDto article = this.articleBorderline.create(cmd);
       template = format("redirect:%s/%d", ArticleApis.NAMESPACE, article.getId());
     } catch (CreateArticleFieldException e) {
-      result.addError(new FieldError(Inputs.CREATE_ATTR, e.getField(), e.getMessage()));
+      result.addError(new FieldError(Attributes.CREATE_ATTR, e.getField(), e.getMessage()));
       template = doCreateForm(model);
     } catch (CreateArticleException e) {
-      result.addError(new ObjectError(Inputs.CREATE_ATTR, e.getMessage()));
+      result.addError(new ObjectError(Attributes.CREATE_ATTR, e.getMessage()));
       template = doCreateForm(model);
     }
 
@@ -107,7 +110,8 @@ class ArticleControllerImpl implements ArticleController {
 
   @Override
   public String create(final AccountDetails user,
-      @ModelAttribute(Inputs.CREATE_ATTR) @Valid final CreateArticleInput input, final BindingResult result,
+      @ModelAttribute(Attributes.CREATE_ATTR) @Valid final CreateArticleInput input,
+      final BindingResult result,
       final Model model) {
     if (log.isTraceEnabled()) {
       log.trace("args : user={}, input={}, result={}, model={}", user, input, result, model);
@@ -120,6 +124,35 @@ class ArticleControllerImpl implements ArticleController {
     final String template = result.hasErrors()
         ? doCreateForm(model)
         : doCreate(user, input, result, model);
+
+    if (log.isTraceEnabled()) {
+      log.trace("result : template={}, model={}", template, model);
+    }
+    return template;
+  }
+
+  @Override
+  public String read(AccountDetails user, @PathVariable(Attributes.ID_ATTR) final long id,
+      final Model model) throws NotFoundApiException {
+    if (log.isTraceEnabled()) {
+      log.trace("args : user={}, id={}, model={}", user, id, model);
+    }
+    notNull(user, "user");
+    notNull(model, "model");
+    if (0 >= id) {
+      throw new NotFoundApiException(id);
+    }
+
+    ReadArticleCmd cmd = new ReadArticleCmd(this.timeProvider.now(), user.getId());
+    cmd.setArticle(id);
+
+    String template = ArticleView.READ;
+    DetailArticleDto article = this.articleBorderline.read(cmd);
+    if (null == article) {
+      throw new NotFoundApiException(id);
+    }
+
+    model.addAttribute(Attributes.ARTICLE_ATTR, article);
 
     if (log.isTraceEnabled()) {
       log.trace("result : template={}, model={}", template, model);

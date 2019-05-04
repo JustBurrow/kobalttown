@@ -1,6 +1,7 @@
 package kr.lul.kobalttown.article.borderline;
 
 import kr.lul.kobalttown.article.borderline.command.CreateArticleCmd;
+import kr.lul.kobalttown.article.borderline.command.ReadArticleCmd;
 import kr.lul.kobalttown.article.domain.CreateArticleException;
 import kr.lul.kobalttown.article.dto.DetailArticleDto;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,4 +22,13 @@ public interface ArticleBorderline {
    * @throws CreateArticleException 아티클 작성 실패한 경우.
    */
   DetailArticleDto create(CreateArticleCmd cmd) throws CreateArticleException;
+
+  /**
+   * 글 조회.
+   *
+   * @param cmd 읽을 글 정보.
+   *
+   * @return 글 상세. nullable.
+   */
+  DetailArticleDto read(ReadArticleCmd cmd);
 }

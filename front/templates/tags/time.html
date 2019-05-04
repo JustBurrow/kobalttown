@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2019-05-04 15:52" th:remove="all"/>
+    <meta charset="UTF-8"/>
+    <title>&lt;time&gt; tag</title>
+</head>
+<body>
+<main>
+    <h1><code>&lt;time&gt;</code> tag</h1>
+    <div th:fragment="auto(time)" th:remove="tag" style="display: none">
+        <!--/*@thymesVar id="time" type="java.time.temporal.Temporal"*/-->
+        <div th:switch="${time.class}" th:remove="tag">
+            <div th:case="${T(java.time.ZonedDateTime)}" th:remove="tag">
+                <time th:replace=":: zonedDateTime"/>
+            </div>
+            <div th:case="${T(java.time.LocalDate)}" th:remove="tag">
+                <time th:replace=":: localDate"/>
+            </div>
+            <div th:case="${T(java.time.LocalTime)}" th:remove="tag">
+                <time th:replace=":: localTime"/>
+            </div>
+            <div th:case="${T(java.time.LocalDateTime)}" th:remove="tag">
+                <time th:replace=":: localDateTime"/>
+            </div>
+        </div>
+    </div>
+    <section>
+        <h2><code>java.time.ZonedDateTime</code></h2>
+        <!--/*@thymesVar id="time" type="java.time.ZonedDateTime"*/-->
+        <dl>
+            <dt>default</dt>
+            <dd>
+                <time class="zoned-date-time" datetime="2019-02-24T22:21:13.324[Asia/Seoul]"
+                      th:fragment="zonedDateTime"
+                      th:datetime="${time}"
+                      th:text="${time.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd HH:mm:ss'))}">
+                    2019-02-24 22:21:13
+                </time>
+            </dd>
+        </dl>
+    </section>
+    <section>
+        <h2><code>java.time.LocalDate</code></h2>
+        <!--/*@thymesVar id="time" type="java.time.LocalDate"*/-->
+        <dl>
+            <dt>default</dt>
+            <dd>
+                <time class="local-date" datetime="2019-02-24"
+                      th:fragment="localDate"
+                      th:datetime="${time}"
+                      th:text="${time.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd'))}">
+                    2019-02-24
+                </time>
+            </dd>
+        </dl>
+    </section>
+    <section>
+        <h2><code>java.time.LocalTime</code></h2>
+        <!--/*@thymesVar id="time" type="java.time.LocalTime"*/-->
+        <dl>
+            <dt>default</dt>
+            <dd>
+                <time class="local-time" datetime="22:21:13.324"
+                      th:fragment="localTime"
+                      th:datetime="${time}"
+                      th:text="${time.format(T(java.time.format.DateTimeFormatter).ofPattern('HH:mm:ss'))}">
+                    22:21:13
+                </time>
+            </dd>
+        </dl>
+    </section>
+    <section>
+        <h2><code>java.time.LocalDateTime</code></h2>
+        <!--/*@thymesVar id="time" type="java.time.LocalDateTime"*/-->
+        <dl>
+            <dt>default</dt>
+            <dd>
+                <time class="local-date-time" datetime="2019-02-24T22:21:13.324"
+                      th:fragment="localDateTime"
+                      th:datetime="${time}"
+                      th:text="${time.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd HH:mm:ss'))}">
+                    2019-02-24 22:21:13
+                </time>
+            </dd>
+        </dl>
+    </section>
+</main>
+</body>
+</html>

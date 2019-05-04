@@ -45,7 +45,7 @@ public class ArticleEntity extends CreatableMappedSuperclass implements Article 
       referencedColumnName = AccountMapping.T.COL_ID)
   private Account creator;
 
-  private ArticleEntity() { // JPA only
+  public ArticleEntity() { // JPA only
   }
 
   public ArticleEntity(String title, String body, Account creator, Instant createdAt) {

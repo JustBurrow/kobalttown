@@ -34,7 +34,7 @@ public class CredentialEntity extends CreatableMappedSuperclass implements Crede
   @Column(name = T.COL_SECRET_HASH, nullable = false, updatable = false)
   private String secretHash;
 
-  private CredentialEntity() {  // JPA only
+  public CredentialEntity() {  // JPA only
   }
 
   public CredentialEntity(Account account, String publicKey, String secretHash, Instant createdAt) {
