@@ -13,6 +13,4 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Integer>
   boolean existsByNickname(String nickname);
 
   AccountEntity findByNickname(String nickname);
-
-  AccountEntity findOneById(int id);
 }

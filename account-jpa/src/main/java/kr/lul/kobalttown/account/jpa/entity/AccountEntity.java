@@ -62,11 +62,10 @@ public class AccountEntity extends UpdatableMappedSuperclass implements Account 
     if (this == o) {
       return true;
     }
-    if (!(o instanceof AccountEntity)) {
+    if (0 >= this.id || !(o instanceof AccountEntity)) {
       return false;
     }
-    AccountEntity that = (AccountEntity) o;
-    return this.id == that.id;
+    return this.id == ((AccountEntity) o).id;
   }
 
   @Override
