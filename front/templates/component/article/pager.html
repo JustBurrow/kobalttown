@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sd="http://www.thymeleaf.org/spring-data"
+      th:lang="${#locale}">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2019-05-04 19:18" th:remove="all"/>
+    <meta charset="UTF-8"/>
+    <title>list pager</title>
+</head>
+<body>
+<main>
+    <h1>list pager</h1>
+    <section>
+        <h2>default</h2>
+        <!--/*@thymesVar id="page" type="org.springframework.data.domain.Page"*/-->
+        <div th:fragment="default(page)" th:remove="tag">
+            <div sd:page-object="${page}">
+                <div sd:pagination-summary="">info</div>
+                <div>
+                    <ol sd:pagination-split="7" sd:pagination="full">
+                        <li><a href="../../page/_/index-user.html">이전 블록</a></li>
+                        <li><a href="../../page/_/index-user.html">11</a></li>
+                        <li><a href="../../page/_/index-user.html">12</a></li>
+                        <li><span>현재 페이지</span></li>
+                        <li><a href="../../page/_/index-user.html">14</a></li>
+                        <li><a href="../../page/_/index-user.html">15</a></li>
+                        <li><a href="../../page/_/index-user.html">다음 블록</a></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>
