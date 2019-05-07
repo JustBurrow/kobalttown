@@ -9,6 +9,11 @@
     <title>Navbar</title>
 </head>
 <body>
+<header>
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand mb-0 h1" href="../../../index.html">Kobalttown Front</a>
+    </nav>
+</header>
 <div th:fragment="header" th:remove="tag">
     <div sec:authorize="hasRole('ROLE_ANONYMOUS')" th:remove="tag">
         <header th:replace="component/header/role_anonymous :: header"></header>
