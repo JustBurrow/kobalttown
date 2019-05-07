@@ -1,9 +1,12 @@
 package kr.lul.kobalttown.article.borderline;
 
 import kr.lul.kobalttown.article.borderline.command.CreateArticleCmd;
+import kr.lul.kobalttown.article.borderline.command.ListArticlecmd;
 import kr.lul.kobalttown.article.borderline.command.ReadArticleCmd;
 import kr.lul.kobalttown.article.domain.CreateArticleException;
 import kr.lul.kobalttown.article.dto.DetailArticleDto;
+import kr.lul.kobalttown.article.dto.SummaryArticleDto;
+import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -31,4 +34,11 @@ public interface ArticleBorderline {
    * @return 글 상세. nullable.
    */
   DetailArticleDto read(ReadArticleCmd cmd);
+
+  /**
+   * @param cmd 글 목록 정보.
+   *
+   * @return 글 목록.
+   */
+  Page<SummaryArticleDto> list(ListArticlecmd cmd);
 }

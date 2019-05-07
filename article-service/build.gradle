@@ -3,6 +3,7 @@ dependencies {
   implementation project(':article-jpa')
   implementation project(':article-dao')
   api project(':support-spring-boot')
+  api project(':support-spring-security')
 
   testImplementation project(':test-util')
   testImplementation project(':configuration-security')

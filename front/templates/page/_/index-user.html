@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sd="http://www.thymeleaf.org/spring-data"
+      th:lang="${#locale}">
 <head>
     <meta charset="UTF-8"/>
     <title>Kobalttown 유저 인덱스(루트)</title>
@@ -16,24 +17,24 @@
 <main>
     <h1>Kobalttown 유저 인덱스(루트)</h1>
     <div>
-        <form id="search" action="index-user.html" method="get"></form>
-        <input id="search-query" form="search"/>
-        <button form="search">검색</button>
-    </div>
-    <div>
-        <a href="index-user.html" th:href="@{/}">맨처음</a>
-        <ol start="10">
-            <li><a href="index-user.html?page=10">이전 블록</a></li>
-            <li><a href="index-user.html?page=11">11</a></li>
-            <li><a href="index-user.html?page=12">12</a></li>
-            <li><span>현재 페이지</span></li>
-            <li><a href="index-user.html?page=14">14</a></li>
-            <li><a href="index-user.html?page=15">15</a></li>
-            <li><a href="index-user.html?page=16">다음 블록</a></li>
-        </ol>
+        <div th:replace="component/article/pager :: default(${page})">
+            <div>info</div>
+            <div>
+                <ol sd:pagination-split="7" sd:pagination="full">
+                    <li><a href="index-user.html?page=10">이전 블록</a></li>
+                    <li><a href="index-user.html?page=11">11</a></li>
+                    <li><a href="index-user.html?page=12">12</a></li>
+                    <li><span>현재 페이지</span></li>
+                    <li><a href="index-user.html?page=14">14</a></li>
+                    <li><a href="index-user.html?page=15">15</a></li>
+                    <li><a href="index-user.html?page=16">다음 블록</a></li>
+                </ol>
+            </div>
+        </div>
         <a href="../articles/create.html" th:href="@{/articles/create}">글 쓰기</a>
     </div>
-    <table>
+    <!--/*@thymesVar id="page" type="org.springframework.data.domain.Page<kr.lul.kobalttown.article.dto.SummaryArticleDto>"*/-->
+    <table th:replace="component/article/list :: table(${page})">
         <thead>
         <tr>
             <th>ID</th>
@@ -126,16 +127,7 @@
         </tbody>
     </table>
     <div>
-        <a href="index-user.html" th:href="@{/}">맨처음</a>
-        <ol start="10">
-            <li><a href="index-user.html?page=10">이전 블록</a></li>
-            <li><a href="index-user.html?page=11">11</a></li>
-            <li><a href="index-user.html?page=12">12</a></li>
-            <li><span>현재 페이지</span></li>
-            <li><a href="index-user.html?page=14">14</a></li>
-            <li><a href="index-user.html?page=15">15</a></li>
-            <li><a href="index-user.html?page=16">다음 블록</a></li>
-        </ol>
+        <div th:replace="component/article/pager :: default(${page})"></div>
         <a href="../articles/create.html" th:href="@{/articles/create}">글 쓰기</a>
     </div>
 </main>

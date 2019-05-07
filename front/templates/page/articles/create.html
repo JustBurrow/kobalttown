@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
 <head>
     <meta charset="UTF-8"/>
     <title>글쓰기</title>
@@ -7,8 +8,8 @@
 <body>
 <header th:replace="component/header/role_user :: header">
     <nav>
-        <a href="index-user.html">Kobalttown</a>
-        <form action="index-anonymous.html" method="post">
+        <a href="../_/index-user.html">Kobalttown</a>
+        <form action="../_/index-anonymous.html" method="post">
             <button>로그아웃</button>
         </form>
     </nav>
@@ -30,6 +31,7 @@
     </article>
     <div>
         <button form="create">등록</button>
+        <a href="../_/index-user.html" th:href="@{/}">취소</a>
     </div>
 </main>
 </body>

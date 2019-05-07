@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
 <head>
     <meta charset="UTF-8"/>
     <title>Kobalttown 글 내용</title>
@@ -7,8 +8,8 @@
 <body>
 <header th:replace="component/header/role_user :: header">
     <nav>
-        <a href="index-user.html">Kobalttown</a>
-        <form action="index-anonymous.html" method="post">
+        <a href="../_/index-user.html">Kobalttown</a>
+        <form action="../_/index-anonymous.html" method="post">
             <button>로그아웃</button>
         </form>
     </nav>
@@ -23,7 +24,7 @@
         <dl>
             <dt>create</dt>
             <dd>
-                <time datetime="2019-02-24 22:21:13.324" th:replace="tags/time :: auto(*{createdAt})">
+                <time datetime="2019-02-24 22:21:13.324" th:replace="tag/time :: auto(*{createdAt})">
                     2019-02-24 22:21:13
                 </time>
             </dd>
@@ -49,7 +50,7 @@
     </article>
 </main>
 <div>
-    <a href="_/index-user.html" th:href="@{/}">목록</a>
+    <a href="../_/index-user.html" th:href="@{/}">목록</a>
 </div>
 </body>
 </html>

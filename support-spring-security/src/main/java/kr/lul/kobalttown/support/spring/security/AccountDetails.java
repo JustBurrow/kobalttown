@@ -47,7 +47,7 @@ public class AccountDetails extends User {
   @Override
   public String toString() {
     return new StringBuilder(AccountDetails.class.getSimpleName())
-        .append("id=").append(this.id)
+        .append("{id=").append(this.id)
         .append(", username=").append(this.getUsername())
         .append(", password=[ PROTECTED ], enabled=").append(this.isEnabled())
         .append(", accountNonExpired=").append(this.isAccountNonExpired())

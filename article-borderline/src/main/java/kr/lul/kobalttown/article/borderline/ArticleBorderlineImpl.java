@@ -3,15 +3,19 @@ package kr.lul.kobalttown.article.borderline;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.service.AccountService;
 import kr.lul.kobalttown.article.borderline.command.CreateArticleCmd;
+import kr.lul.kobalttown.article.borderline.command.ListArticlecmd;
 import kr.lul.kobalttown.article.borderline.command.ReadArticleCmd;
 import kr.lul.kobalttown.article.converter.ArticleConverter;
 import kr.lul.kobalttown.article.domain.Article;
 import kr.lul.kobalttown.article.domain.CreateArticleException;
 import kr.lul.kobalttown.article.dto.DetailArticleDto;
+import kr.lul.kobalttown.article.dto.SummaryArticleDto;
 import kr.lul.kobalttown.article.service.ArticleService;
 import kr.lul.kobalttown.article.service.params.CreateArticleParams;
+import kr.lul.kobalttown.article.service.params.ListArticleParams;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import static kr.lul.kobalttown.common.util.Arguments.notNull;
@@ -71,5 +75,22 @@ class ArticleBorderlineImpl implements ArticleBorderline {
       log.trace("return : {}", dto);
     }
     return dto;
+  }
+
+  @Override
+  public Page<SummaryArticleDto> list(ListArticlecmd cmd) {
+    if (log.isTraceEnabled()) {
+      log.trace("args : cmd={}", cmd);
+    }
+    notNull(cmd, "cmd");
+
+    ListArticleParams params = new ListArticleParams(cmd, cmd.getPage(), cmd.getPageSize());
+    Page<SummaryArticleDto> list = this.articleService.list(params)
+        .map(article -> this.articleConverter.summary(article));
+
+    if (log.isTraceEnabled()) {
+      log.trace("return : {}", list);
+    }
+    return list;
   }
 }
