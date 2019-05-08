@@ -4,15 +4,24 @@
     <meta name="author" content="justburrow" th:remove="all"/>
     <meta name="since" content="2019-03-03 13:48" th:remove="all"/>
     <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="../../../assets/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../../../assets/css/kobalttown.css"/>
+    <script src="../../../assets/js/jquery.js"></script>
+    <script src="../../../assets/js/popper.js"></script>
+    <script src="../../../assets/js/bootstrap.js"></script>
+    <script src="../../../assets/js/kobalttown.js"></script>
     <title>header - ROLE_USER</title>
 </head>
 <body>
 <header th:fragment="header">
-    <nav>
-        <a href="index-user.html" th:href="@{/}">Kobalttown</a>
-        <form id="header-logout" action="index-anonymous.html" method="post"
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand mb-0 h1" href="../../page/_/index-user.html"
+           th:href="@{/}">Kobalttown</a>
+        <form id="header-logout" action="../../page/_/index-anonymous.html" method="post"
               th:action="@{/logout}"></form>
-        <button form="header-logout" th:title="${#authentication.name}">로그아웃</button>
+        <button class="btn btn-link" form="header-logout"
+                th:title="${#authentication.name}">로그아웃
+        </button>
     </nav>
 </header>
 <main>

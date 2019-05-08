@@ -1,16 +1,25 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
->
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta name="author" content="justburrow" th:remove="all"/>
     <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="../../../assets/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../../../assets/css/kobalttown.css"/>
+    <script src="../../../assets/js/jquery.js"></script>
+    <script src="../../../assets/js/popper.js"></script>
+    <script src="../../../assets/js/bootstrap.js"></script>
+    <script src="../../../assets/js/kobalttown.js"></script>
     <title>header - ROLE_ANONYMOUS</title>
 </head>
 <body>
 <header th:fragment="header">
-    <nav>
-        <a href="index-anonymous.html" th:href="@{/}">Kobalttown</a>
-        <a href="../accounts/create.html" th:href="@{/signup}">가입</a>
-        <a href="login.html" th:href="@{/login}">로그인</a>
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand mb-0 h1" href="../../page/_/index-anonymous.html"
+           th:href="@{/}">Kobalttown</a>
+        <a class="btn btn-primary" href="../../page/accounts/create.html"
+           th:href="@{/signup}">가입</a>
+        <a class="btn btn-outline-primary" href="../../page/_/login.html"
+           th:href="@{/login}">로그인</a>
     </nav>
 </header>
 <h1>header : ROLE_ANONYMOUS</h1>
