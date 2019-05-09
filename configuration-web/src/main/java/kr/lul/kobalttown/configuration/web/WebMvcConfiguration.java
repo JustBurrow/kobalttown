@@ -1,12 +1,16 @@
 package kr.lul.kobalttown.configuration.web;
 
+import kr.lul.kobalttown.configuration.web.property.ConfigurationWebProperties;
+import kr.lul.kobalttown.configuration.web.property.ResourceHandlerRegistrationProperty;
 import kr.lul.kobalttown.configuration.web.support.AccountDetailsHandlerMethodArgumentResolverImpl;
 import org.slf4j.Logger;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.dialect.springdata.SpringDataDialect;
@@ -23,6 +27,12 @@ import static org.slf4j.LoggerFactory.getLogger;
 @EnableWebMvc
 public class WebMvcConfiguration implements WebMvcConfigurer {
   private static final Logger log = getLogger(WebMvcConfiguration.class);
+
+  @Bean
+  @ConfigurationProperties("kr.lul.kobalttown.configuration.web")
+  public ConfigurationWebProperties configurationWebProperties() {
+    return new ConfigurationWebProperties();
+  }
 
   @Bean
   public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
@@ -57,6 +67,17 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     if (log.isTraceEnabled()) {
       log.trace("result : resolvers={}", resolvers);
+    }
+  }
+
+  @Override
+  public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    ConfigurationWebProperties properties = configurationWebProperties();
+    log.info("properties={}", properties);
+
+    for (ResourceHandlerRegistrationProperty property : properties.getResources()) {
+      registry.addResourceHandler(property.getPatterns())
+          .addResourceLocations(property.getLocations());
     }
   }
 }
