@@ -9,33 +9,45 @@
     <script src="../../../assets/js/popper.js"></script>
     <script src="../../../assets/js/bootstrap.js"></script>
     <script src="../../../assets/js/kobalttown.js"></script>
-    <title>로그인</title>
+    <title>로그인 - Kobalttown</title>
 </head>
 <body>
-<header>
+<header th:replace="component/header/role_anonymous :: header">
     <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand mb-0 h1" href="index-anonymous.html"
-           th:href="@{/}">Kobalttown</a>
-        <a class="btn btn-primary" href="../accounts/create.html"
-           th:href="@{/signup}">가입</a>
-        <a class="btn btn-outline-primary" href="login.html"
-           th:href="@{/login}">로그인</a>
+        <a class="navbar-brand mb-0 h1" href="index-anonymous.html">Kobalttown</a>
+        <a class="btn btn-primary" href="../accounts/create.html">가입</a>
+        <a class="btn btn-outline-primary" href="login.html">로그인</a>
     </nav>
 </header>
-<main>
-    <h1>로그인</h1>
-    <form id="login" action="index-user.html" method="post"
+<main class="container">
+    <h1 class="sr-only">로그인</h1>
+    <form id="login" class="invisible"
+          action="index-user.html" method="post"
           th:action="@{/login}"></form>
-    <div>
-        <div>
-            <label for="username">Username</label>
-            <input id="username" form="login" name="username" placeholder="input id."/>
+    <div class="container">
+        <div class="form-group row">
+            <label for="username" class="col-2 col--form-label">Username</label>
+            <div class="col">
+                <input id="username" class="form-control"
+                       placeholder="input id."
+                       form="login" name="username"
+                       required="required"/>
+            </div>
         </div>
-        <div>
-            <label for="password">Password</label>
-            <input type="password" id="password" form="login" name="password" placeholder="input password."/>
+        <div class="form-group row">
+            <label for="password" class="col-2 col-form-label">Password</label>
+            <div class="col">
+                <input type="password" id="password" class="form-control"
+                       placeholder="input password."
+                       form="login" name="password"
+                       required="required"/>
+            </div>
         </div>
-        <button form="login">로그인</button>
+        <div class="container">
+            <div class="row">
+                <button form="login" class="btn btn-lg btn-primary">로그인</button>
+            </div>
+        </div>
     </div>
 </main>
 </body>

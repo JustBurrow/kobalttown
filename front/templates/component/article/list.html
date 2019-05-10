@@ -26,7 +26,8 @@
     <div th:fragment="table(page)" th:remove="tag">
         <section th:remove="tag">
             <h3 th:remove="all">글이 있을 경우.</h3>
-            <table th:unless="${page.empty}">
+            <table class="table"
+                   th:unless="${page.empty}">
                 <thead>
                 <tr>
                     <th>ID</th>
