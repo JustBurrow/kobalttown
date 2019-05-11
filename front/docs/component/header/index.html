@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="../../../assets/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../../../assets/css/kobalttown.css"/>
+    <script src="../../../assets/js/jquery.js"></script>
+    <script src="../../../assets/js/popper.js"></script>
+    <script src="../../../assets/js/bootstrap.js"></script>
+    <script src="../../../assets/js/kobalttown.js"></script>
+    <title>Navbar</title>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand mb-0 h1" href="../../index.html">Kobalttown Front</a>
+    </nav>
+</header>
+<div th:fragment="header" th:remove="tag">
+    <div sec:authorize="hasRole('ROLE_ANONYMOUS')" th:remove="tag">
+        <header th:replace="component/header/role_anonymous :: header"></header>
+    </div>
+    <div sec:authorize="hasRole('ROLE_USER')" th:remove="tag">
+        <header th:replace="component/header/role_user :: header"></header>
+    </div>
+</div>
+<h1>Header</h1>
+<section>
+    <h2><a href="../../../templates/component/header/role_anonymous.html"><code>ROLE_ANONYMOUS</code></a></h2>
+    <iframe src="../../../templates/component/header/role_anonymous.html"></iframe>
+</section>
+<section>
+    <h2><a href="../../../templates/component/header/role_user.html"><code>ROLE_USER</code></a></h2>
+    <iframe src="../../../templates/component/header/role_user.html"></iframe>
+</section>
+</body>
+</html>

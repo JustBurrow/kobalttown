@@ -3,49 +3,72 @@
       th:lang="${#locale}">
 <head>
     <meta charset="UTF-8"/>
-    <title>Kobalttown 회원가입</title>
+    <link rel="stylesheet" href="../../../assets/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../../../assets/css/kobalttown.css"/>
+    <script src="../../../assets/js/jquery.js"></script>
+    <script src="../../../assets/js/popper.js"></script>
+    <script src="../../../assets/js/bootstrap.js"></script>
+    <script src="../../../assets/js/kobalttown.js"></script>
+    <title>입주 - Kobalttown</title>
 </head>
 <body>
-<header>
-    <nav>
-        <a href="../_/index-anonymous.html" th:href="@{/}">Kobalttown</a>
-        <a href="../_/login.html" th:href="@{/login}">로그인</a>
+<header th:replace="component/header/role_anonymous :: header">
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand mb-0 h1" href="../_/index-anonymous.html">Kobalttown</a>
+        <a class="btn btn-primary" href="../accounts/create.html">가입</a>
+        <a class="btn btn-outline-primary" href="../_/login.html">로그인</a>
     </nav>
 </header>
-<main>
-    <h1>회원가입</h1>
+<main class="container">
+    <h1 class="sr-only">회원가입</h1>
     <!--/*@thymesVar id="account" type="kr.lul.kobalttown.account.api.CreateAccountInput"*/-->
     <div th:object="${account}">
-        <ul th:if="${#fields.hasErrors()}">
+        <ul class="alert alert-danger" th:if="${#fields.hasErrors()}">
             <li th:each="err : ${#fields.errors()}" th:text="${err}">err</li>
         </ul>
-        <form id="signup" action="../_/login.html" method="post"
+        <form id="signup" class="invisible"
+              action="../_/login.html" method="post"
               th:action="@{/accounts}"></form>
-        <div>
-            <label for="nickname">ID</label>
-            <input id="nickname" form="signup" name="nickname" placeholder="Input nickname."
-                   required="required"
-                   th:field="*{nickname}"/>
-            <ul th:if="${#fields.hasErrors('nickname')}">
-                <li th:each="err : ${#fields.errors('nickname')}" th:text="${err}">err</li>
-            </ul>
+        <div class="form-group row">
+            <label class="col-4 col-form-label"
+                   for="nickname">ID</label>
+            <div class="col">
+                <input id="nickname" class="form-control"
+                       form="signup" name="nickname" placeholder="Input nickname."
+                       required="required"
+                       th:field="*{nickname}"/>
+                <ul th:if="${#fields.hasErrors('nickname')}">
+                    <li th:each="err : ${#fields.errors('nickname')}" th:text="${err}">err</li>
+                </ul>
+            </div>
         </div>
-        <div>
-            <label for="password">Password</label>
-            <input type="password" id="password" form="signup" name="password" placeholder="Input password."
-                   required="required"
-                   th:field="*{password}"/>
-            <ul th:if="${#fields.hasErrors('password')}">
-                <li th:each="err : ${#fields.errors('password')}" th:text="${err}">err</li>
-            </ul>
+        <div class="form-group row">
+            <label class="col-4 col-form-label"
+                   for="password">Password</label>
+            <div class="col">
+                <input type="password" id="password" class="form-control"
+                       form="signup" name="password" placeholder="Input password."
+                       required="required"
+                       th:field="*{password}"/>
+                <ul th:if="${#fields.hasErrors('password')}">
+                    <li th:each="err : ${#fields.errors('password')}" th:text="${err}">err</li>
+                </ul>
+            </div>
         </div>
-        <div>
-            <label for="confirm">Password confirm</label>
-            <input type="password" id="confirm" form="signup" name="confirm" placeholder="Input password again."
-                   required="required"
-                   th:field="*{confirm}"/>
+        <div class="form-group row">
+            <label class="col-4 col-form-label"
+                   for="confirm">Password confirm</label>
+            <div class="col">
+                <input type="password" id="confirm" class="form-control"
+                       form="signup" name="confirm" placeholder="Input password again."
+                       required="required"
+                       th:field="*{confirm}"/>
+                <ul th:if="${#fields.hasErrors('confirm')}">
+                    <li th:each="err : ${#fields.errors('confirm')}" th:text="${err}">err</li>
+                </ul>
+            </div>
         </div>
-        <button form="signup">가입</button>
+        <button class="btn btn-lg btn-primary" form="signup">가입</button>
     </div>
 </main>
 </body>

@@ -3,35 +3,53 @@
       th:lang="${#locale}">
 <head>
     <meta charset="UTF-8"/>
-    <title>글쓰기</title>
+    <link rel="stylesheet" href="../../../assets/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../../../assets/css/kobalttown.css"/>
+    <script src="../../../assets/js/jquery.js"></script>
+    <script src="../../../assets/js/popper.js"></script>
+    <script src="../../../assets/js/bootstrap.js"></script>
+    <script src="../../../assets/js/kobalttown.js"></script>
+    <title>글쓰기 - Kobalttown</title>
 </head>
 <body>
 <header th:replace="component/header/role_user :: header">
-    <nav>
-        <a href="../_/index-user.html">Kobalttown</a>
-        <form action="../_/index-anonymous.html" method="post">
-            <button>로그아웃</button>
-        </form>
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand mb-0 h1" href="../_/index-user.html">Kobalttown</a>
+        <form id="header-logout" class="invisible"
+              action="../_/index-anonymous.html" method="post"></form>
+        <button class="btn btn-link" form="header-logout">로그아웃</button>
     </nav>
 </header>
-<main>
-    <form id="create" action="detail.html" method="post"
-          th:action="@{/articles}"></form>
-    <!--/*@thymesVar id="article" type="kr.lul.kobalttown.article.web.CreateArticleInput"*/-->
-    <article th:object="${article}">
-        <h1><label for="title">TITLE</label>
-            <input id="title" form="create" name="title" placeholder="input title."
-                   th:field="*{title}"/>
-        </h1>
-        <div>
-            <label for="body">BODY</label>
-            <textarea id="body" form="create" name="body"
-                      th:field="*{body}"></textarea>
-        </div>
-    </article>
+<main class="container">
     <div>
-        <button form="create">등록</button>
-        <a href="../_/index-user.html" th:href="@{/}">취소</a>
+        <form id="create" class="invisible"
+              action="detail.html" method="post"
+              th:action="@{/articles}"></form>
+        <!--/*@thymesVar id="article" type="kr.lul.kobalttown.article.web.CreateArticleInput"*/-->
+        <article th:object="${article}">
+            <h1 class="form-group">
+                <label class="sr-only"
+                       for="title">제목</label>
+                <input id="title" class="form-control"
+                       form="create" name="title" placeholder="제목"
+                       th:field="*{title}"/>
+            </h1>
+            <div class="form-group">
+                <label class="sr-only"
+                       for="body">본문</label>
+                <textarea id="body" class="form-control"
+                          rows="35" placeholder="일단 쓰면, 누군가는 언제나 가지고 있다."
+                          form="create" name="body"
+                          th:field="*{body}"></textarea>
+            </div>
+        </article>
+        <div>
+            <button class="btn btn-lg btn-primary" form="create">등록</button>
+            <button type="reset" class="btn btn-lg btn-warning">다시</button>
+            <a class="btn btn-lg btn-link"
+               href="../_/index-user.html"
+               th:href="@{/}">취소</a>
+        </div>
     </div>
 </main>
 </body>

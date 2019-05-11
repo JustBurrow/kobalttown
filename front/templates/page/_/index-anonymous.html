@@ -3,21 +3,33 @@
       th:lang="${#locale}">
 <head>
     <meta charset="UTF-8"/>
-    <title>Kobalttown 익명 인덱스(루트)</title>
+    <link rel="stylesheet" href="../../../assets/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../../../assets/css/kobalttown.css"/>
+    <script src="../../../assets/js/jquery.js"></script>
+    <script src="../../../assets/js/popper.js"></script>
+    <script src="../../../assets/js/bootstrap.js"></script>
+    <script src="../../../assets/js/kobalttown.js"></script>
+    <title>대문 - Kobalttown</title>
 </head>
 <body>
 <header th:replace="component/header/role_anonymous :: header">
-    <nav>
-        <a href="index-anonymous.html" th:href="@{/}">Kobalttown</a>
-        <a href="../accounts/create.html" th:href="@{/signup}">가입</a>
-        <a href="login.html" th:href="@{/login}">로그인</a>
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand mb-0 h1" href="index-anonymous.html">Kobalttown</a>
+        <a class="btn btn-primary" href="../accounts/create.html">가입</a>
+        <a class="btn btn-outline-primary" href="login.html">로그인</a>
     </nav>
 </header>
-<main>
-    <h1>Kobalttown 익명 인덱스(루트)</h1>
-    <p>익명 게시판이니까 로그인 하기 전에는 아무것도 보여주지 않는다.</p>
-    <div><a href="../accounts/create.html" th:href="@{/signup}">가입</a></div>
-    <div><a href="login.html" th:href="@{/login}">로그인</a></div>
+<main class="container">
+    <div class="jumbotron">
+        <h1 class="display-4">Kobalttown</h1>
+        <p class="lead">익명 게시판이니까 로그인 하기 전에는 아무것도 보여주지 않는다.</p>
+        <hr/>
+        <p>그러니 얼른 가입하던지 로그인 해라.</p>
+        <a href="../accounts/create.html" class="btn btn-lg btn-primary"
+           th:href="@{/signup}">가입</a>
+        <a href="login.html" class="btn btn-lg btn-outline-primary"
+           th:href="@{/login}">로그인</a>
+    </div>
 </main>
 </body>
 </html>

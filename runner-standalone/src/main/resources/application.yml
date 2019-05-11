@@ -1,3 +1,9 @@
+kr.lul.kobalttown:
+  configuration:
+    web:
+      resources:
+        - patterns: '/assets/**'
+          locations: 'file:./front/assets/'
 spring:
   pid:
     fail-on-write-error: true

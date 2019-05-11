@@ -5,9 +5,20 @@
     <meta name="author" content="justburrow" th:remove="all"/>
     <meta name="since" content="2019-05-04 18:29" th:remove="all"/>
     <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="../../../assets/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../../../assets/css/kobalttown.css"/>
+    <script src="../../../assets/js/jquery.js"></script>
+    <script src="../../../assets/js/popper.js"></script>
+    <script src="../../../assets/js/bootstrap.js"></script>
+    <script src="../../../assets/js/kobalttown.js"></script>
     <title>article list</title>
 </head>
 <body>
+<header>
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand mb-0 h1" href="../../index.html">Kobalttown Front</a>
+    </nav>
+</header>
 <main>
     <h1>article list</h1>
     <h2>table type</h2>
@@ -15,7 +26,8 @@
     <div th:fragment="table(page)" th:remove="tag">
         <section th:remove="tag">
             <h3 th:remove="all">글이 있을 경우.</h3>
-            <table th:unless="${page.empty}">
+            <table class="table"
+                   th:unless="${page.empty}">
                 <thead>
                 <tr>
                     <th>ID</th>
