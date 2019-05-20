@@ -1,7 +1,10 @@
 package kr.lul.kobalttown.test.account;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static kr.lul.kobalttown.account.domain.Account.validateNickname;
 import static kr.lul.kobalttown.account.domain.Credential.*;
@@ -14,6 +17,13 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public class AccountDomainTestUtilTest {
   private static final Logger log = getLogger(AccountDomainTestUtilTest.class);
+
+  private PasswordEncoder passwordEncoder;
+
+  @Before
+  public void setUp() throws Exception {
+    this.passwordEncoder = new BCryptPasswordEncoder();
+  }
 
   @Test
   public void test_nickname() throws Exception {
@@ -32,9 +42,10 @@ public class AccountDomainTestUtilTest {
 
   @Test
   public void test_password() throws Exception {
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 1000; i++) {
       // When
       String password = AccountDomainTestUtil.password();
+      String secret = this.passwordEncoder.encode(password);
 
       // Then
       assertThat(password)
@@ -43,7 +54,7 @@ public class AccountDomainTestUtilTest {
           .as("password.length=%d, password=%s", password.length(), password)
           .isGreaterThanOrEqualTo(SECRET_MIN_LENGTH)
           .isLessThanOrEqualTo(SECRET_MAX_LENGTH);
-      validateSecret(password);
+      validateSecret(secret);
     }
   }
 }
