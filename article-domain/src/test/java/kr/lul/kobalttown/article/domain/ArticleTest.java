@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.article.domain;
 
-import kr.lul.kobalttown.common.util.AssertionException;
+import kr.lul.kobalttown.common.util.ValidationException;
 import org.junit.Test;
 import org.slf4j.Logger;
 
@@ -20,14 +20,14 @@ public class ArticleTest {
   @Test
   public void test_validateTitle_with_null() throws Exception {
     assertThatThrownBy(() -> validateTitle(null))
-        .isInstanceOf(AssertionException.class)
+        .isInstanceOf(ValidationException.class)
         .hasMessage("title is null.");
   }
 
   @Test
   public void test_validateTitle_with_empty() throws Exception {
     assertThatThrownBy(() -> validateTitle(""))
-        .isInstanceOf(AssertionException.class)
+        .isInstanceOf(ValidationException.class)
         .hasMessage("title is empty.");
   }
 
@@ -59,21 +59,21 @@ public class ArticleTest {
 
     // When & Then
     assertThatThrownBy(() -> validateTitle(title))
-        .isInstanceOf(AssertionException.class)
+        .isInstanceOf(ValidationException.class)
         .hasMessageStartingWith("title is too long");
   }
 
   @Test
   public void test_validateSummary_with_null() throws Exception {
     assertThatThrownBy(() -> validateSummary(null))
-        .isInstanceOf(AssertionException.class)
+        .isInstanceOf(ValidationException.class)
         .hasMessage("summary is null.");
   }
 
   @Test
   public void test_validateSummary_with_empty() throws Exception {
     assertThatThrownBy(() -> validateSummary(""))
-        .isInstanceOf(AssertionException.class)
+        .isInstanceOf(ValidationException.class)
         .hasMessage("summary is empty.");
   }
 
@@ -85,21 +85,21 @@ public class ArticleTest {
   @Test
   public void test_validateSummary_with_max_plus_1_length() throws Exception {
     assertThatThrownBy(() -> validateSummary(random(1 + SUMMARY_MAX_LENGTH)))
-        .isInstanceOf(AssertionException.class)
+        .isInstanceOf(ValidationException.class)
         .hasMessageStartingWith("summary is too long");
   }
 
   @Test
   public void test_validateBody_with_null() throws Exception {
     assertThatThrownBy(() -> validateBody(null))
-        .isInstanceOf(AssertionException.class)
+        .isInstanceOf(ValidationException.class)
         .hasMessage("body is null.");
   }
 
   @Test
   public void test_validateBody_with_empty() throws Exception {
     assertThatThrownBy(() -> validateBody(""))
-        .isInstanceOf(AssertionException.class)
+        .isInstanceOf(ValidationException.class)
         .hasMessage("body is empty.");
   }
 

@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.account.domain;
 
-import kr.lul.kobalttown.common.util.AssertionException;
+import kr.lul.kobalttown.common.util.ValidationException;
 import org.junit.Test;
 import org.slf4j.Logger;
 
@@ -21,7 +21,7 @@ public class AccountTest {
   @Test
   public void test_validateNickname_with_null() throws Exception {
     assertThatThrownBy(() -> validateNickname(null))
-        .isInstanceOf(AssertionException.class)
+        .isInstanceOf(ValidationException.class)
         .hasMessageContaining("nickname is null");
     assertThat(isValidateNickname(null))
         .isFalse();
@@ -30,7 +30,7 @@ public class AccountTest {
   @Test
   public void test_validateNickname_with_empty() throws Exception {
     assertThatThrownBy(() -> validateNickname(""))
-        .isInstanceOf(AssertionException.class)
+        .isInstanceOf(ValidationException.class)
         .hasMessageContaining("nickname is empty");
     assertThat(isValidateNickname(""))
         .isFalse();
@@ -39,7 +39,7 @@ public class AccountTest {
   @Test
   public void test_validateNickname_with_space() throws Exception {
     assertThatThrownBy(() -> validateNickname(" "))
-        .isInstanceOf(AssertionException.class)
+        .isInstanceOf(ValidationException.class)
         .hasMessageContaining("illegal nickname pattern");
     assertThat(isValidateNickname(" "))
         .isFalse();
@@ -53,7 +53,7 @@ public class AccountTest {
 
     // When & Then
     assertThatThrownBy(() -> validateNickname(nickname))
-        .isInstanceOf(AssertionException.class)
+        .isInstanceOf(ValidationException.class)
         .hasMessageContaining("illegal nickname pattern");
     assertThat(isValidateNickname(nickname))
         .isFalse();
@@ -67,7 +67,7 @@ public class AccountTest {
 
     // When & Then
     assertThatThrownBy(() -> validateNickname(nickname))
-        .isInstanceOf(AssertionException.class)
+        .isInstanceOf(ValidationException.class)
         .hasMessageContaining("illegal nickname pattern");
     assertThat(isValidateNickname(nickname))
         .isFalse();
@@ -102,7 +102,7 @@ public class AccountTest {
 
     // When & Then
     assertThatThrownBy(() -> validateNickname(ref.nickname))
-        .isInstanceOf(AssertionException.class)
+        .isInstanceOf(ValidationException.class)
         .hasMessageContaining("too long nickname");
     assertThat(isValidateNickname(ref.nickname))
         .isFalse();

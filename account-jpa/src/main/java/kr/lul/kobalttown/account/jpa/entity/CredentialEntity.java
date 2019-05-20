@@ -11,7 +11,9 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.Objects;
 
-import static kr.lul.kobalttown.common.util.Arguments.*;
+import static kr.lul.kobalttown.account.domain.Credential.validateSecret;
+import static kr.lul.kobalttown.common.util.Arguments.notEmpty;
+import static kr.lul.kobalttown.common.util.Arguments.notNull;
 
 /**
  * @author justburrow
@@ -41,7 +43,7 @@ public class CredentialEntity extends CreatableMappedSuperclass implements Crede
     super(createdAt);
     notNull(account, "account");
     notEmpty(publicKey, "publicKey");
-    matches(secretHash, SECRET_HASH_REGEX, "secretHash");
+    validateSecret(secretHash);
 
     this.account = account;
     this.publicKey = publicKey;
