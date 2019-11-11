@@ -1,8 +1,0 @@
-dependencies {
-  api project(':account-domain')
-  api project(':support-spring-jpa')
-
-  testImplementation project(':test-util')
-  testImplementation project(':configuration-jpa')
-  testImplementation 'com.h2database:h2'
-}

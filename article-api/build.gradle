@@ -1,5 +1,0 @@
-dependencies {
-  api project(':common-api')
-  api project(':common-validation')
-  api project(':article-dto')
-}

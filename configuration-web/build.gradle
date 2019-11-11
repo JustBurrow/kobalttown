@@ -1,6 +1,0 @@
-dependencies {
-  api project(':support-spring-web')
-  api project(':configuration-security')
-
-  api 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
-}

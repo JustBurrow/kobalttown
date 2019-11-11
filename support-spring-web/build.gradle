@@ -1,7 +1,0 @@
-dependencies {
-  implementation project(':common-util')
-
-  api 'org.springframework.boot:spring-boot-starter-web'
-  api 'org.springframework.boot:spring-boot-starter-thymeleaf'
-  api 'io.github.jpenren:thymeleaf-spring-data-dialect'
-}

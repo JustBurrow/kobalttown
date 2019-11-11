@@ -1,8 +1,0 @@
-dependencies {
-  api project(':account-domain')
-  implementation project(':account-jpa')
-
-  testImplementation project(':test-util')
-  testImplementation project(':configuration-jpa')
-  testImplementation 'mysql:mysql-connector-java'
-}

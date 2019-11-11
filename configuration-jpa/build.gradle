@@ -1,6 +1,0 @@
-dependencies {
-  api project(':support-spring-jpa')
-
-  api 'org.springframework.boot:spring-boot-starter-data-jpa'
-  api 'mysql:mysql-connector-java'
-}

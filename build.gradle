@@ -1,38 +1,40 @@
-import org.springframework.boot.gradle.plugin.SpringBootPlugin
-
 buildscript {
   repositories {
     mavenCentral()
     jcenter()
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
   }
 
   dependencies {
-    classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.4.RELEASE"
-    classpath 'io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE'
-    classpath "gradle.plugin.gradle-plugins:jartest:1.0.1"
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:2.2.0.RELEASE"
+    classpath "io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE"
+    classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+"
   }
 }
 
-allprojects {
-  group 'kr.lul.kobalttown'
-  version '0.0.1.SNAPSHOT'
+apply plugin: "idea"
+apply plugin: "eclipse"
 
-  apply plugin: 'idea'
-  apply plugin: 'eclipse'
+allprojects {
+  group "kr.lul.kobalttown"
+  version "0.0.1.SNAPSHOT"
+
+  repositories {
+    jcenter()
+    mavenCentral()
+    maven {
+      url "https://dl.bintray.com/justburrow/kr.lul"
+    }
+  }
 }
 
 subprojects {
-  apply plugin: 'java'
-  apply plugin: 'java-library'
-  apply plugin: 'org.springframework.boot'
-  apply plugin: 'io.spring.dependency-management'
-  apply plugin: 'com.github.hauner.jarTest'
+  apply plugin: "java"
+  apply plugin: "org.springframework.boot"
+  apply plugin: "io.spring.dependency-management"
+  apply plugin: "com.jfrog.bintray"
 
-  sourceCompatibility = 11
-  targetCompatibility = 11
+  sourceCompatibility = 13
+  targetCompatibility = 13
 
   repositories {
     mavenCentral()
@@ -41,23 +43,54 @@ subprojects {
 
   dependencyManagement {
     imports {
-      mavenBom SpringBootPlugin.BOM_COORDINATES
+      mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
     }
-    
+
     dependencies {
-      dependency 'io.github.jpenren:thymeleaf-spring-data-dialect:3.4.0'
+      dependency "kr.lul.common:common-util:0.0.1"
+      dependency "kr.lul.common:common-web:0.0.1"
+
+      dependency "kr.lul.support.spring:support-spring-data-jpa:0.0.1"
+      dependency "kr.lul.support.spring:support-spring-security:0.0.1"
+
+      dependency "org.assertj:assertj-core:3.14.0"
+      dependency "org.apache.commons:commons-lang3:3.9"
     }
   }
 
   dependencies {
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    testImplementation project(':common-test')
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.apache.commons:commons-lang3'
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+      exclude group: "org.junit.jupiter", module: "junit-jupiter"
+    }
+    testImplementation "org.assertj:assertj-core"
+    testImplementation "org.apache.commons:commons-lang3"
   }
 
-  bootJar.enabled = false
   jar.enabled = true
+  bootJar.enabled = false
+
+  bintray {
+    user = bintrayUser
+    key = bintrayApiKey
+
+    pkg {
+      repo = project.group
+      name = project.name
+
+      licenses = ["Apache-2.0"]
+      publicDownloadNumbers = true
+      publish = true
+      configurations = ["archives"]
+
+      vcsUrl = "https://github.com/JustBurrow/kobalttown.git"
+      githubRepo = "JustBurrow/kobalttown"
+      githubReleaseNotesFile = "README.md"
+
+      version {
+        name = project.version
+      }
+    }
+  }
 }

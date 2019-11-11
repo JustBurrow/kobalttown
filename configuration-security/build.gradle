@@ -1,7 +1,0 @@
-dependencies {
-  api project(':account-domain')
-  implementation project(':account-jpa')
-
-  api project(':support-spring-security')
-  api project(':configuration-jpa')
-}

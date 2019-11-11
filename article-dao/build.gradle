@@ -1,9 +1,0 @@
-dependencies {
-  api project(':article-domain')
-  implementation project(':article-jpa')
-  api project(':support-spring-boot')
-
-  testImplementation project(':test-util')
-  testImplementation project(':configuration-jpa')
-  testImplementation 'mysql:mysql-connector-java'
-}

@@ -1,9 +1,0 @@
-dependencies {
-  api project(':article-api')
-  api project(':article-dto')
-  
-  implementation project(':article-borderline')
-  
-  api project(':support-spring-web')
-  api project(':support-spring-security')
-}

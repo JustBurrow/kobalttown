@@ -1,3 +1,0 @@
-dependencies {
-  api 'javax.validation:validation-api'
-}

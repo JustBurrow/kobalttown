@@ -1,8 +1,0 @@
-dependencies {
-  api project(':article-dto')
-  api project(':article-domain')
-  api project(':account-converter')
-
-  testImplementation project(':test-util')
-  testImplementation project(':support-spring-security')
-}

@@ -1,6 +1,0 @@
-dependencies {
-  api project(':common-util')
-
-  testImplementation project(':common-test')
-  testImplementation 'org.springframework.security:spring-security-core'
-}
