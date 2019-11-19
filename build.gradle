@@ -46,9 +46,10 @@ subprojects {
       mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
     }
 
+    def commonVersion = "0.0.1.SNAPSHOT"
     dependencies {
-      dependency "kr.lul.common:common-util:0.0.1"
-      dependency "kr.lul.common:common-web:0.0.1"
+      dependency "kr.lul.common:common-util:$commonVersion"
+      dependency "kr.lul.common:common-web:$commonVersion"
 
       dependency "kr.lul.support.spring:support-spring-data-jpa:0.0.1"
       dependency "kr.lul.support.spring:support-spring-security:0.0.1"

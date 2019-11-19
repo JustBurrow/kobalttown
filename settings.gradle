@@ -1,1 +1,5 @@
 rootProject.name = 'kobalttown'
+
+include 'account:account-domain'
+
+findProject(':account:account-domain')?.name = 'account-domain'
