@@ -1,7 +1,8 @@
 buildscript {
   repositories {
-    mavenCentral()
     jcenter()
+    mavenCentral()
+    mavenLocal()
   }
 
   dependencies {
@@ -14,15 +15,19 @@ buildscript {
 apply plugin: "idea"
 apply plugin: "eclipse"
 
-allprojects {
-  group "kr.lul.kobalttown"
-  version "0.0.1.SNAPSHOT"
+group "kr.lul.kobalttown"
+version "0.0.1.SNAPSHOT"
 
+allprojects {
   repositories {
     jcenter()
     mavenCentral()
+    mavenLocal()
     maven {
-      url "https://dl.bintray.com/justburrow/kr.lul"
+      url "https://dl.bintray.com/justburrow/snapshot"
+    }
+    maven {
+      url "https://dl.bintray.com/justburrow/release"
     }
   }
 }
@@ -33,13 +38,8 @@ subprojects {
   apply plugin: "io.spring.dependency-management"
   apply plugin: "com.jfrog.bintray"
 
-  sourceCompatibility = 13
-  targetCompatibility = 13
-
-  repositories {
-    mavenCentral()
-    jcenter()
-  }
+  sourceCompatibility = 11
+  targetCompatibility = 11
 
   dependencyManagement {
     imports {
@@ -62,9 +62,7 @@ subprojects {
   dependencies {
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test") {
-      exclude group: "org.junit.jupiter", module: "junit-jupiter"
-    }
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.assertj:assertj-core"
     testImplementation "org.apache.commons:commons-lang3"
   }
@@ -77,20 +75,28 @@ subprojects {
     key = bintrayApiKey
 
     pkg {
-      repo = project.group
+      repo = project.version.toString().endsWith("RELEASE")
+          ? "release"
+          : "snapshot"
       name = project.name
+      desc = project.description
 
+      websiteUrl = "https://blog.lul.kr"
+      issueTrackerUrl = "https://github.com/JustBurrow/kobalttown/issues"
+      vcsUrl = "https://github.com/JustBurrow/kobalttown.git"
       licenses = ["Apache-2.0"]
+
       publicDownloadNumbers = true
       publish = true
+      override = project.version.toString().endsWith("SNAPSHOT")
       configurations = ["archives"]
 
-      vcsUrl = "https://github.com/JustBurrow/kobalttown.git"
       githubRepo = "JustBurrow/kobalttown"
       githubReleaseNotesFile = "README.md"
 
       version {
         name = project.version
+        desc = project.description
       }
     }
   }
