@@ -1,5 +1,14 @@
 rootProject.name = 'kobalttown'
 
-include 'account:account-domain'
+def groups = [
+    account: ["domain"]
+]
 
-findProject(':account:account-domain')?.name = 'account-domain'
+groups.each { group, layers ->
+  layers.each { layer ->
+    def module = "$group-$layer"
+
+    include ":$module"
+    findProject(":$module").projectDir = new File("$group/$module")
+  }
+}
