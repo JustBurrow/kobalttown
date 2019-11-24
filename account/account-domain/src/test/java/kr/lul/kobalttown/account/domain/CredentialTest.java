@@ -4,6 +4,8 @@ import kr.lul.common.util.ValidationException;
 import org.junit.Test;
 import org.slf4j.Logger;
 
+import java.time.Instant;
+
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static kr.lul.kobalttown.account.domain.Credential.*;
 import static org.apache.commons.lang3.RandomStringUtils.random;
@@ -31,6 +33,16 @@ public class CredentialTest {
     // GIVEN
     Account account = new Account() {
       @Override
+      public Instant getUpdatedAt() {
+        return null;
+      }
+
+      @Override
+      public Instant getCreatedAt() {
+        return null;
+      }
+
+      @Override
       public long getId() {
         return 0L;
       }
@@ -38,6 +50,11 @@ public class CredentialTest {
       @Override
       public String getNickname() {
         return "nickname";
+      }
+
+      @Override
+      public boolean isEnabled() {
+        return false;
       }
     };
     log.info("GIVEN - account.id={}", account.getId());
@@ -54,6 +71,16 @@ public class CredentialTest {
     // GIVEN
     Account account = new Account() {
       @Override
+      public Instant getUpdatedAt() {
+        return null;
+      }
+
+      @Override
+      public Instant getCreatedAt() {
+        return null;
+      }
+
+      @Override
       public long getId() {
         return 1L + current().nextLong(1, Long.MAX_VALUE);
       }
@@ -61,6 +88,11 @@ public class CredentialTest {
       @Override
       public String getNickname() {
         return "nickname";
+      }
+
+      @Override
+      public boolean isEnabled() {
+        return false;
       }
     };
     log.info("GIVEN - account.id={}", account.getId());

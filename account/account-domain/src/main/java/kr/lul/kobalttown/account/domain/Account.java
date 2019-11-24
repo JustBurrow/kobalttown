@@ -1,8 +1,11 @@
 package kr.lul.kobalttown.account.domain;
 
+import kr.lul.common.data.Savable;
 import kr.lul.common.util.ValidationException;
 import kr.lul.common.util.Validator;
 import kr.lul.common.util.validator.RegexValidator;
+
+import java.time.Instant;
 
 import static java.lang.String.format;
 import static kr.lul.common.util.Texts.singleQuote;
@@ -11,9 +14,11 @@ import static kr.lul.common.util.Texts.singleQuote;
  * @author justburrow
  * @since 2019-02-27
  */
-public interface Account {
+public interface Account extends Savable<Instant> {
   String ATTR_ID = "id";
   String ATTR_NICKNAME = "nickname";
+  String ATTR_CREATED_AT = "createdAt";
+  String ATTR_UPDATED_AT = "updatedAt";
 
   /**
    * {@link #getNickname()}의 최대 길이.
@@ -49,4 +54,12 @@ public interface Account {
    * @return 별명.
    */
   String getNickname();
+
+  /**
+   * 계정 등록시의 정보를 검증 받았는지 여부.
+   * 지금도 사용할 수 있는지와는 무관한다.
+   *
+   * @return 계정 활성화 여부.
+   */
+  boolean isEnabled();
 }

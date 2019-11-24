@@ -1,14 +1,15 @@
 rootProject.name = 'kobalttown'
 
 def groups = [
-    account: ["domain"]
+    configuration: ["data-jpa"],
+    account      : ["domain", "data"]
 ]
 
-groups.each { group, layers ->
+groups.each { feature, layers ->
   layers.each { layer ->
-    def module = "$group-$layer"
+    def module = "$feature-$layer"
 
     include ":$module"
-    findProject(":$module").projectDir = new File("$group/$module")
+    findProject(":$module").projectDir = new File("$feature/$module")
   }
 }

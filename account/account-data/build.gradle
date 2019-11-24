@@ -1,0 +1,8 @@
+dependencies {
+  implementation project(":account-domain")
+  implementation project(":configuration-data-jpa")
+
+  implementation "kr.lul.support.spring:support-spring-data-jpa:$SUPPORT_SPRING_VERSION"
+
+  testImplementation "com.h2database:h2"
+}
