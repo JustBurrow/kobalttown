@@ -1,0 +1,6 @@
+dependencies {
+  implementation project(":account-borderline")
+  implementation project(":page-account")
+
+  api project(":configuration-web")
+}

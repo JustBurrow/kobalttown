@@ -1,8 +1,10 @@
 rootProject.name = 'kobalttown'
 
 def groups = [
-    configuration: ["data-jpa"],
-    account      : ["domain", "data"]
+    configuration: ["data-jpa", "web"],
+    page         : ["account"],
+    account      : ["domain", "data", "dao", "service", "dto", "converter", "borderline", "web"],
+    runner       : ["standalone"]
 ]
 
 groups.each { feature, layers ->
