@@ -8,6 +8,9 @@ spring:
   jpa:
     open-in-view: false
     show-sql: false
+  thymeleaf:
+    cache: false
+    prefix: file:<PROJECT ROOT PATH>/front/templates/
 
 logging:
   pattern:

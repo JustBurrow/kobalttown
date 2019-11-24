@@ -1,3 +1,3 @@
 dependencies {
-  implementation "kr.lul.common:common-data:$COMMON_VERSION"
+  api "kr.lul.common:common-data:$COMMON_VERSION"
 }

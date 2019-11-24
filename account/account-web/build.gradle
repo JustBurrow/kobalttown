@@ -1,7 +1,10 @@
 dependencies {
+  implementation project(":account-domain")
   implementation project(":account-borderline")
   implementation project(":page-account")
-  implementation "kr.lul.common:common-web:$COMMON_VERSION"
 
   api project(":configuration-web")
+
+  testImplementation project(":configuration-data-jpa")
+  testImplementation project(":configuration-web")
 }
