@@ -1,17 +1,14 @@
 spring:
+  pid:
+    file: koblattown-standalone.pid
   datasource:
     hikari:
       driver-class-name: com.mysql.cj.jdbc.Driver
       jdbc-url: jdbc:mysql://localhost/kobalttown?connectionCollation=utf8mb4_unicode_520_ci&allowPublicKeyRetrieval=true&useSSL=false
-      username: local
-      password: "r))jK=HtmT;Xd4bfm*=oLy+m37o6a62.7agvHaNLg*AX4AT8H"
   jpa:
     open-in-view: false
     show-sql: false
 logging:
-  pattern:
-    console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%t]){faint} %clr(%logger){cyan} %clr(:){faint} %m%n%wEx"
   level:
     root: warn
-    kr.lul.kobalttown:  trace
-    kr.lul.kobalttown.runner: debug
+    org.hibernate.SQL: debug

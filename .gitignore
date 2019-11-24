@@ -270,5 +270,7 @@ fabric.properties
 # Used by previous versions of JEnv
 .jenv-version
 
-config
+*.pid
+config/
 !config/sample-*
+log/
