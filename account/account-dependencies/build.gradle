@@ -1,0 +1,9 @@
+dependencies {
+  api project(":account-domain")
+  api project(":account-data")
+  api project(":account-dao")
+  api project(":account-service")
+  api project(":account-dto")
+  api project(":account-borderline")
+  api project(":account-web")
+}

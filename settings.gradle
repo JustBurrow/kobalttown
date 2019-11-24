@@ -3,7 +3,7 @@ rootProject.name = 'kobalttown'
 def groups = [
     configuration: ["data-jpa", "web"],
     page         : ["account"],
-    account      : ["domain", "data", "dao", "service", "dto", "converter", "borderline", "web"],
+    account      : ["domain", "data", "dao", "service", "dto", "converter", "borderline", "web", "dependencies"],
     runner       : ["standalone"]
 ]
 

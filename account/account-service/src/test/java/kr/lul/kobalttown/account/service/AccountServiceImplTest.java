@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,6 +22,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AccountServiceTestConfiguration.class)
+@Transactional
 public class AccountServiceImplTest {
   private static final Logger log = getLogger(AccountServiceImplTest.class);
 

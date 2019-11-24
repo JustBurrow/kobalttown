@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.account.dao;
 
-import kr.lul.common.data.UuidContext;
+import kr.lul.common.data.Context;
 import kr.lul.kobalttown.account.domain.Account;
 
 /**
@@ -8,5 +8,7 @@ import kr.lul.kobalttown.account.domain.Account;
  * @since 2019/11/24
  */
 public interface AccountDao {
-  Account read(UuidContext context, long maxValue);
+  Account create(Context context, Account account);
+
+  Account read(Context context, long maxValue);
 }
