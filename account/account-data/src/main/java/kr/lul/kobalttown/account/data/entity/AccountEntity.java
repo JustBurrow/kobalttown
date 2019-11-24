@@ -4,9 +4,11 @@ import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.support.spring.data.jpa.entiy.SavableEntity;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.Objects;
 
 import static java.lang.String.format;
+import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.kobalttown.account.data.mapping.AccountMapping.*;
 
 /**
@@ -29,10 +31,13 @@ public class AccountEntity extends SavableEntity implements Account {
   public AccountEntity() {// JPA only
   }
 
-  public AccountEntity(String nickname) {
+  public AccountEntity(String nickname, Instant createdAt) {
     NICKNAME_VALIDATOR.validate(nickname);
+    notNull(createdAt, SavableEntity.ATTR_CREATED_AT);
 
     this.nickname = nickname;
+    this.createdAt = createdAt;
+    this.updatedAt = createdAt;
   }
 
   @Override
