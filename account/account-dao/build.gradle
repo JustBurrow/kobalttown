@@ -1,3 +1,5 @@
 dependencies {
   implementation project(":account-data")
+
+  testImplementation project(":configuration-data-jpa")
 }
