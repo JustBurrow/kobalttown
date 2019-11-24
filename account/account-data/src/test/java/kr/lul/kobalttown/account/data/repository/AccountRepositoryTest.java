@@ -7,9 +7,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,8 +21,8 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @since 2019/11/24
  */
 @RunWith(SpringRunner.class)
-@DataJdbcTest
-@ContextConfiguration(classes = AccountDataModuleTestConfiguration.class)
+@SpringBootTest(classes = AccountDataModuleTestConfiguration.class)
+@Transactional
 public class AccountRepositoryTest {
   private static final Logger log = getLogger(AccountRepositoryTest.class);
 

@@ -29,7 +29,8 @@ public class JpaConfiguration {
   @Bean
   @ConfigurationProperties("spring.datasource.hikari")
   public DataSource dataSource() {
-    return DataSourceBuilder.create().build();
+    return DataSourceBuilder.create()
+        .build();
   }
 
   /**
