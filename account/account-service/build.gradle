@@ -1,3 +1,6 @@
 dependencies {
+  implementation project(":account-domain")
   implementation project(":account-dao")
+
+  testImplementation project(":configuration-data-jpa")
 }
