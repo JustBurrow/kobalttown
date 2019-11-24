@@ -1,4 +1,8 @@
 dependencies {
   implementation project(":account-service")
   implementation project(":account-converter")
+
+  implementation "org.springframework:spring-tx"
+
+  testImplementation project(":configuration-data-jpa")
 }
