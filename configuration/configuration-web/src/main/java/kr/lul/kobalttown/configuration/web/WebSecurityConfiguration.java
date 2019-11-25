@@ -1,5 +1,6 @@
 package kr.lul.kobalttown.configuration.web;
 
+import kr.lul.kobalttown.page.root.RootMvc;
 import kr.lul.support.spring.security.crypto.PasswordEncoderSecurityEncoder;
 import kr.lul.support.spring.security.crypto.SecurityEncoder;
 import org.springframework.context.annotation.Bean;
@@ -35,10 +36,17 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.formLogin()
-        .loginPage("/login")
-        .loginProcessingUrl("/login")
-        .defaultSuccessUrl("/");
+        .loginPage(RootMvc.C.LOG_IN)
+        .usernameParameter(RootMvc.M.USERNAME)
+        .passwordParameter(RootMvc.M.PASSWORD)
+        .loginProcessingUrl(RootMvc.C.LOG_IN)
+        .defaultSuccessUrl(RootMvc.C.ROOT);
+
     http.logout()
-        .logoutSuccessUrl("/");
+        .logoutUrl(RootMvc.C.LOG_OUT)
+        .logoutSuccessUrl(RootMvc.C.ROOT);
+
+    http.authorizeRequests()
+        .antMatchers(RootMvc.C.ROOT, RootMvc.C.LOG_IN).permitAll();
   }
 }
