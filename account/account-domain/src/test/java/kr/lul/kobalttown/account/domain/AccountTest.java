@@ -52,8 +52,9 @@ public class AccountTest {
     // GIVEN
     String nickname;
     do {
-      nickname = random(current().nextInt(1, 1 + NICKNAME_MAX_LENGTH)).trim();
-    } while (nickname.matches("\\S+"));
+      nickname = random(current().nextInt(1, 1 + NICKNAME_MAX_LENGTH))
+          .replaceAll("\\s+", "");
+    } while (!nickname.matches("\\S+"));
     log.info("GIVEN - nickname={}", nickname);
 
     // WHEN

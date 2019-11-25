@@ -1,9 +1,6 @@
 package kr.lul.kobalttown.account.web.controller.request;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 import static kr.lul.common.util.Texts.singleQuote;
 import static kr.lul.kobalttown.account.domain.Account.NICKNAME_MAX_LENGTH;
@@ -22,6 +19,10 @@ public class CreateAccountReq {
   private String nickname;
 
   @NotNull
+  @Email
+  private String email;
+
+  @NotNull
   @Size(min = SECRET_MIN_LENGTH, max = SECRET_MAX_LENGTH)
   private String password;
 
@@ -32,8 +33,9 @@ public class CreateAccountReq {
   public CreateAccountReq() {
   }
 
-  public CreateAccountReq(String nickname, String password, String confirm) {
+  public CreateAccountReq(String nickname, String email, String password, String confirm) {
     this.nickname = nickname;
+    this.email = email;
     this.password = password;
     this.confirm = confirm;
   }
@@ -44,6 +46,14 @@ public class CreateAccountReq {
 
   public void setNickname(String nickname) {
     this.nickname = nickname;
+  }
+
+  public String getEmail() {
+    return this.email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
   }
 
   public String getPassword() {
@@ -66,6 +76,7 @@ public class CreateAccountReq {
   public String toString() {
     return new StringBuilder(CreateAccountReq.class.getSimpleName())
         .append("{nickname=").append(singleQuote(this.nickname))
+        .append(", email=").append(singleQuote(this.email))
         .append(", password='[ PROTECTED ]', confirm=' PROTECTED '}")
         .toString();
   }

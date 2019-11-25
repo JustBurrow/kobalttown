@@ -113,6 +113,7 @@ public class AccountControllerWebTest {
     // WHEN
     this.mock.perform(post(C.CREATE)
         .param("nickname", "nickname")
+        .param("email", "just.burrow@lul.kr")
         .param("password", "password")
         .param("confirm", "password")
     )

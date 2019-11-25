@@ -3,9 +3,12 @@ package kr.lul.kobalttown.account.dao;
 import kr.lul.common.util.SystemTimeProvider;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.configuration.data.jpa.JpaConfiguration;
+import kr.lul.support.spring.security.crypto.PasswordEncoderSecurityEncoder;
+import kr.lul.support.spring.security.crypto.SecurityEncoder;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * @author justburrow
@@ -17,5 +20,10 @@ public class AccountDaoTestConfiguration {
   @Bean
   public TimeProvider timeProvider() {
     return new SystemTimeProvider();
+  }
+
+  @Bean
+  public SecurityEncoder securityEncoder() {
+    return new PasswordEncoderSecurityEncoder(new BCryptPasswordEncoder());
   }
 }

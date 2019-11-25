@@ -1,4 +1,6 @@
 dependencies {
   implementation project(":account-domain")
   api project(":account-dto")
+
+  testImplementation project(":account-data")
 }

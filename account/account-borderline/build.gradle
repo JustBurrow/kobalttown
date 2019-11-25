@@ -5,4 +5,6 @@ dependencies {
   implementation "org.springframework:spring-tx"
 
   testImplementation project(":configuration-data-jpa")
+
+  testImplementation "kr.lul.support.spring:support-spring-security"
 }

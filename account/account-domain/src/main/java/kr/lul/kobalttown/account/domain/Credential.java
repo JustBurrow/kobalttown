@@ -1,8 +1,11 @@
 package kr.lul.kobalttown.account.domain;
 
+import kr.lul.common.data.Creatable;
 import kr.lul.common.util.ValidationException;
 import kr.lul.common.util.Validator;
 import kr.lul.common.util.validator.RegexValidator;
+
+import java.time.Instant;
 
 import static java.lang.String.format;
 
@@ -12,11 +15,12 @@ import static java.lang.String.format;
  * @author justburrow
  * @since 2019-02-27
  */
-public interface Credential {
+public interface Credential extends Creatable<Instant> {
   String ATTR_ID = "id";
   String ATTR_ACCOUNT = "account";
   String ATTR_PUBLIC_KEY = "publicKey";
   String ATTR_SECRET_HASH = "secretHash";
+  String ATTR_CREATED_AT = "createdAt";
 
   Validator<Account> ACCOUNT_VALIDATOR = account -> {
     if (null == account) {
@@ -27,7 +31,7 @@ public interface Credential {
     }
   };
 
-  int PUBLIC_KEY_MAX_LENGTH = 256;
+  int PUBLIC_KEY_MAX_LENGTH = 255;
 
   String PUBLIC_KEY_REGEX = "\\S(.*\\S)?";
 
@@ -50,7 +54,7 @@ public interface Credential {
   /**
    * 비밀번호 최대 길이.
    */
-  int SECRET_MAX_LENGTH = 256;
+  int SECRET_MAX_LENGTH = 60;
 
   /**
    * 유효한 비공개키인지 확인한다.

@@ -1,6 +1,9 @@
 dependencies {
   implementation project(":account-domain")
   implementation project(":account-dao")
+  implementation project(":account-data")
+  compileOnly "kr.lul.support.spring:support-spring-security:$SUPPORT_SPRING_VERSION"
 
   testImplementation project(":configuration-data-jpa")
+  testImplementation "kr.lul.support.spring:support-spring-security:$SUPPORT_SPRING_VERSION"
 }

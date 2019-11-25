@@ -1,6 +1,7 @@
 package kr.lul.kobalttown.account.service;
 
 import kr.lul.kobalttown.account.domain.Account;
+import kr.lul.kobalttown.account.service.params.CreateAccountParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
 
 /**
@@ -8,5 +9,7 @@ import kr.lul.kobalttown.account.service.params.ReadAccountParams;
  * @since 2019/11/24
  */
 public interface AccountService {
+  Account create(CreateAccountParams params);
+
   Account read(ReadAccountParams params);
 }

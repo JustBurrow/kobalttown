@@ -1,7 +1,11 @@
 package kr.lul.kobalttown.account.service;
 
+import kr.lul.common.data.Creatable;
+import kr.lul.common.data.Updatable;
 import kr.lul.common.data.UuidContext;
+import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.domain.Account;
+import kr.lul.kobalttown.account.service.params.CreateAccountParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
 
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,9 +35,17 @@ public class AccountServiceImplTest {
   @Autowired
   private AccountService service;
 
+  @Autowired
+  private TimeProvider timeProvider;
+
+  private Instant instant;
+
   @Before
   public void setUp() throws Exception {
     assertThat(this.service).isNotNull();
+    assertThat(this.timeProvider).isNotNull();
+
+    this.instant = this.timeProvider.now();
   }
 
   @Test
@@ -47,5 +61,25 @@ public class AccountServiceImplTest {
     // THEN
     assertThat(account)
         .isNull();
+  }
+
+  @Test
+  public void test_create() throws Exception {
+    // GIVEN
+    CreateAccountParams params = new CreateAccountParams(new UuidContext(randomUUID()), "nickname",
+        "just.burrow@lul.kr", "password", this.instant);
+    log.info("GIVEN - params={}", params);
+
+    // WHEN
+    Account account = this.service.create(params);
+    log.info("WHEN - account={}", account);
+
+    // THEN
+    assertThat(account)
+        .isNotNull()
+        .extracting(Account::getNickname, Account::isEnabled, Creatable::getCreatedAt, Updatable::getUpdatedAt)
+        .containsSequence("nickname", false, this.instant, this.instant);
+    assertThat(account.getId())
+        .isPositive();
   }
 }

@@ -53,7 +53,7 @@ class AccountDaoImpl implements AccountDao {
         .orElse(null);
 
     if (log.isTraceEnabled())
-      log.trace("#read return : account={}", account);
+      log.trace("#read return : {}", account);
     return account;
   }
 }

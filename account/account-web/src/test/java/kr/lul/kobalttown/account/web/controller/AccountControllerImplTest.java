@@ -73,8 +73,9 @@ public class AccountControllerImplTest {
   public void test_create_with_req_and_binding_and_model() throws Exception {
     // GIVEN
     String nickname = "nickname";
+    String email = "just.burrow@lul.kr";
     String password = "password";
-    CreateAccountReq createReq = new CreateAccountReq(nickname, password, password);
+    CreateAccountReq createReq = new CreateAccountReq(nickname, email, password, password);
     log.info("GIVEN - createReq={}", createReq);
 
     BindingResult binding = new BeanPropertyBindingResult(createReq, M.CREATE_REQ);
