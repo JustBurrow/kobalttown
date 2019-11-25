@@ -2,6 +2,7 @@ dependencies {
   implementation project(":account-domain")
   implementation project(":account-borderline")
   implementation project(":page-account")
+  implementation project(":global-security")
 
   api project(":configuration-web")
 

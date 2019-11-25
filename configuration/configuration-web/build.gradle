@@ -1,4 +1,5 @@
 dependencies {
+  api "kr.lul.support.spring:support-spring-security:$SUPPORT_SPRING_VERSION"
   api "org.springframework.boot:spring-boot-starter-web"
   api "org.springframework.boot:spring-boot-starter-thymeleaf"
 }
