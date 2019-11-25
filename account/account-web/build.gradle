@@ -6,6 +6,7 @@ dependencies {
 
   api project(":configuration-web")
 
+  testImplementation project(":configuration-bean")
   testImplementation project(":configuration-data-jpa")
   testImplementation project(":configuration-web")
   testImplementation "kr.lul.support.spring:support-spring-security"
