@@ -1,8 +1,11 @@
 dependencies {
   implementation project(":page-root")
-
-  api "kr.lul.support.spring:support-spring-security:$SUPPORT_SPRING_VERSION"
+  api project(":global-security")
 
   api "org.springframework.boot:spring-boot-starter-web"
   api "org.springframework.boot:spring-boot-starter-thymeleaf"
+  api "org.springframework.security:spring-security-core"
+
+  testImplementation project(":configuration-web")
+  testImplementation project(":configuration-bean")
 }

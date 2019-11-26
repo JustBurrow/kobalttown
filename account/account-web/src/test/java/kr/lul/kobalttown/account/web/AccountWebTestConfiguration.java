@@ -2,8 +2,8 @@ package kr.lul.kobalttown.account.web;
 
 import kr.lul.kobalttown.configuration.bean.BeanConfiguration;
 import kr.lul.kobalttown.configuration.data.jpa.JpaConfiguration;
+import kr.lul.kobalttown.configuration.security.WebSecurityConfiguration;
 import kr.lul.kobalttown.configuration.web.WebMvcConfiguration;
-import kr.lul.kobalttown.configuration.web.WebSecurityConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 

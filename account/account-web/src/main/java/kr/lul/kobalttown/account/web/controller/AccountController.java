@@ -24,7 +24,7 @@ public interface AccountController {
    * See {@link kr.lul.kobalttown.page.account.AccountPage#CREATE_FORM}.
    */
   @GetMapping(C.CREATE_FORM)
-  @PreAuthorize("hasRole('" + ROLE_ANONYMOUS + "')")
+//  @PreAuthorize("hasRole('" + ROLE_ANONYMOUS + "')")
   String createForm(Model model);
 
   /**

@@ -1,7 +1,7 @@
 rootProject.name = 'kobalttown'
 
 def groups = [
-    configuration: ["data-jpa", "web", "bean"],
+    configuration: ["data-jpa", "web", "bean", "security"],
     page         : ["root", "account"],
     global       : ["security"],
     account      : ["domain", "data", "dao", "service", "dto", "converter", "borderline", "web", "dependencies"],

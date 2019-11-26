@@ -1,5 +1,6 @@
-package kr.lul.kobalttown.configuration.web;
+package kr.lul.kobalttown.configuration.security;
 
+import kr.lul.kobalttown.page.account.AccountMvc;
 import kr.lul.kobalttown.page.root.RootMvc;
 import kr.lul.support.spring.security.crypto.PasswordEncoderSecurityEncoder;
 import kr.lul.support.spring.security.crypto.SecurityEncoder;
@@ -47,6 +48,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         .logoutSuccessUrl(RootMvc.C.ROOT);
 
     http.authorizeRequests()
-        .antMatchers(RootMvc.C.ROOT, RootMvc.C.LOG_IN).permitAll();
+        .antMatchers(RootMvc.C.ROOT, RootMvc.C.LOG_IN).anonymous()
+        .antMatchers(AccountMvc.C.CREATE_FORM, AccountMvc.C.CREATE, AccountMvc.C.ACTIVATE).anonymous()
+        .antMatchers("/**").authenticated();
   }
 }
