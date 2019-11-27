@@ -1,7 +1,7 @@
 package kr.lul.kobalttown.account.web.controller;
 
 import kr.lul.kobalttown.account.borderline.AccountBorderline;
-import kr.lul.kobalttown.account.web.AccountWebTestConfiguration;
+import kr.lul.kobalttown.account.web.AccountWebTestTestConfiguration;
 import kr.lul.kobalttown.page.account.AccountMvc.C;
 import kr.lul.kobalttown.page.account.AccountMvc.M;
 import kr.lul.kobalttown.page.account.AccountMvc.V;
@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = AccountController.class)
-@ContextConfiguration(classes = AccountWebTestConfiguration.class)
+@ContextConfiguration(classes = AccountWebTestTestConfiguration.class)
 public class AccountControllerWebTest {
   private static final Logger log = getLogger(AccountControllerWebTest.class);
 

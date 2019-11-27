@@ -1,13 +1,12 @@
 dependencies {
   implementation project(":account-domain")
   implementation project(":account-borderline")
-  implementation project(":page-account")
-//  implementation project(":global-security")
 
+  implementation project(":page-account")
   implementation project(":configuration-web")
 
   testImplementation project(":configuration-bean")
   testImplementation project(":configuration-data-jpa")
-  testImplementation project(":configuration-web")
-  testImplementation project(":configuration-security")
+
+  testImplementation "kr.lul.support.spring:support-spring-security"
 }

@@ -5,4 +5,5 @@ dependencies {
   api project(":account-dto")
   api project(":account-borderline")
   api project(":account-web")
+  api project(":account-web-test")
 }

@@ -1,0 +1,11 @@
+dependencies {
+  implementation project(":account-web")
+
+  testImplementation project(":page-account")
+  testImplementation project(":account-borderline")
+
+  testImplementation project(":configuration-bean")
+  testImplementation project(":configuration-data-jpa")
+  testImplementation project(":configuration-security")
+  testImplementation project(":configuration-web")
+}

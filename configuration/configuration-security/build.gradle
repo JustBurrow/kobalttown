@@ -1,6 +1,5 @@
 dependencies {
   implementation project(":page-root")
-  implementation project(":page-account")
 
   api "kr.lul.support.spring:support-spring-security"
 
