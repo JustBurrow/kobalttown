@@ -3,4 +3,5 @@ dependencies {
   api project(":configuration-data-jpa")
 
   testImplementation "com.h2database:h2"
+  testImplementation "kr.lul.support.spring:support-spring-security"
 }

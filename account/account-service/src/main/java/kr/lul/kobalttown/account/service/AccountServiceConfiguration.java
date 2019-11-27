@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.account.service;
 
-import kr.lul.kobalttown.account.dao.AccountDaoAnchor;
+import kr.lul.kobalttown.account.data.dao.AccountDaoAnchor;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 

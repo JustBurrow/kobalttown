@@ -1,4 +1,4 @@
-package kr.lul.kobalttown.account.dao;
+package kr.lul.kobalttown.account.data.dao;
 
 import kr.lul.common.data.Creatable;
 import kr.lul.common.data.UuidContext;
@@ -9,6 +9,7 @@ import kr.lul.kobalttown.account.data.repository.AccountRepository;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.support.spring.security.crypto.SecurityEncoder;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,7 +55,7 @@ public class CredentialDaoImplTest {
     assertThat(this.dao).isNotNull();
     assertThat(this.accountRepository).isNotNull();
     assertThat(this.timeProvider).isNotNull();
-    assertThat(this.securityEncoder).isNotNull();
+    Assertions.assertThat(this.securityEncoder).isNotNull();
     assertThat(this.entityManager).isNotNull();
 
     this.instant = this.timeProvider.now();
@@ -80,7 +81,7 @@ public class CredentialDaoImplTest {
         .containsSequence(account, "nickname", this.instant);
     assertThat(actual.getId())
         .isPositive();
-    assertThat(this.securityEncoder.matches("password", actual.getSecretHash()))
+    Assertions.assertThat(this.securityEncoder.matches("password", actual.getSecretHash()))
         .isTrue();
   }
 }

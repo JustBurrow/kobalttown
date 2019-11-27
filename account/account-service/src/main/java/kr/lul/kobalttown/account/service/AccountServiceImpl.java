@@ -1,7 +1,7 @@
 package kr.lul.kobalttown.account.service;
 
-import kr.lul.kobalttown.account.dao.AccountDao;
-import kr.lul.kobalttown.account.dao.CredentialDao;
+import kr.lul.kobalttown.account.data.dao.AccountDao;
+import kr.lul.kobalttown.account.data.dao.CredentialDao;
 import kr.lul.kobalttown.account.data.entity.AccountEntity;
 import kr.lul.kobalttown.account.data.entity.CredentialEntity;
 import kr.lul.kobalttown.account.domain.Account;

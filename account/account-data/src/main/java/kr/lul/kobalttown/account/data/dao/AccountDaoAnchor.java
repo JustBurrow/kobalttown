@@ -1,4 +1,4 @@
-package kr.lul.kobalttown.account.dao;
+package kr.lul.kobalttown.account.data.dao;
 
 /**
  * @author justburrow
