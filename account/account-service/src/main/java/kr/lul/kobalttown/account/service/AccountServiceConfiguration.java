@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.account.service;
 
-import kr.lul.kobalttown.account.data.dao.AccountDaoAnchor;
+import kr.lul.kobalttown.account.data.AccountDataAnchor;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,6 +9,6 @@ import org.springframework.context.annotation.Configuration;
  * @since 2019/11/24
  */
 @Configuration
-@ComponentScan(basePackageClasses = AccountDaoAnchor.class)
+@ComponentScan(basePackageClasses = AccountDataAnchor.class)
 public class AccountServiceConfiguration {
 }
