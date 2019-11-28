@@ -24,7 +24,7 @@ public interface AccountController {
    * See {@link kr.lul.kobalttown.page.account.AccountPage#CREATE_FORM}.
    */
   @GetMapping(C.CREATE_FORM)
-//  @PreAuthorize("hasRole('" + ROLE_ANONYMOUS + "')")
+  @PreAuthorize("hasRole('" + ROLE_ANONYMOUS + "')")
   String createForm(Model model);
 
   /**
@@ -38,12 +38,14 @@ public interface AccountController {
    * See {@link kr.lul.kobalttown.page.account.AccountPage#LIST}.
    */
   @GetMapping(C.LIST)
+  @PreAuthorize("isAuthenticated()")
   String list(Model model);
 
   /**
    * See {@link kr.lul.kobalttown.page.account.AccountPage#DETAIL}.
    */
   @GetMapping(C.DETAIL)
+  @PreAuthorize("isAuthenticated()")
   String detail(@PathVariable(M.ID) long id, Model model);
 
   /**
