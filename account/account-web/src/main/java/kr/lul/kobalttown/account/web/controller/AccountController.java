@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
 
-import static kr.lul.global.security.authority.Role.ROLE_ANONYMOUS;
-
 /**
  * @author justburrow
  * @since 2019/11/24
@@ -24,14 +22,14 @@ public interface AccountController {
    * See {@link kr.lul.kobalttown.page.account.AccountPage#CREATE_FORM}.
    */
   @GetMapping(C.CREATE_FORM)
-  @PreAuthorize("hasRole('" + ROLE_ANONYMOUS + "')")
+  @PreAuthorize("! isAuthenticated()")
   String createForm(Model model);
 
   /**
    * See {@link kr.lul.kobalttown.page.account.AccountPage#CREATE_FORM}.
    */
   @PostMapping(C.CREATE)
-  @PreAuthorize("hasRole('" + ROLE_ANONYMOUS + "')")
+  @PreAuthorize("! isAuthenticated()")
   String create(@ModelAttribute(M.CREATE_REQ) @Valid CreateAccountReq req, BindingResult result, Model model);
 
   /**
@@ -52,6 +50,6 @@ public interface AccountController {
    * See {@link kr.lul.kobalttown.page.account.AccountPage#ACTIVATE}.
    */
   @GetMapping(C.ACTIVATE)
-  @PreAuthorize("hasRole('" + ROLE_ANONYMOUS + "')")
+  @PreAuthorize("! isAuthenticated()")
   String activate(@PathVariable(M.TOKEN) String token, Model model);
 }

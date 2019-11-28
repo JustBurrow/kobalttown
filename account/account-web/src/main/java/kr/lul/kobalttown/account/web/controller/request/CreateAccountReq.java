@@ -77,7 +77,7 @@ public class CreateAccountReq {
     return new StringBuilder(CreateAccountReq.class.getSimpleName())
         .append("{nickname=").append(singleQuote(this.nickname))
         .append(", email=").append(singleQuote(this.email))
-        .append(", password='[ PROTECTED ]', confirm=' PROTECTED '}")
+        .append(", password='[ PROTECTED ]', confirm='[ PROTECTED ]'}")
         .toString();
   }
 }
