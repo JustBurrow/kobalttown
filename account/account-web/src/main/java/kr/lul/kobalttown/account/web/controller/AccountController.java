@@ -6,7 +6,10 @@ import kr.lul.kobalttown.page.account.AccountMvc.M;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
 
@@ -14,43 +17,37 @@ import javax.validation.Valid;
  * @author justburrow
  * @since 2019/11/24
  */
-@RequestMapping(C.GROUP)
 public interface AccountController {
   /**
-   * @see kr.lul.kobalttown.page.account.AccountPage#CREATE_FORM
-   * @see C#FULL_CREATE_FORM
+   * See {@link kr.lul.kobalttown.page.account.AccountPage#CREATE_FORM}.
    */
   @GetMapping(C.CREATE_FORM)
   @PreAuthorize("isAnonymous()")
   String createForm(Model model);
 
   /**
-   * @see kr.lul.kobalttown.page.account.AccountPage#CREATE
-   * @see C#FULL_CREATE
+   * See {@link kr.lul.kobalttown.page.account.AccountPage#CREATE_FORM}.
    */
   @PostMapping(C.CREATE)
   @PreAuthorize("isAnonymous()")
   String create(@ModelAttribute(M.CREATE_REQ) @Valid CreateAccountReq req, BindingResult result, Model model);
 
   /**
-   * @see kr.lul.kobalttown.page.account.AccountPage#LIST
-   * @see C#FULL_LIST
+   * See {@link kr.lul.kobalttown.page.account.AccountPage#LIST}.
    */
   @GetMapping(C.LIST)
   @PreAuthorize("isAuthenticated()")
   String list(Model model);
 
   /**
-   * @see kr.lul.kobalttown.page.account.AccountPage#DETAIL
-   * @see C#FULL_DETAIL
+   * See {@link kr.lul.kobalttown.page.account.AccountPage#DETAIL}.
    */
   @GetMapping(C.DETAIL)
   @PreAuthorize("isAuthenticated()")
   String detail(@PathVariable(M.ID) long id, Model model);
 
   /**
-   * @see kr.lul.kobalttown.page.account.AccountPage#ACTIVATE
-   * @see C#ACTIVATE
+   * See {@link kr.lul.kobalttown.page.account.AccountPage#ACTIVATE}.
    */
   @GetMapping(C.ACTIVATE)
   @PreAuthorize("isAnonymous()")

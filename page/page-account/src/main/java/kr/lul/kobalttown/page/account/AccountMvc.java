@@ -32,17 +32,13 @@ public abstract class AccountMvc {
   public static abstract class C {
     public static final String GROUP = "/accounts";
 
-    public static final String CREATE_FORM = "/create";
-    public static final String CREATE = "";
-    public static final String LIST = "";
-    public static final String DETAIL = "/{" + M.ID + ":[1-9]\\d*}";
-    public static final String ACTIVATE = "/activate/{" + M.TOKEN + "}";
+    public static final String CREATE_FORM = GROUP + "/create";
+    public static final String CREATE = GROUP;
 
-    public static final String FULL_CREATE_FORM = GROUP + "/create";
-    public static final String FULL_CREATE = GROUP;
-    public static final String FULL_LIST = GROUP;
-    public static final String FULL_DETAIL = GROUP + "/{" + M.ID + ":[1-9]\\d*}";
-    public static final String FULL_ACTIVATE = GROUP + "/activate/{" + M.TOKEN + "}";
+    public static final String LIST = GROUP;
+    public static final String DETAIL = GROUP + "/{" + M.ID + ":[1-9]\\d*}";
+
+    public static final String ACTIVATE = GROUP + "/activate/{" + M.TOKEN + "}";
 
     public C() {
       throw new UnsupportedOperationException();
