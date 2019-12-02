@@ -69,6 +69,7 @@ public class AccountControllerMvcTest {
     this.mock.perform(post(C.CREATE)
         .param("nickname", "nickname")
         .param("password", "password")
+        .with(anonymous())
     )
 
         // THEN
@@ -85,6 +86,7 @@ public class AccountControllerMvcTest {
     this.mock.perform(post(C.CREATE)
         .param("nickname", "nickname")
         .param("confirm", "confirm")
+        .with(anonymous())
     )
 
         // THEN
@@ -102,6 +104,7 @@ public class AccountControllerMvcTest {
         .param("nickname", "nickname")
         .param("password", "password")
         .param("confirm", "confirm")
+        .with(anonymous())
     )
 
         // THEN
@@ -124,6 +127,7 @@ public class AccountControllerMvcTest {
         .param("confirm", "password")
         .with(anonymous())
     )
+
         // THEN
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrlPattern(C.GROUP + "/*"))
@@ -169,7 +173,9 @@ public class AccountControllerMvcTest {
 
   @Test
   public void test_activate_without_token() throws Exception {
-    this.mock.perform(get(C.ACTIVATE, ""))
+    this.mock.perform(get(C.ACTIVATE, "")
+        .with(anonymous())
+    )
         .andExpect(status().isNotFound())
         .andDo(print());
   }
@@ -182,7 +188,8 @@ public class AccountControllerMvcTest {
 
     // WHEN
     this.mock.perform(get(C.ACTIVATE, token)
-        .with(anonymous()))
+        .with(anonymous())
+    )
 
         // THEN
         .andExpect(status().isOk())

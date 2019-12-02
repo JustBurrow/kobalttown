@@ -6,10 +6,7 @@ import kr.lul.kobalttown.page.account.AccountMvc.M;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -17,6 +14,7 @@ import javax.validation.Valid;
  * @author justburrow
  * @since 2019/11/24
  */
+@RequestMapping
 public interface AccountController {
   /**
    * See {@link kr.lul.kobalttown.page.account.AccountPage#CREATE_FORM}.
