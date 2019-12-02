@@ -271,6 +271,8 @@ fabric.properties
 .jenv-version
 
 *.pid
+*.lck
+*.bak_*
 config/
 !config/sample-*
 log/
