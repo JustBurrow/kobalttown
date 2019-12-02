@@ -54,7 +54,7 @@ public class AccountControllerMvcTest {
   @WithAnonymousUser
   public void test_createForm() throws Exception {
     // WHEN
-    this.mock.perform(get(C.CREATE_FORM)
+    this.mock.perform(get(C.FULL_CREATE_FORM)
         .with(anonymous()))
         // THEN
         .andExpect(status().isOk())
@@ -66,7 +66,7 @@ public class AccountControllerMvcTest {
   @Test
   public void test_create_without_confirm() throws Exception {
     // WHEN
-    this.mock.perform(post(C.CREATE)
+    this.mock.perform(post(C.FULL_CREATE)
         .param("nickname", "nickname")
         .param("password", "password")
     )
@@ -82,7 +82,7 @@ public class AccountControllerMvcTest {
   @Test
   public void test_create_without_password() throws Exception {
     // WHEN
-    this.mock.perform(post(C.CREATE)
+    this.mock.perform(post(C.FULL_CREATE)
         .param("nickname", "nickname")
         .param("confirm", "confirm")
     )
@@ -98,7 +98,7 @@ public class AccountControllerMvcTest {
   @Test
   public void test_create_with_not_match_confirm() throws Exception {
     // WHEN
-    this.mock.perform(post(C.CREATE)
+    this.mock.perform(post(C.FULL_CREATE)
         .param("nickname", "nickname")
         .param("password", "password")
         .param("confirm", "confirm")
@@ -117,7 +117,7 @@ public class AccountControllerMvcTest {
     // TODO borderline 메서드 추가.
 
     // WHEN
-    this.mock.perform(post(C.CREATE)
+    this.mock.perform(post(C.FULL_CREATE)
         .param("nickname", "nickname")
         .param("email", "just.burrow@lul.kr")
         .param("password", "password")
@@ -133,7 +133,7 @@ public class AccountControllerMvcTest {
   @Test
   public void test_list() throws Exception {
     // WHEN
-    this.mock.perform(get(C.LIST))
+    this.mock.perform(get(C.FULL_LIST))
 
         // THEN
         .andExpect(status().isOk())
@@ -146,21 +146,21 @@ public class AccountControllerMvcTest {
   @Test
   public void test_detail_with_non_digits() throws Exception {
     // WHEN
-    this.mock.perform(get(C.DETAIL, "non-digit"))
+    this.mock.perform(get(C.FULL_DETAIL, "non-digit"))
         .andExpect(status().isNotFound())
         .andDo(print());
   }
 
   @Test
   public void test_detail_with_leading_0() throws Exception {
-    this.mock.perform(get(C.DETAIL, "01"))
+    this.mock.perform(get(C.FULL_DETAIL, "01"))
         .andExpect(status().isNotFound())
         .andDo(print());
   }
 
   @Test
   public void test_detail() throws Exception {
-    this.mock.perform(get(C.DETAIL, 1L))
+    this.mock.perform(get(C.FULL_DETAIL, 1L))
         .andExpect(status().isOk())
         .andExpect(view().name(V.DETAIL))
         .andExpect(model().attributeExists(M.ACCOUNT))
@@ -169,7 +169,7 @@ public class AccountControllerMvcTest {
 
   @Test
   public void test_activate_without_token() throws Exception {
-    this.mock.perform(get(C.ACTIVATE, ""))
+    this.mock.perform(get(C.FULL_ACTIVATE, ""))
         .andExpect(status().isNotFound())
         .andDo(print());
   }
@@ -181,7 +181,7 @@ public class AccountControllerMvcTest {
     log.info("GIVEN - token={}", token);
 
     // WHEN
-    this.mock.perform(get(C.ACTIVATE, token)
+    this.mock.perform(get(C.FULL_ACTIVATE, token)
         .with(anonymous()))
 
         // THEN
