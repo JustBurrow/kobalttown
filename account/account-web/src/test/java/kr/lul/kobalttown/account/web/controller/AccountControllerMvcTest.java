@@ -4,7 +4,6 @@ import kr.lul.kobalttown.account.borderline.AccountBorderline;
 import kr.lul.kobalttown.account.web.AccountWebTestConfiguration;
 import kr.lul.kobalttown.configuration.security.WebSecurityConfiguration;
 import kr.lul.kobalttown.configuration.web.WebMvcConfiguration;
-import kr.lul.kobalttown.page.account.AccountMvc;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,8 +18,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static kr.lul.kobalttown.page.account.AccountMvc.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @since 2019/11/30
  */
 @RunWith(SpringRunner.class)
-@WebMvcTest//(controllers = AccountControllerImpl.class)
+@WebMvcTest(controllers = AccountControllerImpl.class)
 @ContextConfiguration(classes = AccountWebTestConfiguration.class)
 @Import({WebMvcConfiguration.class, WebSecurityConfiguration.class})
 public class AccountControllerMvcTest {
@@ -53,50 +54,51 @@ public class AccountControllerMvcTest {
   @WithAnonymousUser
   public void test_createForm() throws Exception {
     // WHEN
-    this.mock.perform(get(AccountMvc.C.CREATE_FORM))
+    this.mock.perform(get(C.CREATE_FORM)
+        .with(anonymous()))
         // THEN
         .andExpect(status().isOk())
-        .andExpect(view().name(AccountMvc.V.CREATE_FORM))
-        .andExpect(model().attributeExists(AccountMvc.M.CREATE_REQ))
+        .andExpect(view().name(V.CREATE_FORM))
+        .andExpect(model().attributeExists(M.CREATE_REQ))
         .andDo(print());
   }
 
   @Test
   public void test_create_without_confirm() throws Exception {
     // WHEN
-    this.mock.perform(post(AccountMvc.C.CREATE)
+    this.mock.perform(post(C.CREATE)
         .param("nickname", "nickname")
         .param("password", "password")
     )
 
         // THEN
         .andExpect(status().isOk())
-        .andExpect(view().name(AccountMvc.V.CREATE_FORM))
-        .andExpect(model().attributeExists(AccountMvc.M.CREATE_REQ))
-        .andExpect(model().attributeHasErrors(AccountMvc.M.CREATE_REQ))
+        .andExpect(view().name(V.CREATE_FORM))
+        .andExpect(model().attributeExists(M.CREATE_REQ))
+        .andExpect(model().attributeHasErrors(M.CREATE_REQ))
         .andDo(print());
   }
 
   @Test
   public void test_create_without_password() throws Exception {
     // WHEN
-    this.mock.perform(post(AccountMvc.C.CREATE)
+    this.mock.perform(post(C.CREATE)
         .param("nickname", "nickname")
         .param("confirm", "confirm")
     )
 
         // THEN
         .andExpect(status().isOk())
-        .andExpect(view().name(AccountMvc.V.CREATE_FORM))
-        .andExpect(model().attributeExists(AccountMvc.M.CREATE_REQ))
-        .andExpect(model().attributeHasErrors(AccountMvc.M.CREATE_REQ))
+        .andExpect(view().name(V.CREATE_FORM))
+        .andExpect(model().attributeExists(M.CREATE_REQ))
+        .andExpect(model().attributeHasErrors(M.CREATE_REQ))
         .andDo(print());
   }
 
   @Test
   public void test_create_with_not_match_confirm() throws Exception {
     // WHEN
-    this.mock.perform(post(AccountMvc.C.CREATE)
+    this.mock.perform(post(C.CREATE)
         .param("nickname", "nickname")
         .param("password", "password")
         .param("confirm", "confirm")
@@ -104,9 +106,9 @@ public class AccountControllerMvcTest {
 
         // THEN
         .andExpect(status().isOk())
-        .andExpect(view().name(AccountMvc.V.CREATE_FORM))
-        .andExpect(model().attributeExists(AccountMvc.M.CREATE_REQ))
-        .andExpect(model().attributeHasErrors(AccountMvc.M.CREATE_REQ))
+        .andExpect(view().name(V.CREATE_FORM))
+        .andExpect(model().attributeExists(M.CREATE_REQ))
+        .andExpect(model().attributeHasErrors(M.CREATE_REQ))
         .andDo(print());
   }
 
@@ -115,27 +117,28 @@ public class AccountControllerMvcTest {
     // TODO borderline 메서드 추가.
 
     // WHEN
-    this.mock.perform(post(AccountMvc.C.CREATE)
+    this.mock.perform(post(C.CREATE)
         .param("nickname", "nickname")
         .param("email", "just.burrow@lul.kr")
         .param("password", "password")
         .param("confirm", "password")
+        .with(anonymous())
     )
         // THEN
         .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrlPattern(AccountMvc.C.GROUP + "/*"))
+        .andExpect(redirectedUrlPattern(C.GROUP + "/*"))
         .andDo(print());
   }
 
   @Test
   public void test_list() throws Exception {
     // WHEN
-    this.mock.perform(get(AccountMvc.C.LIST))
+    this.mock.perform(get(C.LIST))
 
         // THEN
         .andExpect(status().isOk())
         .andExpect(handler().handlerType(AccountControllerImpl.class))
-        .andExpect(view().name(AccountMvc.V.LIST))
+        .andExpect(view().name(V.LIST))
         .andExpect(model().hasNoErrors())
         .andDo(print());
   }
@@ -143,31 +146,30 @@ public class AccountControllerMvcTest {
   @Test
   public void test_detail_with_non_digits() throws Exception {
     // WHEN
-    this.mock.perform(get(AccountMvc.C.DETAIL, "non-digit"))
+    this.mock.perform(get(C.DETAIL, "non-digit"))
         .andExpect(status().isNotFound())
         .andDo(print());
   }
 
   @Test
   public void test_detail_with_leading_0() throws Exception {
-    this.mock.perform(get(AccountMvc.C.DETAIL, "01"))
+    this.mock.perform(get(C.DETAIL, "01"))
         .andExpect(status().isNotFound())
         .andDo(print());
   }
 
   @Test
   public void test_detail() throws Exception {
-    this.mock.perform(get(AccountMvc.C.DETAIL, 1L))
+    this.mock.perform(get(C.DETAIL, 1L))
         .andExpect(status().isOk())
-        .andExpect(view().name(AccountMvc.V.DETAIL))
-        // TODO model attribute check.
-        //.andExpect(model().attributeExists(M.ACCOUNT))
+        .andExpect(view().name(V.DETAIL))
+        .andExpect(model().attributeExists(M.ACCOUNT))
         .andDo(print());
   }
 
   @Test
   public void test_activate_without_token() throws Exception {
-    this.mock.perform(get(AccountMvc.C.ACTIVATE, ""))
+    this.mock.perform(get(C.ACTIVATE, ""))
         .andExpect(status().isNotFound())
         .andDo(print());
   }
@@ -179,11 +181,12 @@ public class AccountControllerMvcTest {
     log.info("GIVEN - token={}", token);
 
     // WHEN
-    this.mock.perform(get(AccountMvc.C.ACTIVATE, token))
+    this.mock.perform(get(C.ACTIVATE, token)
+        .with(anonymous()))
 
         // THEN
         .andExpect(status().isOk())
-        .andExpect(view().name(AccountMvc.V.ACTIVATE))
+        .andExpect(view().name(V.ACTIVATE))
         .andDo(print());
   }
 }

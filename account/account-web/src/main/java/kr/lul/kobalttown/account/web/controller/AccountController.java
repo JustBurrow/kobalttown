@@ -22,14 +22,14 @@ public interface AccountController {
    * See {@link kr.lul.kobalttown.page.account.AccountPage#CREATE_FORM}.
    */
   @GetMapping(C.CREATE_FORM)
-  @PreAuthorize("! isAuthenticated()")
+  @PreAuthorize("isAnonymous()")
   String createForm(Model model);
 
   /**
    * See {@link kr.lul.kobalttown.page.account.AccountPage#CREATE_FORM}.
    */
   @PostMapping(C.CREATE)
-  @PreAuthorize("! isAuthenticated()")
+  @PreAuthorize("isAnonymous()")
   String create(@ModelAttribute(M.CREATE_REQ) @Valid CreateAccountReq req, BindingResult result, Model model);
 
   /**
@@ -50,6 +50,6 @@ public interface AccountController {
    * See {@link kr.lul.kobalttown.page.account.AccountPage#ACTIVATE}.
    */
   @GetMapping(C.ACTIVATE)
-  @PreAuthorize("! isAuthenticated()")
+  @PreAuthorize("isAnonymous()")
   String activate(@PathVariable(M.TOKEN) String token, Model model);
 }
