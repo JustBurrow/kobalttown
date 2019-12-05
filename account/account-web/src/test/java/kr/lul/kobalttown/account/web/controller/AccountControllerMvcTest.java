@@ -1,6 +1,8 @@
 package kr.lul.kobalttown.account.web.controller;
 
+import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.borderline.AccountBorderline;
+import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.web.AccountWebTestConfiguration;
 import kr.lul.kobalttown.configuration.security.WebSecurityConfiguration;
 import kr.lul.kobalttown.configuration.web.WebMvcConfiguration;
@@ -18,10 +20,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.ZonedDateTime;
+
+import static kr.lul.kobalttown.account.domain.Account.ATTR_NICKNAME;
 import static kr.lul.kobalttown.page.account.AccountMvc.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -44,10 +52,18 @@ public class AccountControllerMvcTest {
   @MockBean
   private AccountBorderline borderline;
 
+  @Autowired
+  private TimeProvider timeProvider;
+
+  private ZonedDateTime before;
+
   @Before
   public void setUp() throws Exception {
     assertThat(this.mock).isNotNull();
     assertThat(this.borderline).isNotNull();
+    assertThat(this.timeProvider).isNotNull();
+
+    this.before = this.timeProvider.zonedDateTime();
   }
 
   @Test
@@ -67,9 +83,10 @@ public class AccountControllerMvcTest {
   public void test_create_without_confirm() throws Exception {
     // WHEN
     this.mock.perform(post(C.CREATE)
-        .param("nickname", "nickname")
+        .param(ATTR_NICKNAME, "nickname")
         .param("password", "password")
         .with(anonymous())
+        .with(csrf())
     )
 
         // THEN
@@ -77,6 +94,7 @@ public class AccountControllerMvcTest {
         .andExpect(view().name(V.CREATE_FORM))
         .andExpect(model().attributeExists(M.CREATE_REQ))
         .andExpect(model().attributeHasErrors(M.CREATE_REQ))
+        .andExpect(model().attributeHasFieldErrors(M.CREATE_REQ, "confirm"))
         .andDo(print());
   }
 
@@ -84,16 +102,17 @@ public class AccountControllerMvcTest {
   public void test_create_without_password() throws Exception {
     // WHEN
     this.mock.perform(post(C.CREATE)
-        .param("nickname", "nickname")
+        .param(ATTR_NICKNAME, "nickname")
         .param("confirm", "confirm")
         .with(anonymous())
+        .with(csrf())
     )
 
         // THEN
         .andExpect(status().isOk())
         .andExpect(view().name(V.CREATE_FORM))
         .andExpect(model().attributeExists(M.CREATE_REQ))
-        .andExpect(model().attributeHasErrors(M.CREATE_REQ))
+        .andExpect(model().attributeHasFieldErrors(M.CREATE_REQ, "password"))
         .andDo(print());
   }
 
@@ -101,23 +120,28 @@ public class AccountControllerMvcTest {
   public void test_create_with_not_match_confirm() throws Exception {
     // WHEN
     this.mock.perform(post(C.CREATE)
-        .param("nickname", "nickname")
+        .param(ATTR_NICKNAME, "nickname")
         .param("password", "password")
         .param("confirm", "confirm")
         .with(anonymous())
+        .with(csrf())
     )
 
         // THEN
         .andExpect(status().isOk())
         .andExpect(view().name(V.CREATE_FORM))
         .andExpect(model().attributeExists(M.CREATE_REQ))
-        .andExpect(model().attributeHasErrors(M.CREATE_REQ))
+        .andExpect(model().attributeHasFieldErrors(M.CREATE_REQ, "confirm"))
         .andDo(print());
   }
 
   @Test
   public void test_create() throws Exception {
-    // TODO borderline 메서드 추가.
+    // GIVEN
+    AccountDetailDto dto = new AccountDetailDto(1L, "nickname", false, this.before, this.before);
+    log.info("GIVEN - dto={}", dto);
+    when(this.borderline.create(any()))
+        .thenReturn(dto);
 
     // WHEN
     this.mock.perform(post(C.CREATE)
@@ -126,11 +150,12 @@ public class AccountControllerMvcTest {
         .param("password", "password")
         .param("confirm", "password")
         .with(anonymous())
+        .with(csrf())
     )
 
         // THEN
         .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrlPattern(C.GROUP + "/*"))
+        .andExpect(redirectedUrl("/"))
         .andDo(print());
   }
 

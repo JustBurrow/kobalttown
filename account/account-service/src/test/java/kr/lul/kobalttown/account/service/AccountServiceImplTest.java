@@ -18,8 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 
+import static java.lang.Integer.MAX_VALUE;
 import static java.util.UUID.randomUUID;
+import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -64,10 +67,18 @@ public class AccountServiceImplTest {
   }
 
   @Test
+  public void test_create_with_null() throws Exception {
+    assertThatThrownBy(() -> this.service.create(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("params is null.");
+  }
+
+  @Test
   public void test_create() throws Exception {
     // GIVEN
-    CreateAccountParams params = new CreateAccountParams(new UuidContext(randomUUID()), "nickname",
-        "just.burrow@lul.kr", "password", this.instant);
+    String nickname = "nickname #" + current().nextInt(MAX_VALUE);
+    String email = "just.burrow." + current().nextInt(MAX_VALUE) + "@lul.kr";
+    CreateAccountParams params = new CreateAccountParams(new UuidContext(), nickname, email, "password", this.instant);
     log.info("GIVEN - params={}", params);
 
     // WHEN
@@ -78,7 +89,7 @@ public class AccountServiceImplTest {
     assertThat(account)
         .isNotNull()
         .extracting(Account::getNickname, Account::isEnabled, Creatable::getCreatedAt, Updatable::getUpdatedAt)
-        .containsSequence("nickname", false, this.instant, this.instant);
+        .containsSequence(nickname, false, this.instant, this.instant);
     assertThat(account.getId())
         .isPositive();
   }

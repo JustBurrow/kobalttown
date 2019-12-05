@@ -41,7 +41,7 @@ public class AccountRepositoryTest {
     List<AccountEntity> list = this.repository.findAll();
 
     assertThat(list)
-        .isEmpty();
+        .isNotNull();
   }
 
   @Test

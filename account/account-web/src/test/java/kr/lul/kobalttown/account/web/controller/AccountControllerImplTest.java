@@ -2,7 +2,6 @@ package kr.lul.kobalttown.account.web.controller;
 
 import kr.lul.kobalttown.account.web.AccountWebTestConfiguration;
 import kr.lul.kobalttown.account.web.controller.request.CreateAccountReq;
-import kr.lul.kobalttown.page.account.AccountMvc.C;
 import kr.lul.kobalttown.page.account.AccountMvc.M;
 import kr.lul.kobalttown.page.account.AccountMvc.V;
 import org.junit.Before;
@@ -17,6 +16,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 
+import static java.lang.Integer.MAX_VALUE;
+import static java.util.concurrent.ThreadLocalRandom.current;
+import static kr.lul.kobalttown.account.domain.Account.NICKNAME_MAX_LENGTH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -72,8 +74,8 @@ public class AccountControllerImplTest {
   @Test
   public void test_create_with_req_and_binding_and_model() throws Exception {
     // GIVEN
-    String nickname = "nickname";
-    String email = "just.burrow@lul.kr";
+    String nickname = "nickname #" + current().nextInt(1, NICKNAME_MAX_LENGTH - 9);
+    String email = "just.burrow." + current().nextInt(MAX_VALUE) + "@lul.kr";
     String password = "password";
     CreateAccountReq createReq = new CreateAccountReq(nickname, email, password, password);
     log.info("GIVEN - createReq={}", createReq);
@@ -87,7 +89,9 @@ public class AccountControllerImplTest {
     log.info("WHEN - template={}", template);
 
     // THEN
+    assertThat(binding.hasErrors())
+        .isFalse();
     assertThat(template)
-        .startsWith("redirect:" + C.GROUP);
+        .startsWith("redirect:/");
   }
 }

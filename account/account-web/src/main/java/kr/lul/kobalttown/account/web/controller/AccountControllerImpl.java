@@ -1,9 +1,12 @@
 package kr.lul.kobalttown.account.web.controller;
 
+import kr.lul.common.data.UuidContext;
+import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.borderline.AccountBorderline;
+import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
+import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.web.controller.request.CreateAccountReq;
 import kr.lul.kobalttown.page.account.AccountError;
-import kr.lul.kobalttown.page.account.AccountMvc.C;
 import kr.lul.kobalttown.page.account.AccountMvc.M;
 import kr.lul.kobalttown.page.account.AccountMvc.V;
 import org.slf4j.Logger;
@@ -18,7 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
-import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Arguments.positive;
@@ -34,10 +36,13 @@ class AccountControllerImpl implements AccountController {
 
   @Autowired
   private AccountBorderline accountBorderline;
+  @Autowired
+  private TimeProvider timeProvider;
 
   @PostConstruct
   private void postConstruct() {
     requireNonNull(this.accountBorderline, "accountBorderline is not autowired.");
+    requireNonNull(this.timeProvider, "timeProvider is not autowired.");
   }
 
   private String doCreateForm(Model model) {
@@ -50,9 +55,10 @@ class AccountControllerImpl implements AccountController {
   private String doCreate(CreateAccountReq req, BindingResult result, Model model) {
     String template;
     try {
-      // TODO create account
-      long id = 0L;
-      template = format("redirect:%s/%d", C.GROUP, id);
+      CreateAccountCmd cmd = new CreateAccountCmd(new UuidContext(), req.getNickname(), req.getEmail(),
+          req.getPassword(), this.timeProvider.now());
+      AccountDetailDto account = this.accountBorderline.create(cmd);
+      template = "redirect:/";
     } catch (Exception e) {
       // TODO add error
       template = doCreateForm(model);

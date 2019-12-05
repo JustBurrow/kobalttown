@@ -1,6 +1,9 @@
 dependencies {
+  implementation project(":account-domain")
   implementation project(":account-service")
   implementation project(":account-converter")
+
+  api project(":account-dto")
 
   implementation "org.springframework:spring-tx"
 

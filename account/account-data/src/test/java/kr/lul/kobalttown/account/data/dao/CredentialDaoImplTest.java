@@ -22,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.time.Instant;
 
+import static java.lang.Integer.MAX_VALUE;
 import static java.util.UUID.randomUUID;
+import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -64,9 +66,10 @@ public class CredentialDaoImplTest {
   @Test
   public void test_create() throws Exception {
     // GIVEN
-    Account account = this.accountRepository.saveAndFlush(new AccountEntity("nickname", this.instant));
+    String nickname = "nickname #" + current().nextInt(MAX_VALUE);
+    Account account = this.accountRepository.saveAndFlush(new AccountEntity(nickname, this.instant));
     this.entityManager.clear();
-    Credential expected = new CredentialEntity(account, "nickname", this.securityEncoder.encode("password"),
+    Credential expected = new CredentialEntity(account, nickname, this.securityEncoder.encode("password"),
         this.instant);
     log.info("GIVEN - expected={}", expected);
 
@@ -78,7 +81,7 @@ public class CredentialDaoImplTest {
     assertThat(actual)
         .isNotNull()
         .extracting(Credential::getAccount, Credential::getPublicKey, Creatable::getCreatedAt)
-        .containsSequence(account, "nickname", this.instant);
+        .containsSequence(account, nickname, this.instant);
     assertThat(actual.getId())
         .isPositive();
     Assertions.assertThat(this.securityEncoder.matches("password", actual.getSecretHash()))
