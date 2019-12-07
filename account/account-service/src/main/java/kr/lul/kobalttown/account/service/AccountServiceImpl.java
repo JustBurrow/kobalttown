@@ -2,8 +2,8 @@ package kr.lul.kobalttown.account.service;
 
 import kr.lul.kobalttown.account.data.dao.AccountDao;
 import kr.lul.kobalttown.account.data.dao.CredentialDao;
-import kr.lul.kobalttown.account.data.entity.AccountEntity;
-import kr.lul.kobalttown.account.data.entity.CredentialEntity;
+import kr.lul.kobalttown.account.data.factory.AccountFactory;
+import kr.lul.kobalttown.account.data.factory.CredentialFactory;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
@@ -28,6 +28,10 @@ class AccountServiceImpl implements AccountService {
   private static final Logger log = getLogger(AccountServiceImpl.class);
 
   @Autowired
+  private AccountFactory accountFactory;
+  @Autowired
+  private CredentialFactory credentialFactory;
+  @Autowired
   private AccountDao accountDao;
   @Autowired
   private CredentialDao credentialDao;
@@ -45,19 +49,23 @@ class AccountServiceImpl implements AccountService {
       log.trace("#create args : params={}", params);
     notNull(params, "params");
 
-    Account account = new AccountEntity(params.getNickname(), params.getInstant());
+    Account account = this.accountFactory.create(params.getContext(), params.getNickname(), params.getInstant());
     account = this.accountDao.create(params.getContext(), account);
 
-    Credential credential = new CredentialEntity(account, params.getNickname(),
+    Credential credential = this.credentialFactory.create(params.getContext(), account, params.getNickname(),
         this.securityEncoder.encode(params.getPassword()), params.getInstant());
     credential = this.credentialDao.create(params.getContext(), credential);
+    if (log.isTraceEnabled())
+      log.trace("#create (context={}) nickname credential : {}", params.getContext(), credential);
 
-    credential = new CredentialEntity(account, params.getEmail(),
+    credential = this.credentialFactory.create(params.getContext(), account, params.getEmail(),
         this.securityEncoder.encode(params.getPassword()), params.getInstant());
     credential = this.credentialDao.create(params.getContext(), credential);
+    if (log.isTraceEnabled())
+      log.trace("#create (context={}) email credential : {}", params.getContext(), credential);
 
     if (log.isTraceEnabled())
-      log.trace("#create return : {}", account);
+      log.trace("#create (context={}) return : {}", params.getContext(), account);
     return account;
   }
 
