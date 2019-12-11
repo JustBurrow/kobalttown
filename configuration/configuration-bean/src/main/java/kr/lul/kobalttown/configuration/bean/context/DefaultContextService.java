@@ -18,6 +18,8 @@ public class DefaultContextService implements ContextService {
   public Context issue() {
     synchronized (this.lock) {
       Context context = new Context();
+      if (log.isInfoEnabled())
+        log.info("#issue context={}", context);
       this.holder.set(context);
       return context;
     }
@@ -27,8 +29,12 @@ public class DefaultContextService implements ContextService {
   public Context get() {
     synchronized (this.lock) {
       Context context = this.holder.get();
+      if (log.isInfoEnabled())
+        log.info("#get current : context={}", context);
       if (null == context) {
         context = new Context();
+        if (log.isInfoEnabled())
+          log.info("#get new : context={}", context);
         this.holder.set(context);
       }
       return context;
@@ -39,9 +45,11 @@ public class DefaultContextService implements ContextService {
   public boolean clear() {
     synchronized (this.lock) {
       Context context = this.holder.get();
-      if (null == context) {
+      if (log.isInfoEnabled())
+        log.info("#clear current : context={}", context);
+
+      if (null == context)
         this.holder.remove();
-      }
       return null != context;
     }
   }
