@@ -1,9 +1,11 @@
 dependencies {
+  implementation "kr.lul.support.spring:support-spring-data-jpa:$SUPPORT_SPRING_VERSION"
+
   api project(":account-domain")
-  api project(":configuration-data-jpa")
+
+  testImplementation project(":configuration-data-jpa")
+  testImplementation "kr.lul.support.spring:support-spring-security"
+  testImplementation "com.h2database:h2"
 
   testRuntimeOnly "mysql:mysql-connector-java"
-
-  testImplementation "com.h2database:h2"
-  testImplementation "kr.lul.support.spring:support-spring-security"
 }

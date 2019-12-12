@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.account.data.factory;
 
-import kr.lul.common.data.UuidContext;
+import kr.lul.common.data.Context;
 import kr.lul.kobalttown.account.domain.Account;
 
 import java.time.Instant;
@@ -10,5 +10,5 @@ import java.time.Instant;
  * @since 2019/12/07
  */
 public interface AccountFactory {
-  Account create(UuidContext context, String nickname, Instant createdAt);
+  Account create(Context context, String nickname, Instant createdAt);
 }

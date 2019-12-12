@@ -1,8 +1,8 @@
 package kr.lul.kobalttown.account.service;
 
+import kr.lul.common.data.Context;
 import kr.lul.common.data.Creatable;
 import kr.lul.common.data.Updatable;
-import kr.lul.common.data.UuidContext;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 
 import static java.lang.Integer.MAX_VALUE;
-import static java.util.UUID.randomUUID;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -54,7 +53,7 @@ public class AccountServiceImplTest {
   @Test
   public void test_read_with_not_exist_id() throws Exception {
     // GIVEN
-    ReadAccountParams params = new ReadAccountParams(new UuidContext(randomUUID()), Long.MAX_VALUE);
+    ReadAccountParams params = new ReadAccountParams(new Context(), Long.MAX_VALUE, this.instant);
     log.info("GIVEN - params={}", params);
 
     // WHEN
@@ -78,7 +77,7 @@ public class AccountServiceImplTest {
     // GIVEN
     String nickname = "nickname #" + current().nextInt(MAX_VALUE);
     String email = "just.burrow." + current().nextInt(MAX_VALUE) + "@lul.kr";
-    CreateAccountParams params = new CreateAccountParams(new UuidContext(), nickname, email, "password", this.instant);
+    CreateAccountParams params = new CreateAccountParams(new Context(), nickname, email, "password", this.instant);
     log.info("GIVEN - params={}", params);
 
     // WHEN

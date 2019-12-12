@@ -1,8 +1,8 @@
 package kr.lul.kobalttown.account.data.dao;
 
+import kr.lul.common.data.Context;
 import kr.lul.common.data.Creatable;
 import kr.lul.common.data.Updatable;
-import kr.lul.common.data.UuidContext;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.data.entity.AccountEntity;
 import kr.lul.kobalttown.account.domain.Account;
@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 
 import static java.lang.Integer.MAX_VALUE;
-import static java.util.UUID.randomUUID;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static kr.lul.kobalttown.account.domain.Account.NICKNAME_MAX_LENGTH;
 import static org.apache.commons.lang3.RandomStringUtils.random;
@@ -54,7 +53,7 @@ public class AccountDaoImplTest {
   @Test
   public void test_read_with_context_and_not_exist_id() throws Exception {
     // GIVEN
-    UuidContext context = new UuidContext(randomUUID());
+    Context context = new Context();
     log.info("GIVEN - context={}", context);
 
     // WHEN
@@ -75,7 +74,7 @@ public class AccountDaoImplTest {
 
   @Test
   public void test_create_with_context_and_null_account() throws Exception {
-    assertThatThrownBy(() -> this.dao.create(new UuidContext(randomUUID()), null))
+    assertThatThrownBy(() -> this.dao.create(new Context(), null))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("account is null.");
   }
@@ -89,7 +88,7 @@ public class AccountDaoImplTest {
     log.info("GIVEN - expected={}", expected);
 
     // WHEN
-    Account actual = this.dao.create(new UuidContext(), expected);
+    Account actual = this.dao.create(new Context(), expected);
     log.info("WHEN - actual={}", actual);
 
     // THEN
@@ -105,11 +104,11 @@ public class AccountDaoImplTest {
   public void test_read_with_context_and_exist_id() throws Exception {
     // GIVEN
     String nickname = "nickname #" + random(current().nextInt(1, NICKNAME_MAX_LENGTH - 9));
-    Account expected = this.dao.create(new UuidContext(), new AccountEntity(nickname, this.instant));
+    Account expected = this.dao.create(new Context(), new AccountEntity(nickname, this.instant));
     log.info("GIVEN - expected={}", expected);
 
     // WHEN
-    Account actual = this.dao.read(new UuidContext(randomUUID()), expected.getId());
+    Account actual = this.dao.read(new Context(), expected.getId());
     log.info("WHEN - actual={}", actual);
 
     // THEN

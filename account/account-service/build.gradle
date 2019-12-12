@@ -1,8 +1,8 @@
 dependencies {
-  implementation project(":account-domain")
   implementation project(":account-data")
-
   implementation "kr.lul.support.spring:support-spring-security"
+
+  api project(":account-domain")
 
   testImplementation project(":configuration-data-jpa")
 }

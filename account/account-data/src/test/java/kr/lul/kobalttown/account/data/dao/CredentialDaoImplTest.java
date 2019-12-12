@@ -1,7 +1,7 @@
 package kr.lul.kobalttown.account.data.dao;
 
+import kr.lul.common.data.Context;
 import kr.lul.common.data.Creatable;
-import kr.lul.common.data.UuidContext;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.data.entity.AccountEntity;
 import kr.lul.kobalttown.account.data.entity.CredentialEntity;
@@ -23,7 +23,6 @@ import javax.persistence.EntityManager;
 import java.time.Instant;
 
 import static java.lang.Integer.MAX_VALUE;
-import static java.util.UUID.randomUUID;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -74,7 +73,7 @@ public class CredentialDaoImplTest {
     log.info("GIVEN - expected={}", expected);
 
     // WHEN
-    Credential actual = this.dao.create(new UuidContext(randomUUID()), expected);
+    Credential actual = this.dao.create(new Context(), expected);
     log.info("WHEN - actual={}", actual);
 
     // THEN

@@ -1,5 +1,8 @@
 dependencies {
   implementation project(":page-root")
+  implementation "kr.lul.common:common-data"
+
+  api project(":configuration-bean")
   api project(":global-security")
 
   api "org.springframework.boot:spring-boot-starter-web"

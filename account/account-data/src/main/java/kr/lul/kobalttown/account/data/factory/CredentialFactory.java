@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.account.data.factory;
 
-import kr.lul.common.data.UuidContext;
+import kr.lul.common.data.Context;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
 
@@ -11,5 +11,5 @@ import java.time.Instant;
  * @since 2019/12/07
  */
 public interface CredentialFactory {
-  Credential create(UuidContext context, Account account, String publicKey, String secretHash, Instant createdAt);
+  Credential create(Context context, Account account, String publicKey, String secretHash, Instant createdAt);
 }

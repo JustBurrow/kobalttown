@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.account.data.factory;
 
-import kr.lul.common.data.UuidContext;
+import kr.lul.common.data.Context;
 import kr.lul.kobalttown.account.data.entity.AccountEntity;
 import kr.lul.kobalttown.account.domain.Account;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ class AccountFactoryImpl implements AccountFactory {
   private static final Logger log = getLogger(AccountFactoryImpl.class);
 
   @Override
-  public Account create(UuidContext context, String nickname, Instant createdAt) {
+  public Account create(Context context, String nickname, Instant createdAt) {
     if (log.isTraceEnabled())
       log.trace("#create args : context={}, nickname={}, createdAt={}", context, nickname, createdAt);
     notNull(context, "context");

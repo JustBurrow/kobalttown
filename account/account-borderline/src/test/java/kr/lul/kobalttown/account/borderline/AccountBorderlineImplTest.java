@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.account.borderline;
 
-import kr.lul.common.data.UuidContext;
+import kr.lul.common.data.Context;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
 import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.UUID;
 
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,7 +57,7 @@ public class AccountBorderlineImplTest {
     // GIVEN
     long id = Long.MAX_VALUE;
     log.info("GIVEN - id={}", id);
-    ReadAccountCmd cmd = new ReadAccountCmd(new UuidContext(UUID.randomUUID()), id);
+    ReadAccountCmd cmd = new ReadAccountCmd(new Context(), id, this.timeProvider.now());
     log.info("GIVEN - cmd={}", cmd);
 
     // WHEN
@@ -83,7 +82,7 @@ public class AccountBorderlineImplTest {
     String nickname = "nickname #" + current().nextInt(Integer.MAX_VALUE);
     String email = "just.burrow." + current().nextInt(Integer.MAX_VALUE) + "@lul.kr";
     String password = "password";
-    CreateAccountCmd cmd = new CreateAccountCmd(new UuidContext(), nickname, email, password, Instant.now());
+    CreateAccountCmd cmd = new CreateAccountCmd(new Context(), nickname, email, password, Instant.now());
     log.info("GIVEN - cmd={}", cmd);
 
     // WHEN

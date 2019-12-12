@@ -40,9 +40,9 @@ class AccountBorderlineImpl implements AccountBorderline {
 
   @Override
   public AccountDetailDto create(CreateAccountCmd cmd) {
-    notNull(cmd, "cmd");
     if (log.isTraceEnabled())
       log.trace("#create args : cmd={}", cmd);
+    notNull(cmd, "cmd");
 
     CreateAccountParams params = new CreateAccountParams(cmd.getContext(), cmd.getNickname(), cmd.getEmail(),
         cmd.getPassword(), cmd.getTimestamp());
@@ -50,15 +50,15 @@ class AccountBorderlineImpl implements AccountBorderline {
     AccountDetailDto dto = this.accountConverter.convert(account, AccountDetailDto.class);
 
     if (log.isTraceEnabled())
-      log.trace("#create return : {}", dto);
+      log.trace("#create (context={} return : {}", cmd.getContext(), dto);
     return dto;
   }
 
   @Override
   public AccountDetailDto read(ReadAccountCmd cmd) {
-    notNull(cmd, "cmd");
     if (log.isTraceEnabled())
       log.trace("#read args : cmd={}", cmd);
+    notNull(cmd, "cmd");
 
     return null;
   }

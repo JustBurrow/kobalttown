@@ -1,6 +1,8 @@
 dependencies {
   implementation project(":page-root")
+  implementation project(":account-data")
 
+  api project(":configuration-bean")
   api "kr.lul.support.spring:support-spring-security"
 
   implementation "org.springframework.boot:spring-boot-starter-web"

@@ -1,15 +1,18 @@
 dependencies {
-  implementation project(":account-domain")
   implementation project(":account-borderline")
 
   implementation project(":page-account")
   implementation project(":configuration-web")
 
-  testImplementation project(":configuration-bean")
+  api project(":account-domain")
+  api project(":account-dto")
+
+  compileOnly project(":configuration-bean")
+
+  testImplementation project(":account-data")
   testImplementation project(":configuration-data-jpa")
   testImplementation project(":configuration-security")
   testImplementation project(":configuration-web")
 
-  testImplementation "kr.lul.support.spring:support-spring-security"
   testImplementation "org.springframework.security:spring-security-test"
 }

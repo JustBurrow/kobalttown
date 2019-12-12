@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.account.data.factory;
 
-import kr.lul.common.data.UuidContext;
+import kr.lul.common.data.Context;
 import kr.lul.kobalttown.account.data.entity.CredentialEntity;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
@@ -20,7 +20,7 @@ class CredentialFactoryImpl implements CredentialFactory {
   private static final Logger log = getLogger(CredentialFactoryImpl.class);
 
   @Override
-  public Credential create(UuidContext context, Account account, String publicKey, String secretHash,
+  public Credential create(Context context, Account account, String publicKey, String secretHash,
       Instant createdAt) {
     if (log.isTraceEnabled())
       log.trace("#create args : context={}, account={}, publicKey={}, secretHash={}, createdAt={}",

@@ -8,8 +8,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
+import static kr.lul.common.util.Arguments.notEmpty;
 import static kr.lul.common.util.Arguments.notNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -25,7 +24,7 @@ class CredentialDaoImpl implements CredentialDao {
   private CredentialRepository repository;
 
   @Override
-  public Credential create(Context<UUID> context, Credential credential) {
+  public Credential create(Context context, Credential credential) {
     if (log.isTraceEnabled())
       log.trace("#create args : context={}, credential={}", context, credential);
     notNull(context, "context");
@@ -34,7 +33,20 @@ class CredentialDaoImpl implements CredentialDao {
     CredentialEntity saved = this.repository.save((CredentialEntity) credential);
 
     if (log.isTraceEnabled())
-      log.trace("#create return : {}", saved);
+      log.trace("#create ({}) return : {}", context, saved);
     return saved;
+  }
+
+  @Override
+  public Credential read(Context context, String publicKey) {
+    if (log.isTraceEnabled())
+      log.trace("#read args : context={}, publicKey={}", context, publicKey);
+    notEmpty(publicKey, "publicKey");
+
+    CredentialEntity credential = this.repository.findByPublicKey(publicKey);
+
+    if (log.isTraceEnabled())
+      log.trace("#read (context={}) return : {}", context, credential);
+    return credential;
   }
 }

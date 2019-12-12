@@ -49,17 +49,17 @@ class AccountServiceImpl implements AccountService {
       log.trace("#create args : params={}", params);
     notNull(params, "params");
 
-    Account account = this.accountFactory.create(params.getContext(), params.getNickname(), params.getInstant());
+    Account account = this.accountFactory.create(params.getContext(), params.getNickname(), params.getTimestamp());
     account = this.accountDao.create(params.getContext(), account);
 
     Credential credential = this.credentialFactory.create(params.getContext(), account, params.getNickname(),
-        this.securityEncoder.encode(params.getPassword()), params.getInstant());
+        this.securityEncoder.encode(params.getPassword()), params.getTimestamp());
     credential = this.credentialDao.create(params.getContext(), credential);
     if (log.isTraceEnabled())
       log.trace("#create (context={}) nickname credential : {}", params.getContext(), credential);
 
     credential = this.credentialFactory.create(params.getContext(), account, params.getEmail(),
-        this.securityEncoder.encode(params.getPassword()), params.getInstant());
+        this.securityEncoder.encode(params.getPassword()), params.getTimestamp());
     credential = this.credentialDao.create(params.getContext(), credential);
     if (log.isTraceEnabled())
       log.trace("#create (context={}) email credential : {}", params.getContext(), credential);

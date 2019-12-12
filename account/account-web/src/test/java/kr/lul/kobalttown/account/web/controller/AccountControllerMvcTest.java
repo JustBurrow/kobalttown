@@ -1,12 +1,16 @@
 package kr.lul.kobalttown.account.web.controller;
 
+import kr.lul.common.data.Context;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.borderline.AccountBorderline;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.web.AccountWebTestConfiguration;
+import kr.lul.kobalttown.configuration.bean.context.ContextService;
 import kr.lul.kobalttown.configuration.security.WebSecurityConfiguration;
 import kr.lul.kobalttown.configuration.web.WebMvcConfiguration;
+import kr.lul.support.spring.security.userdetails.User;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,12 +19,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 import static kr.lul.kobalttown.account.domain.Account.ATTR_NICKNAME;
 import static kr.lul.kobalttown.page.account.AccountMvc.*;
@@ -28,8 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.slf4j.LoggerFactory.getLogger;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -53,17 +58,27 @@ public class AccountControllerMvcTest {
   private AccountBorderline borderline;
 
   @Autowired
+  private ContextService uuidContextService;
+  @Autowired
   private TimeProvider timeProvider;
 
+  private Context context;
   private ZonedDateTime before;
 
   @Before
   public void setUp() throws Exception {
     assertThat(this.mock).isNotNull();
     assertThat(this.borderline).isNotNull();
+    assertThat(this.uuidContextService).isNotNull();
     assertThat(this.timeProvider).isNotNull();
 
+    this.context = this.uuidContextService.issue();
     this.before = this.timeProvider.zonedDateTime();
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    this.uuidContextService.clear();
   }
 
   @Test
@@ -161,12 +176,16 @@ public class AccountControllerMvcTest {
 
   @Test
   public void test_list() throws Exception {
+    // GIVEN
+    User user = new User(1L, "username", "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    log.info("GIVEN - user={}", user);
+
     // WHEN
-    this.mock.perform(get(C.LIST))
+    this.mock.perform(get(C.LIST)
+        .with(user(user)))
 
         // THEN
         .andExpect(status().isOk())
-        .andExpect(handler().handlerType(AccountControllerImpl.class))
         .andExpect(view().name(V.LIST))
         .andExpect(model().hasNoErrors())
         .andDo(print());
@@ -189,10 +208,26 @@ public class AccountControllerMvcTest {
 
   @Test
   public void test_detail() throws Exception {
-    this.mock.perform(get(C.DETAIL, 1L))
+    // GIVEN
+    User user = new User(1L, "nickname", "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    log.info("GIVEN - user={}", user);
+    AccountDetailDto dto = new AccountDetailDto(1L, "nickname", true, this.before, this.before);
+    log.info("GIVEN - dto={}", dto);
+
+//    when(this.borderline.read(new ReadAccountCmd(this.context, 1L, this.timeProvider.now())))
+//        .thenReturn(dto);
+    when(this.borderline.read(any()))
+        .thenReturn(dto);
+
+    // WHEN
+    this.mock.perform(get(C.DETAIL, 1L)
+        .with(user(user))
+    )
+
+        // THEN
         .andExpect(status().isOk())
         .andExpect(view().name(V.DETAIL))
-        .andExpect(model().attributeExists(M.ACCOUNT))
+        .andExpect(model().attribute(M.ACCOUNT, dto))
         .andDo(print());
   }
 

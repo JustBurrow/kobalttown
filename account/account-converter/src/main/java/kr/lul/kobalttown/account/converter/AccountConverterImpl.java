@@ -31,6 +31,7 @@ class AccountConverterImpl implements AccountConverter {
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public <T> T convert(Account account, Class<T> targetType) {
     if (log.isTraceEnabled())
       log.trace("#convert args : account={}, targetType={}", account, targetType);

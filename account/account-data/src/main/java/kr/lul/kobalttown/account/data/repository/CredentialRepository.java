@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface CredentialRepository extends JpaRepository<CredentialEntity, Long> {
+  CredentialEntity findByPublicKey(String publicKey);
 }
