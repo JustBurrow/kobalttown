@@ -1,5 +1,6 @@
 package kr.lul.kobalttown.configuration.bean.context;
 
+import kr.lul.common.data.Context;
 import org.slf4j.Logger;
 
 import static org.slf4j.LoggerFactory.getLogger;

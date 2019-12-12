@@ -1,5 +1,7 @@
 package kr.lul.kobalttown.configuration.bean.context;
 
+import kr.lul.common.data.Context;
+
 /**
  * 현재의 작업 흐름의 정보를 제공한다.
  *
