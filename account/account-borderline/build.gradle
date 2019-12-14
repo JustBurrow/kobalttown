@@ -5,9 +5,7 @@ dependencies {
   api project(":account-domain")
   api project(":account-dto")
 
-  implementation "org.springframework:spring-tx"
+  compileOnly "org.springframework:spring-tx"
 
-  testImplementation project(":configuration-data-jpa")
-
-  testImplementation "kr.lul.support.spring:support-spring-security"
+  testImplementation project(":configuration-dependencies")
 }

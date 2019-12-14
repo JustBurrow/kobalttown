@@ -1,8 +1,7 @@
 package kr.lul.kobalttown.runner.standalone;
 
-import kr.lul.common.util.SystemTimeProvider;
-import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.web.AccountWebAnchor;
+import kr.lul.kobalttown.configuration.bean.BeanConfiguration;
 import kr.lul.kobalttown.configuration.data.jpa.JpaConfiguration;
 import kr.lul.kobalttown.configuration.security.WebSecurityConfiguration;
 import kr.lul.kobalttown.configuration.web.WebMvcConfiguration;
@@ -11,7 +10,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -21,7 +19,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @since 2019/11/24
  */
 @SpringBootApplication(scanBasePackageClasses = {AccountWebAnchor.class})
-@Import({JpaConfiguration.class, WebMvcConfiguration.class, WebSecurityConfiguration.class})
+@Import({BeanConfiguration.class, JpaConfiguration.class, WebMvcConfiguration.class, WebSecurityConfiguration.class})
 public class StandaloneRunner {
   private static final Logger log = getLogger(StandaloneRunner.class);
 
@@ -35,10 +33,5 @@ public class StandaloneRunner {
         log.trace("bean : %s=%s", name, context.getBean(name));
       }
     }
-  }
-
-  @Bean
-  public TimeProvider timeProvider() {
-    return new SystemTimeProvider();
   }
 }

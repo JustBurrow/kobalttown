@@ -4,5 +4,6 @@ dependencies {
 
   api project(":account-domain")
 
+  testImplementation project(":configuration-bean")
   testImplementation project(":configuration-data-jpa")
 }

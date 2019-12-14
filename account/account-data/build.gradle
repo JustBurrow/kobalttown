@@ -1,8 +1,9 @@
 dependencies {
-  implementation "kr.lul.support.spring:support-spring-data-jpa:$SUPPORT_SPRING_VERSION"
-
   api project(":account-domain")
 
+  compileOnly "kr.lul.support.spring:support-spring-data-jpa"
+
+  testImplementation project(":configuration-bean")
   testImplementation project(":configuration-data-jpa")
   testImplementation "kr.lul.support.spring:support-spring-security"
   testImplementation "com.h2database:h2"

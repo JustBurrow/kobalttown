@@ -1,8 +1,6 @@
 dependencies {
   implementation project(":account-web")
-  implementation project(":configuration-data-jpa")
-  implementation project(":configuration-security")
-  implementation project(":configuration-web")
+  implementation project(":configuration-dependencies")
 }
 
 bootJar.enabled = true
