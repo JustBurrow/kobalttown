@@ -1,14 +1,10 @@
 dependencies {
   implementation project(":page-root")
-  implementation "kr.lul.common:common-data"
+  implementation project(":global-security")
 
-  api project(":configuration-bean")
-  api project(":global-security")
+  api "kr.lul.support.spring:support-spring-web:$SUPPORT_SPRING_VERSION"
 
   api "org.springframework.boot:spring-boot-starter-web"
   api "org.springframework.boot:spring-boot-starter-thymeleaf"
   api "org.springframework.security:spring-security-core"
-
-  testImplementation project(":configuration-web")
-  testImplementation project(":configuration-bean")
 }

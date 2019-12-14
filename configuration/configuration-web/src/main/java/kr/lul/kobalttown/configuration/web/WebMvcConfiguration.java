@@ -1,7 +1,9 @@
 package kr.lul.kobalttown.configuration.web;
 
-import kr.lul.kobalttown.configuration.web.interceptor.LoggingInterceptor;
 import kr.lul.kobalttown.page.root.RootMvc;
+import kr.lul.support.spring.web.context.ContextService;
+import kr.lul.support.spring.web.context.DefaultContextService;
+import kr.lul.support.spring.web.interceptor.LoggingInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
@@ -25,6 +27,11 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
   @Bean
   public LoggingInterceptor loggingInterceptor() {
     return new LoggingInterceptor();
+  }
+
+  @Bean
+  public ContextService contextService() {
+    return new DefaultContextService();
   }
 
   @Override

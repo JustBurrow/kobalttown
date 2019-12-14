@@ -7,8 +7,6 @@ dependencies {
   api project(":account-domain")
   api project(":account-dto")
 
-  compileOnly project(":configuration-bean")
-
   testImplementation project(":account-data")
   testImplementation project(":configuration-data-jpa")
   testImplementation project(":configuration-security")

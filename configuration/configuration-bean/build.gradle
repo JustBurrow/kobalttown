@@ -1,4 +1,0 @@
-dependencies {
-  implementation "kr.lul.common:common-util:$COMMON_VERSION"
-  implementation "kr.lul.common:common-data:$COMMON_VERSION"
-}

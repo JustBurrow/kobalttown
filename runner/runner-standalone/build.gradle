@@ -1,6 +1,5 @@
 dependencies {
   implementation project(":account-web")
-  implementation project(":configuration-bean")
   implementation project(":configuration-data-jpa")
   implementation project(":configuration-security")
   implementation project(":configuration-web")

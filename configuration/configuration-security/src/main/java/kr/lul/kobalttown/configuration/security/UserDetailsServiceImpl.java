@@ -5,8 +5,8 @@ import kr.lul.common.util.Texts;
 import kr.lul.kobalttown.account.data.dao.CredentialDao;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
-import kr.lul.kobalttown.configuration.bean.context.ContextService;
 import kr.lul.support.spring.security.userdetails.User;
+import kr.lul.support.spring.web.context.ContextService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,7 +29,7 @@ class UserDetailsServiceImpl implements UserDetailsService {
   @Autowired
   private CredentialDao credentialDao;
   @Autowired
-  private ContextService uuidContextService;
+  private ContextService contextService;
 
   @PostConstruct
   private void postConstruct() {
@@ -45,7 +45,7 @@ class UserDetailsServiceImpl implements UserDetailsService {
     if (null == username || username.isEmpty())
       throw new UsernameNotFoundException("username is null or empty.");
 
-    Context context = this.uuidContextService.get();
+    Context context = this.contextService.get();
     if (null == context && log.isInfoEnabled())
       log.info("#loadUserByUsername context={}", context);
 
