@@ -31,23 +31,9 @@ public interface AccountController {
   String create(@ModelAttribute(M.CREATE_REQ) @Valid CreateAccountReq req, BindingResult result, Model model);
 
   /**
-   * See {@link kr.lul.kobalttown.page.account.AccountPage#LIST}.
-   */
-  @GetMapping(C.LIST)
-  @PreAuthorize("isAuthenticated()")
-  String list(Model model);
-
-  /**
    * See {@link kr.lul.kobalttown.page.account.AccountPage#DETAIL}.
    */
   @GetMapping(C.DETAIL)
   @PreAuthorize("isAuthenticated()")
   String detail(@PathVariable(M.ID) long id, Model model);
-
-  /**
-   * See {@link kr.lul.kobalttown.page.account.AccountPage#ACTIVATE}.
-   */
-  @GetMapping(C.ACTIVATE)
-  @PreAuthorize("isAnonymous()")
-  String activate(@PathVariable(M.TOKEN) String token, Model model);
 }

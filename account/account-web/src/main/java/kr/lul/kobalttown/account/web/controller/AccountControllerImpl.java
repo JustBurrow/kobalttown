@@ -117,19 +117,6 @@ class AccountControllerImpl implements AccountController {
   }
 
   @Override
-  public String list(Model model) {
-    if (log.isTraceEnabled())
-      log.trace("#list args : model={}", model);
-    notNull(model, "model");
-
-    String template = V.LIST;
-
-    if (log.isTraceEnabled())
-      log.trace("#list result : template={}, model={}", template, model);
-    return template;
-  }
-
-  @Override
   public String detail(@PathVariable(M.ID) long id, Model model) {
     if (log.isTraceEnabled())
       log.trace("#detail args : id={}, model={}", id, model);
@@ -147,18 +134,6 @@ class AccountControllerImpl implements AccountController {
 
     if (log.isTraceEnabled())
       log.trace("#detail result : template={}, model={}", template, model);
-    return template;
-  }
-
-  @Override
-  public String activate(@PathVariable(M.TOKEN) String token, Model model) {
-    if (log.isTraceEnabled())
-      log.trace("#activate args : token={}, model={}", token, model);
-
-    String template = V.ACTIVATE;
-
-    if (log.isTraceEnabled())
-      log.trace("#activate result : template={}, model={}", template, model);
     return template;
   }
 }

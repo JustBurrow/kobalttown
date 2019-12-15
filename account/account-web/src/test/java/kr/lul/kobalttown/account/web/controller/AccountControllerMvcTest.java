@@ -9,7 +9,6 @@ import kr.lul.kobalttown.configuration.security.WebSecurityConfiguration;
 import kr.lul.kobalttown.configuration.web.WebMvcConfiguration;
 import kr.lul.support.spring.security.userdetails.User;
 import kr.lul.support.spring.web.context.ContextService;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -175,23 +174,6 @@ public class AccountControllerMvcTest {
   }
 
   @Test
-  public void test_list() throws Exception {
-    // GIVEN
-    User user = new User(1L, "username", "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
-    log.info("GIVEN - user={}", user);
-
-    // WHEN
-    this.mock.perform(get(C.LIST)
-        .with(user(user)))
-
-        // THEN
-        .andExpect(status().isOk())
-        .andExpect(view().name(V.LIST))
-        .andExpect(model().hasNoErrors())
-        .andDo(print());
-  }
-
-  @Test
   public void test_detail_with_non_digits() throws Exception {
     // WHEN
     this.mock.perform(get(C.DETAIL, "non-digit"))
@@ -228,32 +210,6 @@ public class AccountControllerMvcTest {
         .andExpect(status().isOk())
         .andExpect(view().name(V.DETAIL))
         .andExpect(model().attribute(M.ACCOUNT, dto))
-        .andDo(print());
-  }
-
-  @Test
-  public void test_activate_without_token() throws Exception {
-    this.mock.perform(get(C.ACTIVATE, "")
-        .with(anonymous())
-    )
-        .andExpect(status().isNotFound())
-        .andDo(print());
-  }
-
-  @Test
-  public void test_activate() throws Exception {
-    // GIVEN
-    String token = RandomStringUtils.randomAlphanumeric(10);
-    log.info("GIVEN - token={}", token);
-
-    // WHEN
-    this.mock.perform(get(C.ACTIVATE, token)
-        .with(anonymous())
-    )
-
-        // THEN
-        .andExpect(status().isOk())
-        .andExpect(view().name(V.ACTIVATE))
         .andDo(print());
   }
 }
