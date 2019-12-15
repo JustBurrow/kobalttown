@@ -16,3 +16,5 @@ groups.each { feature, layers ->
     findProject(":$module").projectDir = new File("$feature/$module")
   }
 }
+
+include "front"

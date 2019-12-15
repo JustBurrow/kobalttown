@@ -1,0 +1,4 @@
+dependencies {
+  runtimeOnly project(":account-dto")
+  runtimeOnly project(":account-web")
+}

@@ -45,25 +45,27 @@ class AccountControllerImpl implements AccountController {
   @PostConstruct
   private void postConstruct() {
     requireNonNull(this.accountBorderline, "accountBorderline is not autowired.");
-    requireNonNull(this.contextService, "uuidContextService is not autowired.");
+    requireNonNull(this.contextService, "contextService is not autowired.");
     requireNonNull(this.timeProvider, "timeProvider is not autowired.");
   }
 
-  private String doCreateForm(Model model) {
+  private String doCreateForm(final Model model) {
     if (!model.containsAttribute(M.CREATE_REQ)) {
       model.addAttribute(M.CREATE_REQ, new CreateAccountReq());
     }
     return V.CREATE_FORM;
   }
 
-  private String doCreate(CreateAccountReq req, BindingResult result, Model model) {
+  private String doCreate(final CreateAccountReq req, final BindingResult result, final Model model) {
     String template;
     try {
-      CreateAccountCmd cmd = new CreateAccountCmd(this.contextService.get(), req.getNickname(), req.getEmail(),
+      final CreateAccountCmd cmd = new CreateAccountCmd(this.contextService.get(), req.getNickname(), req.getEmail(),
           req.getPassword(), this.timeProvider.now());
-      AccountDetailDto account = this.accountBorderline.create(cmd);
+      final AccountDetailDto account = this.accountBorderline.create(cmd);
+      if (log.isDebugEnabled())
+        log.debug("#doCreate account={}", account);
       template = "redirect:/";
-    } catch (Exception e) {
+    } catch (final Exception e) {
       // TODO add error
       template = doCreateForm(model);
     }
@@ -71,7 +73,7 @@ class AccountControllerImpl implements AccountController {
     return template;
   }
 
-  private void validate(CreateAccountReq req, BindingResult binding) {
+  private void validate(final CreateAccountReq req, final BindingResult binding) {
     if (null != req.getPassword() && !req.getPassword().equals(req.getConfirm())) {
       binding.addError(new FieldError(M.CREATE_REQ, "confirm", null, false,
           new String[]{AccountError.CREATE_CONFIRM_NOT_MATCH}, null, "비밀번호가 일치하지 않습니다."));
@@ -82,12 +84,12 @@ class AccountControllerImpl implements AccountController {
   // kr.lul.kobalttown.account.web.controller.AccountController
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
-  public String createForm(Model model) {
+  public String createForm(final Model model) {
     if (log.isTraceEnabled())
       log.trace("#createForm args : model={}", model);
     notNull(model, "model");
 
-    String template = doCreateForm(model);
+    final String template = doCreateForm(model);
 
     if (log.isTraceEnabled())
       log.trace("#createForm result : template={}, model={}", template, model);
@@ -95,7 +97,8 @@ class AccountControllerImpl implements AccountController {
   }
 
   @Override
-  public String create(@ModelAttribute(M.CREATE_REQ) @Valid CreateAccountReq req, BindingResult binding, Model model) {
+  public String create(@ModelAttribute(M.CREATE_REQ) @Valid final CreateAccountReq req, final BindingResult binding,
+      final Model model) {
     if (log.isTraceEnabled())
       log.trace("#create args : req={}, binding={}, model={}", req, binding, model);
     notNull(req, M.CREATE_REQ);
@@ -106,8 +109,11 @@ class AccountControllerImpl implements AccountController {
 
     final String template;
     if (binding.hasErrors()) {
+      if (log.isInfoEnabled())
+        log.info("#create binding error exists : {}", binding);
       template = doCreateForm(model);
     } else {
+      log.info("#create no binding error.");
       template = doCreate(req, binding, model);
     }
 
@@ -117,20 +123,20 @@ class AccountControllerImpl implements AccountController {
   }
 
   @Override
-  public String detail(@PathVariable(M.ID) long id, Model model) {
+  public String detail(@PathVariable(M.ID) final long id, final Model model) {
     if (log.isTraceEnabled())
       log.trace("#detail args : id={}, model={}", id, model);
     positive(id, M.ID);
     notNull(model, "model");
 
-    ReadAccountCmd cmd = new ReadAccountCmd(this.contextService.get(), id, this.timeProvider.now());
-    AccountDetailDto account = this.accountBorderline.read(cmd);
+    final ReadAccountCmd cmd = new ReadAccountCmd(this.contextService.get(), id, this.timeProvider.now());
+    final AccountDetailDto account = this.accountBorderline.read(cmd);
     if (log.isDebugEnabled())
       log.debug("#detail account={}", account);
 
     model.addAttribute(M.ACCOUNT, account);
 
-    String template = V.DETAIL;
+    final String template = V.DETAIL;
 
     if (log.isTraceEnabled())
       log.trace("#detail result : template={}, model={}", template, model);
