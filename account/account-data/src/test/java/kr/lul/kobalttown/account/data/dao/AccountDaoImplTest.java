@@ -48,16 +48,17 @@ public class AccountDaoImplTest {
     assertThat(this.timeProvider).isNotNull();
 
     this.instant = this.timeProvider.now();
+    log.info("SETUP - instant={}", this.instant);
   }
 
   @Test
   public void test_read_with_context_and_not_exist_id() throws Exception {
     // GIVEN
-    Context context = new Context();
+    final Context context = new Context();
     log.info("GIVEN - context={}", context);
 
     // WHEN
-    Account account = this.dao.read(context, Long.MAX_VALUE);
+    final Account account = this.dao.read(context, Long.MAX_VALUE);
     log.info("WHEN - account={}", account);
 
     // THEN
@@ -82,13 +83,13 @@ public class AccountDaoImplTest {
   @Test
   public void test_create_with_context_and_account() throws Exception {
     // GIVEN
-    String nickname = "nickname #" + current().nextInt(MAX_VALUE);
+    final String nickname = "nickname #" + current().nextInt(MAX_VALUE);
     log.info("GIVEN - nickname={}", nickname);
-    AccountEntity expected = new AccountEntity(nickname, this.instant);
+    final AccountEntity expected = new AccountEntity(nickname, this.instant);
     log.info("GIVEN - expected={}", expected);
 
     // WHEN
-    Account actual = this.dao.create(new Context(), expected);
+    final Account actual = this.dao.create(new Context(), expected);
     log.info("WHEN - actual={}", actual);
 
     // THEN
@@ -103,12 +104,12 @@ public class AccountDaoImplTest {
   @Test
   public void test_read_with_context_and_exist_id() throws Exception {
     // GIVEN
-    String nickname = "nickname #" + random(current().nextInt(1, NICKNAME_MAX_LENGTH - 9));
-    Account expected = this.dao.create(new Context(), new AccountEntity(nickname, this.instant));
+    final String nickname = "nickname #" + random(current().nextInt(1, NICKNAME_MAX_LENGTH - 9));
+    final Account expected = this.dao.create(new Context(), new AccountEntity(nickname, this.instant));
     log.info("GIVEN - expected={}", expected);
 
     // WHEN
-    Account actual = this.dao.read(new Context(), expected.getId());
+    final Account actual = this.dao.read(new Context(), expected.getId());
     log.info("WHEN - actual={}", actual);
 
     // THEN

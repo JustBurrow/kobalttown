@@ -1,6 +1,5 @@
 package kr.lul.kobalttown.account.data.repository;
 
-import kr.lul.kobalttown.account.data.AccountDataModuleTestConfiguration;
 import kr.lul.kobalttown.account.data.entity.AccountEntity;
 import kr.lul.support.spring.data.jpa.entiy.SavableEntity;
 import org.junit.Before;
@@ -23,7 +22,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @since 2019/11/24
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = AccountDataModuleTestConfiguration.class)
+@SpringBootTest(classes = AccountDataRepositoryTestConfiguration.class)
 @Transactional
 public class AccountRepositoryTest {
   private static final Logger log = getLogger(AccountRepositoryTest.class);
@@ -38,7 +37,7 @@ public class AccountRepositoryTest {
 
   @Test
   public void test_findAll() throws Exception {
-    List<AccountEntity> list = this.repository.findAll();
+    final List<AccountEntity> list = this.repository.findAll();
 
     assertThat(list)
         .isNotNull();
@@ -47,14 +46,14 @@ public class AccountRepositoryTest {
   @Test
   public void test_save() throws Exception {
     // GIVEN
-    String nickname = "test";
-    Instant createdAt = Instant.now();
+    final String nickname = "test";
+    final Instant createdAt = Instant.now();
     log.info("GIVEN - nickname={}, createdAt={}", nickname, createdAt);
-    AccountEntity expected = new AccountEntity(nickname, createdAt);
+    final AccountEntity expected = new AccountEntity(nickname, createdAt);
     log.info("GIVEN - expected={}", expected);
 
     // WHEN
-    AccountEntity actual = this.repository.save(expected);
+    final AccountEntity actual = this.repository.save(expected);
     log.info("WHEN - actual={}", actual);
 
     // THEN

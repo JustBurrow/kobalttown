@@ -44,7 +44,7 @@ class AccountServiceImpl implements AccountService {
   }
 
   @Override
-  public Account create(CreateAccountParams params) {
+  public Account create(final CreateAccountParams params) {
     if (log.isTraceEnabled())
       log.trace("#create args : params={}", params);
     notNull(params, "params");
@@ -70,11 +70,15 @@ class AccountServiceImpl implements AccountService {
   }
 
   @Override
-  public Account read(ReadAccountParams params) {
+  public Account read(final ReadAccountParams params) {
     if (log.isTraceEnabled())
       log.trace("#read args : params={}", params);
     notNull(params, "params");
 
-    return null;
+    final Account account = this.accountDao.read(params.getContext(), params.getId());
+
+    if (log.isTraceEnabled())
+      log.trace("#read (context={}) return : {}", params.getContext(), account);
+    return account;
   }
 }

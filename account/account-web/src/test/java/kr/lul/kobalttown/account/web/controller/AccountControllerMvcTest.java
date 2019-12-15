@@ -72,7 +72,9 @@ public class AccountControllerMvcTest {
     assertThat(this.timeProvider).isNotNull();
 
     this.context = this.uuidContextService.issue();
+    log.info("SETUP - context={}", this.context);
     this.before = this.timeProvider.zonedDateTime();
+    log.info("SETUP - before={}", this.before);
   }
 
   @After
@@ -152,7 +154,7 @@ public class AccountControllerMvcTest {
   @Test
   public void test_create() throws Exception {
     // GIVEN
-    AccountDetailDto dto = new AccountDetailDto(1L, "nickname", false, this.before, this.before);
+    final AccountDetailDto dto = new AccountDetailDto(1L, "nickname", false, this.before, this.before);
     log.info("GIVEN - dto={}", dto);
     when(this.borderline.create(any()))
         .thenReturn(dto);
@@ -191,13 +193,11 @@ public class AccountControllerMvcTest {
   @Test
   public void test_detail() throws Exception {
     // GIVEN
-    User user = new User(1L, "nickname", "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    final User user = new User(1L, "nickname", "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
     log.info("GIVEN - user={}", user);
-    AccountDetailDto dto = new AccountDetailDto(1L, "nickname", true, this.before, this.before);
+    final AccountDetailDto dto = new AccountDetailDto(1L, "nickname", true, this.before, this.before);
     log.info("GIVEN - dto={}", dto);
 
-//    when(this.borderline.read(new ReadAccountCmd(this.context, 1L, this.timeProvider.now())))
-//        .thenReturn(dto);
     when(this.borderline.read(any()))
         .thenReturn(dto);
 

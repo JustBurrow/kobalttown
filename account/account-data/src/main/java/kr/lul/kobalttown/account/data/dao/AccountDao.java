@@ -10,5 +10,5 @@ import kr.lul.kobalttown.account.domain.Account;
 public interface AccountDao {
   Account create(Context context, Account account);
 
-  Account read(Context context, long maxValue);
+  Account read(Context context, long id);
 }

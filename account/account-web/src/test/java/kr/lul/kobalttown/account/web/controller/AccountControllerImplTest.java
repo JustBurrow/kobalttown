@@ -1,6 +1,11 @@
 package kr.lul.kobalttown.account.web.controller;
 
+import kr.lul.common.data.Context;
+import kr.lul.common.util.TimeProvider;
+import kr.lul.kobalttown.account.borderline.AccountBorderline;
+import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
 import kr.lul.kobalttown.account.data.repository.AccountRepository;
+import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.web.AccountWebTestConfiguration;
 import kr.lul.kobalttown.account.web.controller.request.CreateAccountReq;
 import kr.lul.kobalttown.page.account.AccountMvc.M;
@@ -16,6 +21,8 @@ import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+
+import java.time.Instant;
 
 import static java.lang.Integer.MAX_VALUE;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -35,12 +42,24 @@ public class AccountControllerImplTest {
   @Autowired
   private AccountController controller;
   @Autowired
+  private AccountBorderline borderline;
+  @Autowired
   private AccountRepository accountRepository;
+
+  @Autowired
+  private TimeProvider timeProvider;
+
+  private Instant before;
 
   @Before
   public void setUp() throws Exception {
     assertThat(this.controller).isNotNull();
+    assertThat(this.borderline).isNotNull();
     assertThat(this.accountRepository).isNotNull();
+    assertThat(this.timeProvider).isNotNull();
+
+    this.before = this.timeProvider.now();
+    log.info("SETUP - before={}", this.before);
   }
 
   @Test
@@ -53,11 +72,11 @@ public class AccountControllerImplTest {
   @Test
   public void test_createForm_with_model() throws Exception {
     // GIVEN
-    Model model = new ExtendedModelMap();
+    final Model model = new ExtendedModelMap();
     log.info("GIVEN - model={}", model);
 
     // WHEN
-    String template = this.controller.createForm(model);
+    final String template = this.controller.createForm(model);
     log.info("WHEN - template={}", template);
 
     // THEN
@@ -75,20 +94,20 @@ public class AccountControllerImplTest {
   }
 
   @Test
-  public void test_create_with_req_and_binding_and_model() throws Exception {
+  public void test_create() throws Exception {
     // GIVEN
-    String nickname = "nickname #" + current().nextInt(MAX_VALUE);
-    String email = "just.burrow." + current().nextInt(MAX_VALUE) + "@lul.kr";
-    String password = "password";
-    CreateAccountReq createReq = new CreateAccountReq(nickname, email, password, password);
+    final String nickname = "nickname #" + current().nextInt(MAX_VALUE);
+    final String email = "just.burrow." + current().nextInt(MAX_VALUE) + "@lul.kr";
+    final String password = "password";
+    final CreateAccountReq createReq = new CreateAccountReq(nickname, email, password, password);
     log.info("GIVEN - createReq={}", createReq);
 
-    BindingResult binding = new BeanPropertyBindingResult(createReq, M.CREATE_REQ);
-    Model model = new ExtendedModelMap();
+    final BindingResult binding = new BeanPropertyBindingResult(createReq, M.CREATE_REQ);
+    final Model model = new ExtendedModelMap();
     log.info("GIVEN - binding={}, model={}", binding, model);
 
     // WHEN
-    String template = this.controller.create(createReq, binding, model);
+    final String template = this.controller.create(createReq, binding, model);
     log.info("WHEN - template={}", template);
 
     // THEN
@@ -96,5 +115,36 @@ public class AccountControllerImplTest {
         .isFalse();
     assertThat(template)
         .startsWith("redirect:/");
+  }
+
+  @Test
+  public void test_detail_with_0() throws Exception {
+    assertThatThrownBy(() -> this.controller.detail(0L, new ExtendedModelMap()))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageStartingWith("id is not positive");
+  }
+
+  @Test
+  public void test_detail() throws Exception {
+    // GIVEN
+    final String nicknam = "nickname #" + current().nextInt(MAX_VALUE);
+    final String email = "just.burrow." + current().nextInt(MAX_VALUE) + "@lul.kr";
+    final AccountDetailDto expected = this.borderline.create(
+        new CreateAccountCmd(new Context(), nicknam, email, "password", this.before));
+    log.info("GIVEN - expected={}", expected);
+
+    final Model model = new ExtendedModelMap();
+    log.info("GIVEN - model={}", model);
+
+    // WHEN
+    final String view = this.controller.detail(expected.getId(), model);
+    log.info("WHEN - view={}", view);
+
+    // THEN
+    assertThat(view)
+        .isEqualTo(V.DETAIL);
+    assertThat(model.getAttribute(M.ACCOUNT))
+        .isNotNull()
+        .isEqualTo(expected);
   }
 }

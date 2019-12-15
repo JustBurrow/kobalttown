@@ -7,6 +7,7 @@ import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.service.AccountService;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
+import kr.lul.kobalttown.account.service.params.ReadAccountParams;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,6 +61,11 @@ class AccountBorderlineImpl implements AccountBorderline {
       log.trace("#read args : cmd={}", cmd);
     notNull(cmd, "cmd");
 
-    return null;
+    Account account = this.accountService.read(new ReadAccountParams(cmd.getContext(), cmd.getId(), cmd.getTimestamp()));
+    AccountDetailDto dto = this.accountConverter.convert(account, AccountDetailDto.class);
+
+    if (log.isTraceEnabled())
+      log.trace("#read (context={}) return : {}", cmd.getContext(), dto);
+    return dto;
   }
 }

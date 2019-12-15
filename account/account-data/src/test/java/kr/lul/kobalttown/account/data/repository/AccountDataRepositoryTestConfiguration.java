@@ -1,5 +1,6 @@
-package kr.lul.kobalttown.account.data;
+package kr.lul.kobalttown.account.data.repository;
 
+import kr.lul.kobalttown.account.data.AccountDataAnchor;
 import kr.lul.kobalttown.configuration.data.jpa.JpaConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
@@ -10,5 +11,5 @@ import org.springframework.context.annotation.Import;
  */
 @SpringBootApplication(scanBasePackageClasses = {AccountDataAnchor.class})
 @Import(JpaConfiguration.class)
-public class AccountDataModuleTestConfiguration {
+public class AccountDataRepositoryTestConfiguration {
 }

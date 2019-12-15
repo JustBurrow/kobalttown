@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.time.Instant;
 
 import static java.lang.Integer.MAX_VALUE;
@@ -38,31 +39,61 @@ public class AccountServiceImplTest {
   private AccountService service;
 
   @Autowired
+  private EntityManager entityManager;
+  @Autowired
   private TimeProvider timeProvider;
 
-  private Instant instant;
+  private Instant before;
 
   @Before
   public void setUp() throws Exception {
     assertThat(this.service).isNotNull();
+    assertThat(this.entityManager).isNotNull();
     assertThat(this.timeProvider).isNotNull();
 
-    this.instant = this.timeProvider.now();
+    this.before = this.timeProvider.now();
+    log.info("SETUP - before={}", this.before);
   }
 
   @Test
   public void test_read_with_not_exist_id() throws Exception {
     // GIVEN
-    ReadAccountParams params = new ReadAccountParams(new Context(), Long.MAX_VALUE, this.instant);
+    final ReadAccountParams params = new ReadAccountParams(new Context(), Long.MAX_VALUE, this.before);
     log.info("GIVEN - params={}", params);
 
     // WHEN
-    Account account = this.service.read(params);
+    final Account account = this.service.read(params);
     log.info("WHEN - account={}", account);
 
     // THEN
     assertThat(account)
         .isNull();
+  }
+
+  @Test
+  public void test_read() throws Exception {
+    // GIVEN
+    final String nickname = "nickname #" + current().nextInt(MAX_VALUE);
+    final String email = "just.burrow." + current().nextInt(MAX_VALUE) + "@lul.kr";
+    final Account expected = this.service.create(
+        new CreateAccountParams(new Context(), nickname, email, "password", this.before));
+    log.info("GIVEN - expected={}", expected);
+    this.entityManager.flush();
+    this.entityManager.clear();
+
+    final Context context = new Context();
+    final Instant timestamp = this.timeProvider.now();
+
+    // WHEN
+    final Account actual = this.service.read(new ReadAccountParams(context, expected.getId(), timestamp));
+    log.info("WHEN - actual={}", actual);
+
+    // THEN
+    assertThat(actual)
+        .isNotNull()
+        .extracting(Account::getId, Account::getNickname, Account::isEnabled,
+            Account::getCreatedAt, Account::getUpdatedAt)
+        .containsSequence(expected.getId(), nickname, false, this.before, this.before);
   }
 
   @Test
@@ -75,20 +106,20 @@ public class AccountServiceImplTest {
   @Test
   public void test_create() throws Exception {
     // GIVEN
-    String nickname = "nickname #" + current().nextInt(MAX_VALUE);
-    String email = "just.burrow." + current().nextInt(MAX_VALUE) + "@lul.kr";
-    CreateAccountParams params = new CreateAccountParams(new Context(), nickname, email, "password", this.instant);
+    final String nickname = "nickname #" + current().nextInt(MAX_VALUE);
+    final String email = "just.burrow." + current().nextInt(MAX_VALUE) + "@lul.kr";
+    final CreateAccountParams params = new CreateAccountParams(new Context(), nickname, email, "password", this.before);
     log.info("GIVEN - params={}", params);
 
     // WHEN
-    Account account = this.service.create(params);
+    final Account account = this.service.create(params);
     log.info("WHEN - account={}", account);
 
     // THEN
     assertThat(account)
         .isNotNull()
         .extracting(Account::getNickname, Account::isEnabled, Creatable::getCreatedAt, Updatable::getUpdatedAt)
-        .containsSequence(nickname, false, this.instant, this.instant);
+        .containsSequence(nickname, false, this.before, this.before);
     assertThat(account.getId())
         .isPositive();
   }

@@ -1,5 +1,9 @@
 package kr.lul.kobalttown.account.dto;
 
+import java.util.Objects;
+
+import static kr.lul.common.util.Arguments.notNull;
+
 /**
  * @author justburrow
  * @since 2019/11/24
@@ -11,7 +15,9 @@ public class AbstractAccountDto {
   public AbstractAccountDto() {
   }
 
-  public AbstractAccountDto(long id, String nickname) {
+  public AbstractAccountDto(final long id, final String nickname) {
+    notNull(nickname, "nickname");
+
     this.id = id;
     this.nickname = nickname;
   }
@@ -20,15 +26,21 @@ public class AbstractAccountDto {
     return this.id;
   }
 
-  public void setId(long id) {
-    this.id = id;
-  }
-
   public String getNickname() {
     return this.nickname;
   }
 
-  public void setNickname(String nickname) {
-    this.nickname = nickname;
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    final AbstractAccountDto that = (AbstractAccountDto) o;
+    return this.id == that.id &&
+        this.nickname.equals(that.nickname);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.id, this.nickname);
   }
 }

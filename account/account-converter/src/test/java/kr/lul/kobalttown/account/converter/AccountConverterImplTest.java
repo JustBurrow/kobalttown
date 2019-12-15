@@ -43,6 +43,7 @@ public class AccountConverterImplTest {
     assertThat(this.timeProvider).isNotNull();
 
     this.zonedDateTime = this.timeProvider.zonedDateTime();
+    log.info("SETUP - zonedDateTime={}", this.zonedDateTime);
   }
 
   @Test
@@ -67,11 +68,11 @@ public class AccountConverterImplTest {
   @Test
   public void test_convert_to_detail() throws Exception {
     // GIVEN
-    Account account = new AccountEntity("nickname", this.zonedDateTime.toInstant());
+    final Account account = new AccountEntity("nickname", this.zonedDateTime.toInstant());
     log.info("GIVEN - account={}", account);
 
     // WHEN
-    AccountDetailDto dto = this.converter.convert(account, AccountDetailDto.class);
+    final AccountDetailDto dto = this.converter.convert(account, AccountDetailDto.class);
     log.info("WHEN - dto={}", dto);
 
     // THEN
