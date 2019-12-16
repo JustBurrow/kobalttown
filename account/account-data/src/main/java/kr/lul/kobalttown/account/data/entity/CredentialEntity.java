@@ -39,7 +39,7 @@ public class CredentialEntity implements Credential {
   public CredentialEntity() {// JPA only
   }
 
-  public CredentialEntity(Account account, String publicKey, String secretHash, Instant createdAt) {
+  public CredentialEntity(final Account account, final String publicKey, final String secretHash, final Instant createdAt) {
     ACCOUNT_VALIDATOR.validate(account);
     PUBLIC_KEY_VALIDATOR.validate(publicKey);
     SECRET_HASH_VALIDATOR.validate(secretHash);
@@ -77,7 +77,7 @@ public class CredentialEntity implements Credential {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (this == o) return true;
     if (0L >= this.id || !(o instanceof CredentialEntity)) return false;
     return this.id == ((CredentialEntity) o).id;
@@ -94,9 +94,7 @@ public class CredentialEntity implements Credential {
         .append("{id=").append(this.id)
         .append(", account=").append(this.account.getId())
         .append(", publicKey=").append(singleQuote(this.publicKey))
-        .append(", secretHash=").append(singleQuote(this.secretHash))
-        .append(", createdAt=").append(this.createdAt)
-        .append('}')
-        .toString();
+        .append(", secretHash=[ PROTECTED ], createdAt=").append(this.createdAt)
+        .append('}').toString();
   }
 }

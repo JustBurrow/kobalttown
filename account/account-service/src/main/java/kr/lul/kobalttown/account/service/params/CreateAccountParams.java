@@ -6,6 +6,7 @@ import kr.lul.common.data.ContextContainer;
 import java.time.Instant;
 import java.util.Objects;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static kr.lul.common.util.Arguments.notEmpty;
 import static kr.lul.common.util.Arguments.notNull;
 
@@ -16,10 +17,11 @@ import static kr.lul.common.util.Arguments.notNull;
 public class CreateAccountParams extends ContextContainer {
   private String nickname;
   private String email;
-  private String password;
+  private byte[] password;
   private Instant timestamp;
 
-  public CreateAccountParams(Context context, String nickname, String email, String password, Instant timestamp) {
+  public CreateAccountParams(final Context context, final String nickname, final String email, final String password,
+      final Instant timestamp) {
     super(context);
     notEmpty(nickname, "nickname");
     notEmpty(email, "email");
@@ -28,7 +30,7 @@ public class CreateAccountParams extends ContextContainer {
 
     this.nickname = nickname;
     this.email = email;
-    this.password = password;
+    this.password = password.getBytes(UTF_8);
     this.timestamp = timestamp;
   }
 
@@ -41,7 +43,7 @@ public class CreateAccountParams extends ContextContainer {
   }
 
   public String getPassword() {
-    return this.password;
+    return new String(this.password, UTF_8);
   }
 
   public Instant getTimestamp() {
@@ -49,11 +51,11 @@ public class CreateAccountParams extends ContextContainer {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    CreateAccountParams that = (CreateAccountParams) o;
+    final CreateAccountParams that = (CreateAccountParams) o;
     return this.context.equals(that.context) &&
         this.nickname.equals(that.nickname) &&
         this.email.equals(that.email) &&
@@ -71,9 +73,7 @@ public class CreateAccountParams extends ContextContainer {
         .append("{context=").append(this.context)
         .append(", nickname='").append(this.nickname).append('\'')
         .append(", email='").append(this.email).append('\'')
-        .append(", password='").append(this.password).append('\'')
-        .append(", timestamp=").append(this.timestamp)
-        .append('}')
-        .toString();
+        .append(", password=[ PROTECTED ], timestamp=").append(this.timestamp)
+        .append('}').toString();
   }
 }

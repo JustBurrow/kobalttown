@@ -109,11 +109,8 @@ class AccountControllerImpl implements AccountController {
 
     final String template;
     if (binding.hasErrors()) {
-      if (log.isInfoEnabled())
-        log.info("#create binding error exists : {}", binding);
       template = doCreateForm(model);
     } else {
-      log.info("#create no binding error.");
       template = doCreate(req, binding, model);
     }
 
