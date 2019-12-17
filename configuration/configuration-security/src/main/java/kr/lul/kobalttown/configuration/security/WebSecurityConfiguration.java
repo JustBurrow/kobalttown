@@ -59,14 +59,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         .usernameParameter(RootMvc.M.USERNAME)
         .passwordParameter(RootMvc.M.PASSWORD)
         .loginProcessingUrl(RootMvc.C.LOG_IN)
-        .defaultSuccessUrl(RootMvc.C.ROOT);
+        .defaultSuccessUrl(RootMvc.C.INDEX);
 
     http.logout()
         .logoutUrl(RootMvc.C.LOG_OUT)
-        .logoutSuccessUrl(RootMvc.C.ROOT);
+        .logoutSuccessUrl(RootMvc.C.INDEX);
 
     http.authorizeRequests()
-        .antMatchers(RootMvc.C.ROOT).permitAll()
+        .antMatchers(RootMvc.C.INDEX).permitAll()
         .antMatchers(RootMvc.C.LOG_IN).anonymous()
         .antMatchers(RootMvc.C.LOG_OUT).authenticated();
   }

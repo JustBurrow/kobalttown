@@ -17,6 +17,7 @@ public abstract class RootMvc {
   public abstract static class V {
     public static final String GROUP = "layout/root";
 
+    public static final String INDEX = GROUP + "/index";
     public static final String LOG_IN = GROUP + "/login";
 
     public V() {
@@ -25,7 +26,7 @@ public abstract class RootMvc {
   }
 
   public abstract static class C {
-    public static final String ROOT = "/";
+    public static final String INDEX = "/";
     public static final String LOG_IN = "/login";
     public static final String LOG_OUT = "/logout";
 

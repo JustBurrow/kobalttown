@@ -35,13 +35,15 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
   }
 
   @Override
-  public void addInterceptors(InterceptorRegistry registry) {
+  public void addInterceptors(final InterceptorRegistry registry) {
     registry.addInterceptor(loggingInterceptor());
   }
 
   @Override
-  public void addViewControllers(ViewControllerRegistry registry) {
+  public void addViewControllers(final ViewControllerRegistry registry) {
     registry.addViewController(RootMvc.C.LOG_IN)
         .setViewName(RootMvc.V.LOG_IN);
+    registry.addViewController(RootMvc.C.INDEX)
+        .setViewName(RootMvc.V.INDEX);
   }
 }
