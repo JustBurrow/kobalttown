@@ -3,6 +3,7 @@ apply plugin: "idea"
 dependencies {
   runtimeOnly project(":account-dto")
   runtimeOnly project(":account-web")
+  runtimeOnly project(":configuration-web")
 }
 
 idea {

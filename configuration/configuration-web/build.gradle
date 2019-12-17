@@ -7,4 +7,5 @@ dependencies {
   api "org.springframework.boot:spring-boot-starter-web"
   api "org.springframework.boot:spring-boot-starter-thymeleaf"
   api "org.springframework.security:spring-security-core"
+  api "org.thymeleaf.extras:thymeleaf-extras-springsecurity5"
 }
