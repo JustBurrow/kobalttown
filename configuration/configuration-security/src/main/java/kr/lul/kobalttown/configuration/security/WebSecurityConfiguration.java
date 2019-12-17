@@ -1,5 +1,6 @@
 package kr.lul.kobalttown.configuration.security;
 
+import kr.lul.kobalttown.account.data.AccountDataAnchor;
 import kr.lul.kobalttown.page.root.RootMvc;
 import kr.lul.support.spring.security.crypto.PasswordEncoderSecurityEncoder;
 import kr.lul.support.spring.security.crypto.SecurityEncoder;
@@ -7,6 +8,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -28,6 +30,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@ComponentScan(basePackageClasses = {AccountDataAnchor.class})
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   private static final Logger log = getLogger(WebSecurityConfiguration.class);
 
