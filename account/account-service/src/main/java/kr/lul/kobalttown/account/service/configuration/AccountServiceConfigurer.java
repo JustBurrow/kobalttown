@@ -1,8 +1,6 @@
-package kr.lul.kobalttown.account.service;
+package kr.lul.kobalttown.account.service.configuration;
 
 import kr.lul.kobalttown.account.data.AccountDataAnchor;
-import kr.lul.kobalttown.account.service.configuration.AccountServiceConfiguration;
-import kr.lul.kobalttown.account.service.configuration.ActivationConfiguration;
 import kr.lul.kobalttown.account.service.properties.AccountServiceProperties;
 import org.slf4j.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
