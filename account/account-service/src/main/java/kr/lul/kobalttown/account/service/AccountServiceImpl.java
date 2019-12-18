@@ -11,6 +11,8 @@ import kr.lul.kobalttown.account.service.params.ReadAccountParams;
 import kr.lul.support.spring.security.crypto.SecurityEncoder;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -37,10 +39,16 @@ class AccountServiceImpl implements AccountService {
   private CredentialDao credentialDao;
   @Autowired
   private SecurityEncoder securityEncoder;
+  @Autowired
+  private JavaMailSender javaMailSender;
+
 
   @PostConstruct
   private void postConstruct() {
     requireNonNull(this.accountDao, "accountDao is not autowired.");
+    requireNonNull(this.javaMailSender, "javaMailSender is not autowired.");
+
+    log.info("{} is ready.", AccountServiceImpl.class.getCanonicalName());
   }
 
   @Override
@@ -63,6 +71,15 @@ class AccountServiceImpl implements AccountService {
     credential = this.credentialDao.create(params.getContext(), credential);
     if (log.isTraceEnabled())
       log.trace("#create (context={}) email credential : {}", params.getContext(), credential);
+
+    final SimpleMailMessage message = new SimpleMailMessage();
+    message.setFrom("Bot<dev+no-reply@lul.kr>");
+    message.setTo(params.getEmail());
+    message.setSubject("account created.");
+    message.setText("body text");
+    if (log.isInfoEnabled())
+      log.info("#create (context={}) message={}", params.getContext(), message);
+    this.javaMailSender.send(message);
 
     if (log.isTraceEnabled())
       log.trace("#create (context={}) return : {}", params.getContext(), account);
