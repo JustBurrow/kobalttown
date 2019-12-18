@@ -1,7 +1,16 @@
+kr.lul.kobalttown:
+  account:
+    service:
+      activation:
+        enable: false
+        from: 'Kobalttown Bot<dev@lul.kr>'
+        title: 'Welcome to Kobalttown'
+        message-template: 'mail/account/activation'
+        domain: 'kobalttown.lul.kr'
+
 spring:
   datasource:
     hikari:
-      driver-class-name: com.mysql.cj.jdbc.Driver
       jdbc-url: jdbc:mysql://localhost/kobalttown?connectionCollation=utf8mb4_unicode_520_ci&allowPublicKeyRetrieval=true&useSSL=false
       username: root
       password: ""

@@ -1,3 +1,13 @@
+kr.lul.kobalttown:
+  account:
+    service:
+      activation:
+        enable: true
+        from: 'Kobalttown Bot<dev@lul.kr>'
+        title: 'Welcome to Kobalttown'
+        message-template: 'mail/account/activation'
+        domain: 'kobalttown.lul.kr'
+
 spring:
   pid:
     file: koblattown-standalone.pid
