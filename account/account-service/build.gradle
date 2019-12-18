@@ -2,6 +2,7 @@ dependencies {
   implementation project(":account-data")
   implementation "kr.lul.support.spring:support-spring-security"
   implementation "org.springframework.boot:spring-boot-starter-mail"
+  implementation "org.thymeleaf:thymeleaf"
 
   api project(":account-domain")
 

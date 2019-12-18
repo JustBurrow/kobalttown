@@ -6,16 +6,17 @@ import kr.lul.kobalttown.account.data.factory.AccountFactory;
 import kr.lul.kobalttown.account.data.factory.CredentialFactory;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
+import kr.lul.kobalttown.account.service.configuration.ActivationConfiguration;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
 import kr.lul.support.spring.security.crypto.SecurityEncoder;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 import static kr.lul.common.util.Arguments.notNull;
@@ -41,12 +42,22 @@ class AccountServiceImpl implements AccountService {
   private SecurityEncoder securityEncoder;
   @Autowired
   private JavaMailSender javaMailSender;
+  @Autowired
+  private MailService mailService;
+  @Autowired
+  private ActivationConfiguration activation;
 
 
   @PostConstruct
   private void postConstruct() {
+    requireNonNull(this.accountFactory, "accountFactory is not autowired.");
+    requireNonNull(this.credentialFactory, "credentialFactory is not autowired");
     requireNonNull(this.accountDao, "accountDao is not autowired.");
+    requireNonNull(this.credentialDao, "credentialDao is not autowired.");
+    requireNonNull(this.securityEncoder, "securityEncoder is not autowired.");
     requireNonNull(this.javaMailSender, "javaMailSender is not autowired.");
+    requireNonNull(this.mailService, "mailService is not autowired.");
+    requireNonNull(this.activation, "activationConfiguration is not autowired.");
 
     log.info("{} is ready.", AccountServiceImpl.class.getCanonicalName());
   }
@@ -72,14 +83,10 @@ class AccountServiceImpl implements AccountService {
     if (log.isTraceEnabled())
       log.trace("#create (context={}) email credential : {}", params.getContext(), credential);
 
-    final SimpleMailMessage message = new SimpleMailMessage();
-    message.setFrom("Bot<dev+no-reply@lul.kr>");
-    message.setTo(params.getEmail());
-    message.setSubject("account created.");
-    message.setText("body text");
-    if (log.isInfoEnabled())
-      log.info("#create (context={}) message={}", params.getContext(), message);
-    this.javaMailSender.send(message);
+    this.mailService.send(
+        params.getContext(), this.activation.getFrom(), params.getEmail(),
+        this.activation.getTitle(), this.activation.getTemplate(),
+        Map.of("domain", this.activation.getDomain(), "code", "some_code"));
 
     if (log.isTraceEnabled())
       log.trace("#create (context={}) return : {}", params.getContext(), account);
