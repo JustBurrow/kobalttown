@@ -68,9 +68,12 @@ class AccountServiceImpl implements AccountService {
       log.trace("#create args : params={}", params);
     notNull(params, "params");
 
+    // TODO 메일로 계정 인증하기 기능이 활성화 됐는지에 따라 초기 enabled 값을 변경.
+    // 계정 정보 등록.
     Account account = this.accountFactory.create(params.getContext(), params.getNickname(), params.getTimestamp());
     account = this.accountDao.create(params.getContext(), account);
 
+    // 인증 정보 등록.
     Credential credential = this.credentialFactory.create(params.getContext(), account, params.getNickname(),
         this.securityEncoder.encode(params.getPassword()), params.getTimestamp());
     credential = this.credentialDao.create(params.getContext(), credential);
@@ -83,10 +86,16 @@ class AccountServiceImpl implements AccountService {
     if (log.isTraceEnabled())
       log.trace("#create (context={}) email credential : {}", params.getContext(), credential);
 
-    this.mailService.send(
-        params.getContext(), this.activation.getFrom(), params.getEmail(),
-        this.activation.getTitle(), this.activation.getTemplate(),
-        Map.of("domain", this.activation.getDomain(), "code", "some_code"));
+    if (this.activation.isEnable()) {
+      this.mailService.send(
+          params.getContext(), this.activation.getFrom(), params.getEmail(),
+          this.activation.getTitle(), this.activation.getTemplate(),
+          Map.of("domain", this.activation.getDomain(),
+              "code", "some_code"));
+    } else {
+      if (log.isInfoEnabled())
+        log.info("#create (context={}) activation disabled. do not send validation email.", params.getContext());
+    }
 
     if (log.isTraceEnabled())
       log.trace("#create (context={}) return : {}", params.getContext(), account);

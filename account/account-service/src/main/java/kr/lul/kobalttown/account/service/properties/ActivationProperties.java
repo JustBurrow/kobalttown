@@ -7,10 +7,19 @@ import static kr.lul.common.util.Texts.singleQuote;
  * @since 2019/12/18
  */
 public class ActivationProperties {
+  private boolean enable;
   private String from;
   private String title;
   private String messageTemplate;
   private String domain;
+
+  public boolean isEnable() {
+    return this.enable;
+  }
+
+  public void setEnable(final boolean enable) {
+    this.enable = enable;
+  }
 
   public String getFrom() {
     return this.from;
@@ -47,7 +56,8 @@ public class ActivationProperties {
   @Override
   public String toString() {
     return new StringBuilder()
-        .append("{from=").append(singleQuote(this.from))
+        .append("{enable=").append(this.enable)
+        .append(", from=").append(singleQuote(this.from))
         .append(", title=").append(singleQuote(this.title))
         .append(", messageTemplate=").append(singleQuote(this.messageTemplate))
         .append(", domain=").append(singleQuote(this.domain))
