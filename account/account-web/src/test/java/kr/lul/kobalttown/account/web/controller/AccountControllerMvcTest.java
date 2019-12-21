@@ -57,7 +57,7 @@ public class AccountControllerMvcTest {
   private AccountBorderline borderline;
 
   @Autowired
-  private ContextService uuidContextService;
+  private ContextService contextService;
   @Autowired
   private TimeProvider timeProvider;
 
@@ -68,18 +68,19 @@ public class AccountControllerMvcTest {
   public void setUp() throws Exception {
     assertThat(this.mock).isNotNull();
     assertThat(this.borderline).isNotNull();
-    assertThat(this.uuidContextService).isNotNull();
+    assertThat(this.contextService).isNotNull();
     assertThat(this.timeProvider).isNotNull();
 
-    this.context = this.uuidContextService.issue();
+    this.context = this.contextService.issue();
     log.info("SETUP - context={}", this.context);
+
     this.before = this.timeProvider.zonedDateTime();
     log.info("SETUP - before={}", this.before);
   }
 
   @After
   public void tearDown() throws Exception {
-    this.uuidContextService.clear();
+    this.contextService.clear();
   }
 
   @Test

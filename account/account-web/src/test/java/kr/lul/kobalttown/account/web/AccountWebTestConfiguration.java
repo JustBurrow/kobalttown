@@ -11,6 +11,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
@@ -20,6 +22,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @SpringBootApplication(scanBasePackageClasses = AccountWebAnchor.class)
 @Import({BeanConfiguration.class, MailConfigurer.class, JpaConfiguration.class})
 public class AccountWebTestConfiguration {
+  @Bean
+  @ConditionalOnMissingBean
+  public JavaMailSender javaMailSender() {
+    return new JavaMailSenderImpl();
+  }
+
   @Bean
   @ConditionalOnMissingBean
   public ContextService contextService() {
