@@ -2,8 +2,7 @@ kr.lul.kobalttown:
   account:
     service:
       activation:
-        enable: false
-        from: 'Kobalttown Bot<dev@lul.kr>'
+        from: 'Kobalttown Dev<dev@lul.kr>'
         title: 'Welcome to Kobalttown'
         message-template: 'mail/account/activation'
         domain: 'kobalttown.lul.kr'
@@ -40,6 +39,5 @@ logging:
   pattern:
     console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%p) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%t]){faint} %clr(%logger){cyan} %clr(:){faint} %m%n%wEx"
   level:
-    root: warn
-    kr.lul.kobalttown:  trace
-    kr.lul.kobalttown.runner: debug
+    root: info
+    kr.lul.kobalttown:  debug
