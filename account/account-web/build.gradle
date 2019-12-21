@@ -6,6 +6,7 @@ dependencies {
   api project(":account-dto")
 
   compileOnly project(":configuration-web")
+  compileOnly project(":configuration-mail")
 
   testImplementation project(":account-data")
   testImplementation project(":configuration-dependencies")

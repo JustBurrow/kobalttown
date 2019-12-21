@@ -34,6 +34,5 @@ server:
 
 logging:
   level:
-    root: warn
+    root: info
     org.hibernate.SQL: debug
-    kr.lul.kobalttown:  info

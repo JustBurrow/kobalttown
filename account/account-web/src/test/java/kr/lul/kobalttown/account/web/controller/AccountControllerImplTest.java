@@ -45,7 +45,6 @@ public class AccountControllerImplTest {
   private AccountBorderline borderline;
   @Autowired
   private AccountRepository accountRepository;
-
   @Autowired
   private TimeProvider timeProvider;
 

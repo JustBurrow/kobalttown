@@ -9,15 +9,19 @@ import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.service.configuration.ActivationConfiguration;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
+import kr.lul.support.spring.mail.MailParams;
+import kr.lul.support.spring.mail.MailResult;
+import kr.lul.support.spring.mail.MailService;
 import kr.lul.support.spring.security.crypto.SecurityEncoder;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.Map;
+import java.util.concurrent.Future;
 
+import static java.util.Map.entry;
+import static java.util.Map.ofEntries;
 import static java.util.Objects.requireNonNull;
 import static kr.lul.common.util.Arguments.notNull;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -41,8 +45,6 @@ class AccountServiceImpl implements AccountService {
   @Autowired
   private SecurityEncoder securityEncoder;
   @Autowired
-  private JavaMailSender javaMailSender;
-  @Autowired
   private MailService mailService;
   @Autowired
   private ActivationConfiguration activation;
@@ -55,7 +57,6 @@ class AccountServiceImpl implements AccountService {
     requireNonNull(this.accountDao, "accountDao is not autowired.");
     requireNonNull(this.credentialDao, "credentialDao is not autowired.");
     requireNonNull(this.securityEncoder, "securityEncoder is not autowired.");
-    requireNonNull(this.javaMailSender, "javaMailSender is not autowired.");
     requireNonNull(this.mailService, "mailService is not autowired.");
     requireNonNull(this.activation, "activationConfiguration is not autowired.");
 
@@ -87,11 +88,17 @@ class AccountServiceImpl implements AccountService {
       log.trace("#create (context={}) email credential : {}", params.getContext(), credential);
 
     if (this.activation.isEnable()) {
-      this.mailService.send(
-          params.getContext(), this.activation.getFrom(), params.getEmail(),
-          this.activation.getTitle(), this.activation.getTemplate(),
-          Map.of("domain", this.activation.getDomain(),
-              "code", "some_code"));
+      final MailParams mailParams = new MailParams(params.getContext(),
+          this.activation.getFrom(), params.getEmail(),
+          this.activation.getTitle(),
+          this.activation.getTemplate(), true,
+          ofEntries(entry("domain", this.activation.getDomain()),
+              entry("code", "some_code")));
+      if (log.isDebugEnabled())
+        log.debug("#create (context={}) mailParams={}", params.getContext(), mailParams);
+      final Future<MailResult> future = this.mailService.asyncSend(mailParams);
+      if (log.isDebugEnabled())
+        log.debug("#create (context={}) future={}", params.getContext(), future);
     } else {
       if (log.isInfoEnabled())
         log.info("#create (context={}) activation disabled. do not send validation email.", params.getContext());

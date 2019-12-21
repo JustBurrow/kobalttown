@@ -1,0 +1,3 @@
+dependencies {
+  api "kr.lul.support.spring:support-spring-mail:$SUPPORT_SPRING_VERSION"
+}
