@@ -1,11 +1,11 @@
 kr.lul.kobalttown:
   account:
     service:
-      activation:
+      activate-code:
         enable: true
         from: 'Kobalttown<dev@lul.kr>'
         title: 'Welcome to Kobalttown'
-        message-template: 'mail/account/activation'
+        message-template: 'mail/account/activate-code'
         domain: 'kobalttown.lul.kr'
 
 spring:

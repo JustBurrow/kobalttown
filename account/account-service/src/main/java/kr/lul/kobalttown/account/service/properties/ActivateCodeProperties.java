@@ -6,7 +6,7 @@ import static kr.lul.common.util.Texts.singleQuote;
  * @author justburrow
  * @since 2019/12/18
  */
-public class ActivationProperties {
+public class ActivateCodeProperties {
   private boolean enable;
   private String from;
   private String title;

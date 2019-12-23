@@ -8,20 +8,20 @@ import org.springframework.beans.factory.annotation.Configurable;
  */
 @Configurable
 public class AccountServiceProperties {
-  private ActivationProperties activation;
+  private ActivateCodeProperties activateCode;
 
-  public ActivationProperties getActivation() {
-    return this.activation;
+  public ActivateCodeProperties getActivateCode() {
+    return this.activateCode;
   }
 
-  public void setActivation(final ActivationProperties activation) {
-    this.activation = activation;
+  public void setActivateCode(final ActivateCodeProperties activateCode) {
+    this.activateCode = activateCode;
   }
 
   @Override
   public String toString() {
     return new StringBuilder()
-        .append("{activation=").append(this.activation)
+        .append("{activateCode=").append(this.activateCode)
         .append('}').toString();
   }
 }

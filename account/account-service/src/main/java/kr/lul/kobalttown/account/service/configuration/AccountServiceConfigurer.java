@@ -20,9 +20,10 @@ import static org.slf4j.LoggerFactory.getLogger;
 @ComponentScan(basePackageClasses = AccountDataAnchor.class)
 public class AccountServiceConfigurer {
   private static final Logger log = getLogger(AccountServiceConfigurer.class);
+  public static final String PROPERTIES_ACCOUNT_SERVICE = "kr.lul.kobalttown.account.service";
 
   @Bean
-  @ConfigurationProperties("kr.lul.kobalttown.account.service")
+  @ConfigurationProperties(PROPERTIES_ACCOUNT_SERVICE)
   public AccountServiceProperties accountServiceProperties() {
     return new AccountServiceProperties();
   }
@@ -38,7 +39,7 @@ public class AccountServiceConfigurer {
   }
 
   @Bean
-  public ActivationConfiguration activationConfiguration() {
-    return accountServiceConfiguration().getActivation();
+  public ActivateCodeConfiguration activateCodeConfiguration() {
+    return accountServiceConfiguration().getActivateCode();
   }
 }

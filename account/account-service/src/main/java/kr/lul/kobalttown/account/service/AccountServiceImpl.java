@@ -6,7 +6,7 @@ import kr.lul.kobalttown.account.data.factory.AccountFactory;
 import kr.lul.kobalttown.account.data.factory.CredentialFactory;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
-import kr.lul.kobalttown.account.service.configuration.ActivationConfiguration;
+import kr.lul.kobalttown.account.service.configuration.ActivateCodeConfiguration;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
 import kr.lul.support.spring.mail.MailParams;
@@ -47,7 +47,7 @@ class AccountServiceImpl implements AccountService {
   @Autowired
   private MailService mailService;
   @Autowired
-  private ActivationConfiguration activation;
+  private ActivateCodeConfiguration activation;
 
 
   @PostConstruct
@@ -101,7 +101,8 @@ class AccountServiceImpl implements AccountService {
         log.debug("#create (context={}) future={}", params.getContext(), future);
     } else {
       if (log.isInfoEnabled())
-        log.info("#create (context={}) activation disabled. do not send validation email.", params.getContext());
+        log.info("#create (context={}) activate code disabled. do not send validation email : nickname={}, email={}",
+            params.getContext(), params.getNickname(), params.getEmail());
     }
 
     if (log.isTraceEnabled())

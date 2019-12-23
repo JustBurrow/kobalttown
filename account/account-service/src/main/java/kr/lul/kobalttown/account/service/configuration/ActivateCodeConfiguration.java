@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.account.service.configuration;
 
-import kr.lul.kobalttown.account.service.properties.ActivationProperties;
+import kr.lul.kobalttown.account.service.properties.ActivateCodeProperties;
 
 import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Texts.singleQuote;
@@ -9,14 +9,14 @@ import static kr.lul.common.util.Texts.singleQuote;
  * @author justburrow
  * @since 2019/12/18
  */
-public class ActivationConfiguration {
+public class ActivateCodeConfiguration {
   private boolean enable;
   private String from;
   private String title;
   private String template;
   private String domain;
 
-  public ActivationConfiguration(final ActivationProperties properties) {
+  public ActivateCodeConfiguration(final ActivateCodeProperties properties) {
     notNull(properties, "properties");
 
     this.enable = properties.isEnable();
