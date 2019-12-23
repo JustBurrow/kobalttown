@@ -3,10 +3,11 @@ kr.lul.kobalttown:
     service:
       activate-code:
         enable: true
-        from: 'Kobalttown<dev@lul.kr>'
-        title: 'Welcome to Kobalttown'
-        message-template: 'mail/account/activate-code'
         domain: 'kobalttown.lul.kr'
+        mail:
+          from: 'Kobalttown<dev@lul.kr>'
+          title: 'Welcome to Kobalttown'
+          template: 'mail/account/activate-code'
 
 spring:
   pid:
@@ -14,7 +15,6 @@ spring:
   datasource:
     hikari:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://localhost/kobalttown?connectionCollation=utf8mb4_unicode_520_ci&allowPublicKeyRetrieval=true&useSSL=false
   jpa:
     open-in-view: false
     show-sql: false
@@ -25,6 +25,8 @@ spring:
       mail.smtp:
         auth: true
         starttls.enable: true
+  thymeleaf:
+    prefix: file:./templates/
 
 server:
   servlet:

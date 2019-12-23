@@ -2,10 +2,11 @@ kr.lul.kobalttown:
   account:
     service:
       activate-code:
-        from: 'Kobalttown Dev<dev@lul.kr>'
-        title: 'Welcome to Kobalttown'
-        message-template: 'mail/account/activate-code'
         domain: 'kobalttown.lul.kr'
+        mail:
+          from: 'Kobalttown Dev<dev@lul.kr>'
+          title: 'Welcome to Kobalttown'
+          template: 'mail/account/activate-code'
 
 spring:
   datasource:

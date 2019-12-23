@@ -9,6 +9,7 @@ import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.service.configuration.ActivateCodeConfiguration;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
+import kr.lul.support.spring.mail.MailConfiguration;
 import kr.lul.support.spring.mail.MailParams;
 import kr.lul.support.spring.mail.MailResult;
 import kr.lul.support.spring.mail.MailService;
@@ -47,7 +48,7 @@ class AccountServiceImpl implements AccountService {
   @Autowired
   private MailService mailService;
   @Autowired
-  private ActivateCodeConfiguration activation;
+  private ActivateCodeConfiguration activateCode;
 
 
   @PostConstruct
@@ -58,7 +59,7 @@ class AccountServiceImpl implements AccountService {
     requireNonNull(this.credentialDao, "credentialDao is not autowired.");
     requireNonNull(this.securityEncoder, "securityEncoder is not autowired.");
     requireNonNull(this.mailService, "mailService is not autowired.");
-    requireNonNull(this.activation, "activationConfiguration is not autowired.");
+    requireNonNull(this.activateCode, "activateCode is not autowired.");
 
     log.info("{} is ready.", AccountServiceImpl.class.getCanonicalName());
   }
@@ -87,15 +88,15 @@ class AccountServiceImpl implements AccountService {
     if (log.isTraceEnabled())
       log.trace("#create (context={}) email credential : {}", params.getContext(), credential);
 
-    if (this.activation.isEnable()) {
+    if (this.activateCode.isEnable()) {
+      final MailConfiguration mailConfig = this.activateCode.getMail();
       final MailParams mailParams = new MailParams(params.getContext(),
-          this.activation.getFrom(), params.getEmail(),
-          this.activation.getTitle(),
-          this.activation.getTemplate(), true,
-          ofEntries(entry("domain", this.activation.getDomain()),
-              entry("code", "some_code")));
+          mailConfig.getFrom(), params.getEmail(),
+          mailConfig.getTitle(), mailConfig.getTemplate(), true,
+          ofEntries(entry("domain", this.activateCode.getDomain()), entry("code", "some_code")));
       if (log.isDebugEnabled())
         log.debug("#create (context={}) mailParams={}", params.getContext(), mailParams);
+
       final Future<MailResult> future = this.mailService.asyncSend(mailParams);
       if (log.isDebugEnabled())
         log.debug("#create (context={}) future={}", params.getContext(), future);
