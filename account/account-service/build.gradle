@@ -6,6 +6,8 @@ dependencies {
 
   api project(":account-domain")
 
+  compileOnly project(":configuration-bean")
+
   testImplementation project(":configuration-bean")
   testImplementation project(":configuration-mail")
   testImplementation project(":configuration-data-jpa")

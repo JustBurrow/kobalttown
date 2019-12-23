@@ -3,7 +3,7 @@ package kr.lul.kobalttown.account.service.configuration;
 import kr.lul.kobalttown.account.data.AccountDataAnchor;
 import kr.lul.kobalttown.account.service.properties.AccountServiceProperties;
 import org.slf4j.Logger;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -20,20 +20,15 @@ import static org.slf4j.LoggerFactory.getLogger;
 @ComponentScan(basePackageClasses = AccountDataAnchor.class)
 public class AccountServiceConfigurer {
   private static final Logger log = getLogger(AccountServiceConfigurer.class);
-  public static final String PROPERTIES_ACCOUNT_SERVICE = "kr.lul.kobalttown.account.service";
 
-  @Bean
-  @ConfigurationProperties(PROPERTIES_ACCOUNT_SERVICE)
-  public AccountServiceProperties accountServiceProperties() {
-    return new AccountServiceProperties();
-  }
+  @Autowired
+  private AccountServiceProperties accountServiceProperties;
 
   @Bean
   public AccountServiceConfiguration accountServiceConfiguration() {
-    final AccountServiceProperties properties = accountServiceProperties();
-    log.info("#accountServiceConfiguration properties={}", properties);
+    log.info("#accountServiceConfiguration accountServiceProperties={}", this.accountServiceProperties);
 
-    final AccountServiceConfiguration configuration = new AccountServiceConfiguration(properties);
+    final AccountServiceConfiguration configuration = new AccountServiceConfiguration(this.accountServiceProperties);
     log.info("#accountServiceConfiguration configuration={}", configuration);
     return configuration;
   }

@@ -1,5 +1,7 @@
 package kr.lul.kobalttown.account.service.properties;
 
+import javax.validation.constraints.NotEmpty;
+
 import static kr.lul.common.util.Texts.singleQuote;
 
 /**
@@ -7,10 +9,29 @@ import static kr.lul.common.util.Texts.singleQuote;
  * @since 2019/12/18
  */
 public class ActivateCodeProperties {
+  /**
+   * 계정 인증 코드를 사용할지 여부.
+   */
   private boolean enable;
+  /**
+   * 발신자 email 주소. 'dev@lul.kr' 혹은 'Kobalttown Dev<dev@lul.kr>' 형식.
+   */
+  @NotEmpty
   private String from;
+  /**
+   * 제목
+   */
+  @NotEmpty
   private String title;
+  /**
+   * 메일 본문 템플릿 이름.
+   */
+  @NotEmpty
   private String messageTemplate;
+  /**
+   * 도메인 주소. 이 주소를 기반으로 계정활성화 URL을 만든다.
+   */
+  @NotEmpty
   private String domain;
 
   public boolean isEnable() {
