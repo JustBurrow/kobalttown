@@ -39,6 +39,9 @@ public class AccountBorderlineImplTest {
   @Autowired
   private ContextService contextService;
 
+//  @MockBean
+//  private ActivateCodeConfiguration activateCode;
+
   private Context context;
   private ZonedDateTime before;
 
@@ -46,6 +49,8 @@ public class AccountBorderlineImplTest {
   public void setUp() throws Exception {
     assertThat(this.borderline).isNotNull();
     assertThat(this.contextService).isNotNull();
+//    assertThat(this.activateCode).isNotNull();
+//    log.info("SETUP - activateCode={}", this.activateCode);
     assertThat(this.timeProvider).isNotNull();
 
     this.context = this.contextService.issue();
@@ -126,6 +131,11 @@ public class AccountBorderlineImplTest {
     final String password = "password";
     final CreateAccountCmd cmd = new CreateAccountCmd(new Context(), nickname, email, password, Instant.now());
     log.info("GIVEN - cmd={}", cmd);
+
+//    when(this.activateCode.isEnable())
+//        .thenReturn(true);
+//    when(this.activateCode.getMail())
+//        .thenReturn(new MailConfiguration(new MailProperties("dev@lul.kr", "title", "mail/account/activate-code")));
 
     // WHEN
     final AccountDetailDto dto = this.borderline.create(cmd);

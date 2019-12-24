@@ -20,12 +20,13 @@ class AccountFactoryImpl implements AccountFactory {
   private static final Logger log = getLogger(AccountFactoryImpl.class);
 
   @Override
-  public Account create(Context context, String nickname, Instant createdAt) {
+  public Account create(final Context context, final String nickname, final boolean enabled, final Instant createdAt) {
     if (log.isTraceEnabled())
-      log.trace("#create args : context={}, nickname={}, createdAt={}", context, nickname, createdAt);
+      log.trace("#create args : context={}, nickname={}, enabled={}, createdAt={}",
+          context, nickname, enabled, createdAt);
     notNull(context, "context");
 
-    AccountEntity account = new AccountEntity(nickname, createdAt);
+    final AccountEntity account = new AccountEntity(nickname, enabled, createdAt);
 
     if (log.isTraceEnabled())
       log.trace("#create (context={}) return : {}", context, account);

@@ -61,7 +61,10 @@ class AccountServiceImpl implements AccountService {
     requireNonNull(this.mailService, "mailService is not autowired.");
     requireNonNull(this.activateCode, "activateCode is not autowired.");
 
-    log.info("{} is ready.", AccountServiceImpl.class.getCanonicalName());
+    log.info(
+        "#postConstruct accountFactory={}, credentialFactory={}, accountDao={}, credentialDao={}, securityEncoder={}, mailService={}, activateCode={}",
+        this.accountFactory, this.credentialFactory, this.accountDao, this.credentialDao, this.securityEncoder,
+        this.mailService, this.activateCode);
   }
 
   @Override
@@ -72,7 +75,8 @@ class AccountServiceImpl implements AccountService {
 
     // TODO 메일로 계정 인증하기 기능이 활성화 됐는지에 따라 초기 enabled 값을 변경.
     // 계정 정보 등록.
-    Account account = this.accountFactory.create(params.getContext(), params.getNickname(), params.getTimestamp());
+    Account account = this.accountFactory
+        .create(params.getContext(), params.getNickname(), !this.activateCode.isEnable(), params.getTimestamp());
     account = this.accountDao.create(params.getContext(), account);
 
     // 인증 정보 등록.
@@ -90,6 +94,9 @@ class AccountServiceImpl implements AccountService {
 
     if (this.activateCode.isEnable()) {
       final MailConfiguration mailConfig = this.activateCode.getMail();
+      if (log.isDebugEnabled())
+        log.debug("#create (context={}) mailConfig={}", params.getContext(), mailConfig);
+
       final MailParams mailParams = new MailParams(params.getContext(),
           mailConfig.getFrom(), params.getEmail(),
           mailConfig.getTitle(), mailConfig.getTemplate(), true,

@@ -65,15 +65,15 @@ public class CredentialDaoImplTest {
   @Test
   public void test_create() throws Exception {
     // GIVEN
-    String nickname = "nickname #" + current().nextInt(MAX_VALUE);
-    Account account = this.accountRepository.saveAndFlush(new AccountEntity(nickname, this.instant));
+    final String nickname = "nickname #" + current().nextInt(MAX_VALUE);
+    final Account account = this.accountRepository.saveAndFlush(new AccountEntity(nickname, false, this.instant));
     this.entityManager.clear();
-    Credential expected = new CredentialEntity(account, nickname, this.securityEncoder.encode("password"),
+    final Credential expected = new CredentialEntity(account, nickname, this.securityEncoder.encode("password"),
         this.instant);
     log.info("GIVEN - expected={}", expected);
 
     // WHEN
-    Credential actual = this.dao.create(new Context(), expected);
+    final Credential actual = this.dao.create(new Context(), expected);
     log.info("WHEN - actual={}", actual);
 
     // THEN

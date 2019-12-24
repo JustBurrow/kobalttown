@@ -31,11 +31,12 @@ public class AccountEntity extends SavableEntity implements Account {
   public AccountEntity() {// JPA only
   }
 
-  public AccountEntity(String nickname, Instant createdAt) {
+  public AccountEntity(final String nickname, final boolean enabled, final Instant createdAt) {
     NICKNAME_VALIDATOR.validate(nickname);
     notNull(createdAt, SavableEntity.ATTR_CREATED_AT);
 
     this.nickname = nickname;
+    this.enabled = enabled;
     this.createdAt = createdAt;
     this.updatedAt = createdAt;
   }
@@ -56,7 +57,7 @@ public class AccountEntity extends SavableEntity implements Account {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (this == o) return true;
     if (!(o instanceof AccountEntity)) return false;
     return this.id == ((AccountEntity) o).id;

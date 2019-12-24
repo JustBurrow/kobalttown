@@ -10,5 +10,5 @@ import java.time.Instant;
  * @since 2019/12/07
  */
 public interface AccountFactory {
-  Account create(Context context, String nickname, Instant createdAt);
+  Account create(Context context, String nickname, boolean enabled, Instant createdAt);
 }

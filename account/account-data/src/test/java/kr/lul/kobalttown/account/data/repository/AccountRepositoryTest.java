@@ -49,7 +49,7 @@ public class AccountRepositoryTest {
     final String nickname = "test";
     final Instant createdAt = Instant.now();
     log.info("GIVEN - nickname={}, createdAt={}", nickname, createdAt);
-    final AccountEntity expected = new AccountEntity(nickname, createdAt);
+    final AccountEntity expected = new AccountEntity(nickname, false, createdAt);
     log.info("GIVEN - expected={}", expected);
 
     // WHEN

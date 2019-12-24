@@ -8,6 +8,7 @@ import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -37,11 +38,13 @@ public class AccountServiceImplTest {
 
   @Autowired
   private AccountService service;
-
   @Autowired
   private EntityManager entityManager;
   @Autowired
   private TimeProvider timeProvider;
+
+//  @MockBean
+//  private ActivateCodeConfiguration activateCode;
 
   private Instant before;
 
@@ -49,6 +52,8 @@ public class AccountServiceImplTest {
   public void setUp() throws Exception {
     assertThat(this.service).isNotNull();
     assertThat(this.entityManager).isNotNull();
+//    assertThat(this.activateCode).isNotNull();
+//    log.info("SETUP - activateCode={}", this.activateCode);
     assertThat(this.timeProvider).isNotNull();
 
     this.before = this.timeProvider.now();
@@ -78,6 +83,7 @@ public class AccountServiceImplTest {
     final Account expected = this.service.create(
         new CreateAccountParams(new Context(), nickname, email, "password", this.before));
     log.info("GIVEN - expected={}", expected);
+
     this.entityManager.flush();
     this.entityManager.clear();
 
@@ -120,6 +126,31 @@ public class AccountServiceImplTest {
         .isNotNull()
         .extracting(Account::getNickname, Account::isEnabled, Creatable::getCreatedAt, Updatable::getUpdatedAt)
         .containsSequence(nickname, false, this.before, this.before);
+    assertThat(account.getId())
+        .isPositive();
+  }
+
+  @Test
+  @Ignore
+  public void test_create_when_activate_code_disabled() throws Exception {
+    // GIVEN
+    final String nickname = "nickname #" + current().nextInt(MAX_VALUE);
+    final String email = "just.burrow." + current().nextInt(MAX_VALUE) + "@lul.kr";
+    final CreateAccountParams params = new CreateAccountParams(new Context(), nickname, email, "password", this.before);
+    log.info("GIVEN - params={}", params);
+
+//    when(this.activateCode.isEnable())
+//        .thenReturn(false);
+
+    // WHEN
+    final Account account = this.service.create(params);
+    log.info("WHEN - account={}", account);
+
+    // THEN
+    assertThat(account)
+        .isNotNull()
+        .extracting(Account::getNickname, Account::isEnabled, Creatable::getCreatedAt, Updatable::getUpdatedAt)
+        .containsSequence(nickname, true, this.before, this.before);
     assertThat(account.getId())
         .isPositive();
   }

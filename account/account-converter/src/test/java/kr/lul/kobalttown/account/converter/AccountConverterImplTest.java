@@ -68,7 +68,7 @@ public class AccountConverterImplTest {
   @Test
   public void test_convert_to_detail() throws Exception {
     // GIVEN
-    final Account account = new AccountEntity("nickname", this.zonedDateTime.toInstant());
+    final Account account = new AccountEntity("nickname", false, this.zonedDateTime.toInstant());
     log.info("GIVEN - account={}", account);
 
     // WHEN

@@ -85,7 +85,7 @@ public class AccountDaoImplTest {
     // GIVEN
     final String nickname = "nickname #" + current().nextInt(MAX_VALUE);
     log.info("GIVEN - nickname={}", nickname);
-    final AccountEntity expected = new AccountEntity(nickname, this.instant);
+    final AccountEntity expected = new AccountEntity(nickname, false, this.instant);
     log.info("GIVEN - expected={}", expected);
 
     // WHEN
@@ -105,7 +105,7 @@ public class AccountDaoImplTest {
   public void test_read_with_context_and_exist_id() throws Exception {
     // GIVEN
     final String nickname = "nickname #" + random(current().nextInt(1, NICKNAME_MAX_LENGTH - 9));
-    final Account expected = this.dao.create(new Context(), new AccountEntity(nickname, this.instant));
+    final Account expected = this.dao.create(new Context(), new AccountEntity(nickname, false, this.instant));
     log.info("GIVEN - expected={}", expected);
 
     // WHEN
