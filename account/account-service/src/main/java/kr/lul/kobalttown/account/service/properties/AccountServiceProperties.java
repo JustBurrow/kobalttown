@@ -1,5 +1,6 @@
 package kr.lul.kobalttown.account.service.properties;
 
+import kr.lul.support.spring.mail.MailProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
@@ -15,7 +16,17 @@ import javax.validation.constraints.NotNull;
 @Validated
 public class AccountServiceProperties {
   @NotNull
+  private MailProperties welcome;
+  @NotNull
   private ActivateCodeProperties activateCode;
+
+  public MailProperties getWelcome() {
+    return this.welcome;
+  }
+
+  public void setWelcome(final MailProperties welcome) {
+    this.welcome = welcome;
+  }
 
   public ActivateCodeProperties getActivateCode() {
     return this.activateCode;
@@ -27,8 +38,9 @@ public class AccountServiceProperties {
 
   @Override
   public String toString() {
-    return new StringBuilder()
-        .append("{activateCode=").append(this.activateCode)
+    return new StringBuilder('{')
+        .append("welcome=").append(this.welcome)
+        .append(", activateCode=").append(this.activateCode)
         .append('}').toString();
   }
 }
