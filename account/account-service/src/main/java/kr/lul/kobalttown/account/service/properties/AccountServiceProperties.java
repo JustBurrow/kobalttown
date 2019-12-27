@@ -1,6 +1,5 @@
 package kr.lul.kobalttown.account.service.properties;
 
-import kr.lul.support.spring.mail.MailProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
@@ -16,15 +15,15 @@ import javax.validation.constraints.NotNull;
 @Validated
 public class AccountServiceProperties {
   @NotNull
-  private MailProperties welcome;
+  private WelcomeProperties welcome;
   @NotNull
   private ActivateCodeProperties activateCode;
 
-  public MailProperties getWelcome() {
+  public WelcomeProperties getWelcome() {
     return this.welcome;
   }
 
-  public void setWelcome(final MailProperties welcome) {
+  public void setWelcome(final WelcomeProperties welcome) {
     this.welcome = welcome;
   }
 

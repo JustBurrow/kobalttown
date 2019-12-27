@@ -5,6 +5,7 @@ import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
 import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
+import kr.lul.kobalttown.account.service.configuration.ActivateCodeConfiguration;
 import kr.lul.support.spring.web.context.ContextService;
 import org.junit.After;
 import org.junit.Before;
@@ -33,14 +34,14 @@ public class AccountBorderlineImplTest {
   private static final Logger log = getLogger(AccountBorderlineImplTest.class);
 
   @Autowired
+  private ActivateCodeConfiguration activateCode;
+
+  @Autowired
   private AccountBorderline borderline;
   @Autowired
   private TimeProvider timeProvider;
   @Autowired
   private ContextService contextService;
-
-//  @MockBean
-//  private ActivateCodeConfiguration activateCode;
 
   private Context context;
   private ZonedDateTime before;
@@ -49,8 +50,8 @@ public class AccountBorderlineImplTest {
   public void setUp() throws Exception {
     assertThat(this.borderline).isNotNull();
     assertThat(this.contextService).isNotNull();
-//    assertThat(this.activateCode).isNotNull();
-//    log.info("SETUP - activateCode={}", this.activateCode);
+    assertThat(this.activateCode).isNotNull();
+    log.info("SETUP - activateCode={}", this.activateCode);
     assertThat(this.timeProvider).isNotNull();
 
     this.context = this.contextService.issue();
@@ -112,7 +113,7 @@ public class AccountBorderlineImplTest {
         .isNotNull()
         .extracting(AccountDetailDto::getId, AccountDetailDto::getNickname, AccountDetailDto::isEnabled,
             AccountDetailDto::getCreatedAt, AccountDetailDto::getUpdatedAt)
-        .containsSequence(expected.getId(), nickname, false,
+        .containsSequence(expected.getId(), nickname, !this.activateCode.isEnable(),
             this.timeProvider.zonedDateTime(createdAt), this.timeProvider.zonedDateTime(createdAt));
   }
 
@@ -132,11 +133,6 @@ public class AccountBorderlineImplTest {
     final CreateAccountCmd cmd = new CreateAccountCmd(new Context(), nickname, email, password, Instant.now());
     log.info("GIVEN - cmd={}", cmd);
 
-//    when(this.activateCode.isEnable())
-//        .thenReturn(true);
-//    when(this.activateCode.getMail())
-//        .thenReturn(new MailConfiguration(new MailProperties("dev@lul.kr", "title", "mail/account/activate-code")));
-
     // WHEN
     final AccountDetailDto dto = this.borderline.create(cmd);
     log.info("WHEN - dto={}", dto);
@@ -145,7 +141,7 @@ public class AccountBorderlineImplTest {
     assertThat(dto)
         .isNotNull()
         .extracting(AccountDetailDto::getNickname, AccountDetailDto::isEnabled)
-        .containsSequence(nickname, false);
+        .containsSequence(nickname, !this.activateCode.isEnable());
     assertThat(dto.getId())
         .isPositive();
     assertThat(dto.getCreatedAt())

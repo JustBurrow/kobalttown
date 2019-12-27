@@ -1,12 +1,18 @@
 kr.lul.kobalttown:
   account:
     service:
+      welcome:
+        enable: true
+        mail:
+          from: 'Kobalttown Welcome<dev@lul.kr>'
+          title: 'Welcome to Kobalttown!'
+          template: mail/account/welcome
       activate-code:
         enable: true
         domain: 'kobalttown.lul.kr'
         mail:
-          from: 'Kobalttown<dev@lul.kr>'
-          title: 'Welcome to Kobalttown'
+          from: 'Kobalttown Dev<dev@lul.kr>'
+          title: 'Verify Your Kobalttown Account'
           template: 'mail/account/activate-code'
 
 spring:
@@ -36,5 +42,6 @@ server:
 
 logging:
   level:
-    root: info
+    root: warn
     org.hibernate.SQL: debug
+    kr.lul.kobalttown:  info

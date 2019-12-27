@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2019/12/27 13:06" th:remove="all"/>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+<main>
+    <h1>Welcome to Kobalttown</h1>
+    <!--/*@thymesVar id="nickname" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="email" type="java.lang.String"*/-->
+    <dl>
+        <dt>Nickname</dt>
+        <dd th:text="${nickname}">nickname</dd>
+        <dt>E-Mail</dt>
+        <dd th:text="${email}">email</dd>
+    </dl>
+</main>
+</body>
+</html>

@@ -2,7 +2,6 @@ package kr.lul.kobalttown.account.service.configuration;
 
 import kr.lul.kobalttown.account.data.AccountDataAnchor;
 import kr.lul.kobalttown.account.service.properties.AccountServiceProperties;
-import kr.lul.support.spring.mail.MailConfiguration;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -35,12 +34,16 @@ public class AccountServiceConfigurer {
   }
 
   @Bean
-  public MailConfiguration welcomeMailConfiguration() {
-    return accountServiceConfiguration().getWelcomeMail();
+  public WelcomeConfiguration welcomeConfiguration() {
+    final WelcomeConfiguration configuration = accountServiceConfiguration().getWelcome();
+    log.info("welcomeConfiguration={}", configuration);
+    return configuration;
   }
 
   @Bean
   public ActivateCodeConfiguration activateCodeConfiguration() {
-    return accountServiceConfiguration().getActivateCode();
+    final ActivateCodeConfiguration activateCodeConfiguration = accountServiceConfiguration().getActivateCode();
+    log.info("activateCodeConfiguration={}", activateCodeConfiguration);
+    return activateCodeConfiguration;
   }
 }

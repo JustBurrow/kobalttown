@@ -1,7 +1,6 @@
 package kr.lul.kobalttown.account.service.configuration;
 
 import kr.lul.kobalttown.account.service.properties.AccountServiceProperties;
-import kr.lul.support.spring.mail.MailConfiguration;
 
 import static java.lang.String.format;
 import static kr.lul.common.util.Arguments.notNull;
@@ -11,17 +10,17 @@ import static kr.lul.common.util.Arguments.notNull;
  * @since 2019/12/18
  */
 public class AccountServiceConfiguration {
-  private MailConfiguration welcomeMail;
+  private WelcomeConfiguration welcome;
   private ActivateCodeConfiguration activateCode;
 
   public AccountServiceConfiguration(final AccountServiceProperties properties) {
     notNull(properties, "properties");
-    this.welcomeMail = new MailConfiguration(properties.getWelcome());
+    this.welcome = new WelcomeConfiguration(properties.getWelcome());
     this.activateCode = new ActivateCodeConfiguration(properties.getActivateCode());
   }
 
-  public MailConfiguration getWelcomeMail() {
-    return this.welcomeMail;
+  public WelcomeConfiguration getWelcome() {
+    return this.welcome;
   }
 
   public ActivateCodeConfiguration getActivateCode() {
@@ -30,6 +29,6 @@ public class AccountServiceConfiguration {
 
   @Override
   public String toString() {
-    return format("{welcomeMail=%s, activateCode=%s}", this.welcomeMail, this.activateCode);
+    return format("{welcome=%s, activateCode=%s}", this.welcome, this.activateCode);
   }
 }

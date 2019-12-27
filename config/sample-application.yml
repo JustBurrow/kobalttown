@@ -1,6 +1,12 @@
 kr.lul.kobalttown:
   account:
     service:
+      welcome:
+        enable: true
+        mail:
+          from: 'Kobalttown Welcome<dev@lul.kr>'
+          title: 'Welcome to Kobalttown!'
+          template: mail/account/welcome
       activate-code:
         domain: 'kobalttown.lul.kr'
         mail:
