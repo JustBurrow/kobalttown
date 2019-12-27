@@ -11,7 +11,7 @@ kr.lul.kobalttown:
 spring:
   datasource:
     hikari:
-      jdbc-url: jdbc:mysql://localhost/kobalttown?connectionCollation=utf8mb4_unicode_520_ci&allowPublicKeyRetrieval=true&useSSL=false
+      jdbc-url: jdbc:mysql://localhost/kobalttown?connectionCollation=utf8mb4_unicode_520_ci&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul
       username: root
       password: ""
   jpa:
