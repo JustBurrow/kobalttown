@@ -35,4 +35,19 @@ class ValidationCodeDaoImpl implements ValidationCodeDao {
       log.trace("#create (context={}) return : {}", context, saved);
     return saved;
   }
+
+  @Override
+  public boolean exists(final Context context, final String code) {
+    if (log.isTraceEnabled())
+      log.trace("#exists args : context={}, code={}", context, code);
+    notNull(context, "context");
+
+    final boolean exists = null != code &&
+                               !code.isEmpty() &&
+                               this.repository.existsByCode(code);
+
+    if (log.isTraceEnabled())
+      log.trace("#exists (context={}) return : {}", context, exists);
+    return exists;
+  }
 }

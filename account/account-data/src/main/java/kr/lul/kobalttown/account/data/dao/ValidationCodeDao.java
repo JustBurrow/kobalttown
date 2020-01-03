@@ -9,4 +9,6 @@ import kr.lul.kobalttown.account.domain.ValidationCode;
  */
 public interface ValidationCodeDao {
   ValidationCode create(Context context, ValidationCode validationCode);
+
+  boolean exists(Context context, String code);
 }

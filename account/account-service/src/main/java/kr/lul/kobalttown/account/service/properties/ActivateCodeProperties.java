@@ -17,6 +17,11 @@ public class ActivateCodeProperties {
    */
   private boolean enable;
   /**
+   * 게정 인증 코드 발송을 기다린다.
+   * 발송이 끝나야 계정 등록 로직을 완료한다.
+   */
+  private boolean wait;
+  /**
    * 도메인 주소. 이 주소를 기반으로 계정활성화 URL을 만든다.
    */
   @NotEmpty
@@ -30,6 +35,14 @@ public class ActivateCodeProperties {
 
   public void setEnable(final boolean enable) {
     this.enable = enable;
+  }
+
+  public boolean isWait() {
+    return this.wait;
+  }
+
+  public void setWait(final boolean wait) {
+    this.wait = wait;
   }
 
   public String getDomain() {
@@ -51,9 +64,10 @@ public class ActivateCodeProperties {
   @Override
   public String toString() {
     return new StringBuilder()
-        .append("{enable=").append(this.enable)
-        .append(", domain=").append(singleQuote(this.domain))
-        .append(", mail=").append(this.mail)
-        .append('}').toString();
+               .append("{enable=").append(this.enable)
+               .append(", wait=").append(this.wait)
+               .append(", domain=").append(singleQuote(this.domain))
+               .append(", mail=").append(this.mail)
+               .append('}').toString();
   }
 }

@@ -4,9 +4,12 @@ import kr.lul.common.data.Context;
 import kr.lul.common.data.Creatable;
 import kr.lul.common.data.Updatable;
 import kr.lul.common.util.TimeProvider;
+import kr.lul.kobalttown.account.data.entity.AccountEntity;
 import kr.lul.kobalttown.account.data.repository.CredentialRepository;
+import kr.lul.kobalttown.account.data.repository.ValidationCodeRepository;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
+import kr.lul.kobalttown.account.domain.ValidationCode;
 import kr.lul.kobalttown.account.service.configuration.ActivateCodeConfiguration;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
@@ -16,15 +19,19 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
+import java.util.List;
 
 import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.userKey;
+import static kr.lul.kobalttown.account.domain.ValidationCode.CODE_REGEX;
+import static kr.lul.kobalttown.account.domain.ValidationCode.TTL_DEFAULT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -47,6 +54,8 @@ public class AccountServiceImplTest {
   @Autowired
   private CredentialRepository credentialRepository;
   @Autowired
+  private ValidationCodeRepository validationCodeRepository;
+  @Autowired
   private EntityManager entityManager;
   @Autowired
   private TimeProvider timeProvider;
@@ -56,6 +65,8 @@ public class AccountServiceImplTest {
   @Before
   public void setUp() throws Exception {
     assertThat(this.service).isNotNull();
+    assertThat(this.credentialRepository).isNotNull();
+    assertThat(this.validationCodeRepository).isNotNull();
     assertThat(this.entityManager).isNotNull();
     assertThat(this.activateCode).isNotNull();
     log.info("SETUP - activateCode={}", this.activateCode);
@@ -116,6 +127,7 @@ public class AccountServiceImplTest {
   }
 
   @Test
+  @Rollback(false)
   public void test_create() throws Exception {
     // GIVEN
     final String nickname = nickname();
@@ -156,6 +168,33 @@ public class AccountServiceImplTest {
         .isPositive();
     assertThat(credential.getSecretHash())
         .isNotEmpty();
+
+    if (this.activateCode.isEnable()) {
+      // TODO mockup으로 활성화 비활성화 모두 테스트하기.
+      final List<ValidationCode> validationCodes =
+          this.validationCodeRepository.findAllByAccount((AccountEntity) account);
+
+      assertThat(validationCodes)
+          .isNotNull()
+          .hasSize(1)
+          .doesNotContainNull();
+
+      final ValidationCode validationCode = validationCodes.get(0);
+      log.info("THEN - validationCode={}", validationCode);
+
+      assertThat(validationCode)
+          .extracting(ValidationCode::getExpireAt,
+              ValidationCode::isUsed, ValidationCode::getUsedAt,
+              ValidationCode::isExpired, ValidationCode::getExpiredAt)
+          .containsSequence(this.before.plus(TTL_DEFAULT),
+              false, null,
+              false, null);
+      assertThat(validationCode.getId())
+          .isPositive();
+      assertThat(validationCode.getCode())
+          .isNotNull()
+          .matches(CODE_REGEX);
+    }
   }
 
   @Test

@@ -7,19 +7,14 @@
 </head>
 <body>
 <div>
-    <style>
-        .jumbo {
-            background-color: ivory;
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            font-size: x-large;
-        }
-    </style>
+    <!--/*@thymesVar id="expireAt" type="java.time.ZonedDateTime"*/-->
     <!--/*@thymesVar id="domain" type="java.lang.String"*/-->
     <!--/*@thymesVar id="code" type="java.lang.String"*/-->
     <div class="jumbo">
-        <p>Copy & Goto :</p>
+        <p>Copy & Goto bellow url until
+            <time th:datetime="${expireAt}" th:text="${#temporals.format(expireAt,'yyyy-MM-dd HH:mm')}">expire at</time>
+            :
+        </p>
         <p th:text="'https://'+${domain}+'/accounts/activate/'+${code}">
             https://kobalttown.lul.kr/accounts/activate/code</p>
     </div>
