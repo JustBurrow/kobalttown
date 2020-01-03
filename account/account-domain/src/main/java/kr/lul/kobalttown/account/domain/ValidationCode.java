@@ -26,10 +26,10 @@ public interface ValidationCode extends Savable<Instant> {
   String ATTR_CODE = "code";
   String ATTR_TTL = "ttl";
   String ATTR_EXPIRE_AT = "expireAt";
-  String ATTR_EXPIRED = "expired";
-  String ATTR_EXPIRED_AT = "expiredAt";
   String ATTR_USED = "used";
   String ATTR_USED_AT = "usedAt";
+  String ATTR_EXPIRED = "expired";
+  String ATTR_EXPIRED_AT = "expiredAt";
   String ATTR_CREATED_AT = "createdAt";
   String ATTR_UPDATED_AT = "updatedAt";
 
@@ -124,18 +124,6 @@ public interface ValidationCode extends Savable<Instant> {
   Instant getExpireAt();
 
   /**
-   * @return 검증 코드가 만료처리 되었는지 여부.
-   */
-  default boolean isExpired() {
-    return null != getExpireAt();
-  }
-
-  /**
-   * @return 만료처리된 시각. 아직 유효한 경우에는 {@code null}.
-   */
-  Instant getExpiredAt();
-
-  /**
    * @return 계정 검증 코드가 사용되었는지 여부.
    */
   default boolean isUsed() {
@@ -146,6 +134,18 @@ public interface ValidationCode extends Savable<Instant> {
    * @return 계정 검증 코드를 사용했는지 여부. 사용하지 않은 경우 {@code null}.
    */
   Instant getUsedAt();
+
+  /**
+   * @return 검증 코드가 만료처리 되었는지 여부.
+   */
+  default boolean isExpired() {
+    return null != getExpiredAt();
+  }
+
+  /**
+   * @return 만료처리된 시각. 아직 유효한 경우에는 {@code null}.
+   */
+  Instant getExpiredAt();
 
   /**
    * 기준 시점에 유효한 코드인지 여부.
