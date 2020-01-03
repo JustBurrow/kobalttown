@@ -57,13 +57,21 @@ public class AccountEntity extends SavableEntity implements Account {
   }
 
   @Override
-  public void enable(final Instant updatedAt) {
-    notNull(updatedAt, Account.ATTR_UPDATED_AT);
+  public void enable(final Instant enableAt) {
+    notNull(enableAt, "enableAt");
+    if (this.createdAt.equals(enableAt) || this.createdAt.isAfter(enableAt))
+      throw new IllegalArgumentException("too early enable at " + enableAt);
+
+    if (this.enabled)
+      throw new IllegalStateException("already enabled.");
 
     this.enabled = true;
-    this.updatedAt = updatedAt;
+    this.updatedAt = enableAt;
   }
 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // java.lang.Object
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
   public boolean equals(final Object o) {
     if (this == o) return true;

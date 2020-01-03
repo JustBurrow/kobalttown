@@ -70,7 +70,7 @@ public interface Account extends Savable<Instant> {
   /**
    * 계정을 활성화한다.
    *
-   * @param updatedAt 활성화 시각.
+   * @param enableAt 활성화 시각.
    */
-  void enable(Instant updatedAt);
+  void enable(Instant enableAt);
 }

@@ -50,7 +50,7 @@ public class ValidationCodeTest {
       }
 
       @Override
-      public void enable(final Instant updatedAt) {
+      public void enable(final Instant enableAt) {
 
       }
 
@@ -88,7 +88,7 @@ public class ValidationCodeTest {
       }
 
       @Override
-      public void enable(final Instant updatedAt) {
+      public void enable(final Instant enableAt) {
 
       }
 
@@ -127,7 +127,7 @@ public class ValidationCodeTest {
       }
 
       @Override
-      public void enable(final Instant updatedAt) {
+      public void enable(final Instant enableAt) {
       }
 
       @Override

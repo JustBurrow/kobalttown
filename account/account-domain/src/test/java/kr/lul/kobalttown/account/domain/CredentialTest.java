@@ -58,7 +58,7 @@ public class CredentialTest {
       }
 
       @Override
-      public void enable(final Instant updatedAt) {
+      public void enable(final Instant enableAt) {
 
       }
     };
@@ -101,7 +101,7 @@ public class CredentialTest {
       }
 
       @Override
-      public void enable(final Instant updatedAt) {
+      public void enable(final Instant enableAt) {
 
       }
     };

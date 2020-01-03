@@ -5,6 +5,8 @@ import kr.lul.common.util.Range;
 import kr.lul.common.util.Texts;
 import kr.lul.kobalttown.account.data.mapping.AccountMapping;
 import kr.lul.kobalttown.account.domain.Account;
+import kr.lul.kobalttown.account.domain.ExpiredValidationCodeException;
+import kr.lul.kobalttown.account.domain.UsedValidationCodeException;
 import kr.lul.kobalttown.account.domain.ValidationCode;
 import kr.lul.support.spring.data.jpa.entiy.SavableEntity;
 
@@ -140,18 +142,18 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
   @Override
   public void use(final Instant when) throws IllegalStateException {
     notNull(when, "when");
+    if (this.createdAt.plus(MIN_USE_INTERVAL).isAfter(when))
+      throw new IllegalArgumentException(format("too early use : when=%s, validRange=%s", when, this.validRange));
+
+    if (this.expireAt.isBefore(when)) {
+      expire(when);
+      throw new ExpiredValidationCodeException(when);
+    }
 
     if (isUsed())
-      throw new IllegalStateException("already used : usedAt=" + this.usedAt);
+      throw new UsedValidationCodeException(this.usedAt);
     if (this.account.isEnabled())
       throw new IllegalStateException("already enabled account.");
-
-    if (this.createdAt.plus(MIN_USE_INTERVAL).isAfter(when)) {
-      throw new IllegalArgumentException(format("too early use : when=%s, validRange=%s", when, this.validRange));
-    } else if (this.expireAt.isBefore(when)) {
-      expire(when);
-      throw new IllegalArgumentException(format("too late use : when=%s, validRange=%s", when, this.validRange));
-    }
 
     this.usedAt = when;
     this.updatedAt = when;
@@ -161,14 +163,13 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
   @Override
   public void expire(final Instant when) {
     notNull(when, "when");
-
-    if (isExpired())
-      throw new IllegalStateException("already expired : expiredAt=" + this.expiredAt);
-    if (isUsed())
-      throw new IllegalStateException("already used : usedAt=" + this.usedAt);
-
     if (this.expireAt.equals(when) || this.expireAt.isAfter(when))
       throw new IllegalArgumentException(format("too early expire : when=%s, expireAt=%s", when, this.expireAt));
+
+    if (isExpired())
+      throw new ExpiredValidationCodeException(this.expiredAt);
+    if (isUsed())
+      throw new UsedValidationCodeException(this.usedAt);
 
     this.expiredAt = when;
     this.updatedAt = when;

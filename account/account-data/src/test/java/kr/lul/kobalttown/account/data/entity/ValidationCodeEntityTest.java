@@ -6,6 +6,8 @@ import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.account.data.factory.AccountFactory;
 import kr.lul.kobalttown.account.data.factory.AccountFactoryImpl;
 import kr.lul.kobalttown.account.domain.Account;
+import kr.lul.kobalttown.account.domain.ExpiredValidationCodeException;
+import kr.lul.kobalttown.account.domain.UsedValidationCodeException;
 import kr.lul.kobalttown.account.domain.ValidationCode;
 import org.junit.Before;
 import org.junit.Test;
@@ -353,10 +355,8 @@ public class ValidationCodeEntityTest {
 
     // WHEN & THEN
     assertThatThrownBy(() -> validationCode.use(when))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessageStartingWith("too late use")
-        .hasMessageContaining("when=" + when)
-        .hasMessageContaining("validRange=" + validationCode.getValidRange())
+        .isInstanceOf(ExpiredValidationCodeException.class)
+        .hasMessage("already expired at " + when)
         .hasNoCause();
     assertThat(validationCode)
         .extracting(ValidationCode::getAccount, ValidationCode::getCode, ValidationCode::getExpireAt,
@@ -491,9 +491,8 @@ public class ValidationCodeEntityTest {
 
     // WHEN & THEN
     assertThatThrownBy(() -> code.use(code.getExpireAt()))
-        .isInstanceOf(IllegalStateException.class)
-        .hasMessageStartingWith("already used")
-        .hasMessageContaining("usedAt=" + usedAt)
+        .isInstanceOf(UsedValidationCodeException.class)
+        .hasMessage("already used at " + usedAt)
         .hasNoCause();
   }
 
@@ -562,9 +561,8 @@ public class ValidationCodeEntityTest {
 
     // WHEN & THEN
     assertThatThrownBy(() -> code.expire(expireAt.plusNanos(1L)))
-        .isInstanceOf(IllegalStateException.class)
-        .hasMessageStartingWith("already used")
-        .hasMessageContaining("usedAt=" + usedAt)
+        .isInstanceOf(UsedValidationCodeException.class)
+        .hasMessage("already used at " + usedAt)
         .hasNoCause();
   }
 
@@ -579,9 +577,8 @@ public class ValidationCodeEntityTest {
 
     // WHEN & THEN
     assertThatThrownBy(() -> code.expire(expiredAt.plusNanos(2L)))
-        .isInstanceOf(IllegalStateException.class)
-        .hasMessageStartingWith("already expired")
-        .hasMessageContaining("expiredAt=" + expiredAt)
+        .isInstanceOf(ExpiredValidationCodeException.class)
+        .hasMessage("already expired at " + expiredAt)
         .hasNoCause();
   }
 
