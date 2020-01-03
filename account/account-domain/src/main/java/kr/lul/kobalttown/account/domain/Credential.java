@@ -31,19 +31,29 @@ public interface Credential extends Creatable<Instant> {
     }
   };
 
+  int PUBLIC_KEY_MIN_LENGTH = 3;
   int PUBLIC_KEY_MAX_LENGTH = 255;
 
   String PUBLIC_KEY_REGEX = "\\S(.*\\S)?";
 
   Validator<String> PUBLIC_KEY_VALIDATOR = new RegexValidator<>(ATTR_PUBLIC_KEY, PUBLIC_KEY_REGEX) {
     @Override
-    public void validate(String publicKey) throws ValidationException {
-      super.validate(publicKey);
-
-      if (PUBLIC_KEY_MAX_LENGTH < publicKey.length()) {
-        throw new ValidationException(ATTR_PUBLIC_KEY, publicKey, format("%s is too long : max=%d, %s.length=%d",
-            ATTR_PUBLIC_KEY, PUBLIC_KEY_MAX_LENGTH, ATTR_PUBLIC_KEY, publicKey.length()));
+    public void validate(final String publicKey) throws ValidationException {
+      if (null == publicKey) {
+        throw new ValidationException(ATTR_PUBLIC_KEY, null, ATTR_PUBLIC_KEY + " is null.");
+      } else if (publicKey.isEmpty()) {
+        throw new ValidationException(ATTR_PUBLIC_KEY, publicKey, ATTR_PUBLIC_KEY + " is empty.");
+      } else if (PUBLIC_KEY_MIN_LENGTH > publicKey.length()) {
+        throw new ValidationException(ATTR_PUBLIC_KEY, publicKey,
+            format("too short %s : min=%d, %s.length=%d",
+                ATTR_PUBLIC_KEY, PUBLIC_KEY_MIN_LENGTH, ATTR_PUBLIC_KEY, publicKey.length()));
+      } else if (PUBLIC_KEY_MAX_LENGTH < publicKey.length()) {
+        throw new ValidationException(ATTR_PUBLIC_KEY, publicKey,
+            format("too long %s : max=%d, %s.length=%d",
+                ATTR_PUBLIC_KEY, PUBLIC_KEY_MAX_LENGTH, ATTR_PUBLIC_KEY, publicKey.length()));
       }
+
+      super.validate(publicKey);
     }
   };
 
@@ -79,7 +89,18 @@ public interface Credential extends Creatable<Instant> {
   /**
    * 유효한 비공개키 해시인지 확인한다.
    */
-  Validator<String> SECRET_HASH_VALIDATOR = new RegexValidator<>(ATTR_SECRET_HASH, SECRET_HASH_REGEX);
+  Validator<String> SECRET_HASH_VALIDATOR = new RegexValidator<>(ATTR_SECRET_HASH, SECRET_HASH_REGEX) {
+    @Override
+    public void validate(final String secretHash) throws ValidationException {
+      if (null == secretHash) {
+        throw new ValidationException(ATTR_SECRET_HASH, null, ATTR_SECRET_HASH + " is null.");
+      } else if (secretHash.isEmpty()) {
+        throw new ValidationException(ATTR_SECRET_HASH, secretHash, ATTR_SECRET_HASH + " is empty.");
+      }
+
+      super.validate(secretHash);
+    }
+  };
 
   /**
    * @return 일련번호.

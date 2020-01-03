@@ -20,7 +20,7 @@ public class CredentialTest {
   private static final Logger log = getLogger(CredentialTest.class);
 
   @Test
-  public void test_account_validator_validate_with_null() throws Exception {
+  public void test_ACCOUNT_VALIDATOR_validate_with_null() throws Exception {
     assertThatThrownBy(() -> ACCOUNT_VALIDATOR.validate(null))
         .isInstanceOf(ValidationException.class)
         .hasMessage("account is null.")
@@ -29,9 +29,9 @@ public class CredentialTest {
   }
 
   @Test
-  public void test_account_validator_validate_with_not_persisted_account() throws Exception {
+  public void test_ACCOUNT_VALIDATOR_validate_with_not_persisted_account() throws Exception {
     // GIVEN
-    Account account = new Account() {
+    final Account account = new Account() {
       @Override
       public Instant getUpdatedAt() {
         return null;
@@ -67,9 +67,9 @@ public class CredentialTest {
   }
 
   @Test
-  public void test_account_validator_validate() throws Exception {
+  public void test_ACCOUNT_VALIDATOR_validate() throws Exception {
     // GIVEN
-    Account account = new Account() {
+    final Account account = new Account() {
       @Override
       public Instant getUpdatedAt() {
         return null;
@@ -102,7 +102,7 @@ public class CredentialTest {
   }
 
   @Test
-  public void test_public_key_validator_validate_null() throws Exception {
+  public void test_PUBLIC_KEY_VALIDATOR_validate_null() throws Exception {
     // WHEN & THEN
     assertThatThrownBy(() -> PUBLIC_KEY_VALIDATOR.validate(null))
         .isInstanceOf(ValidationException.class)
@@ -111,7 +111,7 @@ public class CredentialTest {
   }
 
   @Test
-  public void test_public_key_validator_validate_empty() throws Exception {
+  public void test_PUBLIC_KEY_VALIDATOR_validate_empty() throws Exception {
     // WHEN & THEN
     assertThatThrownBy(() -> PUBLIC_KEY_VALIDATOR.validate(""))
         .isInstanceOf(ValidationException.class)
@@ -120,9 +120,9 @@ public class CredentialTest {
   }
 
   @Test
-  public void test_public_key_validator_validate() throws Exception {
+  public void test_PUBLIC_KEY_VALIDATOR_validate() throws Exception {
     // GIVEN
-    String publicKey = random(current().nextInt(1, 1 + PUBLIC_KEY_MAX_LENGTH)).trim();
+    final String publicKey = random(current().nextInt(1, 1 + PUBLIC_KEY_MAX_LENGTH)).trim();
     log.info("GIVEN - publicKey={}", publicKey);
 
     // WHEN
@@ -130,7 +130,7 @@ public class CredentialTest {
   }
 
   @Test
-  public void test_public_key_validator_validate_with_long() throws Exception {
+  public void test_PUBLIC_KEY_VALIDATOR_validate_with_long() throws Exception {
     // GIVEN
     String publicKey;
     do {
@@ -144,5 +144,82 @@ public class CredentialTest {
         .isInstanceOf(ValidationException.class)
         .extracting("targetName", "target")
         .containsSequence(ATTR_PUBLIC_KEY, publicKey);
+  }
+
+  @Test
+  public void test_SECRET_VALIDATOR_validate_with_null() throws Exception {
+    assertThatThrownBy(() -> SECRET_VALIDATOR.validate(null))
+        .isInstanceOf(ValidationException.class)
+        .hasMessage("secret is null.")
+        .hasNoCause();
+  }
+
+  @Test
+  public void test_SECRET_VALIDATOR_validate_with_empty() throws Exception {
+    assertThatThrownBy(() -> SECRET_VALIDATOR.validate(""))
+        .isInstanceOf(ValidationException.class)
+        .hasMessage("secret is empty.")
+        .hasNoCause();
+  }
+
+  @Test
+  public void test_SECRET_VALIDATOR_validate_with_short() throws Exception {
+    // GIVEN
+    final String secret = random(SECRET_MIN_LENGTH - 1);
+    log.info("GIVEN - secret={}", secret);
+
+    // WHEN & THEN
+    assertThatThrownBy(() -> SECRET_VALIDATOR.validate(secret))
+        .isInstanceOf(ValidationException.class)
+        .hasMessageContaining("too short secret")
+        .hasMessageNotContaining(secret)
+        .hasNoCause();
+  }
+
+  @Test
+  public void test_SECRET_VALIDATOR_validate_with_long() throws Exception {
+    // GIVEN
+    final String secret = random(SECRET_MAX_LENGTH + 1);
+    log.info("GIVEN - secret={}", secret);
+
+    // WHEN & THEN
+    assertThatThrownBy(() -> SECRET_VALIDATOR.validate(secret))
+        .isInstanceOf(ValidationException.class)
+        .hasMessageContaining("too long secret")
+        .hasMessageNotContaining(secret)
+        .hasNoCause();
+  }
+
+  @Test
+  public void test_SECRET_VALIDATOR_validate_with_min() throws Exception {
+    // GIVEN
+    final String secret = random(SECRET_MIN_LENGTH);
+    log.info("GIVEN - secret={}", secret);
+
+    // WHEN
+    SECRET_VALIDATOR.validate(secret);
+    log.info("WHEN - no exception");
+  }
+
+  @Test
+  public void test_SECRET_VALIDATOR_validate_with_max() throws Exception {
+    // GIVEN
+    final String secret = random(SECRET_MAX_LENGTH);
+    log.info("GIVEN - secret={}", secret);
+
+    // WHEN
+    SECRET_VALIDATOR.validate(secret);
+    log.info("WHEN - no exception");
+  }
+
+  @Test
+  public void test_SECRET_VALIDATOR_validate() throws Exception {
+    // GIVEN
+    final String secret = random(current().nextInt(SECRET_MIN_LENGTH, SECRET_MAX_LENGTH + 1));
+    log.info("GIVEN - secret={}", secret);
+
+    // WHEN
+    SECRET_VALIDATOR.validate(secret);
+    log.info("WHEN - no exception.");
   }
 }
