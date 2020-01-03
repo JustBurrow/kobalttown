@@ -33,7 +33,7 @@ public class AccountEntity extends SavableEntity implements Account {
 
   public AccountEntity(final String nickname, final boolean enabled, final Instant createdAt) {
     NICKNAME_VALIDATOR.validate(nickname);
-    notNull(createdAt, SavableEntity.ATTR_CREATED_AT);
+    notNull(createdAt, Account.ATTR_CREATED_AT);
 
     this.nickname = nickname;
     this.enabled = enabled;
@@ -54,6 +54,14 @@ public class AccountEntity extends SavableEntity implements Account {
   @Override
   public boolean isEnabled() {
     return this.enabled;
+  }
+
+  @Override
+  public void enable(final Instant updatedAt) {
+    notNull(updatedAt, Account.ATTR_UPDATED_AT);
+
+    this.enabled = true;
+    this.updatedAt = updatedAt;
   }
 
   @Override

@@ -56,6 +56,11 @@ public class CredentialTest {
       public boolean isEnabled() {
         return false;
       }
+
+      @Override
+      public void enable(final Instant updatedAt) {
+
+      }
     };
     log.info("GIVEN - account.id={}", account.getId());
 
@@ -93,6 +98,11 @@ public class CredentialTest {
       @Override
       public boolean isEnabled() {
         return false;
+      }
+
+      @Override
+      public void enable(final Instant updatedAt) {
+
       }
     };
     log.info("GIVEN - account.id={}", account.getId());

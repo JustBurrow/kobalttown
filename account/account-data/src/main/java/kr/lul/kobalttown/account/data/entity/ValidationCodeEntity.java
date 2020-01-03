@@ -15,6 +15,7 @@ import java.util.Objects;
 
 import static java.lang.String.format;
 import static javax.persistence.GenerationType.IDENTITY;
+import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Arguments.typeOf;
 import static kr.lul.kobalttown.account.data.mapping.ValidationCodeMapping.*;
 
@@ -45,6 +46,9 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
   @Column(name = COL_EXPIRED_AT, insertable = false)
   private Instant expiredAt;
 
+  @Transient
+  private Range<Instant> validRange;
+
   public ValidationCodeEntity() {// JPA only
   }
 
@@ -73,6 +77,17 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
     this.expireAt = expireAt;
     this.usedAt = null;
     this.expiredAt = null;
+
+    initExtra();
+  }
+
+  private void initExtra() {
+    this.validRange = new ContinuousRange<>(this.createdAt.plus(MIN_USE_INTERVAL), true, this.expireAt, true);
+  }
+
+  @PostLoad
+  private void postLoad() {
+    initExtra();
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,18 +124,54 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
   }
 
   @Override
-  public boolean isValid(final Instant when) {
-    return false;
+  public Range<Instant> getValidRange() {
+    return this.validRange;
   }
 
   @Override
-  public boolean expire(final Instant when) {
-    return false;
+  public boolean isValid(final Instant when) {
+    notNull(when, "when");
+
+    return !isUsed() &&
+               !isExpired() &&
+               this.validRange.isInclude(when);
   }
 
   @Override
   public void use(final Instant when) throws IllegalStateException {
+    notNull(when, "when");
 
+    if (isUsed())
+      throw new IllegalStateException("already used : usedAt=" + this.usedAt);
+    if (this.account.isEnabled())
+      throw new IllegalStateException("already enabled account.");
+
+    if (this.createdAt.plus(MIN_USE_INTERVAL).isAfter(when)) {
+      throw new IllegalArgumentException(format("too early use : when=%s, validRange=%s", when, this.validRange));
+    } else if (this.expireAt.isBefore(when)) {
+      expire(when);
+      throw new IllegalArgumentException(format("too late use : when=%s, validRange=%s", when, this.validRange));
+    }
+
+    this.usedAt = when;
+    this.updatedAt = when;
+    this.account.enable(when);
+  }
+
+  @Override
+  public void expire(final Instant when) {
+    notNull(when, "when");
+
+    if (isExpired())
+      throw new IllegalStateException("already expired : expiredAt=" + this.expiredAt);
+    if (isUsed())
+      throw new IllegalStateException("already used : usedAt=" + this.usedAt);
+
+    if (this.expireAt.equals(when) || this.expireAt.isAfter(when))
+      throw new IllegalArgumentException(format("too early expire : when=%s, expireAt=%s", when, this.expireAt));
+
+    this.expiredAt = when;
+    this.updatedAt = when;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

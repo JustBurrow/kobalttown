@@ -2,6 +2,7 @@ package kr.lul.kobalttown.account.domain;
 
 import kr.lul.common.data.Savable;
 import kr.lul.common.util.ContinuousRange;
+import kr.lul.common.util.Range;
 import kr.lul.common.util.ValidationException;
 import kr.lul.common.util.Validator;
 import kr.lul.common.util.validator.RangeValidator;
@@ -11,8 +12,7 @@ import java.time.Duration;
 import java.time.Instant;
 
 import static java.lang.String.format;
-import static java.time.temporal.ChronoUnit.HOURS;
-import static java.time.temporal.ChronoUnit.MINUTES;
+import static java.time.temporal.ChronoUnit.*;
 
 /**
  * 계정 정보 검증 코드.
@@ -95,6 +95,11 @@ public interface ValidationCode extends Savable<Instant> {
   };
 
   /**
+   * 계정 등록 후 검증코드 사용까지 최소 시간.
+   */
+  Duration MIN_USE_INTERVAL = Duration.of(10L, SECONDS);
+
+  /**
    * @return ID.
    */
   long getId();
@@ -147,6 +152,8 @@ public interface ValidationCode extends Savable<Instant> {
    */
   Instant getExpiredAt();
 
+  Range<Instant> getValidRange();
+
   /**
    * 기준 시점에 유효한 코드인지 여부.
    *
@@ -157,15 +164,6 @@ public interface ValidationCode extends Savable<Instant> {
   boolean isValid(final Instant when);
 
   /**
-   * 유효기간이 지났을 경우에 만료 처리.
-   *
-   * @param when 기준 시점.
-   *
-   * @return 만료처리 될 경우에 {@code true}.
-   */
-  boolean expire(Instant when);
-
-  /**
    * 검증 코드를 사용해 계정을 검증한다.
    *
    * @param when 검증코드를 사용한 시각.
@@ -173,4 +171,13 @@ public interface ValidationCode extends Savable<Instant> {
    * @throws IllegalStateException 검증 코드를 사용할 수 없는 경우.
    */
   void use(Instant when) throws IllegalStateException;
+
+  /**
+   * 유효기간이 지났을 경우에 만료 처리.
+   *
+   * @param when 기준 시점.
+   *
+   * @throws IllegalStateException 만료처리를 할 수 없을 경우.
+   */
+  void expire(Instant when) throws IllegalStateException;
 }

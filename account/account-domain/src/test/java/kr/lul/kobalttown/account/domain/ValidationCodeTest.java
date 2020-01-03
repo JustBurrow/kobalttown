@@ -50,6 +50,11 @@ public class ValidationCodeTest {
       }
 
       @Override
+      public void enable(final Instant updatedAt) {
+
+      }
+
+      @Override
       public Instant getCreatedAt() {
         return null;
       }
@@ -80,6 +85,11 @@ public class ValidationCodeTest {
       @Override
       public boolean isEnabled() {
         return true;
+      }
+
+      @Override
+      public void enable(final Instant updatedAt) {
+
       }
 
       @Override
@@ -114,6 +124,10 @@ public class ValidationCodeTest {
       @Override
       public boolean isEnabled() {
         return false;
+      }
+
+      @Override
+      public void enable(final Instant updatedAt) {
       }
 
       @Override

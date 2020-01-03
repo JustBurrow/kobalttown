@@ -66,4 +66,11 @@ public interface Account extends Savable<Instant> {
    * @return 계정 활성화 여부.
    */
   boolean isEnabled();
+
+  /**
+   * 계정을 활성화한다.
+   *
+   * @param updatedAt 활성화 시각.
+   */
+  void enable(Instant updatedAt);
 }
