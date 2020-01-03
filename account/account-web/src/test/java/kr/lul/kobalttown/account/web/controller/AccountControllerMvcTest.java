@@ -104,6 +104,7 @@ public class AccountControllerMvcTest {
     // WHEN
     this.mock.perform(post(C.CREATE)
                           .param("nickname", nickname())
+                          .param("userKey", userKey())
                           .param("password", "password")
                           .with(anonymous())
                           .with(csrf()))
@@ -122,6 +123,7 @@ public class AccountControllerMvcTest {
     // WHEN
     this.mock.perform(post(C.CREATE)
                           .param("nickname", nickname())
+                          .param("userKey", userKey())
                           .param("confirm", "confirm")
                           .with(anonymous())
                           .with(csrf()))
@@ -139,6 +141,7 @@ public class AccountControllerMvcTest {
     // WHEN
     this.mock.perform(post(C.CREATE)
                           .param("nickname", nickname())
+                          .param("userKey", userKey())
                           .param("password", "password")
                           .param("confirm", "confirm")
                           .with(anonymous())

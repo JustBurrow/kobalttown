@@ -32,6 +32,13 @@
                    th:field="*{email}"/>
         </div>
         <div>
+            <label for="input-user-key">User Key</label>
+            <input id="input-user-key"
+                   form="form-create" name="userKey"
+                   required="required"
+                   th:field="*{userKey}"/>
+        </div>
+        <div>
             <label for="input-password">Password</label>
             <input type="password" id="input-password"
                    form="form-create" name="password"
