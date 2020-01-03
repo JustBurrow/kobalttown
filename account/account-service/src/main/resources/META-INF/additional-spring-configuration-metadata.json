@@ -1,0 +1,42 @@
+{
+  "groups": [
+    {
+      "name": "kr.lul.kobalttown.account.service",
+      "type": "kr.lul.kobalttown.account.service.properties.AccountServiceProperties",
+      "description": "계정 서비스 레이어 설정."
+    },
+    {
+      "name": "kr.lul.kobalttown.account.service.activate-code",
+      "type": "kr.lul.kobalttown.account.service.properties.ActivateCodeProperties",
+      "description": "인증 코드를 사용한 신규 계정 검증기능 설정."
+    }
+  ],
+  "properties": [
+    {
+      "name": "kr.lul.kobalttown.account.service.activate-code.enable",
+      "type": "java.lang.Boolean",
+      "description": "계정 인증 코드를 사용할지 여부."
+    },
+    {
+      "name": "kr.lul.kobalttown.account.service.activate-code.from",
+      "type": "java.lang.String",
+      "description": "발신자 email 주소. 'dev@lul.kr' 혹은 'Kobalttown Dev<dev@lul.kr>' 형식."
+    },
+    {
+      "name": "kr.lul.kobalttown.account.service.activate-code.title",
+      "type": "java.lang.String",
+      "description": "제목."
+    },
+    {
+      "name": "kr.lul.kobalttown.account.service.activate-code.message-template",
+      "type": "java.lang.String",
+      "description": "메일 본문 템플릿 이름."
+    },
+    {
+      "name": "kr.lul.kobalttown.account.service.activate-code.domain",
+      "type": "java.lang.String",
+      "description": "도메인 주소. 이 주소를 기반으로 계정활성화 URL을 만든다."
+    }
+  ],
+  "hints": []
+}

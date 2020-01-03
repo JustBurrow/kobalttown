@@ -1,0 +1,5 @@
+dependencies {
+  api "kr.lul.support.spring:support-spring-data-jpa:$SUPPORT_SPRING_VERSION"
+
+  api "mysql:mysql-connector-java"
+}

@@ -1,0 +1,10 @@
+dependencies {
+  implementation project(":account-web")
+  implementation project(":configuration-dependencies")
+}
+
+bootJar.enabled = true
+
+bootJar {
+  launchScript()
+}

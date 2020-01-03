@@ -1,0 +1,11 @@
+dependencies {
+  implementation project(":account-service")
+  implementation project(":account-converter")
+
+  api project(":account-domain")
+  api project(":account-dto")
+
+  compileOnly "org.springframework:spring-tx"
+
+  testImplementation project(":configuration-dependencies")
+}

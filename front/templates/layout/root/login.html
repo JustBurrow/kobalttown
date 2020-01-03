@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2019/11/25 23:15" th:remove="all"/>
+    <meta charset="UTF-8"/>
+    <title>Log-in</title>
+</head>
+<body>
+<header th:replace="component/navbar/index :: navbar">
+    navigation bar
+</header>
+<main>
+    <h1>Log-in</h1>
+    <form id="form-login" action="index.html" method="post" th:action="@{/login}"></form>
+    <div>
+        <div>
+            <label for="username">Username</label>
+            <div>
+                <input id="username" form="form-login" name="username" required="required"/>
+            </div>
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <div>
+                <input type="password" id="password" form="form-login" name="password" required="required"/>
+            </div>
+        </div>
+        <div>
+            <button form="form-login">LOG-IN</button>
+        </div>
+    </div>
+</main>
+</body>
+</html>

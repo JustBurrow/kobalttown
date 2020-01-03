@@ -1,0 +1,15 @@
+dependencies {
+  implementation project(":account-domain")
+  implementation project(":account-borderline")
+  implementation project(":page-account")
+
+  api project(":account-dto")
+
+  compileOnly project(":configuration-web")
+  compileOnly project(":configuration-mail")
+
+  testImplementation project(":account-data")
+  testImplementation project(":configuration-dependencies")
+
+  testImplementation "org.springframework.security:spring-security-test"
+}

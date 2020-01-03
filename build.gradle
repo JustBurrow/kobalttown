@@ -1,7 +1,8 @@
 buildscript {
   repositories {
-    mavenCentral()
     jcenter()
+    mavenCentral()
+    mavenLocal()
   }
 
   dependencies {
@@ -14,32 +15,38 @@ buildscript {
 apply plugin: "idea"
 apply plugin: "eclipse"
 
-allprojects {
-  group "kr.lul.kobalttown"
-  version "0.0.1.SNAPSHOT"
+group "kr.lul.kobalttown"
+version "0.0.1.SNAPSHOT"
 
+allprojects {
+  ext {
+    COMMON_VERSION = "0.0.1.SNAPSHOT"
+    SUPPORT_SPRING_VERSION = "0.0.1.SNAPSHOT"
+  }
   repositories {
     jcenter()
     mavenCentral()
+    mavenLocal()
     maven {
-      url "https://dl.bintray.com/justburrow/kr.lul"
+      url "https://dl.bintray.com/justburrow/snapshot"
+    }
+    maven {
+      url "https://dl.bintray.com/justburrow/release"
     }
   }
 }
 
 subprojects {
   apply plugin: "java"
+  apply plugin: "java-library"
   apply plugin: "org.springframework.boot"
   apply plugin: "io.spring.dependency-management"
+
+  apply plugin: "maven-publish"
   apply plugin: "com.jfrog.bintray"
 
-  sourceCompatibility = 13
-  targetCompatibility = 13
-
-  repositories {
-    mavenCentral()
-    jcenter()
-  }
+  sourceCompatibility = 11
+  targetCompatibility = 11
 
   dependencyManagement {
     imports {
@@ -47,11 +54,12 @@ subprojects {
     }
 
     dependencies {
-      dependency "kr.lul.common:common-util:0.0.1"
-      dependency "kr.lul.common:common-web:0.0.1"
+      dependency "kr.lul.common:common-util:$COMMON_VERSION"
+      dependency "kr.lul.common:common-data:$COMMON_VERSION"
+      dependency "kr.lul.common:common-web:$COMMON_VERSION"
 
-      dependency "kr.lul.support.spring:support-spring-data-jpa:0.0.1"
-      dependency "kr.lul.support.spring:support-spring-security:0.0.1"
+      dependency "kr.lul.support.spring:support-spring-data-jpa:$SUPPORT_SPRING_VERSION"
+      dependency "kr.lul.support.spring:support-spring-security:$SUPPORT_SPRING_VERSION"
 
       dependency "org.assertj:assertj-core:3.14.0"
       dependency "org.apache.commons:commons-lang3:3.9"
@@ -59,37 +67,92 @@ subprojects {
   }
 
   dependencies {
+    implementation "kr.lul.common:common-util"
+    implementation "org.springframework.boot:spring-boot-starter"
+
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test") {
-      exclude group: "org.junit.jupiter", module: "junit-jupiter"
-    }
+    runtimeOnly "org.springframework.boot:spring-boot-devtools"
+
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.assertj:assertj-core"
     testImplementation "org.apache.commons:commons-lang3"
   }
 
+  def projectGroup = rootProject.group
+  def projectName = project.name
+  def projectVersion = "unspecified" != project.version
+      ? project.version
+      : rootProject.version
+  def isRelease = projectVersion.endsWith("RELEASE")
+  def isSnapshot = projectVersion.endsWith("SNAPSHOT")
+
+  println("""
+      subproject ========================================
+      group : $projectGroup
+      name : $projectName
+      version : $projectVersion
+      release : $isRelease
+      snapshot : $isSnapshot
+      ===================================================
+      """.stripIndent())
+
   jar.enabled = true
   bootJar.enabled = false
 
+  task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+  }
+
+  task javadocJar(type: Jar, dependsOn: javadoc) {
+    archiveClassifier = 'javadoc'
+    from javadoc.destinationDir
+  }
+
+  artifacts {
+    archives sourcesJar, javadocJar
+  }
+
+  publishing {
+    publications {
+      mavenPublication(MavenPublication) {
+        from components.java
+
+        artifact sourcesJar
+        artifact javadocJar
+
+        groupId projectGroup
+        artifactId projectName
+        version projectVersion
+      }
+    }
+  }
   bintray {
-    user = bintrayUser
-    key = bintrayApiKey
+    user = BINTRAY_USER
+    key = BINTRAY_API_KEY
 
     pkg {
-      repo = project.group
-      name = project.name
+      repo = isRelease ? "release" : "snapshot"
+      name = projectName
+      desc = project.description
 
+      websiteUrl = "https://blog.lul.kr"
+      issueTrackerUrl = "https://github.com/JustBurrow/kobalttown/issues"
+      vcsUrl = "https://github.com/JustBurrow/kobalttown.git"
       licenses = ["Apache-2.0"]
+
       publicDownloadNumbers = true
       publish = true
-      configurations = ["archives"]
+      override = project.version.toString().endsWith("SNAPSHOT")
+      publications = ["mavenPublication"]
 
-      vcsUrl = "https://github.com/JustBurrow/kobalttown.git"
       githubRepo = "JustBurrow/kobalttown"
       githubReleaseNotesFile = "README.md"
 
       version {
-        name = project.version
+        name = projectVersion
+        desc = project.description
       }
     }
   }

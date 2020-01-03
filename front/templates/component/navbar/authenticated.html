@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2019/12/17 23:54" th:remove="all"/>
+    <meta charset="UTF-8"/>
+    <title>Navbar : Authenticated</title>
+</head>
+<body>
+<header>
+    <div th:fragment="navbar">
+        <form id="form-logout" action="anonymous.html" method="post" th:action="@{/logout}"></form>
+        <button form="form-logout">log-out</button>
+    </div>
+</header>
+<main>
+    <h1>Navbar : Authenticated</h1>
+</main>
+</body>
+</html>

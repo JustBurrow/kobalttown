@@ -1,0 +1,50 @@
+kr.lul.kobalttown:
+  account:
+    service:
+      welcome:
+        enable: true
+        mail:
+          from: 'Kobalttown Welcome<dev@lul.kr>'
+          title: 'Welcome to Kobalttown!'
+          template: mail/account/welcome
+      activate-code:
+        domain: 'kobalttown.lul.kr'
+        mail:
+          from: 'Kobalttown Dev<dev@lul.kr>'
+          title: 'Welcome to Kobalttown'
+          template: 'mail/account/activate-code'
+
+spring:
+  datasource:
+    hikari:
+      jdbc-url: jdbc:mysql://localhost/kobalttown?connectionCollation=utf8mb4_unicode_520_ci&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul
+      username: root
+      password: ""
+  jpa:
+    open-in-view: false
+    show-sql: false
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: dev@lul.kr
+    password: 'Go to https://myaccount.google.com/apppasswords and create app password'
+    properties:
+      mail.smtp:
+        auth: true
+        starttls.enable: true
+  thymeleaf:
+    cache: false
+    prefix: file:/Users/justburrow/Repositories/github.com/JustBurrow/kobalttown/front/templates/
+
+server:
+  servlet:
+    session:
+      cookie:
+        name: session-cookie
+
+logging:
+  pattern:
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%p) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%t]){faint} %clr(%logger){cyan} %clr(:){faint} %m%n%wEx"
+  level:
+    root: info
+    kr.lul.kobalttown:  debug

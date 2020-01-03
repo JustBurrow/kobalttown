@@ -1,1 +1,20 @@
 rootProject.name = 'kobalttown'
+
+def groups = [
+    configuration: ["bean", "mail", "data-jpa", "web", "security", "dependencies"],
+    page         : ["root", "account"],
+    global       : ["security"],
+    account      : ["domain", "data", "service", "dto", "converter", "borderline", "web"],
+    runner       : ["standalone"]
+]
+
+groups.each { feature, layers ->
+  layers.each { layer ->
+    def module = "$feature-$layer"
+
+    include ":$module"
+    findProject(":$module").projectDir = new File("$feature/$module")
+  }
+}
+
+include "front"

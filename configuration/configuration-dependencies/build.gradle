@@ -1,0 +1,7 @@
+dependencies {
+  api project(":configuration-bean")
+  api project(":configuration-mail")
+  api project(":configuration-data-jpa")
+  api project(":configuration-security")
+  api project(":configuration-web")
+}

@@ -1,0 +1,5 @@
+dependencies {
+  api "kr.lul.common:common-data:$COMMON_VERSION"
+
+  api "org.springframework.boot:spring-boot-starter-validation"
+}
