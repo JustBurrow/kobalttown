@@ -51,4 +51,21 @@ public interface ValidationCodeFactory {
    * @return 검증 코드.
    */
   ValidationCode create(Context context, Account account, String code, Instant expireAt, Instant createdAt);
+
+  /**
+   * 테스트용 검증 코드를 생성.
+   * TEST ONLY.
+   *
+   * @param id        ID.
+   * @param account   계정.
+   * @param code      코드.
+   * @param expireAt  만료 시각.
+   * @param usedAt    사용 시각.
+   * @param expiredAt 만료처리 시각.
+   * @param createdAt 생성 시각.
+   *
+   * @return 검증 코드.
+   */
+  ValidationCode create(long id, Account account, String code, Instant expireAt, Instant usedAt, Instant expiredAt,
+      Instant createdAt);
 }

@@ -60,6 +60,8 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
 
   public ValidationCodeEntity(final Account account, final String code, final Duration ttl, final Instant createdAt) {
     this(account, code, createdAt.plus(ttl), createdAt);
+
+    TTL_VALIDATOR.validate(ttl);
   }
 
   public ValidationCodeEntity(final Account account, final String code, final Instant expireAt,
@@ -71,12 +73,7 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
 
     CODE_VALIDATOR.validate(code);
     EXPIRE_AT_VALIDATOR.validate(expireAt);
-
-    final Range<Instant> validRange = new ContinuousRange<>(createdAt.plus(MIN_USE_INTERVAL), true,
-        expireAt, true);
-    if (!validRange.isInclude(expireAt)) {
-      throw new IllegalArgumentException(format("invalid expireAt : expireAt=%s, validRange=%s", expireAt, validRange));
-    }
+    TTL_VALIDATOR.validate(Duration.between(createdAt, expireAt));
 
     this.account = account;
     this.code = code;
@@ -88,7 +85,15 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
   }
 
   private void initExtra() {
-    this.validRange = new ContinuousRange<>(this.createdAt.plus(MIN_USE_INTERVAL), true, this.expireAt, true);
+    try {
+      this.validRange = new ContinuousRange<>(this.createdAt.plus(MIN_USE_INTERVAL), true, this.expireAt, true);
+    } catch (final Exception e) {
+      throw new IllegalArgumentException("illegal expireAt : " + this.expireAt, e);
+    }
+
+    if (!this.validRange.isInclude(this.expireAt))
+      throw new IllegalArgumentException(
+          format("invalid expireAt : expireAt=%s, validRange=%s", this.expireAt, this.validRange));
   }
 
   @PostLoad

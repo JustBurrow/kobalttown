@@ -52,7 +52,7 @@ public interface ValidationCode extends Savable<Instant> {
       if (null == code) {
         throw new ValidationException(ATTR_CODE, null, ATTR_CODE + " is null.");
       } else if (code.isEmpty()) {
-        throw new ValidationException(ATTR_CODE, null, ATTR_CODE + " is empty.");
+        throw new ValidationException(ATTR_CODE, code, ATTR_CODE + " is empty.");
       } else if (CODE_LENGTH > code.length()) {
         throw new ValidationException(ATTR_CODE, code,
             format("too short code : code='%s', code.length=%d, length=%d", code, code.length(), CODE_LENGTH));

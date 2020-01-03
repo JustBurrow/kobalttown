@@ -1,9 +1,12 @@
 package kr.lul.kobalttown.account.domain;
 
+import kr.lul.common.util.ValidationException;
+
 import static java.lang.String.format;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static kr.lul.common.util.Arguments.positive;
 import static kr.lul.kobalttown.account.domain.Account.NICKNAME_MAX_LENGTH;
+import static kr.lul.kobalttown.account.domain.Account.NICKNAME_VALIDATOR;
 import static org.apache.commons.lang3.RandomStringUtils.random;
 
 /**
@@ -26,7 +29,16 @@ public abstract class AccountUtil {
     if (NICKNAME_MAX_LENGTH < length)
       throw new IllegalArgumentException(format("too long length : length=%d, max=%d", length, NICKNAME_MAX_LENGTH));
 
-    return random(length);
+    String nickname = null;
+    while (null == nickname) {
+      nickname = random(length);
+      try {
+        NICKNAME_VALIDATOR.validate(nickname);
+      } catch (final ValidationException e) { // ignore
+      }
+    }
+
+    return nickname;
   }
 
   protected AccountUtil() {

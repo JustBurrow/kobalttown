@@ -120,6 +120,27 @@ public class ValidationCodeEntityTest {
   }
 
   @Test
+  public void test_new_with_code_and_null_ttl() throws Exception {
+    assertThatThrownBy(
+        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before), code(),
+            (Duration) null,
+            this.before))
+        .isInstanceOf(NullPointerException.class)
+        .hasNoCause();
+  }
+
+  @Test
+  public void test_new_with_code_and_0_ttl() throws Exception {
+    assertThatThrownBy(
+        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before), code(),
+            Duration.ZERO,
+            this.before))
+        .isInstanceOf(ValidationException.class)
+        .hasMessageContaining("ttl is out of range")
+        .hasNoCause();
+  }
+
+  @Test
   public void test_new_with_null_expireAt() throws Exception {
     assertThatThrownBy(
         () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before), code(),
@@ -614,7 +635,7 @@ public class ValidationCodeEntityTest {
   }
 
   @Test
-  public void test_g() throws Exception {
+  public void test_getValidRange() throws Exception {
     // GIVEN
     final ValidationCode validationCode = new ValidationCodeEntity(
         this.accountFactory.create(1L, nickname(), false, this.before),
