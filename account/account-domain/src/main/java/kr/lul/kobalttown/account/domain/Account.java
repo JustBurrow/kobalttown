@@ -23,7 +23,7 @@ public interface Account extends Savable<Instant> {
   /**
    * {@link #getNickname()}의 최대 길이.
    */
-  int NICKNAME_MAX_LENGTH = 20;
+  int NICKNAME_MAX_LENGTH = 64;
   /**
    * 사용 가능한 {@link #getNickname()}의 패턴.
    */
@@ -34,14 +34,18 @@ public interface Account extends Savable<Instant> {
    */
   Validator<String> NICKNAME_VALIDATOR = new RegexValidator<>(ATTR_NICKNAME, NICKNAME_REGEX) {
     @Override
-    public void validate(String nickname) throws ValidationException {
-      super.validate(nickname);
-
-      if (NICKNAME_MAX_LENGTH < nickname.length()) {
+    public void validate(final String nickname) throws ValidationException {
+      if (null == nickname) {
+        throw new ValidationException(ATTR_NICKNAME, null, ATTR_NICKNAME + " is null.");
+      } else if (nickname.isEmpty()) {
+        throw new ValidationException(ATTR_NICKNAME, nickname, ATTR_NICKNAME + " is empty.");
+      } else if (NICKNAME_MAX_LENGTH < nickname.length()) {
         throw new ValidationException(ATTR_NICKNAME, nickname,
             format("too long nickname : nickname=%s, length=%d, maxLength=%d",
                 singleQuote(nickname), nickname.length(), NICKNAME_MAX_LENGTH));
       }
+
+      super.validate(nickname);
     }
   };
 
