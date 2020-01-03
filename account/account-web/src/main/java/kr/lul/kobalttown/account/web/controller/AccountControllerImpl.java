@@ -59,8 +59,8 @@ class AccountControllerImpl implements AccountController {
   private String doCreate(final CreateAccountReq req, final BindingResult result, final Model model) {
     String template;
     try {
-      final CreateAccountCmd cmd = new CreateAccountCmd(this.contextService.get(), req.getNickname(), req.getEmail(),
-          req.getPassword(), this.timeProvider.now());
+      final CreateAccountCmd cmd = new CreateAccountCmd(this.contextService.get(), req.getNickname(),
+          req.getEmail(), req.getUserKey(), req.getPassword(), this.timeProvider.now());
       final AccountDetailDto account = this.accountBorderline.create(cmd);
       if (log.isDebugEnabled())
         log.debug("#doCreate account={}", account);

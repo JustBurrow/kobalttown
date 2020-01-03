@@ -4,7 +4,9 @@ import kr.lul.common.data.Context;
 import kr.lul.common.data.Creatable;
 import kr.lul.common.data.Updatable;
 import kr.lul.common.util.TimeProvider;
+import kr.lul.kobalttown.account.data.repository.CredentialRepository;
 import kr.lul.kobalttown.account.domain.Account;
+import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.service.configuration.ActivateCodeConfiguration;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
@@ -20,8 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.time.Instant;
 
-import static java.lang.Integer.MAX_VALUE;
-import static java.util.concurrent.ThreadLocalRandom.current;
+import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
+import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
+import static kr.lul.kobalttown.account.domain.CredentialUtil.userKey;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -41,6 +44,8 @@ public class AccountServiceImplTest {
 
   @Autowired
   private AccountService service;
+  @Autowired
+  private CredentialRepository credentialRepository;
   @Autowired
   private EntityManager entityManager;
   @Autowired
@@ -78,10 +83,11 @@ public class AccountServiceImplTest {
   @Test
   public void test_read() throws Exception {
     // GIVEN
-    final String nickname = "nickname #" + current().nextInt(MAX_VALUE);
-    final String email = "just.burrow." + current().nextInt(MAX_VALUE) + "@lul.kr";
+    final String nickname = nickname();
+    final String email = email();
+    final String userKey = userKey();
     final Account expected = this.service.create(
-        new CreateAccountParams(new Context(), nickname, email, "password", this.before));
+        new CreateAccountParams(new Context(), nickname, email, userKey, "password", this.before));
     log.info("GIVEN - expected={}", expected);
 
     this.entityManager.flush();
@@ -112,9 +118,11 @@ public class AccountServiceImplTest {
   @Test
   public void test_create() throws Exception {
     // GIVEN
-    final String nickname = "nickname #" + current().nextInt(MAX_VALUE);
-    final String email = "just.burrow." + current().nextInt(MAX_VALUE) + "@lul.kr";
-    final CreateAccountParams params = new CreateAccountParams(new Context(), nickname, email, "password", this.before);
+    final String nickname = nickname();
+    final String email = email();
+    final String userKey = userKey();
+    final CreateAccountParams params = new CreateAccountParams(new Context(), nickname, email, userKey,
+        "password", this.before);
     log.info("GIVEN - params={}", params);
 
     // WHEN
@@ -128,6 +136,26 @@ public class AccountServiceImplTest {
         .containsSequence(nickname, !this.activateCode.isEnable(), this.before, this.before);
     assertThat(account.getId())
         .isPositive();
+
+    Credential credential = this.credentialRepository.findByPublicKey(email);
+    assertThat(credential)
+        .isNotNull()
+        .extracting(Credential::getAccount, Credential::getPublicKey, Creatable::getCreatedAt)
+        .containsSequence(account, email, this.before);
+    assertThat(credential.getId())
+        .isPositive();
+    assertThat(credential.getSecretHash())
+        .isNotEmpty();
+
+    credential = this.credentialRepository.findByPublicKey(userKey);
+    assertThat(credential)
+        .isNotNull()
+        .extracting(Credential::getAccount, Credential::getPublicKey, Creatable::getCreatedAt)
+        .containsSequence(account, userKey, this.before);
+    assertThat(credential.getId())
+        .isPositive();
+    assertThat(credential.getSecretHash())
+        .isNotEmpty();
   }
 
   @Test
@@ -138,9 +166,11 @@ public class AccountServiceImplTest {
     }
 
     // GIVEN
-    final String nickname = "nickname #" + current().nextInt(MAX_VALUE);
-    final String email = "just.burrow." + current().nextInt(MAX_VALUE) + "@lul.kr";
-    final CreateAccountParams params = new CreateAccountParams(new Context(), nickname, email, "password", this.before);
+    final String nickname = nickname();
+    final String email = email();
+    final String userKey = userKey();
+    final CreateAccountParams params = new CreateAccountParams(new Context(), nickname, email, userKey,
+        "password", this.before);
     log.info("GIVEN - params={}", params);
 
     // WHEN

@@ -1,12 +1,13 @@
 package kr.lul.kobalttown.account.web.controller.request;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.validation.constraints.*;
 
 import static kr.lul.common.util.Texts.singleQuote;
 import static kr.lul.kobalttown.account.domain.Account.NICKNAME_MAX_LENGTH;
 import static kr.lul.kobalttown.account.domain.Account.NICKNAME_REGEX;
-import static kr.lul.kobalttown.account.domain.Credential.SECRET_MAX_LENGTH;
-import static kr.lul.kobalttown.account.domain.Credential.SECRET_MIN_LENGTH;
+import static kr.lul.kobalttown.account.domain.Credential.*;
 
 /**
  * @author justburrow
@@ -18,9 +19,15 @@ public class CreateAccountReq {
   @Pattern(regexp = NICKNAME_REGEX)
   private String nickname;
 
-  @NotNull
+  @NotEmpty
+  @Length(min = PUBLIC_KEY_MIN_LENGTH, max = PUBLIC_KEY_MAX_LENGTH)
   @Email
   private String email;
+
+  @NotEmpty
+  @Length(min = PUBLIC_KEY_MIN_LENGTH, max = PUBLIC_KEY_MAX_LENGTH)
+  @Pattern(regexp = PUBLIC_KEY_REGEX)
+  private String userKey;
 
   @NotNull
   @Size(min = SECRET_MIN_LENGTH, max = SECRET_MAX_LENGTH)
@@ -33,9 +40,11 @@ public class CreateAccountReq {
   public CreateAccountReq() {
   }
 
-  public CreateAccountReq(String nickname, String email, String password, String confirm) {
+  public CreateAccountReq(final String nickname, final String email, final String userKey, final String password,
+      final String confirm) {
     this.nickname = nickname;
     this.email = email;
+    this.userKey = userKey;
     this.password = password;
     this.confirm = confirm;
   }
@@ -44,7 +53,7 @@ public class CreateAccountReq {
     return this.nickname;
   }
 
-  public void setNickname(String nickname) {
+  public void setNickname(final String nickname) {
     this.nickname = nickname;
   }
 
@@ -52,15 +61,23 @@ public class CreateAccountReq {
     return this.email;
   }
 
-  public void setEmail(String email) {
+  public void setEmail(final String email) {
     this.email = email;
+  }
+
+  public String getUserKey() {
+    return this.userKey;
+  }
+
+  public void setUserKey(final String userKey) {
+    this.userKey = userKey;
   }
 
   public String getPassword() {
     return this.password;
   }
 
-  public void setPassword(String password) {
+  public void setPassword(final String password) {
     this.password = password;
   }
 
@@ -68,16 +85,17 @@ public class CreateAccountReq {
     return this.confirm;
   }
 
-  public void setConfirm(String confirm) {
+  public void setConfirm(final String confirm) {
     this.confirm = confirm;
   }
 
   @Override
   public String toString() {
     return new StringBuilder(CreateAccountReq.class.getSimpleName())
-        .append("{nickname=").append(singleQuote(this.nickname))
-        .append(", email=").append(singleQuote(this.email))
-        .append(", password='[ PROTECTED ]', confirm='[ PROTECTED ]'}")
-        .toString();
+               .append("{nickname=").append(singleQuote(this.nickname))
+               .append(", email=").append(singleQuote(this.email))
+               .append(", userKey=").append(singleQuote(this.userKey))
+               .append(", password='[ PROTECTED ]', confirm='[ PROTECTED ]'}")
+               .toString();
   }
 }

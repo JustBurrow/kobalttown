@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static kr.lul.kobalttown.account.domain.Account.*;
+import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static org.apache.commons.lang3.RandomStringUtils.random;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -52,9 +53,8 @@ public class AccountTest {
     // GIVEN
     String nickname;
     do {
-      nickname = random(current().nextInt(1, 1 + NICKNAME_MAX_LENGTH))
-          .replaceAll("\\s+", "");
-    } while (!nickname.matches("\\S+"));
+      nickname = nickname();
+    } while (!nickname.matches(NICKNAME_REGEX));
     log.info("GIVEN - nickname={}", nickname);
 
     // WHEN
@@ -84,7 +84,7 @@ public class AccountTest {
   @Test
   public void test_nickname_validator_validate_with_leading_space() throws Exception {
     // GIVEN
-    final String nickname = " " + random(current().nextInt(0, NICKNAME_MAX_LENGTH));
+    final String nickname = " " + nickname(current().nextInt(NICKNAME_MAX_LENGTH));
     log.info("GIVEN - nickname={}", nickname);
 
     // WHEN & THEN

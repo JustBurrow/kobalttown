@@ -18,9 +18,25 @@ import static java.lang.String.format;
 public interface Credential extends Creatable<Instant> {
   String ATTR_ID = "id";
   String ATTR_ACCOUNT = "account";
+  /**
+   * 종류 :
+   * <ul>
+   *   <li>사용자가 임의로 지정하는 {@link Credential#ATTR_USER_KEY userKey}</li>
+   *   <li>E-Mail address.</li>
+   * </ul>
+   */
   String ATTR_PUBLIC_KEY = "publicKey";
   String ATTR_SECRET_HASH = "secretHash";
   String ATTR_CREATED_AT = "createdAt";
+
+  /**
+   * 사용자가 지정하는 {@link Credential#getPublicKey()}의 한 종류.
+   */
+  String ATTR_USER_KEY = "userKey";
+  /**
+   * 비밀번호.
+   */
+  String ATTR_SECRET = "secret";
 
   Validator<Account> ACCOUNT_VALIDATOR = account -> {
     if (null == account) {

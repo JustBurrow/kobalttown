@@ -40,15 +40,17 @@ class AccountBorderlineImpl implements AccountBorderline {
   }
 
   @Override
-  public AccountDetailDto create(CreateAccountCmd cmd) {
+  public AccountDetailDto create(final CreateAccountCmd cmd) {
     if (log.isTraceEnabled())
       log.trace("#create args : cmd={}", cmd);
     notNull(cmd, "cmd");
 
-    CreateAccountParams params = new CreateAccountParams(cmd.getContext(), cmd.getNickname(), cmd.getEmail(),
-        cmd.getPassword(), cmd.getTimestamp());
-    Account account = this.accountService.create(params);
-    AccountDetailDto dto = this.accountConverter.convert(account, AccountDetailDto.class);
+    final CreateAccountParams params = new CreateAccountParams(cmd.getContext(), cmd.getNickname(),
+        cmd.getEmail(), cmd.getUserKey(), cmd.getPassword(), cmd.getTimestamp());
+    final Account account = this.accountService.create(params);
+    final AccountDetailDto dto = this.accountConverter.convert(account, AccountDetailDto.class);
+    if (log.isDebugEnabled())
+      log.debug("#read cmd={}, params={}, account={}, dto={}", cmd, params, account, dto);
 
     if (log.isTraceEnabled())
       log.trace("#create (context={} return : {}", cmd.getContext(), dto);
@@ -56,13 +58,16 @@ class AccountBorderlineImpl implements AccountBorderline {
   }
 
   @Override
-  public AccountDetailDto read(ReadAccountCmd cmd) {
+  public AccountDetailDto read(final ReadAccountCmd cmd) {
     if (log.isTraceEnabled())
       log.trace("#read args : cmd={}", cmd);
     notNull(cmd, "cmd");
 
-    Account account = this.accountService.read(new ReadAccountParams(cmd.getContext(), cmd.getId(), cmd.getTimestamp()));
-    AccountDetailDto dto = this.accountConverter.convert(account, AccountDetailDto.class);
+    final Account account = this.accountService.read(
+        new ReadAccountParams(cmd.getContext(), cmd.getId(), cmd.getTimestamp()));
+    final AccountDetailDto dto = this.accountConverter.convert(account, AccountDetailDto.class);
+    if (log.isDebugEnabled())
+      log.debug("#read cmd={}, account={}, dto={}", cmd, account, dto);
 
     if (log.isTraceEnabled())
       log.trace("#read (context={}) return : {}", cmd.getContext(), dto);

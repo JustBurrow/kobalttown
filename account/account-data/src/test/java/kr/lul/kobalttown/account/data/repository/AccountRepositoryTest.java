@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.List;
 
+import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -46,7 +47,7 @@ public class AccountRepositoryTest {
   @Test
   public void test_save() throws Exception {
     // GIVEN
-    final String nickname = "test";
+    final String nickname = nickname();
     final Instant createdAt = Instant.now();
     log.info("GIVEN - nickname={}, createdAt={}", nickname, createdAt);
     final AccountEntity expected = new AccountEntity(nickname, false, createdAt);

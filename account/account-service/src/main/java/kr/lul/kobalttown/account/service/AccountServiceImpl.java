@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.Map;
 import java.util.concurrent.Future;
 
 import static java.util.Map.entry;
@@ -60,42 +61,54 @@ class AccountServiceImpl implements AccountService {
     log.info("#postConstruct activateCode={}", this.activateCode);
   }
 
-  private void sendWelcome(final CreateAccountParams params) {
+  private void sendWelcome(final CreateAccountParams rootParams) {
     final MailConfiguration mailConfig = this.welcome.getMail();
     if (log.isDebugEnabled())
       log.debug("#sendWelcome mailConfig={}", mailConfig);
 
-    final MailParams mailParams = new MailParams(params.getContext(), mailConfig.getFrom(), params.getEmail(),
-        mailConfig.getTitle(), mailConfig.getTemplate(), true,
-        ofEntries(entry("nickname", params.getNickname()),
-            entry("email", params.getEmail())));
+    final Map<String, Object> model = ofEntries(
+        entry("nickname", rootParams.getNickname()),
+        entry("email", rootParams.getEmail()));
     if (log.isDebugEnabled())
-      log.debug("#sendWelcome (context={}) mailParams={}", params.getContext(), mailParams);
+      log.debug("#sendWelcome (context={}) model={}", rootParams.getContext(), model);
 
-    final Future<MailResult> future = this.mailService.asyncSend(mailParams);
+    final MailParams params = new MailParams(rootParams.getContext(), mailConfig.getFrom(), rootParams.getEmail(),
+        mailConfig.getTitle(), mailConfig.getTemplate(), true,
+        model);
     if (log.isDebugEnabled())
-      log.debug("#sendWelcome (context={}) future={}", params.getContext(), future);
+      log.debug("#sendWelcome (context={}) params={}", rootParams.getContext(), params);
+
+    final Future<MailResult> future = this.mailService.asyncSend(params);
+    if (log.isDebugEnabled())
+      log.debug("#sendWelcome (context={}) future={}", rootParams.getContext(), future);
     else if (log.isInfoEnabled())
-      log.info("#sendWelcome (context={}) welcome mail ready to send : to={}", params.getContext(), params.getEmail());
+      log.info("#sendWelcome (context={}) welcome mail ready to send : to={}", rootParams.getContext(),
+          rootParams.getEmail());
   }
 
-  private void sendActivateCode(final CreateAccountParams params) {
+  private void sendActivateCode(final CreateAccountParams rootParams) {
     final MailConfiguration mailConfig = this.activateCode.getMail();
     if (log.isDebugEnabled())
-      log.debug("#sendActivateCode (context={}) mailConfig={}", params.getContext(), mailConfig);
+      log.debug("#sendActivateCode (context={}) mailConfig={}", rootParams.getContext(), mailConfig);
 
-    final MailParams mailParams = new MailParams(params.getContext(),
-        mailConfig.getFrom(), params.getEmail(),
+    final Map<String, Object> model = ofEntries(
+        entry("domain", this.activateCode.getDomain()),
+        entry("code", "some_code"));
+    if (log.isDebugEnabled())
+      log.debug("#sendActivateCode (context={}) model={}", rootParams.getContext(), model);
+
+    final MailParams params = new MailParams(rootParams.getContext(),
+        mailConfig.getFrom(), rootParams.getEmail(),
         mailConfig.getTitle(), mailConfig.getTemplate(), true,
-        ofEntries(entry("domain", this.activateCode.getDomain()), entry("code", "some_code")));
+        model);
     if (log.isDebugEnabled())
-      log.debug("#sendActivateCode (context={}) mailParams={}", params.getContext(), mailParams);
+      log.debug("#sendActivateCode (context={}) params={}", rootParams.getContext(), params);
 
-    final Future<MailResult> future = this.mailService.asyncSend(mailParams);
+    final Future<MailResult> future = this.mailService.asyncSend(params);
     if (log.isDebugEnabled())
-      log.debug("#sendActivateCode (context={}) future={}", params.getContext(), future);
+      log.debug("#sendActivateCode (context={}) future={}", rootParams.getContext(), future);
     else if (log.isInfoEnabled())
-      log.info("#sendActivateCode (context={}) activate code ready to send : to={}", params.getContext(), future);
+      log.info("#sendActivateCode (context={}) activate code ready to send : to={}", rootParams.getContext(), future);
   }
 
   @Override
@@ -104,33 +117,43 @@ class AccountServiceImpl implements AccountService {
       log.trace("#create args : params={}", params);
     notNull(params, "params");
 
+    Account account;
+    Credential credential;
+
     // 계정 정보 등록.
-    Account account = this.accountFactory
-        .create(params.getContext(), params.getNickname(), !this.activateCode.isEnable(), params.getTimestamp());
+    account = this.accountFactory.create(
+        params.getContext(), params.getNickname(), !this.activateCode.isEnable(), params.getTimestamp());
     account = this.accountDao.create(params.getContext(), account);
+    if (log.isDebugEnabled())
+      log.debug("#create (context={}) account={}", params.getContext(), account);
 
     // 인증 정보 등록.
-    Credential credential = this.credentialFactory.create(params.getContext(), account, params.getNickname(),
+    credential = this.credentialFactory.create(params.getContext(), account, params.getUserKey(),
         this.securityEncoder.encode(params.getPassword()), params.getTimestamp());
     credential = this.credentialDao.create(params.getContext(), credential);
-    if (log.isTraceEnabled())
-      log.trace("#create (context={}) nickname credential : {}", params.getContext(), credential);
+    if (log.isDebugEnabled())
+      log.debug("#create (context={}) nickname credential : {}", params.getContext(), credential);
 
     credential = this.credentialFactory.create(params.getContext(), account, params.getEmail(),
         this.securityEncoder.encode(params.getPassword()), params.getTimestamp());
     credential = this.credentialDao.create(params.getContext(), credential);
-    if (log.isTraceEnabled())
-      log.trace("#create (context={}) email credential : {}", params.getContext(), credential);
+    if (log.isDebugEnabled())
+      log.debug("#create (context={}) email credential : {}", params.getContext(), credential);
 
+    // 신규 계정 정보 알림.
     if (this.welcome.isEnable()) {
       sendWelcome(params);
+    } else if (log.isInfoEnabled()) {
+      log.info("#create (context={}) welcome disabled. do not send welcome email : nickname={}, email={}",
+          params.getContext(), params.getNickname(), params.getEmail());
     }
 
     if (this.activateCode.isEnable()) {
       sendActivateCode(params);
-    } else if (log.isInfoEnabled())
+    } else if (log.isInfoEnabled()) {
       log.info("#create (context={}) activate code disabled. do not send validation email : nickname={}, email={}",
           params.getContext(), params.getNickname(), params.getEmail());
+    }
 
     if (log.isTraceEnabled())
       log.trace("#create (context={}) return : {}", params.getContext(), account);

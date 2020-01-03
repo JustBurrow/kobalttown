@@ -4,6 +4,8 @@ import kr.lul.common.data.Context;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
 import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
+import kr.lul.kobalttown.account.data.repository.CredentialRepository;
+import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.service.configuration.ActivateCodeConfiguration;
 import kr.lul.support.spring.web.context.ContextService;
@@ -19,7 +21,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 
-import static java.util.concurrent.ThreadLocalRandom.current;
+import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
+import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
+import static kr.lul.kobalttown.account.domain.CredentialUtil.userKey;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -39,6 +43,8 @@ public class AccountBorderlineImplTest {
   @Autowired
   private AccountBorderline borderline;
   @Autowired
+  private CredentialRepository credentialRepository;
+  @Autowired
   private TimeProvider timeProvider;
   @Autowired
   private ContextService contextService;
@@ -48,10 +54,12 @@ public class AccountBorderlineImplTest {
 
   @Before
   public void setUp() throws Exception {
-    assertThat(this.borderline).isNotNull();
-    assertThat(this.contextService).isNotNull();
     assertThat(this.activateCode).isNotNull();
     log.info("SETUP - activateCode={}", this.activateCode);
+
+    assertThat(this.borderline).isNotNull();
+    assertThat(this.credentialRepository).isNotNull();
+    assertThat(this.contextService).isNotNull();
     assertThat(this.timeProvider).isNotNull();
 
     this.context = this.contextService.issue();
@@ -92,13 +100,14 @@ public class AccountBorderlineImplTest {
   @Test
   public void test_read() throws Exception {
     // GIVEN
-    final String nickname = "nickname #" + current().nextInt(Integer.MAX_VALUE);
-    final String email = "just.burrow+" + current().nextInt(Integer.MAX_VALUE) + "@lul.kr";
+    final String nickname = nickname();
+    final String email = email();
+    final String userKey = userKey();
     final Instant createdAt = this.timeProvider.now();
-    log.info("GIVEN - nickname={}, email={}, createdAt={}", nickname, email, createdAt);
+    log.info("GIVEN - nickname={}, email={}, userKey={}, createdAt={}", nickname, email, userKey, createdAt);
 
-    final AccountDetailDto expected = this.borderline
-        .create(new CreateAccountCmd(this.context, nickname, email, "password", createdAt));
+    final AccountDetailDto expected = this.borderline.create(
+        new CreateAccountCmd(this.context, nickname, email, userKey, "password", createdAt));
     log.info("GIVEN - expected={}", expected);
 
     final ReadAccountCmd cmd = new ReadAccountCmd(this.context, expected.getId(), this.timeProvider.now());
@@ -127,10 +136,11 @@ public class AccountBorderlineImplTest {
   @Test
   public void test_create() throws Exception {
     // GIVEN
-    final String nickname = "nickname #" + current().nextInt(Integer.MAX_VALUE);
-    final String email = "just.burrow." + current().nextInt(Integer.MAX_VALUE) + "@lul.kr";
+    final String nickname = nickname();
+    final String email = email();
+    final String userKey = userKey();
     final String password = "password";
-    final CreateAccountCmd cmd = new CreateAccountCmd(new Context(), nickname, email, password, Instant.now());
+    final CreateAccountCmd cmd = new CreateAccountCmd(new Context(), nickname, email, userKey, password, Instant.now());
     log.info("GIVEN - cmd={}", cmd);
 
     // WHEN
@@ -148,5 +158,17 @@ public class AccountBorderlineImplTest {
         .isNotNull()
         .isEqualTo(dto.getUpdatedAt())
         .isAfter(this.before);
+
+    Credential credential = this.credentialRepository.findByPublicKey(email);
+    assertThat(credential)
+        .isNotNull()
+        .extracting(Credential::getPublicKey)
+        .isEqualTo(email);
+
+    credential = this.credentialRepository.findByPublicKey(userKey);
+    assertThat(credential)
+        .isNotNull()
+        .extracting(Credential::getPublicKey)
+        .isEqualTo(userKey);
   }
 }

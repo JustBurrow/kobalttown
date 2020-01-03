@@ -8,7 +8,15 @@ import kr.lul.kobalttown.account.domain.Credential;
  * @since 2019/11/24
  */
 public interface CredentialDao {
-  Credential create(Context uuidContext, Credential credential);
+  /**
+   * 신규 인증정보 저장.
+   *
+   * @param context    컨텍스트.
+   * @param credential 신규 인증정보.
+   *
+   * @return 새로 저장된 인증정보.
+   */
+  Credential create(Context context, Credential credential);
 
   /**
    * @param context   유저뫄 무관한 내부 로직 실행일 경우엔 {@code null}.

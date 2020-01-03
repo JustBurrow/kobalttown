@@ -27,7 +27,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static kr.lul.kobalttown.account.domain.Account.ATTR_NICKNAME;
+import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
+import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
+import static kr.lul.kobalttown.account.domain.CredentialUtil.userKey;
 import static kr.lul.kobalttown.page.account.AccountMvc.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -88,7 +90,8 @@ public class AccountControllerMvcTest {
   public void test_createForm() throws Exception {
     // WHEN
     this.mock.perform(get(C.CREATE_FORM)
-        .with(anonymous()))
+                          .with(anonymous()))
+
         // THEN
         .andExpect(status().isOk())
         .andExpect(view().name(V.CREATE_FORM))
@@ -100,11 +103,10 @@ public class AccountControllerMvcTest {
   public void test_create_without_confirm() throws Exception {
     // WHEN
     this.mock.perform(post(C.CREATE)
-        .param(ATTR_NICKNAME, "nickname")
-        .param("password", "password")
-        .with(anonymous())
-        .with(csrf())
-    )
+                          .param("nickname", nickname())
+                          .param("password", "password")
+                          .with(anonymous())
+                          .with(csrf()))
 
         // THEN
         .andExpect(status().isOk())
@@ -119,11 +121,10 @@ public class AccountControllerMvcTest {
   public void test_create_without_password() throws Exception {
     // WHEN
     this.mock.perform(post(C.CREATE)
-        .param(ATTR_NICKNAME, "nickname")
-        .param("confirm", "confirm")
-        .with(anonymous())
-        .with(csrf())
-    )
+                          .param("nickname", nickname())
+                          .param("confirm", "confirm")
+                          .with(anonymous())
+                          .with(csrf()))
 
         // THEN
         .andExpect(status().isOk())
@@ -137,12 +138,11 @@ public class AccountControllerMvcTest {
   public void test_create_with_not_match_confirm() throws Exception {
     // WHEN
     this.mock.perform(post(C.CREATE)
-        .param(ATTR_NICKNAME, "nickname")
-        .param("password", "password")
-        .param("confirm", "confirm")
-        .with(anonymous())
-        .with(csrf())
-    )
+                          .param("nickname", nickname())
+                          .param("password", "password")
+                          .param("confirm", "confirm")
+                          .with(anonymous())
+                          .with(csrf()))
 
         // THEN
         .andExpect(status().isOk())
@@ -162,13 +162,13 @@ public class AccountControllerMvcTest {
 
     // WHEN
     this.mock.perform(post(C.CREATE)
-        .param("nickname", "nickname")
-        .param("email", "just.burrow@lul.kr")
-        .param("password", "password")
-        .param("confirm", "password")
-        .with(anonymous())
-        .with(csrf())
-    )
+                          .param("nickname", nickname())
+                          .param("email", email())
+                          .param("userKey", userKey())
+                          .param("password", "password")
+                          .param("confirm", "password")
+                          .with(anonymous())
+                          .with(csrf()))
 
         // THEN
         .andExpect(status().is3xxRedirection())
@@ -194,7 +194,7 @@ public class AccountControllerMvcTest {
   @Test
   public void test_detail() throws Exception {
     // GIVEN
-    final User user = new User(1L, "nickname", "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    final User user = new User(1L, nickname(), "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
     log.info("GIVEN - user={}", user);
     final AccountDetailDto dto = new AccountDetailDto(1L, "nickname", true, this.before, this.before);
     log.info("GIVEN - dto={}", dto);
@@ -204,8 +204,7 @@ public class AccountControllerMvcTest {
 
     // WHEN
     this.mock.perform(get(C.DETAIL, 1L)
-        .with(user(user))
-    )
+                          .with(user(user)))
 
         // THEN
         .andExpect(status().isOk())

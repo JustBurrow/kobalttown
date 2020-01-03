@@ -10,6 +10,7 @@ import java.time.Instant;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static kr.lul.kobalttown.account.domain.Account.ATTR_NICKNAME;
 import static kr.lul.kobalttown.account.domain.Account.NICKNAME_MAX_LENGTH;
+import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static org.apache.commons.lang3.RandomStringUtils.random;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -50,7 +51,7 @@ public class AccountEntityTest {
   @Test
   public void test_new_with_nickname_and_disabled_and_createdAt() throws Exception {
     // GIVEN
-    final String nickname = random(current().nextInt(1, NICKNAME_MAX_LENGTH + 1));
+    final String nickname = nickname();
     final Instant createdAt = Instant.now();
     log.info("GIVEN - nickname={}, createdAt={}", nickname, createdAt);
 
