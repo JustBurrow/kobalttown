@@ -2,6 +2,7 @@ package kr.lul.kobalttown.account.data.entity;
 
 import kr.lul.common.data.Creatable;
 import kr.lul.common.data.Updatable;
+import kr.lul.common.util.Range;
 import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.account.data.factory.AccountFactory;
 import kr.lul.kobalttown.account.data.factory.AccountFactoryImpl;
@@ -19,6 +20,7 @@ import java.time.Instant;
 import static java.time.temporal.ChronoUnit.NANOS;
 import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static kr.lul.kobalttown.account.domain.ValidationCode.MIN_USE_INTERVAL;
+import static kr.lul.kobalttown.account.domain.ValidationCode.TTL_DEFAULT;
 import static kr.lul.kobalttown.account.domain.ValidationCodeUtil.code;
 import static kr.lul.kobalttown.account.domain.ValidationCodeUtil.ttl;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -609,5 +611,30 @@ public class ValidationCodeEntityTest {
     assertThat(validationCode.getAccount())
         .extracting(Account::isEnabled, Creatable::getCreatedAt, Updatable::getUpdatedAt)
         .containsSequence(false, this.before, this.before);
+  }
+
+  @Test
+  public void test_g() throws Exception {
+    // GIVEN
+    final ValidationCode validationCode = new ValidationCodeEntity(
+        this.accountFactory.create(1L, nickname(), false, this.before),
+        code(), this.before);
+    log.info("GIVEN - validationCode={}", validationCode);
+
+    // WHEN
+    final Range<Instant> validRange = validationCode.getValidRange();
+    log.info("WHEN - validRange={}", validRange);
+
+    // THEN
+    assertThat(validRange)
+        .isNotNull();
+    assertThat(validRange.isInclude(this.before.plus(MIN_USE_INTERVAL).minusNanos(1L)))
+        .isFalse();
+    assertThat(validRange.isInclude(this.before.plus(MIN_USE_INTERVAL)))
+        .isTrue();
+    assertThat(validRange.isInclude(this.before.plus(TTL_DEFAULT)))
+        .isTrue();
+    assertThat(validRange.isInclude(this.before.plus(TTL_DEFAULT).plusNanos(1L)))
+        .isFalse();
   }
 }

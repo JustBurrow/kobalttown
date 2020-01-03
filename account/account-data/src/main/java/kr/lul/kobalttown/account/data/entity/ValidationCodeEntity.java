@@ -54,6 +54,10 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
   public ValidationCodeEntity() {// JPA only
   }
 
+  public ValidationCodeEntity(final Account account, final String code, final Instant createdAt) {
+    this(account, code, TTL_DEFAULT, createdAt);
+  }
+
   public ValidationCodeEntity(final Account account, final String code, final Duration ttl, final Instant createdAt) {
     this(account, code, createdAt.plus(ttl), createdAt);
   }
@@ -68,8 +72,8 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
     CODE_VALIDATOR.validate(code);
     EXPIRE_AT_VALIDATOR.validate(expireAt);
 
-    final Range<Instant> validRange = new ContinuousRange<>(createdAt.plus(TTL_MIN), true,
-        createdAt.plus(TTL_MAX), true);
+    final Range<Instant> validRange = new ContinuousRange<>(createdAt.plus(MIN_USE_INTERVAL), true,
+        expireAt, true);
     if (!validRange.isInclude(expireAt)) {
       throw new IllegalArgumentException(format("invalid expireAt : expireAt=%s, validRange=%s", expireAt, validRange));
     }
