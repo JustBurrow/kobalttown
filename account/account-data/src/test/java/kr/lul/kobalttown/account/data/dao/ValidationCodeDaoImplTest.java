@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 
 import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
+import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
 import static kr.lul.kobalttown.account.domain.ValidationCode.TTL_DEFAULT;
 import static kr.lul.kobalttown.account.domain.ValidationCodeUtil.code;
 import static kr.lul.kobalttown.account.domain.ValidationCodeUtil.ttl;
@@ -57,7 +58,7 @@ public class ValidationCodeDaoImplTest {
     // GIVEN
     final Account account = this.accountDao.create(new Context(), new AccountEntity(nickname(), false, this.before));
     log.info("GIVEN - account={}", account);
-    final ValidationCode validationCode = new ValidationCodeEntity(account, code(), ttl(), this.before);
+    final ValidationCode validationCode = new ValidationCodeEntity(account, email(), code(), ttl(), this.before);
     log.info("GIVEN - validationCode={}", validationCode);
 
     // WHEN & THEN
@@ -82,8 +83,9 @@ public class ValidationCodeDaoImplTest {
     log.info("GIVEN - context={}", context);
     final Account account = this.accountDao.create(context, new AccountEntity(nickname(), false, this.before));
     log.info("GIVEN - account={}", account);
+    final String email = email();
     final String code = code();
-    final ValidationCode expected = new ValidationCodeEntity(account, code, this.before);
+    final ValidationCode expected = new ValidationCodeEntity(account, email, code, this.before);
     log.info("GIVEN - expected={}", expected);
 
     // WHEN
@@ -93,12 +95,12 @@ public class ValidationCodeDaoImplTest {
     // THEN
     assertThat(actual)
         .isNotNull()
-        .extracting(ValidationCode::getAccount, ValidationCode::getCode, ValidationCode::getExpireAt,
-            ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt,
-            Creatable::getCreatedAt, Updatable::getUpdatedAt)
-        .containsSequence(account, code, this.before.plus(TTL_DEFAULT),
-            false, null, false, null,
-            this.before, this.before);
+        .extracting(ValidationCode::getAccount, ValidationCode::getEmail, ValidationCode::getCode,
+            ValidationCode::getExpireAt, ValidationCode::isUsed, ValidationCode::getUsedAt,
+            ValidationCode::isExpired, ValidationCode::getExpiredAt, Creatable::getCreatedAt, Updatable::getUpdatedAt)
+        .containsSequence(account, email, code,
+            this.before.plus(TTL_DEFAULT), false, null,
+            false, null, this.before, this.before);
     assertThat(actual.getId())
         .isPositive();
   }

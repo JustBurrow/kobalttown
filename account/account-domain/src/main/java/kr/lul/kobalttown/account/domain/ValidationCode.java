@@ -5,6 +5,7 @@ import kr.lul.common.util.ContinuousRange;
 import kr.lul.common.util.Range;
 import kr.lul.common.util.ValidationException;
 import kr.lul.common.util.Validator;
+import kr.lul.common.util.validator.EmailValidator;
 import kr.lul.common.util.validator.RangeValidator;
 import kr.lul.common.util.validator.RegexValidator;
 
@@ -13,6 +14,8 @@ import java.time.Instant;
 
 import static java.lang.String.format;
 import static java.time.temporal.ChronoUnit.*;
+import static kr.lul.common.util.validator.EmailValidator.DEFAULT_DOMAIN_MAX_LENGTH;
+import static kr.lul.common.util.validator.EmailValidator.DEFAULT_LOCAL_MAX_LENGTH;
 
 /**
  * 계정 정보 검증 코드.
@@ -23,6 +26,7 @@ import static java.time.temporal.ChronoUnit.*;
 public interface ValidationCode extends Savable<Instant> {
   String ATTR_ID = "id";
   String ATTR_ACCOUNT = "account";
+  String ATTR_EMAIL = "email";
   String ATTR_CODE = "code";
   String ATTR_TTL = "ttl";
   String ATTR_EXPIRE_AT = "expireAt";
@@ -43,6 +47,9 @@ public interface ValidationCode extends Savable<Instant> {
       throw new ValidationException(ATTR_ACCOUNT, account, "already enabled account.");
     }
   };
+
+  int EMAIL_MAX_LENGTH = DEFAULT_LOCAL_MAX_LENGTH + DEFAULT_DOMAIN_MAX_LENGTH + 1;
+  EmailValidator EMAIL_VALIDATOR = new EmailValidator();
 
   int CODE_LENGTH = 64;
   String CODE_REGEX = "[a-zA-Z\\d]{" + CODE_LENGTH + "}";
@@ -108,6 +115,11 @@ public interface ValidationCode extends Savable<Instant> {
    * @return 검증할 계정.
    */
   Account getAccount();
+
+  /**
+   * @return 검증코드 수신자.
+   */
+  String getEmail();
 
   /**
    * 계정 사용자에게 전달할 검증 코드.

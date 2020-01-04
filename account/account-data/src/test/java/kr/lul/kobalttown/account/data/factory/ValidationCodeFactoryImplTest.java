@@ -14,6 +14,7 @@ import java.time.Duration;
 import java.time.Instant;
 
 import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
+import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
 import static kr.lul.kobalttown.account.domain.ValidationCode.TTL_DEFAULT;
 import static kr.lul.kobalttown.account.domain.ValidationCodeUtil.code;
 import static kr.lul.kobalttown.account.domain.ValidationCodeUtil.ttl;
@@ -42,362 +43,458 @@ public class ValidationCodeFactoryImplTest {
   }
 
   @Test
-  public void test_create_with_null_context_and_account_and_code_and_createdAt() throws Exception {
+  public void test_create_with_null_context_and_account_and_email_and_code_and_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(null,
             this.accountFactory.create(1L, nickname(), false, this.before),
-            code(), this.before))
+            email(), code(), this.before))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("context is null.")
         .hasNoCause();
   }
 
   @Test
-  public void test_create_with_context_and_null_account_code_and_createdAt() throws Exception {
-    assertThatThrownBy(() -> this.factory.create(new Context(), null, code(), this.before))
+  public void test_create_with_context_and_null_account_and_email_and_code_and_createdAt() throws Exception {
+    assertThatThrownBy(() -> this.factory.create(new Context(), null, email(), code(), this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("account is null.")
         .hasNoCause();
   }
 
   @Test
-  public void test_create_with_context_and_account_and_null_code_and_createdAt() throws Exception {
+  public void test_create_with_context_and_account_and_null_email_and_code_and_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(new Context(),
             this.accountFactory.create(1L, nickname(), false, this.before),
-            null, this.before))
+            null, code(), this.before))
+        .isInstanceOf(ValidationException.class)
+        .hasMessage("email is null.");
+  }
+
+  @Test
+  public void test_create_with_context_and_account_and_empty_email_and_code_and_createdAt() throws Exception {
+    assertThatThrownBy(
+        () -> this.factory.create(new Context(),
+            this.accountFactory.create(1L, nickname(), false, this.before),
+            "", code(), this.before))
+        .isInstanceOf(ValidationException.class)
+        .hasMessage("email is empty.");
+  }
+
+  @Test
+  public void test_create_with_context_and_account_and_email_and_null_code_and_createdAt() throws Exception {
+    assertThatThrownBy(
+        () -> this.factory.create(new Context(),
+            this.accountFactory.create(1L, nickname(), false, this.before),
+            email(), null, this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("code is null.")
         .hasNoCause();
   }
 
   @Test
-  public void test_create_with_context_and_account_and_empty_code_and_createdAt() throws Exception {
+  public void test_create_with_context_and_account_and_email_and_empty_code_and_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(new Context(),
             this.accountFactory.create(1L, nickname(), false, this.before),
-            "", this.before))
+            email(), "", this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("code is empty.")
         .hasNoCause();
   }
 
   @Test
-  public void test_create_with_context_and_account_and_code_and_null_createdAt() throws Exception {
+  public void test_create_with_context_and_account_and_email_and_code_and_null_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(new Context(),
             this.accountFactory.create(1L, nickname(), false, this.before),
-            code(), null))
+            email(), code(), null))
         .isInstanceOf(NullPointerException.class)
         .hasNoCause();
   }
 
   @Test
-  public void test_create_with_context_and_account_and_code_and_createdAt() throws Exception {
+  public void test_create_with_context_and_account_and_email_and_code_and_createdAt() throws Exception {
     // GIVEN
     final Account account = this.accountFactory.create(1L, nickname(), false, this.before);
     log.info("GIVEN - account={}", account);
+    final String email = email();
+    log.info("GIVEN - email={}", email);
     final String code = code();
     log.info("GIVEN - code={}", code);
 
     // WHEN
-    final ValidationCode validationCode = this.factory.create(new Context(), account, code, this.before);
+    final ValidationCode validationCode = this.factory.create(new Context(), account, email, code, this.before);
     log.info("WHEN - validationCode={}", validationCode);
 
     // THEN
     assertThat(validationCode)
         .isNotNull()
         .extracting(ValidationCode::getId, ValidationCode::getAccount,
-            ValidationCode::getCode, ValidationCode::getExpireAt,
+            ValidationCode::getEmail, ValidationCode::getCode, ValidationCode::getExpireAt,
             ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt,
             Creatable::getCreatedAt, Updatable::getUpdatedAt)
         .containsSequence(0L, account,
-            code, this.before.plus(TTL_DEFAULT),
+            email, code, this.before.plus(TTL_DEFAULT),
             false, null, false, null,
             this.before, this.before);
   }
 
   @Test
-  public void test_create_with_null_context_and_account_and_code_and_ttl_and_createdAt() throws Exception {
+  public void test_create_with_null_context_and_account_and_email_and_code_and_ttl_and_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(null,
             this.accountFactory.create(1L, nickname(), false, this.before),
-            code(), ttl(), this.before))
+            email(), code(), ttl(), this.before))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("context is null.")
         .hasNoCause();
   }
 
   @Test
-  public void test_create_with_context_and_null_account_and_code_and_ttl_and_createdAt() throws Exception {
-    assertThatThrownBy(() -> this.factory.create(new Context(), null, code(), ttl(), this.before))
+  public void test_create_with_context_and_null_account_and_email_and_code_and_ttl_and_createdAt() throws Exception {
+    assertThatThrownBy(() -> this.factory.create(new Context(), null, email(), code(), ttl(), this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("account is null.")
         .hasNoCause();
   }
 
   @Test
-  public void test_create_with_context_and_account_and_null_code_and_ttl_and_createdAt() throws Exception {
+  public void test_create_with_context_and_account_and_null_email_and_code_and_ttl_and_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(new Context(),
             this.accountFactory.create(1L, nickname(), false, this.before),
-            null, ttl(), this.before))
+            null, code(), ttl(), this.before))
+        .isInstanceOf(ValidationException.class)
+        .hasMessageContaining("email is null.")
+        .hasNoCause();
+  }
+
+  @Test
+  public void test_create_with_context_and_account_and_empty_email_and_code_and_ttl_and_createdAt() throws Exception {
+    assertThatThrownBy(
+        () -> this.factory.create(new Context(),
+            this.accountFactory.create(1L, nickname(), false, this.before),
+            "", code(), ttl(), this.before))
+        .isInstanceOf(ValidationException.class)
+        .hasMessageContaining("email is empty.")
+        .hasNoCause();
+  }
+
+  @Test
+  public void test_create_with_context_and_account_and_email_and_null_code_and_ttl_and_createdAt() throws Exception {
+    assertThatThrownBy(
+        () -> this.factory.create(new Context(),
+            this.accountFactory.create(1L, nickname(), false, this.before),
+            email(), null, ttl(), this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessageContaining("code is null.")
         .hasNoCause();
   }
 
   @Test
-  public void test_create_with_context_and_account_and_empty_code_and_ttl_and_createdAt() throws Exception {
+  public void test_create_with_context_and_account_and_email_and_empty_code_and_ttl_and_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(new Context(),
             this.accountFactory.create(1L, nickname(), false, this.before),
-            "", ttl(), this.before))
+            email(), "", ttl(), this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessageContaining("code is empty.")
         .hasNoCause();
   }
 
   @Test
-  public void test_create_with_context_and_account_and_code_and_null_ttl_and_createdAt() throws Exception {
+  public void test_create_with_context_and_account_and_email_and_code_and_null_ttl_and_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(new Context(),
             this.accountFactory.create(1L, nickname(), false, this.before),
-            code(), (Duration) null, this.before))
+            email(), code(), (Duration) null, this.before))
         .isInstanceOf(NullPointerException.class)
         .hasNoCause();
   }
 
   @Test
-  public void test_create_with_context_and_account_and_code_and_0_ttl_and_createdAt() throws Exception {
+  public void test_create_with_context_and_account_and_email_and_code_and_0_ttl_and_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(new Context(),
             this.accountFactory.create(1L, nickname(), false, this.before),
-            code(), Duration.ZERO, this.before))
+            email(), code(), Duration.ZERO, this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessageStartingWith("ttl is out of range")
         .hasNoCause();
   }
 
   @Test
-  public void test_create_with_context_and_account_and_code_and_ttl_and_createdAt() throws Exception {
+  public void test_create_with_context_and_account_and_email_and_code_and_ttl_and_createdAt() throws Exception {
     // GIVEN
     final Account account = this.accountFactory.create(1L, nickname(), false, this.before);
     log.info("GIVEN - account={}", account);
+    final String email = email();
+    log.info("GIVEN - email={}", email);
     final String code = code();
     log.info("GIVEN - code={}", code);
     final Duration ttl = ttl();
     log.info("GIVEN - ttl={}", ttl);
 
     // WHEN
-    final ValidationCode validationCode = this.factory.create(new Context(), account, code, ttl, this.before);
+    final ValidationCode validationCode = this.factory.create(new Context(), account, email, code, ttl, this.before);
     log.info("WHEN - validationCode={}", validationCode);
 
     // THEN
     assertThat(validationCode)
         .isNotNull()
         .extracting(ValidationCode::getId, ValidationCode::getAccount,
-            ValidationCode::getCode, ValidationCode::getExpireAt,
+            ValidationCode::getEmail, ValidationCode::getCode, ValidationCode::getExpireAt,
             ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt,
             Creatable::getCreatedAt, Updatable::getUpdatedAt)
         .containsSequence(0L, account,
-            code, this.before.plus(ttl),
+            email, code, this.before.plus(ttl),
             false, null, false, null,
             this.before, this.before);
   }
 
   @Test
-  public void test_create_with_null_context_and_account_and_code_and_expireAt_and_createdAt() throws Exception {
+  public void test_create_with_null_context_and_account_and_email_and_code_and_expireAt_and_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(null,
             this.accountFactory.create(1L, nickname(), false, this.before),
-            code(), this.before.plus(TTL_DEFAULT), this.before))
+            email(), code(), this.before.plus(TTL_DEFAULT), this.before))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("context is null.")
         .hasNoCause();
   }
 
   @Test
-  public void test_create_with_context_and_null_account_and_code_and_expireAt_and_createdAt() throws Exception {
+  public void test_create_with_context_and_null_account_and_email_and_code_and_expireAt_and_createdAt() throws Exception {
     assertThatThrownBy(
-        () -> this.factory.create(new Context(), null, code(), this.before.plus(TTL_DEFAULT), this.before))
+        () -> this.factory.create(new Context(), null, email(), code(), this.before.plus(TTL_DEFAULT), this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("account is null.")
         .hasNoCause();
   }
 
   @Test
-  public void test_create_with_context_and_account_and_null_code_and_expireAt_and_createdAt() throws Exception {
+  public void test_create_with_context_and_account_and_null_email_and_code_and_expireAt_and_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(new Context(),
             this.accountFactory.create(1L, nickname(), false, this.before),
-            null, this.before.plus(TTL_DEFAULT), this.before))
+            null, code(), this.before.plus(TTL_DEFAULT), this.before))
+        .isInstanceOf(ValidationException.class)
+        .hasMessage("email is null.")
+        .hasNoCause();
+  }
+
+  @Test
+  public void test_create_with_context_and_account_and_empty_email_and_code_and_expireAt_and_createdAt() throws Exception {
+    assertThatThrownBy(
+        () -> this.factory.create(new Context(),
+            this.accountFactory.create(1L, nickname(), false, this.before),
+            "", code(), this.before.plus(TTL_DEFAULT), this.before))
+        .isInstanceOf(ValidationException.class)
+        .hasMessage("email is empty.")
+        .hasNoCause();
+  }
+
+  @Test
+  public void test_create_with_context_and_account_and_email_and_null_code_and_expireAt_and_createdAt() throws Exception {
+    assertThatThrownBy(
+        () -> this.factory.create(new Context(),
+            this.accountFactory.create(1L, nickname(), false, this.before),
+            email(), null, this.before.plus(TTL_DEFAULT), this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("code is null.")
         .hasNoCause();
   }
 
   @Test
-  public void test_create_with_context_and_account_and_empty_code_and_expireAt_and_createdAt() throws Exception {
+  public void test_create_with_context_and_account_and_email_and_empty_code_and_expireAt_and_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(new Context(),
             this.accountFactory.create(1L, nickname(), false, this.before),
-            "", this.before.plus(TTL_DEFAULT), this.before))
+            email(), "", this.before.plus(TTL_DEFAULT), this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("code is empty.")
         .hasNoCause();
   }
 
   @Test
-  public void test_create_with_context_and_account_and_code_and_null_expireAt_and_createdAt() throws Exception {
+  public void test_create_with_context_and_account_and_email_and_code_and_null_expireAt_and_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(new Context(),
             this.accountFactory.create(1L, nickname(), false, this.before),
-            code(), (Instant) null, this.before))
+            email(), code(), (Instant) null, this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("expireAt is null.")
         .hasNoCause();
   }
 
   @Test
-  public void test_create_with_context_and_account_and_code_and_createdAt_expireAt_and_createdAt() throws Exception {
+  public void test_create_with_context_and_account_and_email_and_code_and_createdAt_expireAt_and_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(new Context(),
             this.accountFactory.create(1L, nickname(), false, this.before),
-            code(), this.before, this.before))
+            email(), code(), this.before, this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessageContaining("ttl is out of range")
         .hasNoCause();
   }
 
   @Test
-  public void test_create_with_context_and_account_and_code_and_expireAt_and_null_createdAt() throws Exception {
+  public void test_create_with_context_and_account_and_email_and_code_and_expireAt_and_null_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(new Context(),
             this.accountFactory.create(1L, nickname(), false, this.before),
-            code(), this.before.plus(TTL_DEFAULT), null))
+            email(), code(), this.before.plus(TTL_DEFAULT), null))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("createdAt is null.")
         .hasNoCause();
   }
 
   @Test
-  public void test_create_with_context_and_account_and_code_and_expireAt_and_createdAt() throws Exception {
+  public void test_create_with_context_and_account_and_email_and_code_and_expireAt_and_createdAt() throws Exception {
     // GIVEN
     final Account account = this.accountFactory.create(1L, nickname(), false, this.before);
     log.info("GIVEN - account={}", account);
+    final String email = email();
+    log.info("GIVEN - email={}", email);
     final String code = code();
     log.info("GIVEN - code={}", code);
     final Instant expireAt = this.before.plus(ttl());
     log.info("GIVEN - expireAt={}", expireAt);
 
     // WHEN
-    final ValidationCode validationCode = this.factory.create(new Context(), account, code, expireAt, this.before);
+    final ValidationCode validationCode = this.factory
+                                              .create(new Context(), account, email, code, expireAt, this.before);
     log.info("WHEN - validationCode={}", validationCode);
 
     // THEN
     assertThat(validationCode)
         .isNotNull()
         .extracting(ValidationCode::getId, ValidationCode::getAccount,
-            ValidationCode::getCode, ValidationCode::getExpireAt,
+            ValidationCode::getEmail, ValidationCode::getCode, ValidationCode::getExpireAt,
             ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt,
             Creatable::getCreatedAt, Updatable::getUpdatedAt)
         .containsSequence(0L, account,
-            code, expireAt,
+            email, code, expireAt,
             false, null, false, null,
             this.before, this.before);
   }
 
   @Test
-  public void test_create_id_and_null_account_and_code_and_expireAt_and_null_usedAt_and_null_expiredAt_and_createdAt() throws Exception {
+  public void test_create_id_and_null_account_and_email_and_code_and_expireAt_and_null_usedAt_and_null_expiredAt_and_createdAt() throws Exception {
     assertThatThrownBy(
-        () -> this.factory.create(1L, null, code(), this.before.plus(TTL_DEFAULT), null, null, this.before))
+        () -> this.factory.create(1L, null, email(), code(), this.before.plus(TTL_DEFAULT), null, null, this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessageStartingWith("account is null");
   }
 
   @Test
-  public void test_create_id_and_account_and_null_code_and_expireAt_and_null_usedAt_and_null_expiredAt_and_createdAt() throws Exception {
+  public void test_create_id_and_account_and_null_email_and_code_and_expireAt_and_null_usedAt_and_null_expiredAt_and_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(1L,
             this.accountFactory.create(1L, nickname(), false, this.before),
-            null, this.before.plus(TTL_DEFAULT), null, null, this.before))
+            null, code(), this.before.plus(TTL_DEFAULT), null, null, this.before))
+        .isInstanceOf(ValidationException.class)
+        .hasMessage("email is null.");
+  }
+
+  @Test
+  public void test_create_id_and_account_and_empty_email_and_code_and_expireAt_and_null_usedAt_and_null_expiredAt_and_createdAt() throws Exception {
+    assertThatThrownBy(
+        () -> this.factory.create(1L,
+            this.accountFactory.create(1L, nickname(), false, this.before),
+            "", code(), this.before.plus(TTL_DEFAULT), null, null, this.before))
+        .isInstanceOf(ValidationException.class)
+        .hasMessage("email is empty.");
+  }
+
+  @Test
+  public void test_create_id_and_account_and_email_and_null_code_and_expireAt_and_null_usedAt_and_null_expiredAt_and_createdAt() throws Exception {
+    assertThatThrownBy(
+        () -> this.factory.create(1L,
+            this.accountFactory.create(1L, nickname(), false, this.before),
+            email(), null, this.before.plus(TTL_DEFAULT), null, null, this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("code is null.");
   }
 
   @Test
-  public void test_create_id_and_account_and_empty_code_and_expireAt_and_null_usedAt_and_null_expiredAt_and_createdAt() throws Exception {
+  public void test_create_id_and_account_and_email_and_empty_code_and_expireAt_and_null_usedAt_and_null_expiredAt_and_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(1L,
             this.accountFactory.create(1L, nickname(), false, this.before),
-            "", this.before.plus(TTL_DEFAULT), null, null, this.before))
+            email(), "", this.before.plus(TTL_DEFAULT), null, null, this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("code is empty.");
   }
 
   @Test
-  public void test_create_id_and_account_and_code_and_null_expireAt_and_null_usedAt_and_null_expiredAt_and_createdAt() throws Exception {
+  public void test_create_id_and_account_and_email_and_code_and_null_expireAt_and_null_usedAt_and_null_expiredAt_and_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(1L,
             this.accountFactory.create(1L, nickname(), false, this.before),
-            code(), null, null, null, this.before))
+            email(), code(), null, null, null, this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("expireAt is null.");
   }
 
   @Test
-  public void test_create_id_and_account_and_code_and_createdAt_expireAt_and_null_usedAt_and_null_expiredAt_and_createdAt() throws Exception {
+  public void test_create_id_and_account_and_email_and_code_and_createdAt_expireAt_and_null_usedAt_and_null_expiredAt_and_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(1L,
             this.accountFactory.create(1L, nickname(), false, this.before),
-            null, this.before, null, null, this.before))
+            email(), null, this.before, null, null, this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessageStartingWith("code is null.");
   }
 
   @Test
-  public void test_create_id_and_account_and_code_and_expireAt_and_null_usedAt_and_null_expiredAt_and_null_createdAt() throws Exception {
+  public void test_create_id_and_account_and_email_and_code_and_expireAt_and_null_usedAt_and_null_expiredAt_and_null_createdAt() throws Exception {
     assertThatThrownBy(
         () -> this.factory.create(1L,
             this.accountFactory.create(1L, nickname(), false, this.before),
-            null, this.before.plus(TTL_DEFAULT), null, null, null))
+            email(), null, this.before.plus(TTL_DEFAULT), null, null, null))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("createdAt is null.");
   }
 
   @Test
-  public void test_create_id_and_account_and_code_and_expireAt_and_null_usedAt_and_null_expiredAt_and_createdAt() throws Exception {
+  public void test_create_id_and_account_and_email_and_code_and_expireAt_and_null_usedAt_and_null_expiredAt_and_createdAt() throws Exception {
     // GIVEN
     final Account account = this.accountFactory.create(1L, nickname(), false, this.before);
     log.info("GIVEN - account={}", account);
+    final String email = email();
+    log.info("GIVEN - email={}", email);
     final String code = code();
     log.info("GIVEN - code={}", code);
     final Instant expireAt = this.before.plus(TTL_DEFAULT);
     log.info("GIVEN - expireAt={}", expireAt);
 
     // WHEN
-    final ValidationCode validationCode = this.factory.create(1L, account, code, expireAt, null, null, this.before);
+    final ValidationCode validationCode = this.factory
+                                              .create(1L, account, email, code, expireAt, null, null, this.before);
     log.info("WHEN - validationCode={}", validationCode);
 
     // THEN
     assertThat(validationCode)
         .isNotNull()
         .extracting(ValidationCode::getId, ValidationCode::getAccount,
-            ValidationCode::getCode, ValidationCode::getExpireAt,
+            ValidationCode::getEmail, ValidationCode::getCode, ValidationCode::getExpireAt,
             ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt,
             Creatable::getCreatedAt, Updatable::getUpdatedAt)
         .containsSequence(1L, account,
-            code, expireAt,
+            email, code, expireAt,
             false, null, false, null,
             this.before, this.before);
   }
 
   @Test
-  public void test_create_id_and_account_and_code_and_expireAt_and_usedAt_and_null_expiredAt_and_createdAt() throws Exception {
+  public void test_create_id_and_account_and_email_and_code_and_expireAt_and_usedAt_and_null_expiredAt_and_createdAt() throws Exception {
     // GIVEN
     final Account account = this.accountFactory.create(1L, nickname(), false, this.before);
     log.info("GIVEN - account={}", account);
+    final String email = email();
+    log.info("GIVEN - email={}", email);
     final String code = code();
     log.info("GIVEN - code={}", code);
     final Instant expireAt = this.before.plus(TTL_DEFAULT);
@@ -406,18 +503,19 @@ public class ValidationCodeFactoryImplTest {
     log.info("GIVEN - usedAt={}", usedAt);
 
     // WHEN
-    final ValidationCode validationCode = this.factory.create(1L, account, code, expireAt, usedAt, null, this.before);
+    final ValidationCode validationCode = this.factory
+                                              .create(1L, account, email, code, expireAt, usedAt, null, this.before);
     log.info("WHEN - validationCode={}", validationCode);
 
     // THEN
     assertThat(validationCode)
         .isNotNull()
         .extracting(ValidationCode::getId, ValidationCode::getAccount,
-            ValidationCode::getCode, ValidationCode::getExpireAt,
+            ValidationCode::getEmail, ValidationCode::getCode, ValidationCode::getExpireAt,
             ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt,
             Creatable::getCreatedAt, Updatable::getUpdatedAt)
         .containsSequence(1L, account,
-            code, expireAt,
+            email, code, expireAt,
             true, usedAt, false, null,
             this.before, usedAt);
     assertThat(account)
@@ -426,10 +524,12 @@ public class ValidationCodeFactoryImplTest {
   }
 
   @Test
-  public void test_create_id_and_account_and_code_and_expireAt_and_null_usedAt_and_expiredAt_and_createdAt() throws Exception {
+  public void test_create_id_and_account_and_email_and_code_and_expireAt_and_null_usedAt_and_expiredAt_and_createdAt() throws Exception {
     // GIVEN
     final Account account = this.accountFactory.create(1L, nickname(), false, this.before);
     log.info("GIVEN - account={}", account);
+    final String email = email();
+    log.info("GIVEN - email={}", email);
     final String code = code();
     log.info("GIVEN - code={}", code);
     final Instant expireAt = this.before.plus(TTL_DEFAULT);
@@ -438,19 +538,19 @@ public class ValidationCodeFactoryImplTest {
     log.info("GIVEN - expiredAt={}", expiredAt);
 
     // WHEN
-    final ValidationCode validationCode = this.factory
-                                              .create(1L, account, code, expireAt, null, expiredAt, this.before);
+    final ValidationCode validationCode =
+        this.factory.create(1L, account, email, code, expireAt, null, expiredAt, this.before);
     log.info("WHEN - validationCode={}", validationCode);
 
     // THEN
     assertThat(validationCode)
         .isNotNull()
         .extracting(ValidationCode::getId, ValidationCode::getAccount,
-            ValidationCode::getCode, ValidationCode::getExpireAt,
+            ValidationCode::getEmail, ValidationCode::getCode, ValidationCode::getExpireAt,
             ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt,
             Creatable::getCreatedAt, Updatable::getUpdatedAt)
         .containsSequence(1L, account,
-            code, expireAt,
+            email, code, expireAt,
             false, null, true, expiredAt,
             this.before, expiredAt);
   }

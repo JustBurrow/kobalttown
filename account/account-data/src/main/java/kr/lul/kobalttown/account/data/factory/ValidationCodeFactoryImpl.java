@@ -24,13 +24,14 @@ public class ValidationCodeFactoryImpl implements ValidationCodeFactory {
   private static final Logger log = getLogger(ValidationCodeFactoryImpl.class);
 
   @Override
-  public ValidationCode create(final Context context, final Account account, final String code,
+  public ValidationCode create(final Context context, final Account account, final String email, final String code,
       final Instant createdAt) {
     if (log.isTraceEnabled())
-      log.trace("#create args : context={}, account={}, code={}, createdAt={}", context, account, code, createdAt);
+      log.trace("#create args : context={}, account={}, email={}, code={}, createdAt={}",
+          context, account, email, code, createdAt);
     notNull(context, "context");
 
-    final ValidationCodeEntity validationCode = new ValidationCodeEntity(account, code, createdAt);
+    final ValidationCodeEntity validationCode = new ValidationCodeEntity(account, email, code, createdAt);
 
     if (log.isTraceEnabled())
       log.trace("#create (context={}) return : {}", context, validationCode);
@@ -38,14 +39,14 @@ public class ValidationCodeFactoryImpl implements ValidationCodeFactory {
   }
 
   @Override
-  public ValidationCode create(final Context context, final Account account, final String code, final Duration ttl,
-      final Instant createdAt) {
+  public ValidationCode create(final Context context, final Account account, final String email, final String code,
+      final Duration ttl, final Instant createdAt) {
     notNull(context, "context");
     if (log.isTraceEnabled())
-      log.trace("#create args : context={}, account={}, code={}, ttl={}, createdAt={}",
-          context, account, code, ttl, createdAt);
+      log.trace("#create args : context={}, account={}, email={} code={}, ttl={}, createdAt={}",
+          context, account, email, code, ttl, createdAt);
 
-    final ValidationCodeEntity validationCode = new ValidationCodeEntity(account, code, ttl, createdAt);
+    final ValidationCodeEntity validationCode = new ValidationCodeEntity(account, email, code, ttl, createdAt);
 
     if (log.isTraceEnabled())
       log.trace("#create (context={}) return : {}", context, validationCode);
@@ -53,15 +54,14 @@ public class ValidationCodeFactoryImpl implements ValidationCodeFactory {
   }
 
   @Override
-  public ValidationCode create(final Context context, final Account account, final String code, final Instant expireAt,
-      final Instant createdAt) {
+  public ValidationCode create(final Context context, final Account account, final String email, final String code,
+      final Instant expireAt, final Instant createdAt) {
     if (log.isTraceEnabled())
-      log.trace(
-          "#create args : context={}, account={}, code={}, expireAt={}, createdAt={}",
-          context, account, code, expireAt, createdAt);
+      log.trace("#create args : context={}, account={}, email={}, code={}, expireAt={}, createdAt={}",
+          context, account, email, code, expireAt, createdAt);
     notNull(context, "context");
 
-    final ValidationCode validationCode = new ValidationCodeEntity(account, code, expireAt, createdAt);
+    final ValidationCode validationCode = new ValidationCodeEntity(account, email, code, expireAt, createdAt);
 
     if (log.isTraceEnabled())
       log.trace("#create (context={}) return : {}", context, validationCode);
@@ -69,15 +69,17 @@ public class ValidationCodeFactoryImpl implements ValidationCodeFactory {
   }
 
   @Override
-  public ValidationCode create(final long id, final Account account, final String code, final Instant expireAt,
+  public ValidationCode create(final long id, final Account account, final String email, final String code,
+      final Instant expireAt,
       final Instant usedAt, final Instant expiredAt, final Instant createdAt) {
     if (log.isTraceEnabled())
-      log.trace("#create args : id={}, account={}, code={}, expireAt={}, usedAt={}, expiredAt={}, createdAt={}",
-          id, account, code, expireAt, usedAt, expiredAt, createdAt);
+      log.trace(
+          "#create args : id={}, account={}, email={}, code={}, expireAt={}, usedAt={}, expiredAt={}, createdAt={}",
+          id, account, email, code, expireAt, usedAt, expiredAt, createdAt);
     if (null != usedAt && null != expiredAt)
       throw new IllegalArgumentException("both usedAt and expiredAt are set.");
 
-    final ValidationCodeEntity validationCode = new ValidationCodeEntity(account, code, expireAt, createdAt);
+    final ValidationCodeEntity validationCode = new ValidationCodeEntity(account, email, code, expireAt, createdAt);
 
     final Field field;
     try {

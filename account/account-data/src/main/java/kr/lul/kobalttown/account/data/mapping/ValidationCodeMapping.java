@@ -16,6 +16,7 @@ public abstract class ValidationCodeMapping {
 
   public static final String COL_ID = "id";
   public static final String COL_ACCOUNT = "account";
+  public static final String COL_EMAIL = "email";
   public static final String COL_CODE = "code";
   public static final String COL_EXPIRE_AT = "expire_at";
   public static final String COL_USED_AT = "used_at";
@@ -25,6 +26,9 @@ public abstract class ValidationCodeMapping {
 
   public static final String FK_VALIDATION_CODE_PK_ACCOUNT = "FK_VALIDATION_CODE_PK_ACCOUNT";
   public static final String FK_VALIDATION_CODE_PK_ACCOUNT_COLUMNS = COL_ACCOUNT + " ASC";
+
+  public static final String IDX_VALIDATION_CODE_EMAIL = "IDX_VALIDATION_CODE_EMAIL";
+  public static final String IDX_VALIDATION_CODE_EMAIL_COLUMNS = COL_EMAIL + " ASC";
 
   public static final String UQ_VALIDATION_CODE = "UQ_VALIDATION_CODE";
   public static final List<String> UQ_VALIDATION_CODE_COLUMNS = List.of(COL_CODE);

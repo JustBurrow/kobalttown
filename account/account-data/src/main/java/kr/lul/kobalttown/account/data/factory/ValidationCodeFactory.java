@@ -19,38 +19,42 @@ public interface ValidationCodeFactory {
    *
    * @param context   컨텍스트.
    * @param account   검증할 계정.
+   * @param email     E-Mail.
    * @param code      검증 코드값.
    * @param createdAt 생성 시각.
    *
    * @return 검증 코드.
    */
-  ValidationCode create(Context context, Account account, String code, Instant createdAt);
+  ValidationCode create(Context context, Account account, String email, String code, Instant createdAt);
 
   /**
    * 현재 시각을 기준으로 검증 코드를 생성.
    *
    * @param context   컨텍스트.
    * @param account   검증할 계정.
+   * @param email     E-Mail.
    * @param code      검증 코드값.
    * @param ttl       유효기간.
    * @param createdAt 생성 시각.
    *
    * @return 검증 코드.
    */
-  ValidationCode create(Context context, Account account, String code, Duration ttl, Instant createdAt);
+  ValidationCode create(Context context, Account account, String email, String code, Duration ttl, Instant createdAt);
 
   /**
    * 검증 코드를 생성.
    *
    * @param context   컨텍스트.
    * @param account   검증할 계정.
+   * @param email     E-Mail.
    * @param code      검증 코드값.
    * @param expireAt  만료 시각.
    * @param createdAt 생성 시각.
    *
    * @return 검증 코드.
    */
-  ValidationCode create(Context context, Account account, String code, Instant expireAt, Instant createdAt);
+  ValidationCode create(Context context, Account account, String email, String code, Instant expireAt,
+      Instant createdAt);
 
   /**
    * 테스트용 검증 코드를 생성.
@@ -58,6 +62,7 @@ public interface ValidationCodeFactory {
    *
    * @param id        ID.
    * @param account   계정.
+   * @param email     E-Mail.
    * @param code      코드.
    * @param expireAt  만료 시각.
    * @param usedAt    사용 시각.
@@ -66,6 +71,6 @@ public interface ValidationCodeFactory {
    *
    * @return 검증 코드.
    */
-  ValidationCode create(long id, Account account, String code, Instant expireAt, Instant usedAt, Instant expiredAt,
-      Instant createdAt);
+  ValidationCode create(long id, Account account, String email, String code, Instant expireAt, Instant usedAt,
+      Instant expiredAt, Instant createdAt);
 }

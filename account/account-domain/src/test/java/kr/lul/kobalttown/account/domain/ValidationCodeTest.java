@@ -146,6 +146,48 @@ public class ValidationCodeTest {
   }
 
   @Test
+  public void test_EMAIL_VALIDATOR_with_null() throws Exception {
+    assertThatThrownBy(() -> EMAIL_VALIDATOR.validate(null))
+        .isInstanceOf(ValidationException.class)
+        .hasMessage("email is null.")
+        .hasNoCause();
+  }
+
+  @Test
+  public void test_EMAIL_VALIDATOR_with_empty() throws Exception {
+    assertThatThrownBy(() -> EMAIL_VALIDATOR.validate(""))
+        .isInstanceOf(ValidationException.class)
+        .hasMessage("email is empty.")
+        .hasNoCause();
+  }
+
+  @Test
+  public void test_EMAIL_VALIDATOR_with_illegal() throws Exception {
+    for (final String email : new String[]{
+        "a@b",
+        "just.burrow@lul.kr",
+        "abcdefghijklmnopqrstuvwxyz0123456789@abcdefghijklmnopqrstuvwxyz0123456789",
+        "abcdefghijklmnopqrstuvwxyz0123456789@abcdefghijklmnopqrstuvwxyz0123456789.com",
+        "abcdefghijklmnopqrstuvwxyz.0123456789@abcdefghijklmnopqrstuvwxyz0123456789.com",
+        "abcdefghijklmnopqrstuvwxyz0123456789@abcdefghijklmnopqrstuvwxyz.0123456789.com",
+        "abcdefghijklmnopqrstuvwxyz.0123456789@abcdefghijklmnopqrstuvwxyz.0123456789.com",
+        "abcdefghijklmnopqrstuvwxyz+0123456789@abcdefghijklmnopqrstuvwxyz0123456789",
+        "abcdefghijklmnopqrstuvwxyz+0123456789@abcdefghijklmnopqrstuvwxyz.0123456789",
+        "abcdefghijklmnopqrstuvwxyz+0123456789@abcdefghijklmnopqrstuvwxyz0123456789.com",
+        "abcdefghijklmnopqrstuvwxyz+0123456789@abcdefghijklmnopqrstuvwxyz.0123456789.com"
+    }) {
+      // GIVEN
+      log.info("GIVEN - email={}", email);
+
+      // WHEN
+      EMAIL_VALIDATOR.validate(email);
+
+      // THEN
+      log.info("THEN - OK");
+    }
+  }
+
+  @Test
   public void test_CODE_VALIDATOR_with_null() throws Exception {
     assertThatThrownBy(() -> CODE_VALIDATOR.validate(null))
         .isInstanceOf(ValidationException.class)
@@ -167,7 +209,7 @@ public class ValidationCodeTest {
     final String code = randomAlphanumeric(CODE_LENGTH - 1);
     log.info("GIVEN - code={}", code);
 
-    // WHEN & THEN
+    // WHEN &  THEN
     assertThatThrownBy(() -> CODE_VALIDATOR.validate(code))
         .isInstanceOf(ValidationException.class)
         .hasMessageStartingWith("too short code")

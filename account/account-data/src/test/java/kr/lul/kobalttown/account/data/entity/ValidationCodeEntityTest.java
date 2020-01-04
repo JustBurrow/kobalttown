@@ -19,6 +19,7 @@ import java.time.Instant;
 
 import static java.time.temporal.ChronoUnit.NANOS;
 import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
+import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
 import static kr.lul.kobalttown.account.domain.ValidationCode.MIN_USE_INTERVAL;
 import static kr.lul.kobalttown.account.domain.ValidationCode.TTL_DEFAULT;
 import static kr.lul.kobalttown.account.domain.ValidationCodeUtil.code;
@@ -45,7 +46,7 @@ public class ValidationCodeEntityTest {
 
   @Test
   public void test_new_with_null_account_and_expireAt() throws Exception {
-    assertThatThrownBy(() -> new ValidationCodeEntity(null, code(), this.before.plus(ttl()), this.before))
+    assertThatThrownBy(() -> new ValidationCodeEntity(null, email(), code(), this.before.plus(ttl()), this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("account is null.")
         .hasNoCause();
@@ -53,7 +54,7 @@ public class ValidationCodeEntityTest {
 
   @Test
   public void test_new_with_null_account_and_ttl() throws Exception {
-    assertThatThrownBy(() -> new ValidationCodeEntity(null, code(), ttl(), this.before))
+    assertThatThrownBy(() -> new ValidationCodeEntity(null, email(), code(), ttl(), this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("account is null.")
         .hasNoCause();
@@ -62,8 +63,8 @@ public class ValidationCodeEntityTest {
   @Test
   public void test_new_with_enabled_account_and_expireAt() throws Exception {
     assertThatThrownBy(
-        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), true, this.before), code(),
-            this.before.plus(ttl()), this.before))
+        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), true, this.before),
+            email(), code(), this.before.plus(ttl()), this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("already enabled account.")
         .hasNoCause();
@@ -72,18 +73,36 @@ public class ValidationCodeEntityTest {
   @Test
   public void test_new_with_enabled_account_and_ttl() throws Exception {
     assertThatThrownBy(
-        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), true, this.before), code(),
-            ttl(), this.before))
+        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), true, this.before),
+            email(), code(), ttl(), this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("already enabled account.")
         .hasNoCause();
   }
 
   @Test
+  public void test_new_with_null_email() throws Exception {
+    assertThatThrownBy(
+        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
+            null, code(), ttl(), this.before))
+        .isInstanceOf(ValidationException.class)
+        .hasMessage("email is null.");
+  }
+
+  @Test
+  public void test_new_with_empty_email() throws Exception {
+    assertThatThrownBy(
+        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
+            "", code(), ttl(), this.before))
+        .isInstanceOf(ValidationException.class)
+        .hasMessage("email is empty.");
+  }
+
+  @Test
   public void test_new_with_null_code_and_expireAt() throws Exception {
     assertThatThrownBy(
-        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before), null,
-            this.before.plus(ttl()), this.before))
+        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
+            email(), null, this.before.plus(ttl()), this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("code is null.")
         .hasNoCause();
@@ -92,8 +111,8 @@ public class ValidationCodeEntityTest {
   @Test
   public void test_new_with_null_code_and_ttl() throws Exception {
     assertThatThrownBy(
-        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before), null, ttl(),
-            this.before))
+        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
+            email(), null, ttl(), this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("code is null.")
         .hasNoCause();
@@ -102,8 +121,8 @@ public class ValidationCodeEntityTest {
   @Test
   public void test_new_with_empty_code_and_expireAt() throws Exception {
     assertThatThrownBy(
-        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before), "",
-            this.before.plus(ttl()), this.before))
+        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
+            email(), "", this.before.plus(ttl()), this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("code is empty.")
         .hasNoCause();
@@ -112,8 +131,8 @@ public class ValidationCodeEntityTest {
   @Test
   public void test_new_with_empty_code_and_ttl() throws Exception {
     assertThatThrownBy(
-        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before), "", ttl(),
-            this.before))
+        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
+            email(), "", ttl(), this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("code is empty.")
         .hasNoCause();
@@ -122,9 +141,8 @@ public class ValidationCodeEntityTest {
   @Test
   public void test_new_with_code_and_null_ttl() throws Exception {
     assertThatThrownBy(
-        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before), code(),
-            (Duration) null,
-            this.before))
+        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
+            email(), code(), (Duration) null, this.before))
         .isInstanceOf(NullPointerException.class)
         .hasNoCause();
   }
@@ -132,9 +150,8 @@ public class ValidationCodeEntityTest {
   @Test
   public void test_new_with_code_and_0_ttl() throws Exception {
     assertThatThrownBy(
-        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before), code(),
-            Duration.ZERO,
-            this.before))
+        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
+            email(), code(), Duration.ZERO, this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessageContaining("ttl is out of range")
         .hasNoCause();
@@ -143,8 +160,8 @@ public class ValidationCodeEntityTest {
   @Test
   public void test_new_with_null_expireAt() throws Exception {
     assertThatThrownBy(
-        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before), code(),
-            (Instant) null, this.before))
+        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
+            email(), code(), (Instant) null, this.before))
         .isInstanceOf(ValidationException.class)
         .hasMessage("expireAt is null.")
         .hasNoCause();
@@ -153,8 +170,8 @@ public class ValidationCodeEntityTest {
   @Test
   public void test_new_with_expireAt_and_null_createdAt() throws Exception {
     assertThatThrownBy(
-        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before), code(),
-            this.before.plus(ttl()), null))
+        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
+            email(), code(), this.before.plus(ttl()), null))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("createdAt is null.")
         .hasNoCause();
@@ -163,8 +180,8 @@ public class ValidationCodeEntityTest {
   @Test
   public void test_new_with_ttl_and_null_createdAt() throws Exception {
     assertThatThrownBy(
-        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before), code(), ttl(),
-            null))
+        () -> new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
+            email(), code(), ttl(), null))
         .isInstanceOf(NullPointerException.class)
         .hasNoCause();
   }
@@ -174,22 +191,25 @@ public class ValidationCodeEntityTest {
     // GIVEN
     final Account account = this.accountFactory.create(1L, nickname(), false, this.before);
     log.info("GIVEN - account={}", account);
+    final String email = email();
+    log.info("GIVEN - email={}", email);
     final String code = code();
     log.info("GIVEN - code={}", code);
     final Instant expireAt = this.before.plus(ttl());
     log.info("GIVEN - expireAt={}", expireAt);
 
     // WHEN
-    final ValidationCode validationCode = new ValidationCodeEntity(account, code, expireAt, this.before);
+    final ValidationCode validationCode = new ValidationCodeEntity(account, email, code, expireAt, this.before);
     log.info("WHEN - validationCode={}", validationCode);
 
     // THEN
     assertThat(validationCode)
-        .extracting(ValidationCode::getId, ValidationCode::getAccount, ValidationCode::getCode,
+        .extracting(ValidationCode::getId, ValidationCode::getAccount, ValidationCode::getEmail,
+            ValidationCode::getCode,
             ValidationCode::getExpireAt,
             ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt,
             Creatable::getCreatedAt, Updatable::getUpdatedAt)
-        .containsSequence(0L, account, code, expireAt,
+        .containsSequence(0L, account, email, code, expireAt,
             false, null, false, null,
             this.before, this.before);
   }
@@ -199,22 +219,25 @@ public class ValidationCodeEntityTest {
     // GIVEN
     final Account account = this.accountFactory.create(1L, nickname(), false, this.before);
     log.info("GIVEN - account={}", account);
+    final String email = email();
+    log.info("GIVEN - email={}", email);
     final String code = code();
     log.info("GIVEN - code={}", code);
     final Duration ttl = ttl();
     log.info("GIVEN - ttl={}", ttl);
 
     // WHEN
-    final ValidationCode validationCode = new ValidationCodeEntity(account, code, ttl, this.before);
+    final ValidationCode validationCode = new ValidationCodeEntity(account, email, code, ttl, this.before);
     log.info("WHEN - validationCode={}", validationCode);
 
     // THEN
     assertThat(validationCode)
-        .extracting(ValidationCode::getId, ValidationCode::getAccount, ValidationCode::getCode,
+        .extracting(ValidationCode::getId, ValidationCode::getAccount, ValidationCode::getEmail,
+            ValidationCode::getCode,
             ValidationCode::getExpireAt,
             ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt,
             Creatable::getCreatedAt, Updatable::getUpdatedAt)
-        .containsSequence(0L, account, code, this.before.plus(ttl),
+        .containsSequence(0L, account, email, code, this.before.plus(ttl),
             false, null, false, null,
             this.before, this.before);
   }
@@ -223,7 +246,7 @@ public class ValidationCodeEntityTest {
   public void test_isValid_with_null() throws Exception {
     // GIVEN
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), ttl(), this.before);
+        email(), code(), ttl(), this.before);
     log.info("GIVEN - code={}", code);
 
     // WHEN & THEN
@@ -237,7 +260,7 @@ public class ValidationCodeEntityTest {
   public void test_isValid_with_before_validRange() throws Exception {
     // GIVEN
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), ttl(), this.before);
+        email(), code(), ttl(), this.before);
     log.info("GIVEN - code={}", code);
 
     // WHEN & THEN
@@ -249,7 +272,7 @@ public class ValidationCodeEntityTest {
   public void test_isValid_with_min_validRange() throws Exception {
     // GIVEN
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), ttl(), this.before);
+        email(), code(), ttl(), this.before);
     log.info("GIVEN - code={}", code);
 
     // WHEN & THEN
@@ -261,7 +284,7 @@ public class ValidationCodeEntityTest {
   public void test_isValid_with_after_min_validRange() throws Exception {
     // GIVEN
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), ttl(), this.before);
+        email(), code(), ttl(), this.before);
     log.info("GIVEN - code={}", code);
 
     // WHEN & THEN
@@ -273,7 +296,7 @@ public class ValidationCodeEntityTest {
   public void test_isValid_with_expireAt() throws Exception {
     // GIVEN
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), ttl(), this.before);
+        email(), code(), ttl(), this.before);
     log.info("GIVEN - code={}", code);
 
     // WHEN & THEN
@@ -285,7 +308,7 @@ public class ValidationCodeEntityTest {
   public void test_isValid_with_before_expireAt() throws Exception {
     // GIVEN
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), ttl(), this.before);
+        email(), code(), ttl(), this.before);
     log.info("GIVEN - code={}", code);
 
     // WHEN & THEN
@@ -297,7 +320,7 @@ public class ValidationCodeEntityTest {
   public void test_isValid_with_after_expireAt() throws Exception {
     // GIVEN
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), ttl(), this.before);
+        email(), code(), ttl(), this.before);
     log.info("GIVEN - code={}", code);
 
     // WHEN & THEN
@@ -309,7 +332,7 @@ public class ValidationCodeEntityTest {
   public void test_isValid_used() throws Exception {
     // GIVEN
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), ttl(), this.before);
+        email(), code(), ttl(), this.before);
     code.use(code.getExpireAt());
     log.info("GIVEN - code={}", code);
 
@@ -322,7 +345,7 @@ public class ValidationCodeEntityTest {
   public void test_isValid_expired() throws Exception {
     // GIVEN
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), ttl(), this.before);
+        email(), code(), ttl(), this.before);
     code.expire(code.getExpireAt().plusNanos(1L));
     log.info("GIVEN - code={}", code);
 
@@ -335,7 +358,7 @@ public class ValidationCodeEntityTest {
   public void test_use_with_null() throws Exception {
     // GIVEN
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), ttl(), this.before);
+        email(), code(), ttl(), this.before);
     log.info("GIVEN - code={}", code);
 
     // WHEN & THEN
@@ -349,7 +372,7 @@ public class ValidationCodeEntityTest {
   public void test_use_with_before_createdAt() throws Exception {
     // GIVEN
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), ttl(), this.before);
+        email(), code(), ttl(), this.before);
     log.info("GIVEN - code={}", code);
 
     final Instant when = this.before.minus(1L, NANOS);
@@ -368,9 +391,10 @@ public class ValidationCodeEntityTest {
   public void test_use_with_after_expireAt() throws Exception {
     // GIVEN
     final Account account = this.accountFactory.create(1L, nickname(), false, this.before);
+    final String email = email();
     final String code = code();
     final Instant expireAt = this.before.plus(ttl());
-    final ValidationCode validationCode = new ValidationCodeEntity(account, code, expireAt, this.before);
+    final ValidationCode validationCode = new ValidationCodeEntity(account, email, code, expireAt, this.before);
     log.info("GIVEN - validationCode={}", validationCode);
 
     final Instant when = expireAt.plus(1L, NANOS);
@@ -382,12 +406,12 @@ public class ValidationCodeEntityTest {
         .hasMessage("already expired at " + when)
         .hasNoCause();
     assertThat(validationCode)
-        .extracting(ValidationCode::getAccount, ValidationCode::getCode, ValidationCode::getExpireAt,
-            ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt,
-            Updatable::getUpdatedAt)
-        .containsSequence(account, code, expireAt,
-            false, null, true, when,
-            when);
+        .extracting(ValidationCode::getAccount, ValidationCode::getEmail, ValidationCode::getCode,
+            ValidationCode::getExpireAt, ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired,
+            ValidationCode::getExpiredAt, Updatable::getUpdatedAt)
+        .containsSequence(account, email, code,
+            expireAt, false, null, true,
+            when, when);
     assertThat(account)
         .extracting(Account::isEnabled, Updatable::getUpdatedAt)
         .containsSequence(false, this.before);
@@ -397,7 +421,7 @@ public class ValidationCodeEntityTest {
   public void test_use_with_createdAt() throws Exception {
     // GIVEN
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), ttl(), this.before);
+        email(), code(), ttl(), this.before);
     log.info("GIVEN - code={}", code);
 
     // WHEN & THEN
@@ -413,7 +437,7 @@ public class ValidationCodeEntityTest {
   public void test_use_with_before_min_interval() throws Exception {
     // GIVEN
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), ttl(), this.before);
+        email(), code(), ttl(), this.before);
     log.info("GIVEN - code={}", code);
 
     final Instant when = this.before.plus(MIN_USE_INTERVAL).minus(1L, NANOS);
@@ -432,9 +456,10 @@ public class ValidationCodeEntityTest {
   public void test_use_with_min_interval() throws Exception {
     // GIVEN
     final Account account = this.accountFactory.create(1L, nickname(), false, this.before);
+    final String email = email();
     final String code = code();
     final Instant expireAt = this.before.plus(ttl());
-    final ValidationCode validationCode = new ValidationCodeEntity(account, code, expireAt, this.before);
+    final ValidationCode validationCode = new ValidationCodeEntity(account, email, code, expireAt, this.before);
     log.info("GIVEN - validationCode={}", validationCode);
 
     final Instant when = this.before.plus(MIN_USE_INTERVAL);
@@ -446,12 +471,12 @@ public class ValidationCodeEntityTest {
 
     // THEN
     assertThat(validationCode)
-        .extracting(ValidationCode::getAccount, ValidationCode::getCode, ValidationCode::getExpireAt,
-            ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt,
-            Creatable::getCreatedAt, Updatable::getUpdatedAt)
-        .containsSequence(account, code, expireAt,
-            true, when, false, null,
-            this.before, when);
+        .extracting(ValidationCode::getAccount, ValidationCode::getEmail, ValidationCode::getCode,
+            ValidationCode::getExpireAt, ValidationCode::isUsed, ValidationCode::getUsedAt,
+            ValidationCode::isExpired, ValidationCode::getExpiredAt, Creatable::getCreatedAt, Updatable::getUpdatedAt)
+        .containsSequence(account, email, code,
+            expireAt, true, when,
+            false, null, this.before, when);
     assertThat(account)
         .extracting(Account::isEnabled, Creatable::getCreatedAt, Updatable::getUpdatedAt)
         .containsSequence(true, this.before, when);
@@ -461,9 +486,10 @@ public class ValidationCodeEntityTest {
   public void test_use_with_expireAt() throws Exception {
     // GIVEN
     final Account account = this.accountFactory.create(1L, nickname(), false, this.before);
+    final String email = email();
     final String code = code();
     final Instant expireAt = this.before.plus(ttl());
-    final ValidationCode validationCode = new ValidationCodeEntity(account, code, expireAt, this.before);
+    final ValidationCode validationCode = new ValidationCodeEntity(account, email, code, expireAt, this.before);
     log.info("GIVEN - validationCode={}", validationCode);
 
     // WHEN
@@ -472,11 +498,13 @@ public class ValidationCodeEntityTest {
 
     // THEN
     assertThat(validationCode)
-        .extracting(ValidationCode::getAccount, ValidationCode::getCode, ValidationCode::getExpireAt,
-            ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt,
+        .extracting(ValidationCode::getAccount, ValidationCode::getEmail, ValidationCode::getCode,
+            ValidationCode::getExpireAt, ValidationCode::isUsed, ValidationCode::getUsedAt,
+            ValidationCode::isExpired, ValidationCode::getExpiredAt,
             Creatable::getCreatedAt, Updatable::getUpdatedAt)
-        .containsSequence(account, code, expireAt,
-            true, expireAt, false, null,
+        .containsSequence(account, email, code,
+            expireAt, true, expireAt,
+            false, null,
             this.before, expireAt);
     assertThat(account)
         .extracting(Account::isEnabled, Creatable::getCreatedAt, Updatable::getUpdatedAt)
@@ -488,7 +516,7 @@ public class ValidationCodeEntityTest {
     // GIVEN
     final Account account = this.accountFactory.create(1L, nickname(), false, this.before);
     log.info("GIVEN - account={}", account);
-    final ValidationCode code = new ValidationCodeEntity(account, code(), ttl(), this.before);
+    final ValidationCode code = new ValidationCodeEntity(account, email(), code(), ttl(), this.before);
     log.info("GIVEN - code={}", code);
 
     final Instant updatedAt = Instant.now();
@@ -505,7 +533,7 @@ public class ValidationCodeEntityTest {
   public void test_use_already_used() throws Exception {
     // GIVEN
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), ttl(), this.before);
+        email(), code(), ttl(), this.before);
     final Instant usedAt = this.before.plus(MIN_USE_INTERVAL);
     log.info("GIVEN - usedAt={}", usedAt);
 
@@ -523,7 +551,7 @@ public class ValidationCodeEntityTest {
   public void test_expire_with_null() throws Exception {
     // GIVEN
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), ttl(), this.before);
+        email(), code(), ttl(), this.before);
     log.info("GIVEN - code={}", code);
 
     // WHEN & THEN
@@ -538,7 +566,7 @@ public class ValidationCodeEntityTest {
     // GIVEN
     final Instant expireAt = this.before.plus(ttl());
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), expireAt, this.before);
+        email(), code(), expireAt, this.before);
     log.info("GIVEN - code={}", code);
 
     final Instant when = expireAt.minusNanos(1L);
@@ -558,7 +586,7 @@ public class ValidationCodeEntityTest {
     // GIVEN
     final Instant expireAt = this.before.plus(ttl());
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), expireAt, this.before);
+        email(), code(), expireAt, this.before);
     log.info("GIVEN - code={}", code);
 
     // WHEN & THEN
@@ -575,7 +603,7 @@ public class ValidationCodeEntityTest {
     // GIVEN
     final Instant expireAt = this.before.plus(ttl());
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), expireAt, this.before);
+        email(), code(), expireAt, this.before);
     final Instant usedAt = this.before.plus(MIN_USE_INTERVAL);
     log.info("GIVEN - usedAt={}", usedAt);
 
@@ -593,7 +621,7 @@ public class ValidationCodeEntityTest {
   public void test_expire_already_expired() throws Exception {
     // GIVEN
     final ValidationCode code = new ValidationCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), ttl(), this.before);
+        email(), code(), ttl(), this.before);
     final Instant expiredAt = code.getExpireAt().plusNanos(1L);
     code.expire(expiredAt);
     log.info("GIVEN - code={}", code);
@@ -609,9 +637,10 @@ public class ValidationCodeEntityTest {
   public void test_expire() throws Exception {
     // GIVEN
     final Account account = this.accountFactory.create(1L, nickname(), false, this.before);
+    final String email = email();
     final String code = code();
     final Instant expireAt = this.before.plus(ttl());
-    final ValidationCode validationCode = new ValidationCodeEntity(account, code, expireAt, this.before);
+    final ValidationCode validationCode = new ValidationCodeEntity(account, email, code, expireAt, this.before);
     log.info("GIVEN - validationCode={}", validationCode);
 
     final Instant when = expireAt.plusNanos(1L);
@@ -623,10 +652,10 @@ public class ValidationCodeEntityTest {
 
     // THEN
     assertThat(validationCode)
-        .extracting(ValidationCode::getCode, ValidationCode::getExpireAt,
+        .extracting(ValidationCode::getEmail, ValidationCode::getCode, ValidationCode::getExpireAt,
             ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt,
             Creatable::getCreatedAt, Updatable::getUpdatedAt)
-        .containsSequence(code, expireAt,
+        .containsSequence(email, code, expireAt,
             false, null, true, when,
             this.before, when);
     assertThat(validationCode.getAccount())
@@ -639,7 +668,7 @@ public class ValidationCodeEntityTest {
     // GIVEN
     final ValidationCode validationCode = new ValidationCodeEntity(
         this.accountFactory.create(1L, nickname(), false, this.before),
-        code(), this.before);
+        email(), code(), this.before);
     log.info("GIVEN - validationCode={}", validationCode);
 
     // WHEN

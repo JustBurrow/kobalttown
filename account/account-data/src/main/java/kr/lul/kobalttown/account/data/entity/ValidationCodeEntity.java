@@ -29,6 +29,7 @@ import static kr.lul.kobalttown.account.data.mapping.ValidationCodeMapping.*;
 @Table(name = TABLE,
     uniqueConstraints = {@UniqueConstraint(name = UQ_VALIDATION_CODE, columnNames = {COL_CODE})},
     indexes = {@Index(name = FK_VALIDATION_CODE_PK_ACCOUNT, columnList = FK_VALIDATION_CODE_PK_ACCOUNT_COLUMNS),
+        @Index(name = IDX_VALIDATION_CODE_EMAIL, columnList = IDX_VALIDATION_CODE_EMAIL_COLUMNS),
         @Index(name = IDX_VALIDATION_CODE_VALID, columnList = IDX_VALIDATION_CODE_VALID_COLUMNS)})
 public class ValidationCodeEntity extends SavableEntity implements ValidationCode {
   @Id
@@ -39,6 +40,8 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
   @JoinColumn(name = COL_ACCOUNT, nullable = false, updatable = false,
       foreignKey = @ForeignKey(name = FK_VALIDATION_CODE_PK_ACCOUNT), referencedColumnName = AccountMapping.COL_ID)
   private Account account;
+  @Column(name = COL_EMAIL, length = EMAIL_MAX_LENGTH, nullable = false, updatable = false)
+  private String email;
   @Column(name = COL_CODE, length = CODE_LENGTH, nullable = false, unique = true, updatable = false)
   private String code;
   @Column(name = COL_EXPIRE_AT, nullable = false, updatable = false)
@@ -54,28 +57,30 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
   public ValidationCodeEntity() {// JPA only
   }
 
-  public ValidationCodeEntity(final Account account, final String code, final Instant createdAt) {
-    this(account, code, TTL_DEFAULT, createdAt);
+  public ValidationCodeEntity(final Account account, final String email, final String code, final Instant createdAt) {
+    this(account, email, code, TTL_DEFAULT, createdAt);
   }
 
-  public ValidationCodeEntity(final Account account, final String code, final Duration ttl, final Instant createdAt) {
-    this(account, code, createdAt.plus(ttl), createdAt);
+  public ValidationCodeEntity(final Account account, final String email, final String code, final Duration ttl,
+      final Instant createdAt) {
+    this(account, email, code, createdAt.plus(ttl), createdAt);
 
     TTL_VALIDATOR.validate(ttl);
   }
 
-  public ValidationCodeEntity(final Account account, final String code, final Instant expireAt,
+  public ValidationCodeEntity(final Account account, final String email, final String code, final Instant expireAt,
       final Instant createdAt) {
     super(createdAt);
 
     ACCOUNT_VALIDATOR.validate(account);
     typeOf(account, AccountEntity.class, "account");
-
+    EMAIL_VALIDATOR.validate(email);
     CODE_VALIDATOR.validate(code);
     EXPIRE_AT_VALIDATOR.validate(expireAt);
     TTL_VALIDATOR.validate(Duration.between(createdAt, expireAt));
 
     this.account = account;
+    this.email = email;
     this.code = code;
     this.expireAt = expireAt;
     this.usedAt = null;
@@ -112,6 +117,11 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
   @Override
   public Account getAccount() {
     return this.account;
+  }
+
+  @Override
+  public String getEmail() {
+    return this.email;
   }
 
   @Override
@@ -204,6 +214,7 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
     return new StringBuilder(ValidationCodeEntity.class.getSimpleName())
                .append("id=").append(this.id)
                .append(", account=").append(this.account.getId())
+               .append(", email=").append(this.email)
                .append(", code=").append(Texts.singleQuote(this.code))
                .append(", expireAt=").append(this.expireAt)
                .append(", usedAt=").append(this.usedAt)
