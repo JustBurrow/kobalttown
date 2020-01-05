@@ -15,7 +15,7 @@ kr.lul.kobalttown:
         mail:
           from: 'Kobalttown Dev<dev@lul.kr>'
           title: 'Verify Your Kobalttown Account'
-          template: 'mail/account/activate-code'
+          template: 'mail/account/validation-code'
 
 spring:
   pid:
