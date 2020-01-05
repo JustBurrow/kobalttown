@@ -4,8 +4,11 @@ import kr.lul.common.data.Context;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
 import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
+import kr.lul.kobalttown.account.data.dao.ValidationCodeDao;
 import kr.lul.kobalttown.account.data.repository.CredentialRepository;
+import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
+import kr.lul.kobalttown.account.domain.ValidationCode;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.service.configuration.ActivateCodeConfiguration;
 import kr.lul.support.spring.web.context.ContextService;
@@ -20,6 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
@@ -43,6 +47,8 @@ public class AccountBorderlineImplTest {
   @Autowired
   private AccountBorderline borderline;
   @Autowired
+  private ValidationCodeDao validationCodeDao;
+  @Autowired
   private CredentialRepository credentialRepository;
   @Autowired
   private TimeProvider timeProvider;
@@ -54,14 +60,6 @@ public class AccountBorderlineImplTest {
 
   @Before
   public void setUp() throws Exception {
-    assertThat(this.activateCode).isNotNull();
-    log.info("SETUP - activateCode={}", this.activateCode);
-
-    assertThat(this.borderline).isNotNull();
-    assertThat(this.credentialRepository).isNotNull();
-    assertThat(this.contextService).isNotNull();
-    assertThat(this.timeProvider).isNotNull();
-
     this.context = this.contextService.issue();
     log.info("SETUP - context={}", this.context);
     this.before = this.timeProvider.zonedDateTime();
@@ -170,5 +168,20 @@ public class AccountBorderlineImplTest {
         .isNotNull()
         .extracting(Credential::getPublicKey)
         .isEqualTo(userKey);
+
+    final List<ValidationCode> validationCodes = this.validationCodeDao.list(new Context(), email);
+    log.info("THEN - validationCodes={}", validationCodes);
+    if (this.activateCode.isEnable()) {
+      assertThat(validationCodes)
+          .isNotNull();
+      assertThat(validationCodes.get(0))
+          .isNotNull()
+          .extracting(ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt)
+          .containsSequence(false, null, false, null);
+      assertThat(validationCodes.get(0).getAccount())
+          .isNotNull()
+          .extracting(Account::getId, Account::isEnabled)
+          .containsSequence(dto.getId(), false);
+    }
   }
 }
