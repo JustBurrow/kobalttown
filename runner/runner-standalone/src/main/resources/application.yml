@@ -35,6 +35,8 @@ spring:
         starttls.enable: true
   thymeleaf:
     prefix: file:./templates/
+  messages:
+    basename: i18n/messages
 
 server:
   servlet:

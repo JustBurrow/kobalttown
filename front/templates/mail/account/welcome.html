@@ -11,9 +11,12 @@
     <h1>Welcome to Kobalttown</h1>
     <!--/*@thymesVar id="nickname" type="java.lang.String"*/-->
     <!--/*@thymesVar id="email" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="userKey" type="java.lang.String"*/-->
     <dl>
         <dt>Nickname</dt>
         <dd th:text="${nickname}">nickname</dd>
+        <dt>User Key</dt>
+        <dd th:text="${userKey}">user key</dd>
         <dt>E-Mail</dt>
         <dd th:text="${email}">email</dd>
     </dl>

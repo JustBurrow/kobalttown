@@ -5,52 +5,57 @@
     <meta name="author" content="justburrow" th:remove="all"/>
     <meta name="since" content="2019/11/24 14:00" th:remove="all"/>
     <meta charset="UTF-8"/>
-    <title>Account create</title>
+    <title th:text="#{account.create.head.title(#{global.head.title.postfix})}">Account create</title>
 </head>
 <body>
 <header th:replace="component/navbar/index :: navbar">
     navigation bar
 </header>
 <main>
-    <h1>Account create</h1>
+    <h1 th:text="#{account.create.title}">Account create</h1>
     <form id="form-create" action="#" method="post"
           th:action="@{/accounts}"></form>
     <!--/*@thymesVar id="createReq" type="kr.lul.kobalttown.account.web.controller.request.CreateAccountReq"*/-->
     <div th:object="${createReq}">
         <div>
-            <label for="input-nickname">Nickname</label>
+            <label for="input-nickname" th:text="#{account.create.form.nickname.label}">Nickname</label>
             <input id="input-nickname"
                    form="form-create" name="nickname"
                    required="required"
-                   th:field="*{nickname}"/>
+                   th:field="*{nickname}"
+                   th:placeholder="#{account.create.form.nickname.placeholder}"/>
         </div>
         <div>
-            <label for="input-email">E-Mail</label>
+            <label for="input-email" th:text="#{account.create.form.email.label}">E-Mail</label>
             <input type="email" id="input-email"
                    form="form-create" name="email"
                    required="required"
-                   th:field="*{email}"/>
+                   th:field="*{email}"
+                   th:placeholder="#{account.create.form.email.placeholder}"/>
         </div>
         <div>
-            <label for="input-user-key">User Key</label>
+            <label for="input-user-key" th:text="#{account.create.form.user-key.label}">User Key</label>
             <input id="input-user-key"
                    form="form-create" name="userKey"
                    required="required"
-                   th:field="*{userKey}"/>
+                   th:field="*{userKey}"
+                   th:placeholder="#{account.create.form.user-key.placeholder}"/>
         </div>
         <div>
-            <label for="input-password">Password</label>
+            <label for="input-password" th:text="#{account.create.form.password.label}">Password</label>
             <input type="password" id="input-password"
                    form="form-create" name="password"
                    required="required"
-                   th:field="*{password}"/>
+                   th:field="*{password}"
+                   th:placeholder="#{account.create.form.password.placeholder}"/>
         </div>
         <div>
-            <label for="input-confirm">PW Confirm</label>
+            <label for="input-confirm" th:text="#{account.create.form.confirm.label}">PW Confirm</label>
             <input type="password" id="input-confirm"
                    form="form-create" name="confirm"
                    required="required"
-                   th:field="*{confirm}"/>
+                   th:field="*{confirm}"
+                   th:placeholder="#{account.create.form.confirm.placeholder}"/>
         </div>
         <div>
             <button form="form-create">SUBMIT</button>
