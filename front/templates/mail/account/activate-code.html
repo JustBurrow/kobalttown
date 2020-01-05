@@ -7,16 +7,23 @@
 </head>
 <body>
 <div>
+    <h1 th:text="#{mail.activation-code.message.title}">Verify Your Account</h1>
     <!--/*@thymesVar id="expireAt" type="java.time.ZonedDateTime"*/-->
     <!--/*@thymesVar id="domain" type="java.lang.String"*/-->
     <!--/*@thymesVar id="code" type="java.lang.String"*/-->
-    <div class="jumbo">
-        <p>Copy & Goto bellow url until
-            <time th:datetime="${expireAt}" th:text="${#temporals.format(expireAt,'yyyy-MM-dd HH:mm')}">expire at</time>
-            :
-        </p>
-        <p th:text="'https://'+${domain}+'/accounts/activate/'+${code}">
-            https://kobalttown.lul.kr/accounts/activate/code</p>
+    <div>
+        <p th:text="#{mail.activation-code.message.description}">Copy & Goto bellow url until</p>
+        <dl>
+            <dt th:text="#{mail.activation-code.message.url.label}">URL</dt>
+            <dd><span th:text="'https://'+${domain}+'/accounts/activate/'+${code}">
+                https://kobalttown.lul.kr/accounts/activate/code</span></dd>
+            <dt th:text="#{mail.activation-code.message.expire.label}">EXPIRE</dt>
+            <dd>
+                <time th:datetime="${expireAt}"
+                      th:text="${#temporals.format(expireAt,'yyyy-MM-dd HH:mm')}">expire at
+                </time>
+            </dd>
+        </dl>
     </div>
 </div>
 </body>

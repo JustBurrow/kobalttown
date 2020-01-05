@@ -36,7 +36,7 @@ spring:
   thymeleaf:
     prefix: file:./templates/
   messages:
-    basename: i18n/messages
+    basename: i18n/messages,i18n/errors,i18n/mails
 
 server:
   servlet:
