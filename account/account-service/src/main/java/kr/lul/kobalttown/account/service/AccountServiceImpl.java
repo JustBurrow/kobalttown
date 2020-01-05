@@ -25,9 +25,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -76,93 +78,102 @@ class AccountServiceImpl implements AccountService {
     log.info("#postConstruct activateCode={}", this.activateCode);
   }
 
+  private Credential createCredential(
+      final Context context, final Account account, final String publicKey, final String password, final Instant createdAt) {
+    if (log.isTraceEnabled())
+      log.trace("#createCredential args : context={}, account={}, publicKey={}, password={}, createdAt={}",
+          context, account, publicKey, password, createdAt);
+
+    Credential credential =
+        this.credentialFactory.create(context, account, publicKey, this.securityEncoder.encode(password), createdAt);
+    credential = this.credentialDao.create(context, credential);
+
+    if (log.isTraceEnabled())
+      log.trace("#createCredential (context={}) return : {}", context, credential);
+    return credential;
+  }
+
   /**
-   * 신규 계정에 가입 환영 메시지를 전송.
+   * 가입 환연 메일 발송.
    *
-   * @param rootParams 신규 계정 정보.
+   * @param context 컨텍스트.
+   * @param account 신규 계정.
+   * @param email   이메일.
+   * @param userKey 로그인용 유저 키.
    *
-   * @return 메일(메시지) 전송 결과.
+   * @return 비동기 발송일 때는 {@link Future<MailResult>}, 동기 발송일 경우에는 {@code null}.
    */
-  private Future<MailResult> sendWelcome(final CreateAccountParams rootParams) {
+  private Future<MailResult> sendWelcome(final Context context, final Account account, final String email, final String userKey) {
+    if (log.isTraceEnabled())
+      log.trace("#sendWelcome args : context={}, account={}, email={}, userKey={}",
+          context, account, email, userKey);
+
+    // 설정.
     final MailConfiguration mailConfig = this.welcome.getMail();
     if (log.isDebugEnabled())
       log.debug("#sendWelcome mailConfig={}", mailConfig);
 
-    // TODO userKey 추가.
+    // 메일 변수 설정.
     final Map<String, Object> model = ofEntries(
-        entry("nickname", rootParams.getNickname()),
-        entry("email", rootParams.getEmail()));
+        entry("nickname", account.getNickname()),
+        entry("email", email),
+        entry("userKey", userKey));
     if (log.isDebugEnabled())
-      log.debug("#sendWelcome (context={}) model={}", rootParams.getContext(), model);
+      log.debug("#sendWelcome (context={}) model={}", context, model);
 
-    final MailParams params = new MailParams(rootParams.getContext(), mailConfig.getFrom(), rootParams.getEmail(),
+    // 메일 발송.
+    final MailParams params = new MailParams(context, mailConfig.getFrom(), email,
         mailConfig.getTitle(), mailConfig.getTemplate(), true, model);
-    if (log.isDebugEnabled())
-      log.debug("#sendWelcome (context={}) params={}", rootParams.getContext(), params);
-
-    final Future<MailResult> future = this.mailService.asyncSend(params);
-    if (log.isDebugEnabled())
-      log.debug("#sendWelcome (context={}) future={}", rootParams.getContext(), future);
-    else if (log.isInfoEnabled())
-      log.info("#sendWelcome (context={}) welcome mail ready to send : to={}", rootParams.getContext(), rootParams.getEmail());
-
-    if (log.isTraceEnabled())
-      log.trace("#sendWelcome (context={}) return : {}", rootParams.getContext(), future);
-    return future;
+    if (this.welcome.isAsync()) {
+      final Future<MailResult> result = this.mailService.asyncSend(params);
+      if (log.isTraceEnabled())
+        log.trace("#sendWelcome (context={}) return : {}", context, result);
+      return result;
+    } else {
+      final MailResult result = this.mailService.send(params);
+      if (log.isTraceEnabled())
+        log.trace("#sendWelcome (context={}) result : result={}", context, result);
+      return null;
+    }
   }
 
-  /**
-   * 계정 활성화 메일을 전송한다.
-   *
-   * @param rootParams     신규 계정 정보.
-   * @param validationCode 전송할 계정 활성화 코드.
-   *
-   * @return 메일 전송 결과.
-   */
-  private Future<MailResult> sendActivateCode(final CreateAccountParams rootParams,
-      final ValidationCode validationCode) {
+  private Future<MailResult> issueActivationCode(
+      final Context context, final Account account, final String email, final Instant createdAt) {
     final MailConfiguration mailConfig = this.activateCode.getMail();
     if (log.isDebugEnabled())
-      log.debug("#sendActivateCode (context={}) mailConfig={}", rootParams.getContext(), mailConfig);
+      log.debug("#sendActivateCode (context={}) mailConfig={}", context, mailConfig);
 
+    // 검증 코드 발행.
+    String code;
+    do {
+      code = code();
+    } while (this.validationCodeDao.exists(context, code));
+    ValidationCode validationCode = this.validationCodeFactory.create(context, account, email, code, createdAt);
+    validationCode = this.validationCodeDao.create(context, validationCode);
+    if (log.isDebugEnabled())
+      log.debug("#issueActivationCode (context={}) validationCode={}", context, validationCode);
+
+    // 메일 내용 설정.
     final Map<String, Object> model = ofEntries(
         entry("domain", this.activateCode.getDomain()),
         entry("code", validationCode.getCode()),
         entry("expireAt", this.timeProvider.zonedDateTime(validationCode.getExpireAt())));
     if (log.isDebugEnabled())
-      log.debug("#sendActivateCode (context={}) model={}", rootParams.getContext(), model);
+      log.debug("#issueActivationCode (context={}) model={}", context, model);
 
-    final MailParams params = new MailParams(rootParams.getContext(), mailConfig.getFrom(), rootParams.getEmail(),
+    // 검증 코드 메일 전송.
+    final MailParams params = new MailParams(context, mailConfig.getFrom(), email,
         mailConfig.getTitle(), mailConfig.getTemplate(), true, model);
-    if (log.isDebugEnabled())
-      log.debug("#sendActivateCode (context={}) params={}", rootParams.getContext(), params);
-
-    final Future<MailResult> future = this.mailService.asyncSend(params);
-    if (log.isDebugEnabled())
-      log.debug("#sendActivateCode (context={}) future={}", rootParams.getContext(), future);
-    else if (log.isInfoEnabled())
-      log.info("#sendActivateCode (context={}) activate code ready to send : to={}", rootParams.getContext(), future);
-
-    if (log.isTraceEnabled())
-      log.trace("#sendActivateCode (context={}) return : {}", rootParams.getContext(), future);
-    return future;
-  }
-
-  private void handleAsyncTasks(final Context context, final List<Future> asyncTasks) {
-    for (final Future task : asyncTasks) {
-      if (log.isDebugEnabled())
-        log.debug("#handleAsyncTasks (context={}) task={}", context, task);
-
-      try {
-        final Object rv = task.get();
-        if (log.isDebugEnabled())
-          log.debug("#handleAsyncTasks (context={}) task complete : rv={}", context, rv);
-      } catch (final InterruptedException | ExecutionException e) {
-        // TODO 에러 처리.
-        final String msg = "fail to wait async task : task=" + task;
-        log.warn(format("#handleAsyncTasks (context=%s) %s", context, msg), e);
-        throw new RuntimeException(msg, e);
-      }
+    if (this.activateCode.isAsync()) {
+      final Future<MailResult> result = this.mailService.asyncSend(params);
+      if (log.isTraceEnabled())
+        log.trace("#issueActivationCode (context={}) return : {}", context, result);
+      return result;
+    } else {
+      final MailResult result = this.mailService.send(params);
+      if (log.isTraceEnabled())
+        log.trace("#issueActivationCode (context={}) result : result={}", context, result);
+      return null;
     }
   }
 
@@ -175,60 +186,39 @@ class AccountServiceImpl implements AccountService {
       log.trace("#create args : params={}", params);
     notNull(params, "params");
 
-    Account account;
-    Credential credential;
-
     // 계정 정보 등록.
-    account = this.factory.create(
+    Account account = this.factory.create(
         params.getContext(), params.getNickname(), !this.activateCode.isEnable(), params.getTimestamp());
     account = this.dao.create(params.getContext(), account);
     if (log.isDebugEnabled())
       log.debug("#create (context={}) account={}", params.getContext(), account);
 
     // 인증 정보 등록.
-    credential = this.credentialFactory.create(params.getContext(), account, params.getUserKey(),
-        this.securityEncoder.encode(params.getPassword()), params.getTimestamp());
-    credential = this.credentialDao.create(params.getContext(), credential);
+    final List<Credential> credentials = List.of(
+        createCredential(params.getContext(), account, params.getUserKey(), params.getPassword(), params.getTimestamp()),
+        createCredential(params.getContext(), account, params.getEmail(), params.getPassword(), params.getTimestamp()));
     if (log.isDebugEnabled())
-      log.debug("#create (context={}) nickname credential : {}", params.getContext(), credential);
+      log.debug("#create (context={}) credentials={}", params.getContext(), credentials);
 
-    credential = this.credentialFactory.create(params.getContext(), account, params.getEmail(),
-        this.securityEncoder.encode(params.getPassword()), params.getTimestamp());
-    credential = this.credentialDao.create(params.getContext(), credential);
-    if (log.isDebugEnabled())
-      log.debug("#create (context={}) email credential : {}", params.getContext(), credential);
-
-    final List<Future> asyncTasks = new ArrayList<>();
-    // TODO 안내 메일 관련 코드를 해당 메서드로 이동.
+    final List<Future<MailResult>> tasks = new ArrayList<>();
     // 신규 계정 정보 알림.
-    if (this.welcome.isEnable()) {
-      if (this.welcome.isAsync())
-        asyncTasks.add(sendWelcome(params));
-      else
-        sendWelcome(params);
-    } else if (log.isInfoEnabled()) {
-      log.info("#create (context={}) welcome disabled. do not send welcome email : nickname={}, email={}",
-          params.getContext(), params.getNickname(), params.getEmail());
-    }
+    if (this.welcome.isEnable())
+      tasks.add(sendWelcome(params.getContext(), account, params.getEmail(), params.getUserKey()));
 
-    if (this.activateCode.isEnable()) {
-      String code;
-      do {
-        code = code();
-      } while (this.validationCodeDao.exists(params.getContext(), code));
-      final ValidationCode validationCode = this.validationCodeDao.create(params.getContext(),
-          this.validationCodeFactory.create(params.getContext(), account, params.getEmail(), code, params.getTimestamp()));
-      if (this.activateCode.isAsync())
-        asyncTasks.add(sendActivateCode(params, validationCode));
-      else
-        sendActivateCode(params, validationCode);
-    } else if (log.isInfoEnabled()) {
-      log.info("#create (context={}) activate code disabled. do not send validation email : nickname={}, email={}",
-          params.getContext(), params.getNickname(), params.getEmail());
-    }
+    // 계정 활성화 코드 발행 및 전송.
+    if (this.activateCode.isEnable())
+      tasks.add(issueActivationCode(params.getContext(), account, params.getEmail(), params.getTimestamp()));
 
-    if (!asyncTasks.isEmpty())
-      handleAsyncTasks(params.getContext(), asyncTasks);
+    // 비동기 작업 결과 처리.
+    tasks.stream().filter(Objects::nonNull).forEach(task -> {
+      try {
+        final MailResult result = task.get();
+        if (log.isInfoEnabled())
+          log.info("#create (context={}) result={}", params.getContext(), result);
+      } catch (final InterruptedException | ExecutionException e) {
+        log.warn(format("#create (context={}) fail to complete async task : task" + task, e));
+      }
+    });
 
     if (log.isTraceEnabled())
       log.trace("#create (context={}) return : {}", params.getContext(), account);
