@@ -6,6 +6,7 @@ import kr.lul.common.util.Validator;
 import kr.lul.common.util.validator.RegexValidator;
 
 import java.time.Instant;
+import java.util.Set;
 
 import static java.lang.String.format;
 import static kr.lul.common.util.Texts.singleQuote;
@@ -24,6 +25,7 @@ public interface Account extends Savable<Instant> {
    * {@link #getNickname()}의 최대 길이.
    */
   int NICKNAME_MAX_LENGTH = 64;
+  Set<Character> NICKNAME_ILLEGAL_CHARACTERS = Set.of('\n', '\r', '\t');
   /**
    * 사용 가능한 {@link #getNickname()}의 패턴.
    */
@@ -32,7 +34,7 @@ public interface Account extends Savable<Instant> {
   /**
    * 사용 가능한 별명인지 확인한다.
    */
-  Validator<String> NICKNAME_VALIDATOR = new RegexValidator<>(ATTR_NICKNAME, NICKNAME_REGEX) {
+  Validator<String> NICKNAME_VALIDATOR = new RegexValidator(ATTR_NICKNAME, NICKNAME_REGEX) {
     @Override
     public void validate(final String nickname) throws ValidationException {
       if (null == nickname) {
@@ -40,9 +42,16 @@ public interface Account extends Savable<Instant> {
       } else if (nickname.isEmpty()) {
         throw new ValidationException(ATTR_NICKNAME, nickname, ATTR_NICKNAME + " is empty.");
       } else if (NICKNAME_MAX_LENGTH < nickname.length()) {
-        throw new ValidationException(ATTR_NICKNAME, nickname,
-            format("too long nickname : nickname=%s, length=%d, maxLength=%d",
-                singleQuote(nickname), nickname.length(), NICKNAME_MAX_LENGTH));
+        throw new ValidationException(ATTR_NICKNAME, nickname, format("too long nickname : nickname=%s, length=%d, maxLength=%d",
+            singleQuote(nickname), nickname.length(), NICKNAME_MAX_LENGTH));
+      }
+
+      for (final char c : NICKNAME_ILLEGAL_CHARACTERS) {
+        if (0 <= nickname.indexOf(c)) {
+          final int i = c;
+          throw new ValidationException(ATTR_NICKNAME, nickname,
+              format("nickname contains illegal character : nickname=%s, illegalCharacter=\\u%04x", singleQuote(nickname), i));
+        }
       }
 
       super.validate(nickname);
