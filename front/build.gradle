@@ -8,6 +8,8 @@ dependencies {
 
 idea {
   module {
-    sourceDirs += file("${projectDir}/templates")
+    sourceDirs.remove(file("${projectDir}/src"))
+    resourceDirs += file("${projectDir}/templates")
+    resourceDirs += file("${projectDir}/i18n")
   }
 }
