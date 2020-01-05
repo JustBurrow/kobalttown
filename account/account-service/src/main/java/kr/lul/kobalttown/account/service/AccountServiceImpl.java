@@ -76,6 +76,13 @@ class AccountServiceImpl implements AccountService {
     log.info("#postConstruct activateCode={}", this.activateCode);
   }
 
+  /**
+   * 신규 계정에 가입 환영 메시지를 전송.
+   *
+   * @param rootParams 신규 계정 정보.
+   *
+   * @return 메일(메시지) 전송 결과.
+   */
   private Future<MailResult> sendWelcome(final CreateAccountParams rootParams) {
     final MailConfiguration mailConfig = this.welcome.getMail();
     if (log.isDebugEnabled())
@@ -89,8 +96,7 @@ class AccountServiceImpl implements AccountService {
       log.debug("#sendWelcome (context={}) model={}", rootParams.getContext(), model);
 
     final MailParams params = new MailParams(rootParams.getContext(), mailConfig.getFrom(), rootParams.getEmail(),
-        mailConfig.getTitle(), mailConfig.getTemplate(), true,
-        model);
+        mailConfig.getTitle(), mailConfig.getTemplate(), true, model);
     if (log.isDebugEnabled())
       log.debug("#sendWelcome (context={}) params={}", rootParams.getContext(), params);
 
@@ -98,14 +104,21 @@ class AccountServiceImpl implements AccountService {
     if (log.isDebugEnabled())
       log.debug("#sendWelcome (context={}) future={}", rootParams.getContext(), future);
     else if (log.isInfoEnabled())
-      log.info("#sendWelcome (context={}) welcome mail ready to send : to={}", rootParams.getContext(),
-          rootParams.getEmail());
+      log.info("#sendWelcome (context={}) welcome mail ready to send : to={}", rootParams.getContext(), rootParams.getEmail());
 
     if (log.isTraceEnabled())
       log.trace("#sendWelcome (context={}) return : {}", rootParams.getContext(), future);
     return future;
   }
 
+  /**
+   * 계정 활성화 메일을 전송한다.
+   *
+   * @param rootParams     신규 계정 정보.
+   * @param validationCode 전송할 계정 활성화 코드.
+   *
+   * @return 메일 전송 결과.
+   */
   private Future<MailResult> sendActivateCode(final CreateAccountParams rootParams,
       final ValidationCode validationCode) {
     final MailConfiguration mailConfig = this.activateCode.getMail();
@@ -119,10 +132,8 @@ class AccountServiceImpl implements AccountService {
     if (log.isDebugEnabled())
       log.debug("#sendActivateCode (context={}) model={}", rootParams.getContext(), model);
 
-    final MailParams params = new MailParams(rootParams.getContext(),
-        mailConfig.getFrom(), rootParams.getEmail(),
-        mailConfig.getTitle(), mailConfig.getTemplate(), true,
-        model);
+    final MailParams params = new MailParams(rootParams.getContext(), mailConfig.getFrom(), rootParams.getEmail(),
+        mailConfig.getTitle(), mailConfig.getTemplate(), true, model);
     if (log.isDebugEnabled())
       log.debug("#sendActivateCode (context={}) params={}", rootParams.getContext(), params);
 
@@ -191,7 +202,7 @@ class AccountServiceImpl implements AccountService {
     // TODO 안내 메일 관련 코드를 해당 메서드로 이동.
     // 신규 계정 정보 알림.
     if (this.welcome.isEnable()) {
-      if (this.welcome.isWait())
+      if (this.welcome.isAsync())
         asyncTasks.add(sendWelcome(params));
       else
         sendWelcome(params);
@@ -206,8 +217,8 @@ class AccountServiceImpl implements AccountService {
         code = code();
       } while (this.validationCodeDao.exists(params.getContext(), code));
       final ValidationCode validationCode = this.validationCodeDao.create(params.getContext(),
-          this.validationCodeFactory.create(params.getContext(), account, code, params.getTimestamp()));
-      if (this.activateCode.isWait())
+          this.validationCodeFactory.create(params.getContext(), account, params.getEmail(), code, params.getTimestamp()));
+      if (this.activateCode.isAsync())
         asyncTasks.add(sendActivateCode(params, validationCode));
       else
         sendActivateCode(params, validationCode);

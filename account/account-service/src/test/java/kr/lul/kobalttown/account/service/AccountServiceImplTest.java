@@ -97,8 +97,8 @@ public class AccountServiceImplTest {
     final String nickname = nickname();
     final String email = email();
     final String userKey = userKey();
-    final Account expected = this.service.create(
-        new CreateAccountParams(new Context(), nickname, email, userKey, "password", this.before));
+    final Account expected = this.service.create(new CreateAccountParams(
+        new Context(), nickname, email, userKey, "password", this.before));
     log.info("GIVEN - expected={}", expected);
 
     this.entityManager.flush();
@@ -114,8 +114,7 @@ public class AccountServiceImplTest {
     // THEN
     assertThat(actual)
         .isNotNull()
-        .extracting(Account::getId, Account::getNickname, Account::isEnabled,
-            Account::getCreatedAt, Account::getUpdatedAt)
+        .extracting(Account::getId, Account::getNickname, Account::isEnabled, Account::getCreatedAt, Account::getUpdatedAt)
         .containsSequence(expected.getId(), nickname, !this.activateCode.isEnable(), this.before, this.before);
   }
 
@@ -133,8 +132,7 @@ public class AccountServiceImplTest {
     final String nickname = nickname();
     final String email = email();
     final String userKey = userKey();
-    final CreateAccountParams params = new CreateAccountParams(new Context(), nickname, email, userKey,
-        "password", this.before);
+    final CreateAccountParams params = new CreateAccountParams(new Context(), nickname, email, userKey, "password", this.before);
     log.info("GIVEN - params={}", params);
 
     // WHEN
@@ -171,8 +169,7 @@ public class AccountServiceImplTest {
 
     if (this.activateCode.isEnable()) {
       // TODO mockup으로 활성화 비활성화 모두 테스트하기.
-      final List<ValidationCode> validationCodes =
-          this.validationCodeRepository.findAllByAccount((AccountEntity) account);
+      final List<ValidationCode> validationCodes = this.validationCodeRepository.findAllByAccount((AccountEntity) account);
 
       assertThat(validationCodes)
           .isNotNull()
@@ -184,11 +181,9 @@ public class AccountServiceImplTest {
 
       assertThat(validationCode)
           .extracting(ValidationCode::getExpireAt,
-              ValidationCode::isUsed, ValidationCode::getUsedAt,
-              ValidationCode::isExpired, ValidationCode::getExpiredAt)
+              ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt)
           .containsSequence(this.before.plus(TTL_DEFAULT),
-              false, null,
-              false, null);
+              false, null, false, null);
       assertThat(validationCode.getId())
           .isPositive();
       assertThat(validationCode.getCode())
@@ -199,6 +194,7 @@ public class AccountServiceImplTest {
 
   @Test
   public void test_create_when_activate_code_disabled() throws Exception {
+    // TODO 설정을 mockup으로 변경.
     if (this.activateCode.isEnable()) {
       log.info("activate code is enabled.");
       return;
@@ -208,8 +204,7 @@ public class AccountServiceImplTest {
     final String nickname = nickname();
     final String email = email();
     final String userKey = userKey();
-    final CreateAccountParams params = new CreateAccountParams(new Context(), nickname, email, userKey,
-        "password", this.before);
+    final CreateAccountParams params = new CreateAccountParams(new Context(), nickname, email, userKey, "password", this.before);
     log.info("GIVEN - params={}", params);
 
     // WHEN

@@ -8,7 +8,7 @@ import kr.lul.support.spring.mail.MailProperties;
  */
 public class WelcomeProperties {
   private boolean enable;
-  private boolean wait;
+  private boolean async;
   private MailProperties mail;
 
   public boolean isEnable() {
@@ -19,12 +19,12 @@ public class WelcomeProperties {
     this.enable = enable;
   }
 
-  public boolean isWait() {
-    return this.wait;
+  public boolean isAsync() {
+    return this.async;
   }
 
-  public void setWait(final boolean wait) {
-    this.wait = wait;
+  public void setAsync(final boolean async) {
+    this.async = async;
   }
 
   public MailProperties getMail() {
@@ -39,7 +39,7 @@ public class WelcomeProperties {
   public String toString() {
     return new StringBuilder('{')
                .append("enable=").append(this.enable)
-               .append(", wait=").append(this.wait)
+               .append(", async=").append(this.async)
                .append(", mail=").append(this.mail)
                .append('}').toString();
   }

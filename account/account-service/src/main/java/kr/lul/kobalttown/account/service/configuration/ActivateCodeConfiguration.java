@@ -12,7 +12,7 @@ import static kr.lul.common.util.Texts.singleQuote;
  */
 public class ActivateCodeConfiguration {
   private boolean enable;
-  private boolean wait;
+  private boolean async;
   private String domain;
   private MailConfiguration mail;
 
@@ -20,7 +20,7 @@ public class ActivateCodeConfiguration {
     notNull(properties, "properties");
 
     this.enable = properties.isEnable();
-    this.wait = properties.isWait();
+    this.async = properties.isAsync();
     this.domain = properties.getDomain();
     this.mail = new MailConfiguration(properties.getMail());
   }
@@ -29,8 +29,8 @@ public class ActivateCodeConfiguration {
     return this.enable;
   }
 
-  public boolean isWait() {
-    return this.wait;
+  public boolean isAsync() {
+    return this.async;
   }
 
   public String getDomain() {
@@ -45,7 +45,7 @@ public class ActivateCodeConfiguration {
   public String toString() {
     return new StringBuilder()
                .append("{enable=").append(this.enable)
-               .append(", wait=").append(this.wait)
+               .append(", async=").append(this.async)
                .append(", domain=").append(singleQuote(this.domain))
                .append(", mail=").append(this.mail)
                .append('}').toString();

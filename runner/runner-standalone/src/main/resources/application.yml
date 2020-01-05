@@ -3,14 +3,14 @@ kr.lul.kobalttown:
     service:
       welcome:
         enable: true
-        wait: false
+        async: false
         mail:
           from: 'Kobalttown Welcome<dev@lul.kr>'
           title: 'Welcome to Kobalttown!'
           template: mail/account/welcome
       activate-code:
         enable: true
-        wait: false
+        async: false
         domain: 'kobalttown.lul.kr'
         mail:
           from: 'Kobalttown Dev<dev@lul.kr>'

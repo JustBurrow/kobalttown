@@ -18,14 +18,14 @@ public class WelcomeConfiguration {
    * 가입 안내 알림 메시지(메일) 전송을 기다름.
    * 메시지 전송이 끝나야 계정 등록 로직을 완료한다.
    */
-  private boolean wait;
+  private boolean async;
   private MailConfiguration mail;
 
   public WelcomeConfiguration(final WelcomeProperties properties) {
     notNull(properties, "properties");
 
     this.enable = properties.isEnable();
-    this.wait = properties.isWait();
+    this.async = properties.isAsync();
     this.mail = new MailConfiguration(properties.getMail());
   }
 
@@ -33,8 +33,8 @@ public class WelcomeConfiguration {
     return this.enable;
   }
 
-  public boolean isWait() {
-    return this.wait;
+  public boolean isAsync() {
+    return this.async;
   }
 
   public MailConfiguration getMail() {
@@ -45,7 +45,7 @@ public class WelcomeConfiguration {
   public String toString() {
     return new StringBuilder('{')
                .append("enable=").append(this.enable)
-               .append(", wait=").append(this.wait)
+               .append(", async=").append(this.async)
                .append(", mail=").append(this.mail)
                .append('}').toString();
   }
