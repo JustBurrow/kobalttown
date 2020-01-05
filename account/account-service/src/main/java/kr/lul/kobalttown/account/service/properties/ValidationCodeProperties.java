@@ -11,7 +11,7 @@ import static kr.lul.common.util.Texts.singleQuote;
  * @author justburrow
  * @since 2019/12/18
  */
-public class ActivateCodeProperties {
+public class ValidationCodeProperties {
   /**
    * 계정 인증 코드를 사용할지 여부.
    */

@@ -11,7 +11,7 @@ import kr.lul.kobalttown.account.data.factory.ValidationCodeFactory;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.domain.ValidationCode;
-import kr.lul.kobalttown.account.service.configuration.ActivateCodeConfiguration;
+import kr.lul.kobalttown.account.service.configuration.ValidationCodeConfiguration;
 import kr.lul.kobalttown.account.service.configuration.WelcomeConfiguration;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
@@ -51,7 +51,7 @@ class AccountServiceImpl implements AccountService {
   @Autowired
   private WelcomeConfiguration welcome;
   @Autowired
-  private ActivateCodeConfiguration activateCode;
+  private ValidationCodeConfiguration validationCode;
 
   @Autowired
   private AccountFactory factory;
@@ -75,7 +75,7 @@ class AccountServiceImpl implements AccountService {
   @PostConstruct
   private void postConstruct() {
     log.info("#postConstruct welcome={}", this.welcome);
-    log.info("#postConstruct activateCode={}", this.activateCode);
+    log.info("#postConstruct validationCode={}", this.validationCode);
   }
 
   private Credential createCredential(
@@ -139,7 +139,7 @@ class AccountServiceImpl implements AccountService {
 
   private Future<MailResult> issueActivationCode(
       final Context context, final Account account, final String email, final Instant createdAt) {
-    final MailConfiguration mailConfig = this.activateCode.getMail();
+    final MailConfiguration mailConfig = this.validationCode.getMail();
     if (log.isDebugEnabled())
       log.debug("#sendActivateCode (context={}) mailConfig={}", context, mailConfig);
 
@@ -155,7 +155,7 @@ class AccountServiceImpl implements AccountService {
 
     // 메일 내용 설정.
     final Map<String, Object> model = ofEntries(
-        entry("domain", this.activateCode.getDomain()),
+        entry("domain", this.validationCode.getDomain()),
         entry("code", validationCode.getCode()),
         entry("expireAt", this.timeProvider.zonedDateTime(validationCode.getExpireAt())));
     if (log.isDebugEnabled())
@@ -164,7 +164,7 @@ class AccountServiceImpl implements AccountService {
     // 검증 코드 메일 전송.
     final MailParams params = new MailParams(context, mailConfig.getFrom(), email,
         mailConfig.getTitle(), mailConfig.getTemplate(), true, model);
-    if (this.activateCode.isAsync()) {
+    if (this.validationCode.isAsync()) {
       final Future<MailResult> result = this.mailService.asyncSend(params);
       if (log.isTraceEnabled())
         log.trace("#issueActivationCode (context={}) return : {}", context, result);
@@ -188,7 +188,7 @@ class AccountServiceImpl implements AccountService {
 
     // 계정 정보 등록.
     Account account = this.factory.create(
-        params.getContext(), params.getNickname(), !this.activateCode.isEnable(), params.getTimestamp());
+        params.getContext(), params.getNickname(), !this.validationCode.isEnable(), params.getTimestamp());
     account = this.dao.create(params.getContext(), account);
     if (log.isDebugEnabled())
       log.debug("#create (context={}) account={}", params.getContext(), account);
@@ -206,7 +206,7 @@ class AccountServiceImpl implements AccountService {
       tasks.add(sendWelcome(params.getContext(), account, params.getEmail(), params.getUserKey()));
 
     // 계정 활성화 코드 발행 및 전송.
-    if (this.activateCode.isEnable())
+    if (this.validationCode.isEnable())
       tasks.add(issueActivationCode(params.getContext(), account, params.getEmail(), params.getTimestamp()));
 
     // 비동기 작업 결과 처리.

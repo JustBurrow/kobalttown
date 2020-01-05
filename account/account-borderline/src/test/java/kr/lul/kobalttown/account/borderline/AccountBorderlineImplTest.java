@@ -10,7 +10,7 @@ import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.domain.ValidationCode;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
-import kr.lul.kobalttown.account.service.configuration.ActivateCodeConfiguration;
+import kr.lul.kobalttown.account.service.configuration.ValidationCodeConfiguration;
 import kr.lul.support.spring.web.context.ContextService;
 import org.junit.After;
 import org.junit.Before;
@@ -42,7 +42,7 @@ public class AccountBorderlineImplTest {
   private static final Logger log = getLogger(AccountBorderlineImplTest.class);
 
   @Autowired
-  private ActivateCodeConfiguration activateCode;
+  private ValidationCodeConfiguration validationCode;
 
   @Autowired
   private AccountBorderline borderline;
@@ -120,7 +120,7 @@ public class AccountBorderlineImplTest {
         .isNotNull()
         .extracting(AccountDetailDto::getId, AccountDetailDto::getNickname, AccountDetailDto::isEnabled,
             AccountDetailDto::getCreatedAt, AccountDetailDto::getUpdatedAt)
-        .containsSequence(expected.getId(), nickname, !this.activateCode.isEnable(),
+        .containsSequence(expected.getId(), nickname, !this.validationCode.isEnable(),
             this.timeProvider.zonedDateTime(createdAt), this.timeProvider.zonedDateTime(createdAt));
   }
 
@@ -149,7 +149,7 @@ public class AccountBorderlineImplTest {
     assertThat(dto)
         .isNotNull()
         .extracting(AccountDetailDto::getNickname, AccountDetailDto::isEnabled)
-        .containsSequence(nickname, !this.activateCode.isEnable());
+        .containsSequence(nickname, !this.validationCode.isEnable());
     assertThat(dto.getId())
         .isPositive();
     assertThat(dto.getCreatedAt())
@@ -171,7 +171,7 @@ public class AccountBorderlineImplTest {
 
     final List<ValidationCode> validationCodes = this.validationCodeDao.list(new Context(), email);
     log.info("THEN - validationCodes={}", validationCodes);
-    if (this.activateCode.isEnable()) {
+    if (this.validationCode.isEnable()) {
       assertThat(validationCodes)
           .isNotNull();
       assertThat(validationCodes.get(0))

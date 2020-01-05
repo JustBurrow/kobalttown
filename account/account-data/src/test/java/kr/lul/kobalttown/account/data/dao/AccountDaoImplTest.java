@@ -41,9 +41,6 @@ public class AccountDaoImplTest {
 
   @Before
   public void setUp() throws Exception {
-    assertThat(this.dao).isNotNull();
-    assertThat(this.timeProvider).isNotNull();
-
     this.instant = this.timeProvider.now();
     log.info("SETUP - instant={}", this.instant);
   }

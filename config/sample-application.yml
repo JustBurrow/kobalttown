@@ -8,13 +8,13 @@ kr.lul.kobalttown:
           from: 'Kobalttown Welcome<dev@lul.kr>'
           title: 'Welcome to Kobalttown!'
           template: mail/account/welcome
-      activate-code:
+      validation-code:
         enable: true
         async: true
         domain: 'kobalttown.lul.kr'
         mail:
           from: 'Kobalttown Dev<dev@lul.kr>'
-          title: 'Welcome to Kobalttown'
+          title: 'Verify Your Kobalttown Account'
           template: 'mail/account/activate-code'
 
 spring:
@@ -37,7 +37,7 @@ spring:
         starttls.enable: true
   thymeleaf:
     cache: false
-    prefix: file:~/JustBurrow/kobalttown/front/templates/
+    prefix: file:<path to front module>/templates/
   messages:
     cache-duration: 0
 
@@ -52,4 +52,4 @@ logging:
     console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%p) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%t]){faint} %clr(%logger){cyan} %clr(:){faint} %m%n%wEx"
   level:
     root: info
-    kr.lul.kobalttown:  debug
+    kr.lul.kobalttown: info

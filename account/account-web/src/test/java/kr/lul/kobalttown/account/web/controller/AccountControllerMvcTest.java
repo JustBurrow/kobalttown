@@ -31,7 +31,6 @@ import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.userKey;
 import static kr.lul.kobalttown.page.account.AccountMvc.*;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -68,11 +67,6 @@ public class AccountControllerMvcTest {
 
   @Before
   public void setUp() throws Exception {
-    assertThat(this.mock).isNotNull();
-    assertThat(this.borderline).isNotNull();
-    assertThat(this.contextService).isNotNull();
-    assertThat(this.timeProvider).isNotNull();
-
     this.context = this.contextService.issue();
     log.info("SETUP - context={}", this.context);
 

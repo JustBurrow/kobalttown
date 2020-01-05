@@ -2,7 +2,6 @@ package kr.lul.kobalttown.account.data.repository;
 
 import kr.lul.kobalttown.account.data.entity.AccountEntity;
 import kr.lul.support.spring.data.jpa.entiy.SavableEntity;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -30,11 +29,6 @@ public class AccountRepositoryTest {
 
   @Autowired
   private AccountRepository repository;
-
-  @Before
-  public void setUp() throws Exception {
-    assertThat(this.repository).isNotNull();
-  }
 
   @Test
   public void test_findAll() throws Exception {

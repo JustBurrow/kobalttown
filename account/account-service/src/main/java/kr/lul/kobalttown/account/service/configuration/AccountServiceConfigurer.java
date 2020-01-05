@@ -36,14 +36,14 @@ public class AccountServiceConfigurer {
   @Bean
   public WelcomeConfiguration welcomeConfiguration() {
     final WelcomeConfiguration configuration = accountServiceConfiguration().getWelcome();
-    log.info("welcomeConfiguration={}", configuration);
+    log.info("#welcomeConfiguration configuration={}", configuration);
     return configuration;
   }
 
   @Bean
-  public ActivateCodeConfiguration activateCodeConfiguration() {
-    final ActivateCodeConfiguration activateCodeConfiguration = accountServiceConfiguration().getActivateCode();
-    log.info("activateCodeConfiguration={}", activateCodeConfiguration);
-    return activateCodeConfiguration;
+  public ValidationCodeConfiguration validationCodeConfiguration() {
+    final ValidationCodeConfiguration configuration = accountServiceConfiguration().getValidationCode();
+    log.info("#validationCodeConfiguration configuration={}", configuration);
+    return configuration;
   }
 }

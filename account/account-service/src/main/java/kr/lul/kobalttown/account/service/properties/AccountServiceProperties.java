@@ -17,7 +17,7 @@ public class AccountServiceProperties {
   @NotNull
   private WelcomeProperties welcome;
   @NotNull
-  private ActivateCodeProperties activateCode;
+  private ValidationCodeProperties validationCode;
 
   public WelcomeProperties getWelcome() {
     return this.welcome;
@@ -27,19 +27,19 @@ public class AccountServiceProperties {
     this.welcome = welcome;
   }
 
-  public ActivateCodeProperties getActivateCode() {
-    return this.activateCode;
+  public ValidationCodeProperties getValidationCode() {
+    return this.validationCode;
   }
 
-  public void setActivateCode(final ActivateCodeProperties activateCode) {
-    this.activateCode = activateCode;
+  public void setValidationCode(final ValidationCodeProperties validationCode) {
+    this.validationCode = validationCode;
   }
 
   @Override
   public String toString() {
     return new StringBuilder('{')
-        .append("welcome=").append(this.welcome)
-        .append(", activateCode=").append(this.activateCode)
-        .append('}').toString();
+               .append("welcome=").append(this.welcome)
+               .append(", validationCode=").append(this.validationCode)
+               .append('}').toString();
   }
 }

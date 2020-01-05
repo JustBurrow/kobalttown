@@ -10,7 +10,7 @@ import kr.lul.kobalttown.account.data.repository.ValidationCodeRepository;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.domain.ValidationCode;
-import kr.lul.kobalttown.account.service.configuration.ActivateCodeConfiguration;
+import kr.lul.kobalttown.account.service.configuration.ValidationCodeConfiguration;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
 import org.junit.Before;
@@ -47,7 +47,7 @@ public class AccountServiceImplTest {
   private static final Logger log = getLogger(AccountServiceImplTest.class);
 
   @Autowired
-  private ActivateCodeConfiguration activateCode;
+  private ValidationCodeConfiguration validationCode;
 
   @Autowired
   private AccountService service;
@@ -64,13 +64,7 @@ public class AccountServiceImplTest {
 
   @Before
   public void setUp() throws Exception {
-    assertThat(this.service).isNotNull();
-    assertThat(this.credentialRepository).isNotNull();
-    assertThat(this.validationCodeRepository).isNotNull();
-    assertThat(this.entityManager).isNotNull();
-    assertThat(this.activateCode).isNotNull();
-    log.info("SETUP - activateCode={}", this.activateCode);
-    assertThat(this.timeProvider).isNotNull();
+    log.info("SETUP - validationCode={}", this.validationCode);
 
     this.before = this.timeProvider.now();
     log.info("SETUP - before={}", this.before);
@@ -115,7 +109,7 @@ public class AccountServiceImplTest {
     assertThat(actual)
         .isNotNull()
         .extracting(Account::getId, Account::getNickname, Account::isEnabled, Account::getCreatedAt, Account::getUpdatedAt)
-        .containsSequence(expected.getId(), nickname, !this.activateCode.isEnable(), this.before, this.before);
+        .containsSequence(expected.getId(), nickname, !this.validationCode.isEnable(), this.before, this.before);
   }
 
   @Test
@@ -143,7 +137,7 @@ public class AccountServiceImplTest {
     assertThat(account)
         .isNotNull()
         .extracting(Account::getNickname, Account::isEnabled, Creatable::getCreatedAt, Updatable::getUpdatedAt)
-        .containsSequence(nickname, !this.activateCode.isEnable(), this.before, this.before);
+        .containsSequence(nickname, !this.validationCode.isEnable(), this.before, this.before);
     assertThat(account.getId())
         .isPositive();
 
@@ -167,7 +161,7 @@ public class AccountServiceImplTest {
     assertThat(credential.getSecretHash())
         .isNotEmpty();
 
-    if (this.activateCode.isEnable()) {
+    if (this.validationCode.isEnable()) {
       // TODO mockup으로 활성화 비활성화 모두 테스트하기.
       final List<ValidationCode> validationCodes = this.validationCodeRepository.findAllByAccount((AccountEntity) account);
 
@@ -195,7 +189,7 @@ public class AccountServiceImplTest {
   @Test
   public void test_create_when_activate_code_disabled() throws Exception {
     // TODO 설정을 mockup으로 변경.
-    if (this.activateCode.isEnable()) {
+    if (this.validationCode.isEnable()) {
       log.info("activate code is enabled.");
       return;
     }

@@ -7,7 +7,7 @@
     },
     {
       "name": "kr.lul.kobalttown.account.service.activate-code",
-      "type": "kr.lul.kobalttown.account.service.properties.ActivateCodeProperties",
+      "type": "kr.lul.kobalttown.account.service.properties.ValidationCodeProperties",
       "description": "인증 코드를 사용한 신규 계정 검증기능 설정."
     }
   ],

@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.account.service.configuration;
 
-import kr.lul.kobalttown.account.service.properties.ActivateCodeProperties;
+import kr.lul.kobalttown.account.service.properties.ValidationCodeProperties;
 import kr.lul.support.spring.mail.MailConfiguration;
 
 import static kr.lul.common.util.Arguments.notNull;
@@ -10,13 +10,13 @@ import static kr.lul.common.util.Texts.singleQuote;
  * @author justburrow
  * @since 2019/12/18
  */
-public class ActivateCodeConfiguration {
+public class ValidationCodeConfiguration {
   private boolean enable;
   private boolean async;
   private String domain;
   private MailConfiguration mail;
 
-  public ActivateCodeConfiguration(final ActivateCodeProperties properties) {
+  public ValidationCodeConfiguration(final ValidationCodeProperties properties) {
     notNull(properties, "properties");
 
     this.enable = properties.isEnable();
