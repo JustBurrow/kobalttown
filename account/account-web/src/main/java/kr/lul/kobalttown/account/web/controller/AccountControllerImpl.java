@@ -1,9 +1,13 @@
 package kr.lul.kobalttown.account.web.controller;
 
+import kr.lul.common.data.Context;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.borderline.AccountBorderline;
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
 import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
+import kr.lul.kobalttown.account.borderline.command.ValidateAccountCmd;
+import kr.lul.kobalttown.account.domain.ExpiredValidationCodeException;
+import kr.lul.kobalttown.account.domain.UsedValidationCodeException;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.web.controller.request.CreateAccountReq;
 import kr.lul.kobalttown.page.account.AccountError;
@@ -36,7 +40,7 @@ class AccountControllerImpl implements AccountController {
   private static final Logger log = getLogger(AccountControllerImpl.class);
 
   @Autowired
-  private AccountBorderline accountBorderline;
+  private AccountBorderline borderline;
   @Autowired
   private ContextService contextService;
   @Autowired
@@ -44,7 +48,7 @@ class AccountControllerImpl implements AccountController {
 
   @PostConstruct
   private void postConstruct() {
-    requireNonNull(this.accountBorderline, "accountBorderline is not autowired.");
+    requireNonNull(this.borderline, "accountBorderline is not autowired.");
     requireNonNull(this.contextService, "contextService is not autowired.");
     requireNonNull(this.timeProvider, "timeProvider is not autowired.");
   }
@@ -61,7 +65,7 @@ class AccountControllerImpl implements AccountController {
     try {
       final CreateAccountCmd cmd = new CreateAccountCmd(this.contextService.get(), req.getNickname(),
           req.getEmail(), req.getUserKey(), req.getPassword(), this.timeProvider.now());
-      final AccountDetailDto account = this.accountBorderline.create(cmd);
+      final AccountDetailDto account = this.borderline.create(cmd);
       if (log.isDebugEnabled())
         log.debug("#doCreate account={}", account);
       template = "redirect:/";
@@ -120,6 +124,37 @@ class AccountControllerImpl implements AccountController {
   }
 
   @Override
+  public String validate(@PathVariable(M.TOKEN) final String token, final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#validate args : token={}, model={}", token, model);
+
+    // TODO 인증기능 활성화 여부 확인.
+
+    final Context context = this.contextService.get();
+    final ValidateAccountCmd cmd = new ValidateAccountCmd(context, token, this.timeProvider.now());
+    if (log.isDebugEnabled())
+      log.debug("#validate (context={}) cmd={}", context, cmd);
+
+    String template;
+    try {
+      final AccountDetailDto account = this.borderline.validate(cmd);
+      if (log.isDebugEnabled())
+        log.debug("#validate (context={}) account={}", context, account);
+
+      model.addAttribute(M.ACCOUNT, account);
+      model.addAttribute(M.VALIDATED_AT, cmd.getTimestamp());
+
+      template = V.VALIDATE_SUCCESS;
+    } catch (final ExpiredValidationCodeException | UsedValidationCodeException e) {
+      template = V.VALIDATE_FAIL;
+    }
+
+    if (log.isTraceEnabled())
+      log.trace("#validate (context={}) result : template={}, model={}", context, template, model);
+    return template;
+  }
+
+  @Override
   public String detail(@PathVariable(M.ID) final long id, final Model model) {
     if (log.isTraceEnabled())
       log.trace("#detail args : id={}, model={}", id, model);
@@ -127,7 +162,7 @@ class AccountControllerImpl implements AccountController {
     notNull(model, "model");
 
     final ReadAccountCmd cmd = new ReadAccountCmd(this.contextService.get(), id, this.timeProvider.now());
-    final AccountDetailDto account = this.accountBorderline.read(cmd);
+    final AccountDetailDto account = this.borderline.read(cmd);
     if (log.isDebugEnabled())
       log.debug("#detail account={}", account);
 

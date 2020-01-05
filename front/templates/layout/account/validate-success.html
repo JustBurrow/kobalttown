@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2020/01/05 22:41" th:remove="all"/>
+    <meta charset="UTF-8"/>
+    <title>Validate Complete</title>
+</head>
+<body>
+<header th:replace="component/navbar/index :: navbar">
+    navigation bar
+</header>
+<main>
+    <h1>Validate Complete</h1>
+    <!--/*@thymesVar id="account" type="kr.lul.kobalttown.account.dto.AccountDetailDto"*/-->
+    <dl th:object="${account}">
+        <dt>NICKNAME</dt>
+        <dd th:text="*{nickname}">nickname</dd>
+        <dt>VALIDATED TIME</dt>
+        <dd><!--/*@thymesVar id="validatedAt" type="java.time.ZonedDateTime"*/-->
+            <time th:datetime="${validatedAt}" th:text="${#temporals.format(validatedAt, 'yyyy/MM/dd HH:mm')}">
+                2020/01/01 22:41
+            </time>
+        </dd>
+    </dl>
+    <div>
+        <a href="../root/login.html" th:href="@{/login}" th:text="#{global.navbar.sign-in}">log-in</a>
+    </div>
+</main>
+</body>
+</html>

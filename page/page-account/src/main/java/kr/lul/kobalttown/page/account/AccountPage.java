@@ -16,12 +16,12 @@ public enum AccountPage {
   LIST(new Api(Action.READ, C.GROUP, C.LIST), "신규 계정 목록."),
   DETAIL(new Api(Action.READ, C.GROUP, C.DETAIL), "계정 프로필."),
 
-  ACTIVATE(new Api(Action.READ, C.GROUP, C.ACTIVATE), "새로 등록한 계정을 활성화한다.");
+  ACTIVATE(new Api(Action.READ, C.GROUP, C.VALIDATE), "새로 등록한 계정을 활성화한다.");
 
   public final Api api;
   public final String description;
 
-  AccountPage(Api api, String description) {
+  AccountPage(final Api api, final String description) {
     this.api = api;
     this.description = description;
   }

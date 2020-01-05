@@ -3,6 +3,7 @@ package kr.lul.kobalttown.account.service;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
+import kr.lul.kobalttown.account.service.params.ValidateAccountParams;
 
 /**
  * @author justburrow
@@ -17,6 +18,15 @@ public interface AccountService {
    * @return 등록된 신규 계정.
    */
   Account create(CreateAccountParams params);
+
+  /**
+   * 신청한 신규 계정 정보를 인증한다.
+   *
+   * @param params 인증 정보.
+   *
+   * @return 인증된 계정.
+   */
+  Account validate(ValidateAccountParams params);
 
   /**
    * 계정 조회.

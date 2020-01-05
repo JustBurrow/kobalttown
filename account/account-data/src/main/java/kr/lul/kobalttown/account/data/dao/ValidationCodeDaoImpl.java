@@ -40,6 +40,20 @@ class ValidationCodeDaoImpl implements ValidationCodeDao {
   }
 
   @Override
+  public ValidationCode read(final Context context, final String code) {
+    if (log.isTraceEnabled())
+      log.trace("#read args : context={}, code={}", context, code);
+    notNull(context, "context");
+    notEmpty(code, "code");
+
+    final ValidationCodeEntity validationCode = this.repository.findOneByCode(code);
+
+    if (log.isTraceEnabled())
+      log.trace("#read (context={}) return : {}", context, validationCode);
+    return validationCode;
+  }
+
+  @Override
   public boolean exists(final Context context, final String code) {
     if (log.isTraceEnabled())
       log.trace("#exists args : context={}, code={}", context, code);

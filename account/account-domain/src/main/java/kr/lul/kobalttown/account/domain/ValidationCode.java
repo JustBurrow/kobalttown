@@ -180,9 +180,10 @@ public interface ValidationCode extends Savable<Instant> {
    *
    * @param when 검증코드를 사용한 시각.
    *
-   * @throws IllegalStateException 검증 코드를 사용할 수 없는 경우.
+   * @throws ExpiredValidationCodeException 검증 코드를 사용할 수 없는 경우.
+   * @throws UsedValidationCodeException    검증 코드를 사용할 수 없는 경우.
    */
-  void use(Instant when) throws IllegalStateException;
+  void use(Instant when) throws ExpiredValidationCodeException, UsedValidationCodeException;
 
   /**
    * 유효기간이 지났을 경우에 만료 처리.

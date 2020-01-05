@@ -21,6 +21,16 @@ public interface ValidationCodeDao {
   ValidationCode create(Context context, ValidationCode validationCode);
 
   /**
+   * 코드(토큰)에 해당하는 검증 코드를 반환한다.
+   *
+   * @param context 컨텍스트
+   * @param code    검증용 코드(토큰).
+   *
+   * @return 검증 코드. 없으면 {@code null}. 사용 및 만료 여부는 무관.
+   */
+  ValidationCode read(Context context, String code);
+
+  /**
    * 활성화 코드가 존재하는지 확인한다.
    *
    * @param context 컨텍스트.

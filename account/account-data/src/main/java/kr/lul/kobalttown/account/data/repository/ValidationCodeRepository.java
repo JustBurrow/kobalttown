@@ -14,6 +14,8 @@ import java.util.List;
  */
 @Repository
 public interface ValidationCodeRepository extends JpaRepository<ValidationCodeEntity, Long> {
+  ValidationCodeEntity findOneByCode(String code);
+
   boolean existsByCode(String code);
 
   List<ValidationCode> findAllByAccount(AccountEntity account);

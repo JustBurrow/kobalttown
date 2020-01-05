@@ -2,6 +2,7 @@ package kr.lul.kobalttown.account.borderline;
 
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
 import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
+import kr.lul.kobalttown.account.borderline.command.ValidateAccountCmd;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
 
 /**
@@ -17,6 +18,15 @@ public interface AccountBorderline {
    * @return 등록된 신규 계정 정보.
    */
   AccountDetailDto create(CreateAccountCmd cmd);
+
+  /**
+   * 신규 계정을 인증한다.
+   *
+   * @param cmd 인증 요청 정보.
+   *
+   * @return 인증된 계정 정보. 없으면 {@code null}.
+   */
+  AccountDetailDto validate(ValidateAccountCmd cmd);
 
   /**
    * 등록된 계정 정보 조회.

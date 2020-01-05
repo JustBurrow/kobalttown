@@ -31,6 +31,18 @@ public interface AccountController {
   String create(@ModelAttribute(M.CREATE_REQ) @Valid CreateAccountReq req, BindingResult result, Model model);
 
   /**
+   * 인증 코드를 사용해서 계정을 활성화한다.
+   *
+   * @param token 인증 코드
+   * @param model 모델
+   *
+   * @return 템플릿 이름.
+   */
+  @GetMapping(C.VALIDATE)
+  @PreAuthorize("isAnonymous()")
+  String validate(@PathVariable(M.TOKEN) String token, Model model);
+
+  /**
    * See {@link kr.lul.kobalttown.page.account.AccountPage#DETAIL}.
    */
   @GetMapping(C.DETAIL)

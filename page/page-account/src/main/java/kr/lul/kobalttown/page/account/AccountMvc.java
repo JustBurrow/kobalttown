@@ -10,6 +10,7 @@ public abstract class AccountMvc {
     public static final String CREATE_REQ = "createReq";
     public static final String ACCOUNT = "account";
     public static final String TOKEN = "token";
+    public static final String VALIDATED_AT = "validatedAt";
 
     public M() {
       throw new UnsupportedOperationException();
@@ -22,7 +23,8 @@ public abstract class AccountMvc {
     public static final String CREATE_FORM = GROUP + "/create";
     public static final String LIST = GROUP + "/list";
     public static final String DETAIL = GROUP + "/detail";
-    public static final String ACTIVATE = GROUP + "/activate";
+    public static final String VALIDATE_SUCCESS = GROUP + "/validate-success";
+    public static final String VALIDATE_FAIL = GROUP + "/validate-fail";
 
     public V() {
       throw new UnsupportedOperationException();
@@ -38,7 +40,7 @@ public abstract class AccountMvc {
     public static final String LIST = GROUP;
     public static final String DETAIL = GROUP + "/{" + M.ID + ":[1-9]\\d*}";
 
-    public static final String ACTIVATE = GROUP + "/activate/{" + M.TOKEN + "}";
+    public static final String VALIDATE = GROUP + "/validate/{" + M.TOKEN + "}";
 
     public C() {
       throw new UnsupportedOperationException();

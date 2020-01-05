@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2020/01/05 22:41" th:remove="all"/>
+    <meta charset="UTF-8"/>
+    <title>Validate Complete</title>
+</head>
+<body>
+<header th:replace="component/navbar/index :: navbar">
+    navigation bar
+</header>
+<main>
+    <h1>Validate Complete</h1>
+    <p>사용할 수 없는 인증코드입니다. 다음 이유일 가능성이 있습니다.</p>
+    <ul>
+        <li>발행되지 않은 코드일 경우.</li>
+        <li>이미 사용된 코드일 경우.</li>
+        <li>만료된 코ㄷ일 경우.</li>
+    </ul>
+    <div>
+        <p>인증 코드를 디시 발급하시겠습니까?</p>
+        <div>
+            <a href="#">네</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

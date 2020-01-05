@@ -8,13 +8,12 @@ import kr.lul.kobalttown.account.data.dao.ValidationCodeDao;
 import kr.lul.kobalttown.account.data.factory.AccountFactory;
 import kr.lul.kobalttown.account.data.factory.CredentialFactory;
 import kr.lul.kobalttown.account.data.factory.ValidationCodeFactory;
-import kr.lul.kobalttown.account.domain.Account;
-import kr.lul.kobalttown.account.domain.Credential;
-import kr.lul.kobalttown.account.domain.ValidationCode;
+import kr.lul.kobalttown.account.domain.*;
 import kr.lul.kobalttown.account.service.configuration.ValidationCodeConfiguration;
 import kr.lul.kobalttown.account.service.configuration.WelcomeConfiguration;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
+import kr.lul.kobalttown.account.service.params.ValidateAccountParams;
 import kr.lul.support.spring.mail.MailConfiguration;
 import kr.lul.support.spring.mail.MailParams;
 import kr.lul.support.spring.mail.MailResult;
@@ -222,6 +221,33 @@ class AccountServiceImpl implements AccountService {
 
     if (log.isTraceEnabled())
       log.trace("#create (context={}) return : {}", params.getContext(), account);
+    return account;
+  }
+
+  @Override
+  public Account validate(final ValidateAccountParams params) {
+    if (log.isTraceEnabled())
+      log.trace("#validate args : params={}", params);
+
+    if (!this.validationCode.isEnable())
+      throw new RuntimeException("validation code is not not enabled."); // TODO 예외 타입 추가.
+
+    final ValidationCode validationCode = this.validationCodeDao.read(params.getContext(), params.getValidationCode());
+    if (log.isDebugEnabled())
+      log.debug("#validate (context={}) validationCode={}", params.getContext(), validationCode);
+    if (validationCode.isExpired())
+      throw new ExpiredValidationCodeException(validationCode.getExpiredAt());
+    else if (validationCode.isUsed())
+      throw new UsedValidationCodeException(validationCode.getUsedAt());
+
+    validationCode.use(params.getTimestamp());
+    final Account account = validationCode.getAccount();
+    if (log.isDebugEnabled())
+      log.debug("#validate (context={}) validated : validationCode={}, account={}",
+          params.getContext(), validationCode, account);
+
+    if (log.isTraceEnabled())
+      log.trace("#validate (context={}) return : {}", params.getContext(), account);
     return account;
   }
 
