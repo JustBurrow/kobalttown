@@ -8,6 +8,9 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+import static java.util.Collections.unmodifiableList;
 import static kr.lul.common.util.Arguments.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -49,5 +52,18 @@ class ValidationCodeDaoImpl implements ValidationCodeDao {
     if (log.isTraceEnabled())
       log.trace("#exists (context={}) return : {}", context, exists);
     return exists;
+  }
+
+  @Override
+  public List<ValidationCode> list(final Context context, final String email) {
+    if (log.isTraceEnabled())
+      log.trace("#list args : context={}, email={}", context, email);
+    notEmpty(email, "email");
+
+    final List<ValidationCode> codes = unmodifiableList(this.repository.findAllByEmail(email));
+
+    if (log.isTraceEnabled())
+      log.trace("#list (context={}) return : {}", context, codes);
+    return codes;
   }
 }

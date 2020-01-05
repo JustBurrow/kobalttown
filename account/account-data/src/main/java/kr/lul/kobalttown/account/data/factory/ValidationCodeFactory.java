@@ -53,8 +53,7 @@ public interface ValidationCodeFactory {
    *
    * @return 검증 코드.
    */
-  ValidationCode create(Context context, Account account, String email, String code, Instant expireAt,
-      Instant createdAt);
+  ValidationCode create(Context context, Account account, String email, String code, Instant expireAt, Instant createdAt);
 
   /**
    * 테스트용 검증 코드를 생성.
@@ -71,6 +70,6 @@ public interface ValidationCodeFactory {
    *
    * @return 검증 코드.
    */
-  ValidationCode create(long id, Account account, String email, String code, Instant expireAt, Instant usedAt,
-      Instant expiredAt, Instant createdAt);
+  ValidationCode create(long id, Account account, String email, String code, Instant expireAt,
+      Instant usedAt, Instant expiredAt, Instant createdAt);
 }

@@ -5,6 +5,9 @@ import kr.lul.common.data.Creatable;
 import kr.lul.common.data.Updatable;
 import kr.lul.kobalttown.account.data.entity.AccountEntity;
 import kr.lul.kobalttown.account.data.entity.ValidationCodeEntity;
+import kr.lul.kobalttown.account.data.factory.AccountFactory;
+import kr.lul.kobalttown.account.data.factory.ValidationCodeFactory;
+import kr.lul.kobalttown.account.data.repository.ValidationCodeRepository;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.ValidationCode;
 import org.junit.Before;
@@ -16,7 +19,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 
 import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
@@ -39,17 +44,20 @@ public class ValidationCodeDaoImplTest {
 
   @Autowired
   private ValidationCodeDao dao;
+  @Autowired
+  private ValidationCodeFactory factory;
+  @Autowired
+  private ValidationCodeRepository repository;
 
   @Autowired
   private AccountDao accountDao;
+  @Autowired
+  private AccountFactory accountFactory;
 
   private Instant before;
 
   @Before
   public void setUp() throws Exception {
-    assertThat(this.dao).isNotNull();
-    assertThat(this.accountDao).isNotNull();
-
     this.before = Instant.now();
   }
 
@@ -103,5 +111,53 @@ public class ValidationCodeDaoImplTest {
             false, null, this.before, this.before);
     assertThat(actual.getId())
         .isPositive();
+  }
+
+  @Test
+  public void test_list_with_null_email() throws Exception {
+    assertThatThrownBy(() -> this.dao.list(new Context(), null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("email is null.");
+  }
+
+  @Test
+  public void test_list_with_empty_email() throws Exception {
+    assertThatThrownBy(() -> this.dao.list(new Context(), ""))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("email is empty.");
+  }
+
+  @Test
+  public void test_list() throws Exception {
+    // GIVEN
+    final Context context = new Context();
+    log.info("GIVEN - context={}", context);
+    final Account account =
+        this.accountDao.create(context, this.accountFactory.create(context, nickname(), false, this.before));
+    log.info("GIVEN - account={}", account);
+    final String email = email();
+    final String code = code();
+    final Duration ttl = ttl();
+    final ValidationCode validationCode =
+        this.dao.create(context, this.factory.create(context, account, email, code, ttl, this.before));
+    log.info("GIVEN - validationCode={}", validationCode);
+
+    this.repository.flush();
+
+    // WHEN
+    final List<ValidationCode> list = this.dao.list(new Context(), email);
+    log.info("GIVEN - list={}", list);
+
+    // THEN
+    assertThat(list)
+        .isNotNull()
+        .hasSize(1)
+        .containsOnly(validationCode);
+    assertThat(list.get(0))
+        .isNotNull()
+        .extracting(ValidationCode::getAccount, ValidationCode::getEmail, ValidationCode::getCode,
+            ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt)
+        .containsSequence(account, email, code,
+            false, null, false, null);
   }
 }
