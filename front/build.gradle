@@ -5,11 +5,3 @@ dependencies {
   runtimeOnly project(":account-web")
   runtimeOnly project(":configuration-web")
 }
-
-idea {
-  module {
-    sourceDirs.remove(file("${projectDir}/src"))
-    resourceDirs += file("${projectDir}/templates")
-    resourceDirs += file("${projectDir}/i18n")
-  }
-}
