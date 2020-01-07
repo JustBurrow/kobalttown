@@ -11,9 +11,11 @@ import kr.lul.common.util.validator.RegexValidator;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Set;
 
 import static java.lang.String.format;
 import static java.time.temporal.ChronoUnit.*;
+import static java.util.stream.Collectors.toSet;
 import static kr.lul.common.util.validator.EmailValidator.DEFAULT_DOMAIN_MAX_LENGTH;
 import static kr.lul.common.util.validator.EmailValidator.DEFAULT_LOCAL_MAX_LENGTH;
 
@@ -24,6 +26,55 @@ import static kr.lul.common.util.validator.EmailValidator.DEFAULT_LOCAL_MAX_LENG
  * @since 2020/01/03
  */
 public interface ValidationCode extends Savable<Instant> {
+  /**
+   * 계정 인증 코드의 상태값.
+   *
+   * {@link #ISSUED} ➡️ {@link #USED}, {@link #EXPIRED}, {@link #INVALID}
+   */
+  enum Status {
+    ISSUED(true, "기본 상태. 사용 가능함.", "USED", "EXPIRED", "INVALID"),
+    USED(false, "계정 인증에 사용됨."),
+    EXPIRED(false, "유효기간이 지나 만료됨."),
+    INVALID(false, "사용하지 않은 코드이지만 재발급 등의 이유로 무효화됨.");
+
+    /**
+     * 계정정보 검증에 사용할 수 있는지 여부.
+     */
+    private final boolean valid;
+    private final String description;
+    private final Set<String> nextNames;
+    private Set<Status> nexts;
+
+    private Status(final boolean valid, final String description, final String... nexts) {
+      this.valid = valid;
+      this.description = description;
+      this.nextNames = Set.of(nexts);
+    }
+
+    public boolean valid() {
+      return this.valid;
+    }
+
+    /**
+     * @return 설명.
+     */
+    public String description() {
+      return this.description;
+    }
+
+    /**
+     * @return 가능한 다음 상태. {@code not-null}.
+     */
+    public Set<Status> nexts() {
+      if (null == this.nexts) {
+        this.nexts = this.nextNames.stream()
+                         .map(Status::valueOf)
+                         .collect(toSet());
+      }
+      return this.nexts;
+    }
+  }
+
   String ATTR_ID = "id";
   String ATTR_ACCOUNT = "account";
   String ATTR_EMAIL = "email";
@@ -104,7 +155,7 @@ public interface ValidationCode extends Savable<Instant> {
   /**
    * 계정 등록 후 검증코드 사용까지 최소 시간.
    */
-  Duration MIN_USE_INTERVAL = Duration.of(10L, SECONDS);
+  Duration USE_INTERVAL_MIN = Duration.of(10L, SECONDS);
 
   /**
    * @return ID.
@@ -141,49 +192,57 @@ public interface ValidationCode extends Savable<Instant> {
   Instant getExpireAt();
 
   /**
-   * @return 계정 검증 코드가 사용되었는지 여부.
+   * @return 검증코드 상태.
    */
-  default boolean isUsed() {
-    return null != getUsedAt();
+  Status getStatus();
+
+  /**
+   * @return 검증코드가 사용 가능하면 {@code true}.
+   */
+  default boolean isValid() {
+    return getStatus().valid();
   }
 
   /**
-   * @return 계정 검증 코드를 사용했는지 여부. 사용하지 않은 경우 {@code null}.
+   * @return 상태 변경 시각.
    */
-  Instant getUsedAt();
+  Instant getStatusAt();
+
+  /**
+   * @return 계정 검증 코드가 사용되었는지 여부.
+   */
+  boolean isUsed();
 
   /**
    * @return 검증 코드가 만료처리 되었는지 여부.
    */
-  default boolean isExpired() {
-    return null != getExpiredAt();
-  }
+  boolean isExpired();
 
   /**
-   * @return 만료처리된 시각. 아직 유효한 경우에는 {@code null}.
+   * {@link #getCreatedAt()} + {@link #USE_INTERVAL_MIN} ~ {@link #getExpireAt()}
+   *
+   * @return 검증 코드를 사용해 계정을 검증할 수 있는 기간.
    */
-  Instant getExpiredAt();
-
   Range<Instant> getValidRange();
 
   /**
    * 기준 시점에 유효한 코드인지 여부.
    *
-   * @param when 기준 시점.
+   * @param statusAt 기준 시점.
    *
    * @return 만료되었으면 {@code true}.
    */
-  boolean isValid(final Instant when);
+  boolean isValid(final Instant statusAt);
 
   /**
    * 검증 코드를 사용해 계정을 검증한다.
    *
-   * @param when 검증코드를 사용한 시각.
+   * @param statusAt 검증코드를 사용한 시각.
    *
    * @throws ExpiredValidationCodeException 검증 코드를 사용할 수 없는 경우.
    * @throws UsedValidationCodeException    검증 코드를 사용할 수 없는 경우.
    */
-  void use(Instant when) throws ExpiredValidationCodeException, UsedValidationCodeException;
+  void use(Instant statusAt) throws ValidationCodeStatusException, ExpiredValidationCodeException, UsedValidationCodeException;
 
   /**
    * 유효기간이 지났을 경우에 만료 처리.

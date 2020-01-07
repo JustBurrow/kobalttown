@@ -6,6 +6,7 @@ import java.time.Instant;
  * @author justburrow
  * @since 2020/01/03
  */
+@Deprecated
 public class UsedValidationCodeException extends IllegalStateException {
   private Instant usedAt;
 
