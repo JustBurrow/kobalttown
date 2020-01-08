@@ -8,25 +8,25 @@ package kr.lul.kobalttown.account.domain;
  */
 public class ValidationCodeStatusException extends IllegalStateException {
   private ValidationCode.Status current;
-  private ValidationCode.Status next;
+  private ValidationCode.Status target;
 
-  public ValidationCodeStatusException(final ValidationCode.Status current, final ValidationCode.Status next) {
+  public ValidationCodeStatusException(final ValidationCode.Status current, final ValidationCode.Status target) {
     this.current = current;
-    this.next = next;
+    this.target = target;
   }
 
-  public ValidationCodeStatusException(final ValidationCode.Status current, final ValidationCode.Status next,
+  public ValidationCodeStatusException(final ValidationCode.Status current, final ValidationCode.Status target,
       final String message) {
     super(message);
     this.current = current;
-    this.next = next;
+    this.target = target;
   }
 
   public ValidationCode.Status getCurrent() {
     return this.current;
   }
 
-  public ValidationCode.Status getNext() {
-    return this.next;
+  public ValidationCode.Status getTarget() {
+    return this.target;
   }
 }

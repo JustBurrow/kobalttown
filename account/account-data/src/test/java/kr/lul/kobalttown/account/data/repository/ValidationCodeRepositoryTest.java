@@ -21,6 +21,7 @@ import java.util.List;
 
 import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
+import static kr.lul.kobalttown.account.domain.ValidationCode.Status.ISSUED;
 import static kr.lul.kobalttown.account.domain.ValidationCodeUtil.code;
 import static kr.lul.kobalttown.account.domain.ValidationCodeUtil.ttl;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -83,12 +84,12 @@ public class ValidationCodeRepositoryTest {
     // THEN
     assertThat(actual)
         .isNotNull()
-        .extracting(ValidationCode::getAccount, ValidationCode::getEmail, ValidationCode::getCode,
-            ValidationCode::getExpireAt, ValidationCode::isUsed, ValidationCode::getUsedAt,
-            ValidationCode::isExpired, ValidationCode::getExpiredAt, Creatable::getCreatedAt, Updatable::getUpdatedAt)
-        .containsSequence(account, email, code,
-            this.before.plus(ttl), false, null,
-            false, null, this.before, this.before);
+        .extracting(ValidationCode::getAccount, ValidationCode::getEmail,
+            ValidationCode::getCode, ValidationCode::getExpireAt, ValidationCode::getStatus, ValidationCode::getStatusAt,
+            ValidationCode::isUsed, ValidationCode::isExpired, Creatable::getCreatedAt, Updatable::getUpdatedAt)
+        .containsSequence(account, email,
+            code, this.before.plus(ttl), ISSUED, this.before,
+            false, false, this.before, this.before);
     assertThat(actual.getId())
         .isPositive();
   }

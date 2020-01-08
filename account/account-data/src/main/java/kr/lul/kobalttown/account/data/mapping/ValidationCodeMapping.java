@@ -19,8 +19,8 @@ public abstract class ValidationCodeMapping {
   public static final String COL_EMAIL = "email";
   public static final String COL_CODE = "code";
   public static final String COL_EXPIRE_AT = "expire_at";
-  public static final String COL_USED_AT = "used_at";
-  public static final String COL_EXPIRED_AT = "expired_at";
+  public static final String COL_STATUS = "status";
+  public static final String COL_STATUS_AT = "status_at";
   public static final String COL_CREATED_AT = SavableEntity.COL_CREATED_AT;
   public static final String COL_UPDATED_AT = SavableEntity.COL_UPDATED_AT;
 
@@ -33,8 +33,8 @@ public abstract class ValidationCodeMapping {
   public static final String UQ_VALIDATION_CODE = "UQ_VALIDATION_CODE";
   public static final List<String> UQ_VALIDATION_CODE_COLUMNS = List.of(COL_CODE);
 
-  public static final String IDX_VALIDATION_CODE_VALID = "IDX_VALIDATION_CODE_VALID";
-  public static final String IDX_VALIDATION_CODE_VALID_COLUMNS = COL_EXPIRE_AT + " DESC, " + COL_USED_AT + " ASC, " + COL_EXPIRED_AT + " ASC";
+  public static final String IDX_VALIDATION_CODE_STATUS = "IDX_VALIDATION_CODE_STATUS";
+  public static final String IDX_VALIDATION_CODE_STATUS_COLUMNS = COL_STATUS + " ASC, " + COL_STATUS_AT + " DESC";
 
   protected ValidationCodeMapping() {
     throw new UnsupportedOperationException();

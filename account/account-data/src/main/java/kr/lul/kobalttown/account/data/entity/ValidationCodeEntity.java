@@ -5,9 +5,8 @@ import kr.lul.common.util.Range;
 import kr.lul.common.util.Texts;
 import kr.lul.kobalttown.account.data.mapping.AccountMapping;
 import kr.lul.kobalttown.account.domain.Account;
-import kr.lul.kobalttown.account.domain.ExpiredValidationCodeException;
-import kr.lul.kobalttown.account.domain.UsedValidationCodeException;
 import kr.lul.kobalttown.account.domain.ValidationCode;
+import kr.lul.kobalttown.account.domain.ValidationCodeStatusException;
 import kr.lul.support.spring.data.jpa.entiy.SavableEntity;
 
 import javax.persistence.*;
@@ -20,6 +19,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Arguments.typeOf;
 import static kr.lul.kobalttown.account.data.mapping.ValidationCodeMapping.*;
+import static kr.lul.kobalttown.account.domain.ValidationCode.Status.*;
 
 /**
  * @author justburrow
@@ -30,7 +30,7 @@ import static kr.lul.kobalttown.account.data.mapping.ValidationCodeMapping.*;
     uniqueConstraints = {@UniqueConstraint(name = UQ_VALIDATION_CODE, columnNames = {COL_CODE})},
     indexes = {@Index(name = FK_VALIDATION_CODE_PK_ACCOUNT, columnList = FK_VALIDATION_CODE_PK_ACCOUNT_COLUMNS),
         @Index(name = IDX_VALIDATION_CODE_EMAIL, columnList = IDX_VALIDATION_CODE_EMAIL_COLUMNS),
-        @Index(name = IDX_VALIDATION_CODE_VALID, columnList = IDX_VALIDATION_CODE_VALID_COLUMNS)})
+        @Index(name = IDX_VALIDATION_CODE_STATUS, columnList = IDX_VALIDATION_CODE_STATUS_COLUMNS)})
 public class ValidationCodeEntity extends SavableEntity implements ValidationCode {
   @Id
   @GeneratedValue(strategy = IDENTITY)
@@ -46,10 +46,10 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
   private String code;
   @Column(name = COL_EXPIRE_AT, nullable = false, updatable = false)
   private Instant expireAt;
-  @Column(name = COL_USED_AT, insertable = false)
-  private Instant usedAt;
-  @Column(name = COL_EXPIRED_AT, insertable = false)
-  private Instant expiredAt;
+  @Column(name = COL_STATUS, nullable = false)
+  private Status status;
+  @Column(name = COL_STATUS_AT, nullable = false)
+  private Instant statusAt;
 
   @Transient
   private Range<Instant> validRange;
@@ -83,15 +83,15 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
     this.email = email;
     this.code = code;
     this.expireAt = expireAt;
-    this.usedAt = null;
-    this.expiredAt = null;
+    this.status = ISSUED;
+    this.statusAt = createdAt;
 
     initExtra();
   }
 
   private void initExtra() {
     try {
-      this.validRange = new ContinuousRange<>(this.createdAt.plus(MIN_USE_INTERVAL), true, this.expireAt, true);
+      this.validRange = new ContinuousRange<>(this.createdAt.plus(USE_INTERVAL_MIN), true, this.expireAt, true);
     } catch (final Exception e) {
       throw new IllegalArgumentException("illegal expireAt : " + this.expireAt, e);
     }
@@ -104,6 +104,17 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
   @PostLoad
   private void postLoad() {
     initExtra();
+  }
+
+  private void lazyExpire(final Instant now) {
+    if (ISSUED != this.status)
+      return;
+
+    if (this.expireAt.isBefore(now)) {
+      this.status = EXPIRED;
+      this.statusAt = now;
+      this.updatedAt = now;
+    }
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -135,13 +146,23 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
   }
 
   @Override
-  public Instant getUsedAt() {
-    return this.usedAt;
+  public Status getStatus() {
+    return this.status;
   }
 
   @Override
-  public Instant getExpiredAt() {
-    return this.expiredAt;
+  public Instant getStatusAt() {
+    return this.statusAt;
+  }
+
+  @Override
+  public boolean isUsed() {
+    return USED == this.status;
+  }
+
+  @Override
+  public boolean isExpired() {
+    return EXPIRED == this.status;
   }
 
   @Override
@@ -150,48 +171,28 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
   }
 
   @Override
-  public boolean isValid(final Instant when) {
-    notNull(when, "when");
+  public boolean isValid(final Instant now) {
+    notNull(now, "now");
 
-    return !isUsed() &&
-               !isExpired() &&
-               this.validRange.isInclude(when);
+    return isValid() &&
+               this.validRange.isInclude(now);
   }
 
   @Override
-  public void use(final Instant when) throws IllegalStateException {
-    notNull(when, "when");
-    if (this.createdAt.plus(MIN_USE_INTERVAL).isAfter(when))
-      throw new IllegalArgumentException(format("too early use : when=%s, validRange=%s", when, this.validRange));
+  public void use(final Instant now) throws IllegalStateException {
+    notNull(now, "now");
 
-    if (this.expireAt.isBefore(when)) {
-      expire(when);
-      throw new ExpiredValidationCodeException(when);
-    }
+    lazyExpire(now);
 
-    if (isUsed())
-      throw new UsedValidationCodeException(this.usedAt);
-    if (this.account.isEnabled())
-      throw new IllegalStateException("already enabled account.");
+    if (this.createdAt.plus(USE_INTERVAL_MIN).isAfter(now))
+      throw new IllegalArgumentException(format("too early use : now=%s, validRange=%s", now, this.validRange));
+    else if (!this.status.valid())
+      throw new ValidationCodeStatusException(this.status, USED, "invalidated at " + now);
 
-    this.usedAt = when;
-    this.updatedAt = when;
-    this.account.enable(when);
-  }
-
-  @Override
-  public void expire(final Instant when) {
-    notNull(when, "when");
-    if (this.expireAt.equals(when) || this.expireAt.isAfter(when))
-      throw new IllegalArgumentException(format("too early expire : when=%s, expireAt=%s", when, this.expireAt));
-
-    if (isExpired())
-      throw new ExpiredValidationCodeException(this.expiredAt);
-    if (isUsed())
-      throw new UsedValidationCodeException(this.usedAt);
-
-    this.expiredAt = when;
-    this.updatedAt = when;
+    this.status = USED;
+    this.statusAt = now;
+    this.updatedAt = now;
+    this.account.enable(now);
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -217,8 +218,8 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
                .append(", email=").append(this.email)
                .append(", code=").append(Texts.singleQuote(this.code))
                .append(", expireAt=").append(this.expireAt)
-               .append(", usedAt=").append(this.usedAt)
-               .append(", expiredAt=").append(this.expiredAt)
+               .append(", status=").append(this.status)
+               .append(", statusAt=").append(this.statusAt)
                .append(", ").append(super.toString())
                .append('}').toString();
   }

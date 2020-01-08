@@ -81,10 +81,10 @@ public interface ValidationCode extends Savable<Instant> {
   String ATTR_CODE = "code";
   String ATTR_TTL = "ttl";
   String ATTR_EXPIRE_AT = "expireAt";
+  String ATTR_STATUS = "status";
+  String ATTR_STATUS_AT = "statusAt";
   String ATTR_USED = "used";
-  String ATTR_USED_AT = "usedAt";
   String ATTR_EXPIRED = "expired";
-  String ATTR_EXPIRED_AT = "expiredAt";
   String ATTR_CREATED_AT = "createdAt";
   String ATTR_UPDATED_AT = "updatedAt";
 
@@ -237,19 +237,9 @@ public interface ValidationCode extends Savable<Instant> {
   /**
    * 검증 코드를 사용해 계정을 검증한다.
    *
-   * @param statusAt 검증코드를 사용한 시각.
+   * @param now 검증코드를 사용한 시각.
    *
-   * @throws ExpiredValidationCodeException 검증 코드를 사용할 수 없는 경우.
-   * @throws UsedValidationCodeException    검증 코드를 사용할 수 없는 경우.
+   * @throws ValidationCodeStatusException 사용할 수 없는 상태일 떼.
    */
-  void use(Instant statusAt) throws ValidationCodeStatusException, ExpiredValidationCodeException, UsedValidationCodeException;
-
-  /**
-   * 유효기간이 지났을 경우에 만료 처리.
-   *
-   * @param when 기준 시점.
-   *
-   * @throws IllegalStateException 만료처리를 할 수 없을 경우.
-   */
-  void expire(Instant when) throws IllegalStateException;
+  void use(Instant now) throws ValidationCodeStatusException;
 }
