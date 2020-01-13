@@ -25,6 +25,7 @@ import java.util.List;
 
 import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
+import static kr.lul.kobalttown.account.domain.ValidationCode.Status.ISSUED;
 import static kr.lul.kobalttown.account.domain.ValidationCode.TTL_DEFAULT;
 import static kr.lul.kobalttown.account.domain.ValidationCodeUtil.code;
 import static kr.lul.kobalttown.account.domain.ValidationCodeUtil.ttl;
@@ -103,12 +104,12 @@ public class ValidationCodeDaoImplTest {
     // THEN
     assertThat(actual)
         .isNotNull()
-        .extracting(ValidationCode::getAccount, ValidationCode::getEmail, ValidationCode::getCode,
-            ValidationCode::getExpireAt, ValidationCode::isUsed, ValidationCode::getUsedAt,
-            ValidationCode::isExpired, ValidationCode::getExpiredAt, Creatable::getCreatedAt, Updatable::getUpdatedAt)
-        .containsSequence(account, email, code,
-            this.before.plus(TTL_DEFAULT), false, null,
-            false, null, this.before, this.before);
+        .extracting(ValidationCode::getAccount, ValidationCode::getEmail,
+            ValidationCode::getCode, ValidationCode::getExpireAt, ValidationCode::getStatus, ValidationCode::getStatusAt,
+            ValidationCode::isUsed, ValidationCode::isExpired, Creatable::getCreatedAt, Updatable::getUpdatedAt)
+        .containsSequence(account, email,
+            code, this.before.plus(TTL_DEFAULT), ISSUED, this.before,
+            false, false, this.before, this.before);
     assertThat(actual.getId())
         .isPositive();
   }
@@ -155,9 +156,11 @@ public class ValidationCodeDaoImplTest {
         .containsOnly(validationCode);
     assertThat(list.get(0))
         .isNotNull()
-        .extracting(ValidationCode::getAccount, ValidationCode::getEmail, ValidationCode::getCode,
-            ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt)
-        .containsSequence(account, email, code,
-            false, null, false, null);
+        .extracting(ValidationCode::getAccount, ValidationCode::getEmail, ValidationCode::getCode, ValidationCode::getStatus,
+            ValidationCode::getStatusAt, ValidationCode::isUsed, ValidationCode::isExpired,
+            Creatable::getCreatedAt, Updatable::getUpdatedAt)
+        .containsSequence(account, email, code, ISSUED,
+            this.before, false, false,
+            this.before, this.before);
   }
 }

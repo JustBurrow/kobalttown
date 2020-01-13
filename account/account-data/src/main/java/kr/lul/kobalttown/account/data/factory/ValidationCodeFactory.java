@@ -3,6 +3,7 @@ package kr.lul.kobalttown.account.data.factory;
 import kr.lul.common.data.Context;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.ValidationCode;
+import kr.lul.kobalttown.account.domain.ValidationCode.Status;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -64,12 +65,12 @@ public interface ValidationCodeFactory {
    * @param email     E-Mail.
    * @param code      코드.
    * @param expireAt  만료 시각.
-   * @param usedAt    사용 시각.
-   * @param expiredAt 만료처리 시각.
+   * @param status    상태
+   * @param statusAt  상태 변경 시각.
    * @param createdAt 생성 시각.
    *
    * @return 검증 코드.
    */
-  ValidationCode create(long id, Account account, String email, String code, Instant expireAt,
-      Instant usedAt, Instant expiredAt, Instant createdAt);
+  ValidationCode create(long id, Account account, String email, String code, Instant expireAt, Status status,
+      Instant statusAt, Instant createdAt);
 }

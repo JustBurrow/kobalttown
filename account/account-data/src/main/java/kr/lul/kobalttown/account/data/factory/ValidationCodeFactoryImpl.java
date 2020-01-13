@@ -4,6 +4,7 @@ import kr.lul.common.data.Context;
 import kr.lul.kobalttown.account.data.entity.ValidationCodeEntity;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.ValidationCode;
+import kr.lul.kobalttown.account.domain.ValidationCode.Status;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -70,14 +71,12 @@ public class ValidationCodeFactoryImpl implements ValidationCodeFactory {
 
   @Override
   public ValidationCode create(final long id, final Account account, final String email, final String code,
-      final Instant expireAt,
-      final Instant usedAt, final Instant expiredAt, final Instant createdAt) {
+      final Instant expireAt, final Status status, final Instant statusAt, final Instant createdAt) {
     if (log.isTraceEnabled())
-      log.trace(
-          "#create args : id={}, account={}, email={}, code={}, expireAt={}, usedAt={}, expiredAt={}, createdAt={}",
-          id, account, email, code, expireAt, usedAt, expiredAt, createdAt);
-    if (null != usedAt && null != expiredAt)
-      throw new IllegalArgumentException("both usedAt and expiredAt are set.");
+      log.trace("#create args : id={}, account={}, email={}, code={}, expireAt={}, status={}, statusAt={}, createdAt={}",
+          id, account, email, code, expireAt, status, statusAt, createdAt);
+    if (null != status)
+      notNull(statusAt, "statusAt");
 
     final ValidationCodeEntity validationCode = new ValidationCodeEntity(account, email, code, expireAt, createdAt);
 
@@ -91,10 +90,20 @@ public class ValidationCodeFactoryImpl implements ValidationCodeFactory {
       throw new RuntimeException("fail to set id : id=" + id, e);
     }
 
-    if (null != usedAt)
-      validationCode.use(usedAt);
-    else if (null != expiredAt)
-      validationCode.expire(expiredAt);
+    if (null != status) {
+      notNull(statusAt, "statusAt");
+
+      switch (status) {
+        case USED: {
+          validationCode.use(statusAt);
+          break;
+        }
+        case EXPIRED: {
+          validationCode.expire(statusAt);
+          break;
+        }
+      }
+    }
 
     if (log.isTraceEnabled())
       log.trace("#create return : {}", validationCode);

@@ -195,6 +195,20 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
     this.account.enable(now);
   }
 
+  @Override
+  public void expire(final Instant now) throws ValidationCodeStatusException {
+    notNull(now, "now");
+
+    if (now.isBefore(this.expireAt))
+      throw new IllegalArgumentException(format("too early expire : now=%s, expireAt=%s", now, this.expireAt));
+    else if (!this.status.valid())
+      throw new ValidationCodeStatusException(this.status, EXPIRED, "not valid status.");
+
+    this.status = EXPIRED;
+    this.statusAt = now;
+    this.updatedAt = now;
+  }
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // java.lang.Object
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

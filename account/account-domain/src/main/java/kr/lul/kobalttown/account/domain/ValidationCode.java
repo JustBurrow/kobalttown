@@ -237,9 +237,22 @@ public interface ValidationCode extends Savable<Instant> {
   /**
    * 검증 코드를 사용해 계정을 검증한다.
    *
+   * TODO 상태 변경 메서드 통합.
+   *
    * @param now 검증코드를 사용한 시각.
    *
    * @throws ValidationCodeStatusException 사용할 수 없는 상태일 떼.
    */
   void use(Instant now) throws ValidationCodeStatusException;
+
+  /**
+   * 검증 코드를 만료 처리한다.
+   *
+   * TODO 상태 변경 메서드 통합.
+   *
+   * @param now 만료 처리 시각.
+   *
+   * @throws ValidationCodeStatusException 만료처리 할 수 없을 때.
+   */
+  void expire(Instant now) throws ValidationCodeStatusException;
 }

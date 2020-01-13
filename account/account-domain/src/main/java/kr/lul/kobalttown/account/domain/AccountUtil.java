@@ -35,6 +35,7 @@ public abstract class AccountUtil {
       try {
         NICKNAME_VALIDATOR.validate(nickname);
       } catch (final ValidationException e) { // ignore
+        nickname = null;
       }
     }
 
