@@ -138,7 +138,8 @@ public class AccountBorderlineImplTest {
     final String email = email();
     final String userKey = userKey();
     final String password = "password";
-    final CreateAccountCmd cmd = new CreateAccountCmd(new Context(), nickname, email, userKey, password, Instant.now());
+    final Instant createdAt = this.before.toInstant();
+    final CreateAccountCmd cmd = new CreateAccountCmd(new Context(), nickname, email, userKey, password, createdAt);
     log.info("GIVEN - cmd={}", cmd);
 
     // WHEN
@@ -155,7 +156,7 @@ public class AccountBorderlineImplTest {
     assertThat(dto.getCreatedAt())
         .isNotNull()
         .isEqualTo(dto.getUpdatedAt())
-        .isAfter(this.before);
+        .isEqualTo(this.before);
 
     Credential credential = this.credentialRepository.findByPublicKey(email);
     assertThat(credential)
@@ -176,8 +177,8 @@ public class AccountBorderlineImplTest {
           .isNotNull();
       assertThat(validationCodes.get(0))
           .isNotNull()
-          .extracting(ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt)
-          .containsSequence(false, null, false, null);
+          .extracting(ValidationCode::isUsed, ValidationCode::getStatusAt, ValidationCode::isExpired)
+          .containsSequence(false, createdAt, false);
       assertThat(validationCodes.get(0).getAccount())
           .isNotNull()
           .extracting(Account::getId, Account::isEnabled)

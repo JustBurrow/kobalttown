@@ -8,7 +8,9 @@ import kr.lul.kobalttown.account.data.dao.ValidationCodeDao;
 import kr.lul.kobalttown.account.data.factory.AccountFactory;
 import kr.lul.kobalttown.account.data.factory.CredentialFactory;
 import kr.lul.kobalttown.account.data.factory.ValidationCodeFactory;
-import kr.lul.kobalttown.account.domain.*;
+import kr.lul.kobalttown.account.domain.Account;
+import kr.lul.kobalttown.account.domain.Credential;
+import kr.lul.kobalttown.account.domain.ValidationCode;
 import kr.lul.kobalttown.account.service.configuration.ValidationCodeConfiguration;
 import kr.lul.kobalttown.account.service.configuration.WelcomeConfiguration;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
@@ -235,17 +237,11 @@ class AccountServiceImpl implements AccountService {
     final ValidationCode validationCode = this.validationCodeDao.read(params.getContext(), params.getValidationCode());
     if (log.isDebugEnabled())
       log.debug("#validate (context={}) validationCode={}", params.getContext(), validationCode);
-    if (validationCode.isExpired())
-      throw new ExpiredValidationCodeException(validationCode.getExpiredAt());
-    else if (validationCode.isUsed())
-      throw new UsedValidationCodeException(validationCode.getUsedAt());
+    if (validationCode.isValid(params.getTimestamp())) {
+      validationCode.use(params.getTimestamp());
+    }
 
-    validationCode.use(params.getTimestamp());
     final Account account = validationCode.getAccount();
-    if (log.isDebugEnabled())
-      log.debug("#validate (context={}) validated : validationCode={}, account={}",
-          params.getContext(), validationCode, account);
-
     if (log.isTraceEnabled())
       log.trace("#validate (context={}) return : {}", params.getContext(), account);
     return account;

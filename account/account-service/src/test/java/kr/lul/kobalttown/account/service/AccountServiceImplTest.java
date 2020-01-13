@@ -174,10 +174,8 @@ public class AccountServiceImplTest {
       log.info("THEN - validationCode={}", validationCode);
 
       assertThat(validationCode)
-          .extracting(ValidationCode::getExpireAt,
-              ValidationCode::isUsed, ValidationCode::getUsedAt, ValidationCode::isExpired, ValidationCode::getExpiredAt)
-          .containsSequence(this.before.plus(TTL_DEFAULT),
-              false, null, false, null);
+          .extracting(ValidationCode::getExpireAt, ValidationCode::isUsed, ValidationCode::getStatusAt, ValidationCode::isExpired)
+          .containsSequence(this.before.plus(TTL_DEFAULT), false, this.before, false);
       assertThat(validationCode.getId())
           .isPositive();
       assertThat(validationCode.getCode())
