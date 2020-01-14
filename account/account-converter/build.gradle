@@ -2,7 +2,5 @@ dependencies {
   api project(":account-domain")
   api project(":account-dto")
 
-  testImplementation project(":account-data")
   testImplementation project(":configuration-bean")
-  testImplementation project(":configuration-data-jpa")
 }
