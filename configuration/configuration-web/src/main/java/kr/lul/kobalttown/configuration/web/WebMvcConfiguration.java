@@ -3,6 +3,7 @@ package kr.lul.kobalttown.configuration.web;
 import kr.lul.kobalttown.page.root.RootMvc;
 import kr.lul.support.spring.web.context.ContextService;
 import kr.lul.support.spring.web.context.DefaultContextService;
+import kr.lul.support.spring.web.controller.CommonWebHttpExceptionHandler;
 import kr.lul.support.spring.web.interceptor.LoggingInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +35,14 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     return new DefaultContextService();
   }
 
+  @Bean
+  public CommonWebHttpExceptionHandler commonWebHttpExceptionHandler() {
+    return new CommonWebHttpExceptionHandler();
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
   public void addInterceptors(final InterceptorRegistry registry) {
     registry.addInterceptor(loggingInterceptor());
