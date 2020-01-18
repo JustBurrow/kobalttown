@@ -1,7 +1,7 @@
 package kr.lul.kobalttown.page.account;
 
-import kr.lul.common.web.Action;
-import kr.lul.common.web.Api;
+import kr.lul.common.web.api.Action;
+import kr.lul.common.web.api.Api;
 
 import static kr.lul.kobalttown.page.account.AccountMvc.C;
 

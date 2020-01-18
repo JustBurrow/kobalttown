@@ -5,7 +5,7 @@ import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
 import kr.lul.kobalttown.account.borderline.command.ValidateAccountCmd;
 import kr.lul.kobalttown.account.converter.AccountConverter;
 import kr.lul.kobalttown.account.domain.Account;
-import kr.lul.kobalttown.account.domain.ExpiredValidationCodeException;
+import kr.lul.kobalttown.account.domain.ValidationCodeStatusException;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.service.AccountService;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
@@ -64,7 +64,7 @@ class AccountBorderlineImpl implements AccountBorderline {
   }
 
   @Override
-  @Transactional(noRollbackFor = {ExpiredValidationCodeException.class})
+  @Transactional(noRollbackFor = ValidationCodeStatusException.class)
   public AccountDetailDto validate(final ValidateAccountCmd cmd) {
     if (log.isTraceEnabled())
       log.trace("#validate args : cmd={}", cmd);

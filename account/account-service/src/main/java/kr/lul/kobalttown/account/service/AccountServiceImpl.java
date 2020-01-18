@@ -1,6 +1,7 @@
 package kr.lul.kobalttown.account.service;
 
 import kr.lul.common.data.Context;
+import kr.lul.common.util.DisabledPropertyException;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.data.dao.AccountDao;
 import kr.lul.kobalttown.account.data.dao.CredentialDao;
@@ -232,7 +233,7 @@ class AccountServiceImpl implements AccountService {
       log.trace("#validate args : params={}", params);
 
     if (!this.validationCode.isEnable())
-      throw new RuntimeException("validation code is not not enabled."); // TODO 예외 타입 추가.
+      throw new DisabledPropertyException("validationCode.enabled");
 
     final ValidationCode validationCode = this.validationCodeDao.read(params.getContext(), params.getValidationCode());
     if (log.isDebugEnabled())

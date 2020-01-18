@@ -1,13 +1,16 @@
 package kr.lul.kobalttown.account.web.controller;
 
 import kr.lul.common.data.Context;
+import kr.lul.common.util.DisabledPropertyException;
 import kr.lul.common.util.TimeProvider;
+import kr.lul.common.util.ValidationException;
+import kr.lul.common.web.http.status.exception.client.NotFound;
 import kr.lul.kobalttown.account.borderline.AccountBorderline;
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
 import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
 import kr.lul.kobalttown.account.borderline.command.ValidateAccountCmd;
-import kr.lul.kobalttown.account.domain.ExpiredValidationCodeException;
-import kr.lul.kobalttown.account.domain.UsedValidationCodeException;
+import kr.lul.kobalttown.account.domain.ValidationCode;
+import kr.lul.kobalttown.account.domain.ValidationCodeStatusException;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.web.controller.request.CreateAccountReq;
 import kr.lul.kobalttown.page.account.AccountError;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
+import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Arguments.positive;
@@ -84,6 +88,33 @@ class AccountControllerImpl implements AccountController {
     }
   }
 
+  private String doValidate(final Context context, final String token, final Model model) {
+    final ValidateAccountCmd cmd = new ValidateAccountCmd(context, token, this.timeProvider.now());
+    if (log.isDebugEnabled())
+      log.debug("#doValidate (context={}) cmd={}", context, cmd);
+
+    String template;
+    try {
+      final AccountDetailDto account = this.borderline.validate(cmd);
+      if (log.isDebugEnabled())
+        log.debug("#validate (context={}) account={}", context, account);
+
+      model.addAttribute(M.ACCOUNT, account);
+      model.addAttribute(M.VALIDATED_AT, cmd.getTimestamp());
+
+      template = V.VALIDATE_SUCCESS;
+    } catch (final DisabledPropertyException e) {
+      log.warn(format("#validate (context=%s) e=%s", context, e), e);
+      throw new NotFound(e);
+    } catch (final ValidationCodeStatusException e) {
+      template = V.VALIDATE_FAIL;
+    }
+
+    if (log.isTraceEnabled())
+      log.trace("#doValidate (context={}) result : template={}", context, template);
+    return template;
+  }
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.kobalttown.account.web.controller.AccountController
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,25 +159,15 @@ class AccountControllerImpl implements AccountController {
     if (log.isTraceEnabled())
       log.trace("#validate args : token={}, model={}", token, model);
 
-    // TODO 인증기능 활성화 여부 확인.
-
     final Context context = this.contextService.get();
-    final ValidateAccountCmd cmd = new ValidateAccountCmd(context, token, this.timeProvider.now());
-    if (log.isDebugEnabled())
-      log.debug("#validate (context={}) cmd={}", context, cmd);
+    final String template;
 
-    String template;
     try {
-      final AccountDetailDto account = this.borderline.validate(cmd);
-      if (log.isDebugEnabled())
-        log.debug("#validate (context={}) account={}", context, account);
-
-      model.addAttribute(M.ACCOUNT, account);
-      model.addAttribute(M.VALIDATED_AT, cmd.getTimestamp());
-
-      template = V.VALIDATE_SUCCESS;
-    } catch (final ExpiredValidationCodeException | UsedValidationCodeException e) {
-      template = V.VALIDATE_FAIL;
+      ValidationCode.CODE_VALIDATOR.validate(token);
+      template = doValidate(context, token, model);
+    } catch (final ValidationException e) {
+      log.warn("#validate (context={}) e=" + e, context, e);
+      throw new NotFound(e);
     }
 
     if (log.isTraceEnabled())

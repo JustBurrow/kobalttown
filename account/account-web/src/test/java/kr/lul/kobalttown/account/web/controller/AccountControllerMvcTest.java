@@ -7,6 +7,7 @@ import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.web.AccountWebTestConfiguration;
 import kr.lul.kobalttown.configuration.security.WebSecurityConfiguration;
 import kr.lul.kobalttown.configuration.web.WebMvcConfiguration;
+import kr.lul.kobalttown.page.root.GlobalMvc;
 import kr.lul.support.spring.security.userdetails.User;
 import kr.lul.support.spring.web.context.ContextService;
 import org.junit.After;
@@ -30,6 +31,7 @@ import java.util.List;
 import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.userKey;
+import static kr.lul.kobalttown.account.domain.ValidationCodeUtil.code;
 import static kr.lul.kobalttown.page.account.AccountMvc.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -158,18 +160,42 @@ public class AccountControllerMvcTest {
         .thenReturn(dto);
 
     // WHEN
-    this.mock.perform(post(C.CREATE)
-                          .param("nickname", nickname())
-                          .param("email", email())
-                          .param("userKey", userKey())
-                          .param("password", "password")
-                          .param("confirm", "password")
-                          .with(anonymous())
-                          .with(csrf()))
+    this.mock.perform(
+        post(C.CREATE)
+            .param("nickname", nickname())
+            .param("email", email())
+            .param("userKey", userKey())
+            .param("password", "password")
+            .param("confirm", "password")
+            .with(anonymous())
+            .with(csrf()))
 
         // THEN
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl("/"))
+        .andDo(print());
+  }
+
+  @Test
+  public void test_validate_without_code() throws Exception {
+    this.mock.perform(get(C.GROUP + "/validate"))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  public void test_validate_with_short_code() throws Exception {
+    // GIVEN
+    final String code = code().substring(1);
+    log.info("GIVEN - code={}", code);
+
+    // WHEN
+    this.mock.perform(
+        get(C.GROUP + "/validate/" + code)
+            .with(anonymous()))
+
+        // THEN
+        .andExpect(status().isNotFound())
+        .andExpect(view().name(GlobalMvc.V.ERROR_404))
         .andDo(print());
   }
 
