@@ -238,9 +238,8 @@ class AccountServiceImpl implements AccountService {
     final ValidationCode validationCode = this.validationCodeDao.read(params.getContext(), params.getValidationCode());
     if (log.isDebugEnabled())
       log.debug("#validate (context={}) validationCode={}", params.getContext(), validationCode);
-    if (validationCode.isValid(params.getTimestamp())) {
-      validationCode.use(params.getTimestamp());
-    }
+
+    validationCode.use(params.getTimestamp());
 
     final Account account = validationCode.getAccount();
     if (log.isTraceEnabled())
