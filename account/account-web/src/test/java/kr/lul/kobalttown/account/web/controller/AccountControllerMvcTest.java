@@ -34,7 +34,7 @@ import static kr.lul.kobalttown.account.domain.CredentialUtil.userKey;
 import static kr.lul.kobalttown.account.domain.ValidationCodeUtil.code;
 import static kr.lul.kobalttown.page.account.AccountMvc.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -189,14 +189,33 @@ public class AccountControllerMvcTest {
     log.info("GIVEN - code={}", code);
 
     // WHEN
-    this.mock.perform(
-        get(C.GROUP + "/validate/" + code)
-            .with(anonymous()))
+    this.mock.perform(get(C.GROUP + "/validate/" + code)
+                          .with(anonymous()))
 
         // THEN
         .andExpect(status().isNotFound())
         .andExpect(view().name(GlobalMvc.V.ERROR_404))
         .andDo(print());
+
+    verify(this.borderline, never()).validate(any());
+  }
+
+  @Test
+  public void test_validate_with_long_code() throws Exception {
+    // GIVEN
+    final String code = code() + "a";
+    log.info("GIVEN - code={}", code);
+
+    // WHEN
+    this.mock.perform(get(C.GROUP + "/validate/" + code)
+                          .with(anonymous()))
+
+        // THEN
+        .andExpect(status().isNotFound())
+        .andExpect(view().name(GlobalMvc.V.ERROR_404))
+        .andDo(print());
+
+    verify(this.borderline, never()).validate(any());
   }
 
   @Test
