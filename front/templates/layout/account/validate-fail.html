@@ -13,16 +13,16 @@
 </header>
 <main>
     <h1 th:text="#{account.validate-fail.title}">Validate Fail</h1>
-    <p th:text="#{account.validate-fail.description}">사용할 수 없는 인증코드입니다. 다음 이유일 가능성이 있습니다.</p>
+    <p th:text="#{account.validate-fail.description}">사용할 수 없는 인증코드입니다.</p>
     <ul>
-        <li th:text="#{account.validate.fail.case.1}">발행되지 않은 코드일 경우.</li>
-        <li th:text="#{account.validate.fail.case.2}">이미 사용된 코드일 경우.</li>
-        <li th:text="#{account.validate.fail.case.3}">만료된 코ㄷ일 경우.</li>
+        <li><span th:text="#{account.validate-fail.case1}">발행되지 않은 코드.</span></li>
+        <li><span th:text="#{account.validate-fail.case2}">이미 사용한 코드.</span></li>
+        <li><span th:text="#{account.validate-fail.case3}">만료된 코드.</span></li>
     </ul>
     <div>
         <p>인증 코드를 디시 발급하시겠습니까?</p>
         <div>
-            <a href="#">네</a>
+            <a href="validate-issue.html" th:href="@{/accounts/validate/issue}">네</a>
         </div>
     </div>
 </main>

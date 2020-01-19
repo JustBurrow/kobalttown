@@ -89,6 +89,9 @@ class AccountControllerImpl implements AccountController {
   }
 
   private String doValidate(final Context context, final String token, final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#doValidate args : context={}, token={}, model={}", context, token, model);
+
     final ValidateAccountCmd cmd = new ValidateAccountCmd(context, token, this.timeProvider.now());
     if (log.isDebugEnabled())
       log.debug("#doValidate (context={}) cmd={}", context, cmd);
@@ -97,21 +100,22 @@ class AccountControllerImpl implements AccountController {
     try {
       final AccountDetailDto account = this.borderline.validate(cmd);
       if (log.isDebugEnabled())
-        log.debug("#validate (context={}) account={}", context, account);
+        log.debug("#doValidate (context={}) account={}", context, account);
 
       model.addAttribute(M.ACCOUNT, account);
       model.addAttribute(M.VALIDATED_AT, cmd.getTimestamp());
 
       template = V.VALIDATE_SUCCESS;
     } catch (final DisabledPropertyException e) {
-      log.warn(format("#validate (context=%s) e=%s", context, e), e);
+      log.warn(format("#doValidate (context=%s) e=%s", context, e), e);
       throw new NotFound(e);
     } catch (final ValidationCodeStatusException e) {
+      log.warn(format("#doValidate (context=%s) e=%s", context, e), e);
       template = V.VALIDATE_FAIL;
     }
 
     if (log.isTraceEnabled())
-      log.trace("#doValidate (context={}) result : template={}", context, template);
+      log.trace("#doValidate (context={}) result : template={}, model={}", context, template, model);
     return template;
   }
 
