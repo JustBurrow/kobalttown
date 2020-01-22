@@ -15,8 +15,8 @@
         <p th:text="#{mail.activation-code.message.description}">Copy & Goto bellow url until</p>
         <dl>
             <dt th:text="#{mail.activation-code.message.url.label}">URL</dt>
-            <dd><span th:text="'https://'+${domain}+'/accounts/validate/'+${code}">
-                https://kobalttown.lul.kr/accounts/activate/code</span></dd>
+            <dd><span th:text="'http://'+${domain}+'/accounts/validate/'+${code}">
+                http://kobalttown.lul.kr/accounts/activate/code</span></dd>
             <dt th:text="#{mail.activation-code.message.expire.label}">EXPIRE</dt>
             <dd>
                 <time th:datetime="${expireAt}"

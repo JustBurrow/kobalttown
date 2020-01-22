@@ -1,9 +1,11 @@
 package kr.lul.kobalttown.account.borderline;
 
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
+import kr.lul.kobalttown.account.borderline.command.IssueValidateCmd;
 import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
 import kr.lul.kobalttown.account.borderline.command.ValidateAccountCmd;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
+import kr.lul.kobalttown.account.dto.ValidationCodeSummaryDto;
 
 /**
  * @author justburrow
@@ -36,4 +38,13 @@ public interface AccountBorderline {
    * @return 계정 정보. 없으면 {@code null}.
    */
   AccountDetailDto read(ReadAccountCmd cmd);
+
+  /**
+   * 신규 계정의 인증 코드를 재발급한다.
+   *
+   * @param cmd 인증 코드를 재발급할 계정 정보.
+   *
+   * @return 재발급한 코드.
+   */
+  ValidationCodeSummaryDto issue(IssueValidateCmd cmd);
 }

@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import static java.util.concurrent.ThreadLocalRandom.current;
 import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.userKey;
@@ -216,6 +217,30 @@ public class AccountControllerMvcTest {
         .andDo(print());
 
     verify(this.borderline, never()).validate(any());
+  }
+
+  @Test
+  public void test_VALIDATE_ISSUE_FORM_with_authenticated() throws Exception {
+    // WHEN
+    this.mock.perform(get(C.VALIDATE_ISSUE_FORM)
+                          .with(user("nickname #" + current().nextInt(Integer.MAX_VALUE))))
+
+        // THEN
+        .andExpect(status().is4xxClientError())
+        .andDo(print());
+  }
+
+  @Test
+  public void test_VALIDATE_ISSUE_FORM() throws Exception {
+    // WHEN
+    this.mock.perform(get(C.VALIDATE_ISSUE_FORM)
+                          .with(anonymous()))
+
+        // THEN
+        .andExpect(status().isOk())
+        .andExpect(view().name(V.VALIDATE_ISSUE))
+        .andExpect(model().attributeExists(M.ISSUE_VALIDATE_REQ))
+        .andDo(print());
   }
 
   @Test

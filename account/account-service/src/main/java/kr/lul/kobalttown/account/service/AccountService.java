@@ -1,7 +1,9 @@
 package kr.lul.kobalttown.account.service;
 
 import kr.lul.kobalttown.account.domain.Account;
+import kr.lul.kobalttown.account.domain.ValidationCode;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
+import kr.lul.kobalttown.account.service.params.IssueValidateParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
 import kr.lul.kobalttown.account.service.params.ValidateAccountParams;
 
@@ -36,4 +38,13 @@ public interface AccountService {
    * @return 계정. 없으면 {@code null}.
    */
   Account read(ReadAccountParams params);
+
+  /**
+   * 계정 정보 인증 코드를 신규 발급한다.
+   *
+   * @param params 계정 인증 코드를 신규 발급할 계정의 정보.
+   *
+   * @return 신규 발급한 계정 인증 코드.
+   */
+  ValidationCode issue(IssueValidateParams params);
 }

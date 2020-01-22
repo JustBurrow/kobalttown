@@ -20,5 +20,5 @@ public interface ValidationCodeRepository extends JpaRepository<ValidationCodeEn
 
   List<ValidationCode> findAllByAccount(AccountEntity account);
 
-  List<ValidationCodeEntity> findAllByEmail(String email);
+  List<ValidationCodeEntity> findAllByEmailAndStatusIn(String email, List<ValidationCode.Status> statuses);
 }

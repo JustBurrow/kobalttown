@@ -1,14 +1,19 @@
 package kr.lul.kobalttown.account.borderline;
 
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
+import kr.lul.kobalttown.account.borderline.command.IssueValidateCmd;
 import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
 import kr.lul.kobalttown.account.borderline.command.ValidateAccountCmd;
 import kr.lul.kobalttown.account.converter.AccountConverter;
+import kr.lul.kobalttown.account.converter.ValidateCodeConverter;
 import kr.lul.kobalttown.account.domain.Account;
+import kr.lul.kobalttown.account.domain.ValidationCode;
 import kr.lul.kobalttown.account.domain.ValidationCodeStatusException;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
+import kr.lul.kobalttown.account.dto.ValidationCodeSummaryDto;
 import kr.lul.kobalttown.account.service.AccountService;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
+import kr.lul.kobalttown.account.service.params.IssueValidateParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
 import kr.lul.kobalttown.account.service.params.ValidateAccountParams;
 import org.slf4j.Logger;
@@ -35,6 +40,8 @@ class AccountBorderlineImpl implements AccountBorderline {
   private AccountService service;
   @Autowired
   private AccountConverter converter;
+  @Autowired
+  private ValidateCodeConverter validateCodeConverter;
 
   @PostConstruct
   private void postConstruct() {
@@ -95,6 +102,20 @@ class AccountBorderlineImpl implements AccountBorderline {
 
     if (log.isTraceEnabled())
       log.trace("#read (context={}) return : {}", cmd.getContext(), dto);
+    return dto;
+  }
+
+  @Override
+  public ValidationCodeSummaryDto issue(final IssueValidateCmd cmd) {
+    if (log.isTraceEnabled())
+      log.trace("#issue args : cmd={}", cmd);
+
+    final IssueValidateParams params = new IssueValidateParams(cmd, cmd.getEmail(), cmd.getTimestamp());
+    final ValidationCode validationCode = this.service.issue(params);
+    final ValidationCodeSummaryDto dto = this.validateCodeConverter.convert(validationCode, ValidationCodeSummaryDto.class);
+
+    if (log.isTraceEnabled())
+      log.trace("#issue (context={}) return : {}", cmd.getContext(), dto);
     return dto;
   }
 }

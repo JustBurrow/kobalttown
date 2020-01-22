@@ -3,6 +3,7 @@ package kr.lul.kobalttown.account.service;
 import kr.lul.common.data.Context;
 import kr.lul.common.util.DisabledPropertyException;
 import kr.lul.common.util.TimeProvider;
+import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.account.data.dao.AccountDao;
 import kr.lul.kobalttown.account.data.dao.CredentialDao;
 import kr.lul.kobalttown.account.data.dao.ValidationCodeDao;
@@ -15,6 +16,7 @@ import kr.lul.kobalttown.account.domain.ValidationCode;
 import kr.lul.kobalttown.account.service.configuration.ValidationCodeConfiguration;
 import kr.lul.kobalttown.account.service.configuration.WelcomeConfiguration;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
+import kr.lul.kobalttown.account.service.params.IssueValidateParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
 import kr.lul.kobalttown.account.service.params.ValidateAccountParams;
 import kr.lul.support.spring.mail.MailConfiguration;
@@ -139,21 +141,34 @@ class AccountServiceImpl implements AccountService {
     }
   }
 
-  private Future<MailResult> issueActivationCode(
-      final Context context, final Account account, final String email, final Instant createdAt) {
+  private ValidationCode createValidationCode(final Context context, final Account account, final String email,
+      final Instant createdAt) {
+    if (log.isTraceEnabled())
+      log.trace("#createValidationCode args : context={}, account={}, email={}, createdAt={}",
+          context, account, email, createdAt);
+
+    String code;
+    do {
+      code = code();
+    } while (this.validationCodeDao.exists(context, code));
+
+    ValidationCode validationCode = this.validationCodeFactory.create(context, account, email, code, createdAt);
+    validationCode = this.validationCodeDao.create(context, validationCode);
+
+    if (log.isTraceEnabled())
+      log.trace("#createValidationCode (context={}) return : {}", context, validationCode);
+    return validationCode;
+  }
+
+  private Future<MailResult> sendValidationCode(final Context context, final ValidationCode validationCode) {
+    if (log.isTraceEnabled())
+      log.trace("#sendActivationCode args : context={}, validationCode={}", context, validationCode);
+
     final MailConfiguration mailConfig = this.validationCode.getMail();
     if (log.isDebugEnabled())
       log.debug("#sendActivateCode (context={}) mailConfig={}", context, mailConfig);
 
     // 검증 코드 발행.
-    String code;
-    do {
-      code = code();
-    } while (this.validationCodeDao.exists(context, code));
-    ValidationCode validationCode = this.validationCodeFactory.create(context, account, email, code, createdAt);
-    validationCode = this.validationCodeDao.create(context, validationCode);
-    if (log.isDebugEnabled())
-      log.debug("#issueActivationCode (context={}) validationCode={}", context, validationCode);
 
     // 메일 내용 설정.
     final Map<String, Object> model = ofEntries(
@@ -164,7 +179,7 @@ class AccountServiceImpl implements AccountService {
       log.debug("#issueActivationCode (context={}) model={}", context, model);
 
     // 검증 코드 메일 전송.
-    final MailParams params = new MailParams(context, mailConfig.getFrom(), email,
+    final MailParams params = new MailParams(context, mailConfig.getFrom(), validationCode.getEmail(),
         mailConfig.getTitle(), mailConfig.getTemplate(), true, model);
     if (this.validationCode.isAsync()) {
       final Future<MailResult> result = this.mailService.asyncSend(params);
@@ -208,8 +223,12 @@ class AccountServiceImpl implements AccountService {
       tasks.add(sendWelcome(params.getContext(), account, params.getEmail(), params.getUserKey()));
 
     // 계정 활성화 코드 발행 및 전송.
-    if (this.validationCode.isEnable())
-      tasks.add(issueActivationCode(params.getContext(), account, params.getEmail(), params.getTimestamp()));
+    if (this.validationCode.isEnable()) {
+      final ValidationCode code = createValidationCode(params.getContext(), account, params.getEmail(), params.getTimestamp());
+      if (log.isDebugEnabled())
+        log.debug("#create (context={}) code={}", params.getContext(), code);
+      tasks.add(sendValidationCode(params.getContext(), code));
+    }
 
     // 비동기 작업 결과 처리.
     tasks.stream().filter(Objects::nonNull).forEach(task -> {
@@ -258,5 +277,24 @@ class AccountServiceImpl implements AccountService {
     if (log.isTraceEnabled())
       log.trace("#read (context={}) return : {}", params.getContext(), account);
     return account;
+  }
+
+  @Override
+  public ValidationCode issue(final IssueValidateParams params) {
+    if (log.isTraceEnabled())
+      log.trace("#issue args : params={}", params);
+
+    final List<ValidationCode> validationCodes = this.validationCodeDao.list(params.getContext(), params.getEmail());
+    if (validationCodes.isEmpty())
+      throw new ValidationException(ValidationCode.ATTR_EMAIL, params.getEmail(), "no data : email=" + params.getEmail());
+
+    validationCodes.forEach(vc -> vc.inactive(params.getTimestamp()));
+    final ValidationCode validationCode = createValidationCode(params.getContext(), validationCodes.get(0).getAccount(),
+        params.getEmail(), params.getTimestamp());
+    sendValidationCode(params.getContext(), validationCode);
+
+    if (log.isTraceEnabled())
+      log.trace("#issue (context={}) return : {}", params.getContext(), validationCode);
+    return validationCode;
   }
 }

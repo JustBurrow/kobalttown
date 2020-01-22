@@ -11,6 +11,8 @@ public abstract class AccountMvc {
     public static final String ACCOUNT = "account";
     public static final String TOKEN = "token";
     public static final String VALIDATED_AT = "validatedAt";
+    public static final String ISSUE_VALIDATE_REQ = "issueValidate";
+    public static final String VALIDATE_CODE = "validateCode";
 
     public M() {
       throw new UnsupportedOperationException();
@@ -25,6 +27,8 @@ public abstract class AccountMvc {
     public static final String DETAIL = GROUP + "/detail";
     public static final String VALIDATE_SUCCESS = GROUP + "/validate-success";
     public static final String VALIDATE_FAIL = GROUP + "/validate-fail";
+    public static final String VALIDATE_ISSUE = GROUP + "/validate-issue";
+    public static final String VALIDATE_ISSUED = GROUP + "/validate-issued";
 
     public V() {
       throw new UnsupportedOperationException();
@@ -41,6 +45,8 @@ public abstract class AccountMvc {
     public static final String DETAIL = GROUP + "/{" + M.ID + ":[1-9]\\d*}";
 
     public static final String VALIDATE = GROUP + "/validate/{" + M.TOKEN + "}";
+    public static final String VALIDATE_ISSUE_FORM = GROUP + "/validate/issue";
+    public static final String VALIDATE_ISSUE = GROUP + "/validate";
 
     public C() {
       throw new UnsupportedOperationException();

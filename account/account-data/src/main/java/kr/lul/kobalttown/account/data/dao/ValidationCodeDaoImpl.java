@@ -12,6 +12,7 @@ import java.util.List;
 
 import static java.util.Collections.unmodifiableList;
 import static kr.lul.common.util.Arguments.*;
+import static kr.lul.kobalttown.account.domain.ValidationCode.Status.ISSUED;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -74,7 +75,7 @@ class ValidationCodeDaoImpl implements ValidationCodeDao {
       log.trace("#list args : context={}, email={}", context, email);
     notEmpty(email, "email");
 
-    final List<ValidationCode> codes = unmodifiableList(this.repository.findAllByEmail(email));
+    final List<ValidationCode> codes = unmodifiableList(this.repository.findAllByEmailAndStatusIn(email, List.of(ISSUED)));
 
     if (log.isTraceEnabled())
       log.trace("#list (context={}) return : {}", context, codes);

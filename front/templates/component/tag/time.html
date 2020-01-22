@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2020/01/22 22:34" th:remove="all"/>
+    <meta charset="UTF-8"/>
+    <title>time tag</title>
+</head>
+<body>
+<main>
+    <h1><code>&lt;time&gt;</code> Tag</h1>
+    <section>
+        <h2>Default(<code>time</code>)</h2>
+        <time datetime="2020-01-22T22:59:15.248+09:00[Asia/Tokyo]"
+              th:fragment="time(temporal)"
+              th:datetime="${temporal}" th:text="${#temporals.format(temporal, 'yyyy. M. d. hh:mm [O]')}">
+            2020. 1. 22. 22:34
+        </time>
+    </section>
+</main>
+</body>
+</html>

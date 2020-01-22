@@ -209,6 +209,20 @@ public class ValidationCodeEntity extends SavableEntity implements ValidationCod
     this.updatedAt = now;
   }
 
+  @Override
+  public void inactive(final Instant now) throws ValidationCodeStatusException {
+    notNull(now, "now");
+
+    if (!this.status.valid())
+      throw new ValidationCodeStatusException(this.status, INACTIVE, "not valid status.");
+    else if (now.isBefore(this.updatedAt))
+      throw new IllegalArgumentException(format("too early inactive : now=%s, updatedAt=%s", now, this.updatedAt));
+
+    this.status = INACTIVE;
+    this.statusAt = now;
+    this.updatedAt = now;
+  }
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // java.lang.Object
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

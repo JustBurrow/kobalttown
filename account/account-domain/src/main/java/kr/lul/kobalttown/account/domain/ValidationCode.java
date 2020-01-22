@@ -29,13 +29,13 @@ public interface ValidationCode extends Savable<Instant> {
   /**
    * 계정 인증 코드의 상태값.
    *
-   * {@link #ISSUED} ➡️ {@link #USED}, {@link #EXPIRED}, {@link #INVALID}
+   * {@link #ISSUED} ➡️ {@link #USED}, {@link #EXPIRED}, {@link #INACTIVE}
    */
   enum Status {
     ISSUED(true, "기본 상태. 사용 가능함.", "USED", "EXPIRED", "INVALID"),
     USED(false, "계정 인증에 사용됨."),
     EXPIRED(false, "유효기간이 지나 만료됨."),
-    INVALID(false, "사용하지 않은 코드이지만 재발급 등의 이유로 무효화됨.");
+    INACTIVE(false, "사용하지 않은 코드이지만 재발급 등의 이유로 무효화됨.");
 
     /**
      * 계정정보 검증에 사용할 수 있는지 여부.
@@ -255,4 +255,13 @@ public interface ValidationCode extends Savable<Instant> {
    * @throws ValidationCodeStatusException 만료처리 할 수 없을 때.
    */
   void expire(Instant now) throws ValidationCodeStatusException;
+
+  /**
+   * 검증 코드를 사용할 수 없도록 비활성화 한다.
+   *
+   * @param now 비활성화 시각.
+   *
+   * @throws ValidationCodeStatusException 비활성화 처리 할 수 없을 떼.
+   */
+  void inactive(Instant now) throws ValidationCodeStatusException;
 }

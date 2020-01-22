@@ -7,12 +7,15 @@ import kr.lul.common.util.ValidationException;
 import kr.lul.common.web.http.status.exception.client.NotFound;
 import kr.lul.kobalttown.account.borderline.AccountBorderline;
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
+import kr.lul.kobalttown.account.borderline.command.IssueValidateCmd;
 import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
 import kr.lul.kobalttown.account.borderline.command.ValidateAccountCmd;
 import kr.lul.kobalttown.account.domain.ValidationCode;
 import kr.lul.kobalttown.account.domain.ValidationCodeStatusException;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
+import kr.lul.kobalttown.account.dto.ValidationCodeSummaryDto;
 import kr.lul.kobalttown.account.web.controller.request.CreateAccountReq;
+import kr.lul.kobalttown.account.web.controller.request.IssueValidateReq;
 import kr.lul.kobalttown.page.account.AccountError;
 import kr.lul.kobalttown.page.account.AccountMvc.M;
 import kr.lul.kobalttown.page.account.AccountMvc.V;
@@ -119,6 +122,49 @@ class AccountControllerImpl implements AccountController {
     return template;
   }
 
+  private String doIssueValidateCodeForm(final Context context,
+      final IssueValidateReq req, final BindingResult binding,
+      final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#doIssueValidateCodeForm args : context={}, req={}, binding={}, model={}", context, req, binding, model);
+
+    if (null == req) {
+      model.addAttribute(M.ISSUE_VALIDATE_REQ, new IssueValidateReq());
+    } else {
+      req.setEmail(null);
+    }
+
+    if (log.isTraceEnabled())
+      log.trace("#doIssueValidateCodeForm (context={}) result : template={}, model={}", context, V.VALIDATE_ISSUE, model);
+    return V.VALIDATE_ISSUE;
+  }
+
+  private String doIssueValidateCode(final Context context, final IssueValidateReq req, final BindingResult binding,
+      final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#doIssueValidateCode args : context={}, req={}, binding={}, model={}", context, req, binding, model);
+
+    final IssueValidateCmd cmd = new IssueValidateCmd(context, req.getEmail(), this.timeProvider.now());
+    log.info("#issue (context={}) cmd={}", context, cmd);
+    String template;
+    try {
+      final ValidationCodeSummaryDto dto = this.borderline.issue(cmd);
+      model.addAttribute(M.VALIDATE_CODE, dto);
+      template = V.VALIDATE_ISSUED;
+    } catch (final ValidationException e) {
+      log.warn(format("#doIssueValidateCode (context=%s) cmd=%s, e=%s", context, cmd, e), e);
+
+      binding.addError(new FieldError(M.ISSUE_VALIDATE_REQ, e.getTargetName(), e.getTarget(), false,
+          new String[]{AccountError.ISSUE_VALIDATE_CODE_FAIL}, null, "Fail to issue account validate code."));
+
+      template = doIssueValidateCodeForm(context, req, binding, model);
+    }
+
+    if (log.isTraceEnabled())
+      log.trace("#doIssueValidateCode (context={}) result : template={}, model={}", context, template, model);
+    return template;
+  }
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.kobalttown.account.web.controller.AccountController
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -176,6 +222,38 @@ class AccountControllerImpl implements AccountController {
 
     if (log.isTraceEnabled())
       log.trace("#validate (context={}) result : template={}, model={}", context, template, model);
+    return template;
+  }
+
+  @Override
+  public String issueValidateCode(final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#issueValidateCode args : model={}", model);
+
+    final Context context = this.contextService.get();
+    final String template = doIssueValidateCodeForm(context, null, null, model);
+
+    if (log.isTraceEnabled())
+      log.trace("#issueValidateCode (context={}) result : model={}", context, model);
+    return template;
+  }
+
+  @Override
+  public String issue(@ModelAttribute(M.ISSUE_VALIDATE_REQ) @Valid final IssueValidateReq req, final BindingResult binding,
+      final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#issue args : req={}, binding={}, model={}", req, binding, model);
+
+    final Context context = this.contextService.get();
+    final String template;
+    if (binding.hasErrors()) {
+      template = doIssueValidateCodeForm(context, req, binding, model);
+    } else {
+      template = doIssueValidateCode(context, req, binding, model);
+    }
+
+    if (log.isTraceEnabled())
+      log.trace("#issue (context={}) result : template={}, model={}", context, template, model);
     return template;
   }
 

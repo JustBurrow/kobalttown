@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2020/01/18 23:28" th:remove="all"/>
+    <meta charset="UTF-8"/>
+    <title>Validate Issue</title>
+</head>
+<body>
+<header th:replace="component/navbar/index :: navbar">
+    navigation bar
+</header>
+<main>
+    <h1>Validate Issued</h1>
+    <!--/*@thymesVar id="validateCode" type="kr.lul.kobalttown.account.dto.ValidationCodeSummaryDto"*/-->
+    <dl th:object="${validateCode}">
+        <dt>email</dt>
+        <dd>
+            <address th:text="*{email}">email</address>
+        </dd>
+        <dt>expire at</dt>
+        <dd>
+            <time th:replace="/component/tag/time :: time(*{expireAt})">expire at</time>
+        </dd>
+    </dl>
+</main>
+</body>
+</html>
