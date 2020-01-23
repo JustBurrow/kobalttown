@@ -17,7 +17,7 @@ import static kr.lul.kobalttown.account.data.mapping.AccountMapping.*;
  */
 @Entity(name = ENTITY)
 @Table(name = TABLE,
-    uniqueConstraints = {@UniqueConstraint(name = UQ_NICKNAME, columnNames = {COL_NICKNAME})})
+    uniqueConstraints = {@UniqueConstraint(name = UQ_ACCOUNT_NICKNAME, columnNames = {COL_NICKNAME})})
 public class AccountEntity extends SavableEntity implements Account {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

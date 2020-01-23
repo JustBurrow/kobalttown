@@ -25,7 +25,7 @@ import static kr.lul.common.util.validator.EmailValidator.DEFAULT_LOCAL_MAX_LENG
  * @author justburrow
  * @since 2020/01/03
  */
-public interface ValidationCode extends Savable<Instant> {
+public interface EnableCode extends Savable<Instant> {
   /**
    * 계정 인증 코드의 상태값.
    *
@@ -78,7 +78,7 @@ public interface ValidationCode extends Savable<Instant> {
   String ATTR_ID = "id";
   String ATTR_ACCOUNT = "account";
   String ATTR_EMAIL = "email";
-  String ATTR_CODE = "code";
+  String ATTR_TOKEN = "token";
   String ATTR_TTL = "ttl";
   String ATTR_EXPIRE_AT = "expireAt";
   String ATTR_STATUS = "status";
@@ -102,23 +102,23 @@ public interface ValidationCode extends Savable<Instant> {
   int EMAIL_MAX_LENGTH = DEFAULT_LOCAL_MAX_LENGTH + DEFAULT_DOMAIN_MAX_LENGTH + 1;
   EmailValidator EMAIL_VALIDATOR = new EmailValidator();
 
-  int CODE_LENGTH = 64;
-  String CODE_REGEX = "[a-zA-Z\\d]{" + CODE_LENGTH + "}";
-  Validator<String> CODE_VALIDATOR = new RegexValidator(ATTR_CODE, CODE_REGEX) {
+  int TOKEN_LENGTH = 64;
+  String TOKEN_REGEX = "[a-zA-Z\\d]{" + TOKEN_LENGTH + "}";
+  Validator<String> TOKEN_VALIDATOR = new RegexValidator(ATTR_TOKEN, TOKEN_REGEX) {
     @Override
-    public void validate(final String code) throws ValidationException {
-      if (null == code) {
-        throw new ValidationException(ATTR_CODE, null, ATTR_CODE + " is null.");
-      } else if (code.isEmpty()) {
-        throw new ValidationException(ATTR_CODE, code, ATTR_CODE + " is empty.");
-      } else if (CODE_LENGTH > code.length()) {
-        throw new ValidationException(ATTR_CODE, code,
-            format("too short code : code='%s', code.length=%d, length=%d", code, code.length(), CODE_LENGTH));
-      } else if (CODE_LENGTH < code.length()) {
-        throw new ValidationException(ATTR_CODE, code,
-            format("too long code : code='%s', code.length=%d, length=%d", code, code.length(), CODE_LENGTH));
+    public void validate(final String token) throws ValidationException {
+      if (null == token) {
+        throw new ValidationException(ATTR_TOKEN, null, ATTR_TOKEN + " is null.");
+      } else if (token.isEmpty()) {
+        throw new ValidationException(ATTR_TOKEN, token, ATTR_TOKEN + " is empty.");
+      } else if (TOKEN_LENGTH > token.length()) {
+        throw new ValidationException(ATTR_TOKEN, token,
+            format("too short token : token='%s', token.length=%d, length=%d", token, token.length(), TOKEN_LENGTH));
+      } else if (TOKEN_LENGTH < token.length()) {
+        throw new ValidationException(ATTR_TOKEN, token,
+            format("too long token : token='%s', token.length=%d, length=%d", token, token.length(), TOKEN_LENGTH));
       }
-      super.validate(code);
+      super.validate(token);
     }
   };
 
@@ -177,7 +177,7 @@ public interface ValidationCode extends Savable<Instant> {
    *
    * @return 검증 코드.
    */
-  String getCode();
+  String getToken();
 
   /**
    * @return 유효기간.
@@ -241,9 +241,9 @@ public interface ValidationCode extends Savable<Instant> {
    *
    * @param now 검증코드를 사용한 시각.
    *
-   * @throws ValidationCodeStatusException 사용할 수 없는 상태일 떼.
+   * @throws EnableCodeStatusException 사용할 수 없는 상태일 떼.
    */
-  void use(Instant now) throws ValidationCodeStatusException;
+  void use(Instant now) throws EnableCodeStatusException;
 
   /**
    * 검증 코드를 만료 처리한다.
@@ -252,16 +252,16 @@ public interface ValidationCode extends Savable<Instant> {
    *
    * @param now 만료 처리 시각.
    *
-   * @throws ValidationCodeStatusException 만료처리 할 수 없을 때.
+   * @throws EnableCodeStatusException 만료처리 할 수 없을 때.
    */
-  void expire(Instant now) throws ValidationCodeStatusException;
+  void expire(Instant now) throws EnableCodeStatusException;
 
   /**
    * 검증 코드를 사용할 수 없도록 비활성화 한다.
    *
    * @param now 비활성화 시각.
    *
-   * @throws ValidationCodeStatusException 비활성화 처리 할 수 없을 떼.
+   * @throws EnableCodeStatusException 비활성화 처리 할 수 없을 떼.
    */
-  void inactive(Instant now) throws ValidationCodeStatusException;
+  void inactive(Instant now) throws EnableCodeStatusException;
 }

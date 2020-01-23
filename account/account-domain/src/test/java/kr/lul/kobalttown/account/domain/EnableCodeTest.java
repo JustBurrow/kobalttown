@@ -10,8 +10,8 @@ import java.time.Instant;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.time.temporal.ChronoUnit.NANOS;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import static kr.lul.kobalttown.account.domain.ValidationCode.*;
-import static kr.lul.kobalttown.account.domain.ValidationCodeUtil.ttl;
+import static kr.lul.kobalttown.account.domain.EnableCode.*;
+import static kr.lul.kobalttown.account.domain.EnableCodeUtil.ttl;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -20,8 +20,8 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author justburrow
  * @since 2020/01/03
  */
-public class ValidationCodeTest {
-  private static final Logger log = getLogger(ValidationCodeTest.class);
+public class EnableCodeTest {
+  private static final Logger log = getLogger(EnableCodeTest.class);
 
   @Test
   public void test_ACCOUNT_VALIDATOR_with_null() throws Exception {
@@ -188,55 +188,55 @@ public class ValidationCodeTest {
   }
 
   @Test
-  public void test_CODE_VALIDATOR_with_null() throws Exception {
-    assertThatThrownBy(() -> CODE_VALIDATOR.validate(null))
+  public void test_TOKEN_VALIDATOR_with_null() throws Exception {
+    assertThatThrownBy(() -> TOKEN_VALIDATOR.validate(null))
         .isInstanceOf(ValidationException.class)
-        .hasMessage("code is null.")
+        .hasMessage("token is null.")
         .hasNoCause();
   }
 
   @Test
-  public void test_CODE_VALIDATOR_with_empty() throws Exception {
-    assertThatThrownBy(() -> CODE_VALIDATOR.validate(""))
+  public void test_TOKEN_VALIDATOR_with_empty() throws Exception {
+    assertThatThrownBy(() -> TOKEN_VALIDATOR.validate(""))
         .isInstanceOf(ValidationException.class)
-        .hasMessage("code is empty.")
+        .hasMessage("token is empty.")
         .hasNoCause();
   }
 
   @Test
-  public void test_CODE_VALIDATOR_with_short() throws Exception {
+  public void test_TOKEN_VALIDATOR_with_short() throws Exception {
     // GIVEN
-    final String code = randomAlphanumeric(CODE_LENGTH - 1);
-    log.info("GIVEN - code={}", code);
+    final String token = randomAlphanumeric(TOKEN_LENGTH - 1);
+    log.info("GIVEN - token={}", token);
 
     // WHEN &  THEN
-    assertThatThrownBy(() -> CODE_VALIDATOR.validate(code))
+    assertThatThrownBy(() -> TOKEN_VALIDATOR.validate(token))
         .isInstanceOf(ValidationException.class)
-        .hasMessageStartingWith("too short code")
+        .hasMessageStartingWith("too short token")
         .hasNoCause();
   }
 
   @Test
-  public void test_CODE_VALIDATOR_with_long() throws Exception {
+  public void test_TOKEN_VALIDATOR_with_long() throws Exception {
     // GIVEN
-    final String code = randomAlphanumeric(CODE_LENGTH + 1);
-    log.info("GIVEN - code={}", code);
+    final String token = randomAlphanumeric(TOKEN_LENGTH + 1);
+    log.info("GIVEN - token={}", token);
 
     // WHEN & THEN
-    assertThatThrownBy(() -> CODE_VALIDATOR.validate(code))
+    assertThatThrownBy(() -> TOKEN_VALIDATOR.validate(token))
         .isInstanceOf(ValidationException.class)
-        .hasMessageStartingWith("too long code")
+        .hasMessageStartingWith("too long token")
         .hasNoCause();
   }
 
   @Test
-  public void test_CODE_VALIDATOR() throws Exception {
+  public void test_TOKEN_VALIDATOR() throws Exception {
     // GIVEN
-    final String code = randomAlphanumeric(CODE_LENGTH);
-    log.info("GIVEN - code={}", code);
+    final String token = randomAlphanumeric(TOKEN_LENGTH);
+    log.info("GIVEN - token={}", token);
 
     // WHEN
-    CODE_VALIDATOR.validate(code);
+    TOKEN_VALIDATOR.validate(token);
 
     // THEN
     log.info("THEN - OK");
