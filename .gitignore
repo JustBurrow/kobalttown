@@ -270,6 +270,10 @@ fabric.properties
 # Used by previous versions of JEnv
 .jenv-version
 
+.apt_generated_test/
+*.project
+*.classpath
+
 *.pid
 *.lck
 *.bak_*
