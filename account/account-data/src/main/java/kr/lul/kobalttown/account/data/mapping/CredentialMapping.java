@@ -20,10 +20,10 @@ public abstract class CredentialMapping {
   public static final String COL_SECRET_HASH = "secret_hash";
   public static final String COL_CREATED_AT = CreatableEntity.COL_CREATED_AT;
 
-  public static final String FK_CREDENTIAL_PK_ACCOUNT = "FK_CREDENTIAL_PK_ACCOUNT";
+  public static final String FK_CREDENTIAL_PK_ACCOUNT = "fk_credential_pk_account";
   public static final String FK_CREDENTIAL_PK_ACCOUNT_COLUMNS = COL_ACCOUNT + " ASC";
 
-  public static final String UQ_CREDENTIAL_PUBLIC_KEY = "UQ_CREDENTIAL_PUBLIC_KEY";
+  public static final String UQ_CREDENTIAL_PUBLIC_KEY = "uq_credential_public_key";
   public static final List<String> UQ_CREDENTIAL_PUBLIC_KEY_COLUMNS = List.of(COL_PUBLIC_KEY);
 
   public CredentialMapping() {

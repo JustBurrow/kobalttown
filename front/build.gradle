@@ -5,9 +5,3 @@ dependencies {
   runtimeOnly project(":account-web")
   runtimeOnly project(":configuration-web")
 }
-
-idea {
-  module {
-    sourceDirs += file("${projectDir}/templates")
-  }
-}

@@ -198,7 +198,7 @@ public class CredentialEntityTest {
     // WHEN & THEN
     assertThatThrownBy(() -> new CredentialEntity(account, "just.burrow@lul.kr", secretHash, this.createdAt))
         .isInstanceOf(ValidationException.class)
-        .hasCauseInstanceOf(IllegalArgumentException.class);
+        .hasMessageStartingWith("illegal secretHash pattern");
   }
 
   @Test

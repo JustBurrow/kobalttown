@@ -1,6 +1,8 @@
 package kr.lul.kobalttown.account.web.controller;
 
+import kr.lul.common.web.http.status.exception.client.NotFound;
 import kr.lul.kobalttown.account.web.controller.request.CreateAccountReq;
+import kr.lul.kobalttown.account.web.controller.request.IssueEnableCodeReq;
 import kr.lul.kobalttown.page.account.AccountMvc.C;
 import kr.lul.kobalttown.page.account.AccountMvc.M;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +31,43 @@ public interface AccountController {
   @PostMapping(C.CREATE)
   @PreAuthorize("isAnonymous()")
   String create(@ModelAttribute(M.CREATE_REQ) @Valid CreateAccountReq req, BindingResult result, Model model);
+
+  /**
+   * 인증 코드를 사용해서 계정을 활성화한다.
+   *
+   * @param token 인증 코드
+   * @param model 모델
+   *
+   * @return 템플릿 이름.
+   */
+  @GetMapping(C.ENABLE)
+  @PreAuthorize("isAnonymous()")
+  String enable(@PathVariable(M.TOKEN) String token, Model model);
+
+  /**
+   * 유효기간 만료 등의 경우에 코드 재발급하기.
+   *
+   * @param model 모델
+   *
+   * @return 템플릿 이름.
+   */
+  @GetMapping(C.ISSUE_ENABLE_CODE_FORM)
+  @PreAuthorize("isAnonymous()")
+  String issueEnableCodeForm(Model model);
+
+  @PostMapping(C.ISSUE_ENABLE_CODE)
+  @PreAuthorize("isAnonymous()")
+  String issueEnableCode(@ModelAttribute(M.ISSUE_ENABLE_CODE) @Valid IssueEnableCodeReq req, BindingResult binding, Model model);
+
+  /**
+   * {@code POST} 매핑 때문에 {@code HTTP 405 Method Not Allowed}로 응답하기 때문에 {@code 404 Not Found}가 되도록 추가.
+   *
+   * @return N/A
+   */
+  @GetMapping(C.ISSUE_ENABLE_CODE)
+  default String notFoundGetValidate() {
+    throw new NotFound();
+  }
 
   /**
    * See {@link kr.lul.kobalttown.page.account.AccountPage#DETAIL}.

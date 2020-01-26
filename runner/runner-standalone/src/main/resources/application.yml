@@ -3,17 +3,19 @@ kr.lul.kobalttown:
     service:
       welcome:
         enable: true
+        async: true
         mail:
           from: 'Kobalttown Welcome<dev@lul.kr>'
           title: 'Welcome to Kobalttown!'
           template: mail/account/welcome
-      activate-code:
+      validation-code:
         enable: true
+        async: true
         domain: 'kobalttown.lul.kr'
         mail:
           from: 'Kobalttown Dev<dev@lul.kr>'
           title: 'Verify Your Kobalttown Account'
-          template: 'mail/account/activate-code'
+          template: 'mail/account/validation-code'
 
 spring:
   pid:
@@ -33,6 +35,8 @@ spring:
         starttls.enable: true
   thymeleaf:
     prefix: file:./templates/
+  messages:
+    basename: i18n/messages,i18n/errors,i18n/mails
 
 server:
   servlet:

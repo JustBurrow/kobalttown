@@ -4,8 +4,13 @@ import kr.lul.common.data.Context;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
 import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
+import kr.lul.kobalttown.account.data.dao.EnableCodeDao;
+import kr.lul.kobalttown.account.data.repository.CredentialRepository;
+import kr.lul.kobalttown.account.domain.Account;
+import kr.lul.kobalttown.account.domain.Credential;
+import kr.lul.kobalttown.account.domain.EnableCode;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
-import kr.lul.kobalttown.account.service.configuration.ActivateCodeConfiguration;
+import kr.lul.kobalttown.account.service.configuration.EnableCodeConfiguration;
 import kr.lul.support.spring.web.context.ContextService;
 import org.junit.After;
 import org.junit.Before;
@@ -18,8 +23,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
+import java.util.List;
 
-import static java.util.concurrent.ThreadLocalRandom.current;
+import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
+import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
+import static kr.lul.kobalttown.account.domain.CredentialUtil.userKey;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -34,10 +42,14 @@ public class AccountBorderlineImplTest {
   private static final Logger log = getLogger(AccountBorderlineImplTest.class);
 
   @Autowired
-  private ActivateCodeConfiguration activateCode;
+  private EnableCodeConfiguration enableCode;
 
   @Autowired
   private AccountBorderline borderline;
+  @Autowired
+  private EnableCodeDao enableCodeDao;
+  @Autowired
+  private CredentialRepository credentialRepository;
   @Autowired
   private TimeProvider timeProvider;
   @Autowired
@@ -48,12 +60,6 @@ public class AccountBorderlineImplTest {
 
   @Before
   public void setUp() throws Exception {
-    assertThat(this.borderline).isNotNull();
-    assertThat(this.contextService).isNotNull();
-    assertThat(this.activateCode).isNotNull();
-    log.info("SETUP - activateCode={}", this.activateCode);
-    assertThat(this.timeProvider).isNotNull();
-
     this.context = this.contextService.issue();
     log.info("SETUP - context={}", this.context);
     this.before = this.timeProvider.zonedDateTime();
@@ -92,13 +98,14 @@ public class AccountBorderlineImplTest {
   @Test
   public void test_read() throws Exception {
     // GIVEN
-    final String nickname = "nickname #" + current().nextInt(Integer.MAX_VALUE);
-    final String email = "just.burrow+" + current().nextInt(Integer.MAX_VALUE) + "@lul.kr";
+    final String nickname = nickname();
+    final String email = email();
+    final String userKey = userKey();
     final Instant createdAt = this.timeProvider.now();
-    log.info("GIVEN - nickname={}, email={}, createdAt={}", nickname, email, createdAt);
+    log.info("GIVEN - nickname={}, email={}, userKey={}, createdAt={}", nickname, email, userKey, createdAt);
 
-    final AccountDetailDto expected = this.borderline
-        .create(new CreateAccountCmd(this.context, nickname, email, "password", createdAt));
+    final AccountDetailDto expected = this.borderline.create(
+        new CreateAccountCmd(this.context, nickname, email, userKey, "password", createdAt));
     log.info("GIVEN - expected={}", expected);
 
     final ReadAccountCmd cmd = new ReadAccountCmd(this.context, expected.getId(), this.timeProvider.now());
@@ -113,7 +120,7 @@ public class AccountBorderlineImplTest {
         .isNotNull()
         .extracting(AccountDetailDto::getId, AccountDetailDto::getNickname, AccountDetailDto::isEnabled,
             AccountDetailDto::getCreatedAt, AccountDetailDto::getUpdatedAt)
-        .containsSequence(expected.getId(), nickname, !this.activateCode.isEnable(),
+        .containsSequence(expected.getId(), nickname, !this.enableCode.isEnable(),
             this.timeProvider.zonedDateTime(createdAt), this.timeProvider.zonedDateTime(createdAt));
   }
 
@@ -127,10 +134,12 @@ public class AccountBorderlineImplTest {
   @Test
   public void test_create() throws Exception {
     // GIVEN
-    final String nickname = "nickname #" + current().nextInt(Integer.MAX_VALUE);
-    final String email = "just.burrow." + current().nextInt(Integer.MAX_VALUE) + "@lul.kr";
+    final String nickname = nickname();
+    final String email = email();
+    final String userKey = userKey();
     final String password = "password";
-    final CreateAccountCmd cmd = new CreateAccountCmd(new Context(), nickname, email, password, Instant.now());
+    final Instant createdAt = this.before.toInstant();
+    final CreateAccountCmd cmd = new CreateAccountCmd(new Context(), nickname, email, userKey, password, createdAt);
     log.info("GIVEN - cmd={}", cmd);
 
     // WHEN
@@ -141,12 +150,39 @@ public class AccountBorderlineImplTest {
     assertThat(dto)
         .isNotNull()
         .extracting(AccountDetailDto::getNickname, AccountDetailDto::isEnabled)
-        .containsSequence(nickname, !this.activateCode.isEnable());
+        .containsSequence(nickname, !this.enableCode.isEnable());
     assertThat(dto.getId())
         .isPositive();
     assertThat(dto.getCreatedAt())
         .isNotNull()
         .isEqualTo(dto.getUpdatedAt())
-        .isAfter(this.before);
+        .isEqualTo(this.before);
+
+    Credential credential = this.credentialRepository.findByPublicKey(email);
+    assertThat(credential)
+        .isNotNull()
+        .extracting(Credential::getPublicKey)
+        .isEqualTo(email);
+
+    credential = this.credentialRepository.findByPublicKey(userKey);
+    assertThat(credential)
+        .isNotNull()
+        .extracting(Credential::getPublicKey)
+        .isEqualTo(userKey);
+
+    final List<EnableCode> codes = this.enableCodeDao.list(new Context(), email);
+    log.info("THEN - validationCodes={}", codes);
+    if (this.enableCode.isEnable()) {
+      assertThat(codes)
+          .isNotNull();
+      assertThat(codes.get(0))
+          .isNotNull()
+          .extracting(EnableCode::isUsed, EnableCode::getStatusAt, EnableCode::isExpired)
+          .containsSequence(false, createdAt, false);
+      assertThat(codes.get(0).getAccount())
+          .isNotNull()
+          .extracting(Account::getId, Account::isEnabled)
+          .containsSequence(dto.getId(), false);
+    }
   }
 }

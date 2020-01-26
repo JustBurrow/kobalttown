@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2019/12/18 22:04" th:remove="all"/>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+<div>
+    <h1 th:text="#{mail.account.enable-code.message.title}">Verify Your Account</h1>
+    <!--/*@thymesVar id="expireAt" type="java.time.ZonedDateTime"*/-->
+    <!--/*@thymesVar id="domain" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="code" type="java.lang.String"*/-->
+    <div>
+        <p th:text="#{mail.account.enable-code.message.description}">Copy & Goto bellow url until</p>
+        <dl>
+            <dt th:text="#{mail.account.enable-code.message.url.label}">URL</dt>
+            <dd><span th:text="'http://'+${domain}+'/accounts/enable/'+${code}">
+                http://kobalttown.lul.kr/accounts/enable_code</span></dd>
+            <dt th:text="#{mail.account.enable-code.message.expire.label}">EXPIRE</dt>
+            <dd>
+                <time th:datetime="${expireAt}"
+                      th:text="${#temporals.format(expireAt,'yyyy-MM-dd HH:mm')}">expire at
+                </time>
+            </dd>
+        </dl>
+    </div>
+</div>
+</body>
+</html>

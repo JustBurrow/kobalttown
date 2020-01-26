@@ -22,17 +22,17 @@ class AccountConverterImpl implements AccountConverter {
   @Autowired
   private TimeProvider timeProvider;
 
-  public AccountDetailDto detail(Account account) {
+  public AccountDetailDto detail(final Account account) {
     return null == account
-        ? null
-        : new AccountDetailDto(account.getId(), account.getNickname(), account.isEnabled(),
+               ? null
+               : new AccountDetailDto(account.getId(), account.getNickname(), account.isEnabled(),
         this.timeProvider.zonedDateTime(account.getCreatedAt()),
         this.timeProvider.zonedDateTime(account.getUpdatedAt()));
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public <T> T convert(Account account, Class<T> targetType) {
+  public <T> T convert(final Account account, final Class<T> targetType) {
     if (log.isTraceEnabled())
       log.trace("#convert args : account={}, targetType={}", account, targetType);
     notNull(targetType, "targetType");
@@ -43,7 +43,7 @@ class AccountConverterImpl implements AccountConverter {
     } else if (AccountDetailDto.class == targetType) {
       dto = (T) detail(account);
     } else {
-      throw new IllegalArgumentException(format("unsupported targetType : %s", targetType));
+      throw new IllegalArgumentException(format("unsupported targetType : targetType=%s", targetType.getCanonicalName()));
     }
 
     if (log.isTraceEnabled())

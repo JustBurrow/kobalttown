@@ -19,18 +19,23 @@ import static kr.lul.common.util.Texts.singleQuote;
 public class CreateAccountCmd extends ContextContainer {
   private String nickname;
   private String email;
+  private String userKey;
   private byte[] password;
   private Instant timestamp;
 
-  public CreateAccountCmd(Context context, String nickname, String email, String password, Instant timestamp) {
+  public CreateAccountCmd(
+      final Context context, final String nickname, final String email, final String userKey, final String password,
+      final Instant timestamp) {
     super(context);
     notEmpty(nickname, "nickname");
     notEmpty(email, "email");
+    notEmpty(userKey, "userKey");
     notEmpty(password, "password");
     notNull(timestamp, "timestamp");
 
     this.nickname = nickname;
     this.email = email;
+    this.userKey = userKey;
     this.password = password.getBytes(UTF_8);
     this.timestamp = timestamp;
   }
@@ -43,6 +48,10 @@ public class CreateAccountCmd extends ContextContainer {
     return this.email;
   }
 
+  public String getUserKey() {
+    return this.userKey;
+  }
+
   public String getPassword() {
     return new String(this.password, UTF_8);
   }
@@ -52,31 +61,33 @@ public class CreateAccountCmd extends ContextContainer {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    CreateAccountCmd that = (CreateAccountCmd) o;
+    final CreateAccountCmd that = (CreateAccountCmd) o;
     return this.context.equals(that.context) &&
-        this.nickname.equals(that.nickname) &&
-        this.email.equals(that.email) &&
-        Arrays.equals(this.password, that.password);
+               this.nickname.equals(that.nickname) &&
+               this.userKey.equals(this.userKey) &&
+               this.email.equals(that.email) &&
+               Arrays.equals(this.password, that.password);
   }
 
   @Override
   public int hashCode() {
-    int result = Objects.hash(this.context, this.nickname, this.email);
+    int result = Objects.hash(this.context, this.nickname, this.email, this.userKey);
     result = 31 * result + Arrays.hashCode(this.password);
     return result;
   }
 
   @Override
   public String toString() {
-    return new StringBuilder(CreateAccountCmd.class.getSimpleName())
-        .append("{context=").append(this.context)
-        .append(", nickname=").append(singleQuote(this.nickname))
-        .append(", email=").append(singleQuote(this.email))
-        .append(", password=[ PROTECTED ], timestamp=").append(this.timestamp)
-        .append('}').toString();
+    return new StringBuilder()
+               .append("{context=").append(this.context)
+               .append(", nickname=").append(singleQuote(this.nickname))
+               .append(", email=").append(singleQuote(this.email))
+               .append(", userKey=").append(singleQuote(this.userKey))
+               .append(", password=[ PROTECTED ], timestamp=").append(this.timestamp)
+               .append('}').toString();
   }
 }

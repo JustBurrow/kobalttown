@@ -20,8 +20,8 @@ public abstract class AccountMapping {
   public static final String COL_CREATED_AT = SavableEntity.COL_CREATED_AT;
   public static final String COL_UPDATED_AT = SavableEntity.COL_UPDATED_AT;
 
-  public static final String UQ_NICKNAME = "UQ_NICKNAME";
-  public static final List<String> UQ_NICKNAME_COLUMNS = List.of(COL_NICKNAME);
+  public static final String UQ_ACCOUNT_NICKNAME = "uq_account_nickname";
+  public static final List<String> UQ_ACCOUNT_NICKNAME_COLUMNS = List.of(COL_NICKNAME);
 
   public AccountMapping() {
     throw new UnsupportedOperationException();

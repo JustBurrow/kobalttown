@@ -10,8 +10,10 @@
 <body>
 <header>
     <div th:fragment="navbar">
-        <a href="../../layout/account/create.html" th:href="@{/accounts/create}">sign-up</a>
-        <a href="../../layout/root/index.html" th:href="@{/login}">log-in</a>
+        <a href="../../layout/account/create.html" th:href="@{/accounts/create}"
+           th:text="#{global.navbar.sign-up}">sign-up</a>
+        <a href="../../layout/root/index.html" th:href="@{/login}"
+           th:text="#{global.navbar.sign-in}">log-in</a>
     </div>
 </header>
 <main>

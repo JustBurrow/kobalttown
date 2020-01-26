@@ -7,6 +7,7 @@ import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.web.AccountWebTestConfiguration;
 import kr.lul.kobalttown.configuration.security.WebSecurityConfiguration;
 import kr.lul.kobalttown.configuration.web.WebMvcConfiguration;
+import kr.lul.kobalttown.page.root.GlobalMvc;
 import kr.lul.support.spring.security.userdetails.User;
 import kr.lul.support.spring.web.context.ContextService;
 import org.junit.After;
@@ -27,11 +28,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static kr.lul.kobalttown.account.domain.Account.ATTR_NICKNAME;
+import static java.util.concurrent.ThreadLocalRandom.current;
+import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
+import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
+import static kr.lul.kobalttown.account.domain.CredentialUtil.userKey;
+import static kr.lul.kobalttown.account.domain.EnableCodeUtil.token;
 import static kr.lul.kobalttown.page.account.AccountMvc.*;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -66,11 +70,6 @@ public class AccountControllerMvcTest {
 
   @Before
   public void setUp() throws Exception {
-    assertThat(this.mock).isNotNull();
-    assertThat(this.borderline).isNotNull();
-    assertThat(this.contextService).isNotNull();
-    assertThat(this.timeProvider).isNotNull();
-
     this.context = this.contextService.issue();
     log.info("SETUP - context={}", this.context);
 
@@ -88,7 +87,8 @@ public class AccountControllerMvcTest {
   public void test_createForm() throws Exception {
     // WHEN
     this.mock.perform(get(C.CREATE_FORM)
-        .with(anonymous()))
+                          .with(anonymous()))
+
         // THEN
         .andExpect(status().isOk())
         .andExpect(view().name(V.CREATE_FORM))
@@ -100,11 +100,11 @@ public class AccountControllerMvcTest {
   public void test_create_without_confirm() throws Exception {
     // WHEN
     this.mock.perform(post(C.CREATE)
-        .param(ATTR_NICKNAME, "nickname")
-        .param("password", "password")
-        .with(anonymous())
-        .with(csrf())
-    )
+                          .param("nickname", nickname())
+                          .param("userKey", userKey())
+                          .param("password", "password")
+                          .with(anonymous())
+                          .with(csrf()))
 
         // THEN
         .andExpect(status().isOk())
@@ -119,11 +119,11 @@ public class AccountControllerMvcTest {
   public void test_create_without_password() throws Exception {
     // WHEN
     this.mock.perform(post(C.CREATE)
-        .param(ATTR_NICKNAME, "nickname")
-        .param("confirm", "confirm")
-        .with(anonymous())
-        .with(csrf())
-    )
+                          .param("nickname", nickname())
+                          .param("userKey", userKey())
+                          .param("confirm", "confirm")
+                          .with(anonymous())
+                          .with(csrf()))
 
         // THEN
         .andExpect(status().isOk())
@@ -137,12 +137,12 @@ public class AccountControllerMvcTest {
   public void test_create_with_not_match_confirm() throws Exception {
     // WHEN
     this.mock.perform(post(C.CREATE)
-        .param(ATTR_NICKNAME, "nickname")
-        .param("password", "password")
-        .param("confirm", "confirm")
-        .with(anonymous())
-        .with(csrf())
-    )
+                          .param("nickname", nickname())
+                          .param("userKey", userKey())
+                          .param("password", "password")
+                          .param("confirm", "confirm")
+                          .with(anonymous())
+                          .with(csrf()))
 
         // THEN
         .andExpect(status().isOk())
@@ -161,18 +161,85 @@ public class AccountControllerMvcTest {
         .thenReturn(dto);
 
     // WHEN
-    this.mock.perform(post(C.CREATE)
-        .param("nickname", "nickname")
-        .param("email", "just.burrow@lul.kr")
-        .param("password", "password")
-        .param("confirm", "password")
-        .with(anonymous())
-        .with(csrf())
-    )
+    this.mock.perform(
+        post(C.CREATE)
+            .param("nickname", nickname())
+            .param("email", email())
+            .param("userKey", userKey())
+            .param("password", "password")
+            .param("confirm", "password")
+            .with(anonymous())
+            .with(csrf()))
 
         // THEN
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl("/"))
+        .andDo(print());
+  }
+
+  @Test
+  public void test_validate_without_code() throws Exception {
+    this.mock.perform(get(C.GROUP + "/validate"))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  public void test_validate_with_short_code() throws Exception {
+    // GIVEN
+    final String code = token().substring(1);
+    log.info("GIVEN - code={}", code);
+
+    // WHEN
+    this.mock.perform(get(C.GROUP + "/enable/" + code)
+                          .with(anonymous()))
+
+        // THEN
+        .andExpect(status().isNotFound())
+        .andExpect(view().name(GlobalMvc.V.ERROR_404))
+        .andDo(print());
+
+    verify(this.borderline, never()).enable(any());
+  }
+
+  @Test
+  public void test_validate_with_long_code() throws Exception {
+    // GIVEN
+    final String code = token() + "a";
+    log.info("GIVEN - code={}", code);
+
+    // WHEN
+    this.mock.perform(get(C.GROUP + "/enable/" + code)
+                          .with(anonymous()))
+
+        // THEN
+        .andExpect(status().isNotFound())
+        .andExpect(view().name(GlobalMvc.V.ERROR_404))
+        .andDo(print());
+
+    verify(this.borderline, never()).enable(any());
+  }
+
+  @Test
+  public void test_VALIDATE_ISSUE_FORM_with_authenticated() throws Exception {
+    // WHEN
+    this.mock.perform(get(C.ISSUE_ENABLE_CODE_FORM)
+                          .with(user("nickname #" + current().nextInt(Integer.MAX_VALUE))))
+
+        // THEN
+        .andExpect(status().is4xxClientError())
+        .andDo(print());
+  }
+
+  @Test
+  public void test_ENABLE_CODE_ISSUE_form() throws Exception {
+    // WHEN
+    this.mock.perform(get(C.ISSUE_ENABLE_CODE_FORM)
+                          .with(anonymous()))
+
+        // THEN
+        .andExpect(status().isOk())
+        .andExpect(view().name(V.ISSUE_ENABLE_CODE))
+        .andExpect(model().attributeExists(M.ISSUE_ENABLE_CODE))
         .andDo(print());
   }
 
@@ -194,7 +261,7 @@ public class AccountControllerMvcTest {
   @Test
   public void test_detail() throws Exception {
     // GIVEN
-    final User user = new User(1L, "nickname", "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    final User user = new User(1L, nickname(), "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
     log.info("GIVEN - user={}", user);
     final AccountDetailDto dto = new AccountDetailDto(1L, "nickname", true, this.before, this.before);
     log.info("GIVEN - dto={}", dto);
@@ -204,8 +271,7 @@ public class AccountControllerMvcTest {
 
     // WHEN
     this.mock.perform(get(C.DETAIL, 1L)
-        .with(user(user))
-    )
+                          .with(user(user)))
 
         // THEN
         .andExpect(status().isOk())

@@ -24,8 +24,9 @@ import org.springframework.validation.BindingResult;
 
 import java.time.Instant;
 
-import static java.lang.Integer.MAX_VALUE;
-import static java.util.concurrent.ThreadLocalRandom.current;
+import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
+import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
+import static kr.lul.kobalttown.account.domain.CredentialUtil.userKey;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -44,7 +45,7 @@ public class AccountControllerImplTest {
   @Autowired
   private AccountBorderline borderline;
   @Autowired
-  private AccountRepository accountRepository;
+  private AccountRepository repository;
   @Autowired
   private TimeProvider timeProvider;
 
@@ -54,7 +55,7 @@ public class AccountControllerImplTest {
   public void setUp() throws Exception {
     assertThat(this.controller).isNotNull();
     assertThat(this.borderline).isNotNull();
-    assertThat(this.accountRepository).isNotNull();
+    assertThat(this.repository).isNotNull();
     assertThat(this.timeProvider).isNotNull();
 
     this.before = this.timeProvider.now();
@@ -95,10 +96,7 @@ public class AccountControllerImplTest {
   @Test
   public void test_create() throws Exception {
     // GIVEN
-    final String nickname = "nickname #" + current().nextInt(MAX_VALUE);
-    final String email = "just.burrow." + current().nextInt(MAX_VALUE) + "@lul.kr";
-    final String password = "password";
-    final CreateAccountReq createReq = new CreateAccountReq(nickname, email, password, password);
+    final CreateAccountReq createReq = new CreateAccountReq(nickname(), email(), userKey(), "password", "password");
     log.info("GIVEN - createReq={}", createReq);
 
     final BindingResult binding = new BeanPropertyBindingResult(createReq, M.CREATE_REQ);
@@ -126,10 +124,8 @@ public class AccountControllerImplTest {
   @Test
   public void test_detail() throws Exception {
     // GIVEN
-    final String nicknam = "nickname #" + current().nextInt(MAX_VALUE);
-    final String email = "just.burrow." + current().nextInt(MAX_VALUE) + "@lul.kr";
     final AccountDetailDto expected = this.borderline.create(
-        new CreateAccountCmd(new Context(), nicknam, email, "password", this.before));
+        new CreateAccountCmd(new Context(), nickname(), email(), userKey(), "password", this.before));
     log.info("GIVEN - expected={}", expected);
 
     final Model model = new ExtendedModelMap();

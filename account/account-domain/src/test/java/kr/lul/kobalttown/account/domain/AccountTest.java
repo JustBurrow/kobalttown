@@ -4,10 +4,16 @@ import kr.lul.common.util.ValidationException;
 import org.junit.Test;
 import org.slf4j.Logger;
 
+import java.util.List;
+
 import static java.util.concurrent.ThreadLocalRandom.current;
+import static java.util.stream.Collectors.toList;
+import static kr.lul.common.util.Texts.singleQuote;
 import static kr.lul.kobalttown.account.domain.Account.*;
+import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static org.apache.commons.lang3.RandomStringUtils.random;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
+import static org.assertj.core.api.Assertions.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -18,7 +24,7 @@ public class AccountTest {
   private static final Logger log = getLogger(AccountTest.class);
 
   @Test
-  public void test_nickname_validator_validate_with_null() throws Exception {
+  public void test_NICKNAME_VALIDATOR_validate_with_null() throws Exception {
     assertThatThrownBy(() -> NICKNAME_VALIDATOR.validate(null))
         .isInstanceOf(ValidationException.class)
         .hasMessageContaining("nickname is null")
@@ -27,7 +33,7 @@ public class AccountTest {
   }
 
   @Test
-  public void test_nickname_validator_validate_with_empty() throws Exception {
+  public void test_NICKNAME_VALIDATOR_validate_with_empty() throws Exception {
     assertThatThrownBy(() -> NICKNAME_VALIDATOR.validate(""))
         .isInstanceOf(ValidationException.class)
         .extracting("targetName", "target")
@@ -35,7 +41,7 @@ public class AccountTest {
   }
 
   @Test
-  public void test_nickname_validator_validate_with_single_character() throws Exception {
+  public void test_NICKNAME_VALIDATOR_validate_with_single_character() throws Exception {
     // GIVEN
     String nickname;
     do {
@@ -48,13 +54,12 @@ public class AccountTest {
   }
 
   @Test
-  public void test_nickname_validator_validate() throws Exception {
+  public void test_NICKNAME_VALIDATOR_validate() throws Exception {
     // GIVEN
     String nickname;
     do {
-      nickname = random(current().nextInt(1, 1 + NICKNAME_MAX_LENGTH))
-          .replaceAll("\\s+", "");
-    } while (!nickname.matches("\\S+"));
+      nickname = nickname();
+    } while (!nickname.matches(NICKNAME_REGEX));
     log.info("GIVEN - nickname={}", nickname);
 
     // WHEN
@@ -62,7 +67,7 @@ public class AccountTest {
   }
 
   @Test
-  public void test_nickname_validator_validate_with_long() throws Exception {
+  public void test_NICKNAME_VALIDATOR_validate_with_long() throws Exception {
     // GIVEN
     String nickname;
     do {
@@ -82,16 +87,42 @@ public class AccountTest {
   }
 
   @Test
-  public void test_nickname_validator_validate_with_leading_space() throws Exception {
+  public void test_NICKNAME_VALIDATOR_validate_with_leading_space() throws Exception {
     // GIVEN
-    final String nickname = " " + random(current().nextInt(0, NICKNAME_MAX_LENGTH));
+    final String nickname = " " + nickname(current().nextInt(NICKNAME_MAX_LENGTH));
     log.info("GIVEN - nickname={}", nickname);
 
     // WHEN & THEN
     assertThatThrownBy(() -> NICKNAME_VALIDATOR.validate(nickname))
         .isInstanceOf(ValidationException.class)
-        .hasMessageContaining("does not match")
+        .hasMessageStartingWith("illegal nickname pattern")
+        .hasMessageContaining("nickname='" + nickname + "'")
         .extracting("targetName", "target")
         .containsSequence(ATTR_NICKNAME, nickname);
+  }
+
+  @Test
+  public void test_NICKNAME_VALIDATOR_with_contains_illegal_characters() throws Exception {
+    // GIVEN
+    final List<String> nicknames = NICKNAME_ILLEGAL_CHARACTERS
+                                       .stream()
+                                       .map(c -> randomAlphanumeric(1, 5) + c + randomAlphanumeric(1, 5))
+                                       .collect(toList());
+    log.info("GIVEN - nicknames={}", nicknames);
+
+    for (final String nickname : nicknames) {
+      log.info("GIVEN - nickname={}", nickname);
+
+      // WHEN
+      final ValidationException ex = catchThrowableOfType(() -> NICKNAME_VALIDATOR.validate(nickname), ValidationException.class);
+      log.info("WHEN - ex=" + ex, ex);
+
+      // THEN
+      assertThat(ex)
+          .isNotNull()
+          .hasMessageStartingWith("nickname contains illegal character")
+          .hasMessageContaining("nickname=" + singleQuote(nickname))
+          .hasMessageContaining("illegalCharacter=\\u");
+    }
   }
 }

@@ -8,13 +8,16 @@
 </head>
 <body>
 <main>
-    <h1>Welcome to Kobalttown</h1>
+    <h1 th:text="#{mail.account.welcome.message.title}">Welcome to Kobalttown</h1>
     <!--/*@thymesVar id="nickname" type="java.lang.String"*/-->
     <!--/*@thymesVar id="email" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="userKey" type="java.lang.String"*/-->
     <dl>
-        <dt>Nickname</dt>
+        <dt th:text="#{mail.account.welcome.message.nickname.label}">Nickname</dt>
         <dd th:text="${nickname}">nickname</dd>
-        <dt>E-Mail</dt>
+        <dt th:text="#{mail.account.welcome.message.user-key.label}">User Key</dt>
+        <dd th:text="${userKey}">user key</dd>
+        <dt th:text="#{mail.account.welcome.message.email.label}">E-Mail</dt>
         <dd th:text="${email}">email</dd>
     </dl>
 </main>

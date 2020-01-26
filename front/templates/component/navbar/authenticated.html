@@ -11,7 +11,7 @@
 <header>
     <div th:fragment="navbar">
         <form id="form-logout" action="anonymous.html" method="post" th:action="@{/logout}"></form>
-        <button form="form-logout">log-out</button>
+        <button form="form-logout" th:text="#{global.navbar.sign-out}">log-out</button>
     </div>
 </header>
 <main>

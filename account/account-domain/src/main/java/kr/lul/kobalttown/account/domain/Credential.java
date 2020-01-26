@@ -18,9 +18,25 @@ import static java.lang.String.format;
 public interface Credential extends Creatable<Instant> {
   String ATTR_ID = "id";
   String ATTR_ACCOUNT = "account";
+  /**
+   * 종류 :
+   * <ul>
+   *   <li>사용자가 임의로 지정하는 {@link Credential#ATTR_USER_KEY userKey}</li>
+   *   <li>E-Mail address.</li>
+   * </ul>
+   */
   String ATTR_PUBLIC_KEY = "publicKey";
   String ATTR_SECRET_HASH = "secretHash";
   String ATTR_CREATED_AT = "createdAt";
+
+  /**
+   * 사용자가 지정하는 {@link Credential#getPublicKey()}의 한 종류.
+   */
+  String ATTR_USER_KEY = "userKey";
+  /**
+   * 비밀번호.
+   */
+  String ATTR_SECRET = "secret";
 
   Validator<Account> ACCOUNT_VALIDATOR = account -> {
     if (null == account) {
@@ -36,7 +52,7 @@ public interface Credential extends Creatable<Instant> {
 
   String PUBLIC_KEY_REGEX = "\\S(.*\\S)?";
 
-  Validator<String> PUBLIC_KEY_VALIDATOR = new RegexValidator<>(ATTR_PUBLIC_KEY, PUBLIC_KEY_REGEX) {
+  Validator<String> PUBLIC_KEY_VALIDATOR = new RegexValidator(ATTR_PUBLIC_KEY, PUBLIC_KEY_REGEX) {
     @Override
     public void validate(final String publicKey) throws ValidationException {
       if (null == publicKey) {
@@ -44,13 +60,11 @@ public interface Credential extends Creatable<Instant> {
       } else if (publicKey.isEmpty()) {
         throw new ValidationException(ATTR_PUBLIC_KEY, publicKey, ATTR_PUBLIC_KEY + " is empty.");
       } else if (PUBLIC_KEY_MIN_LENGTH > publicKey.length()) {
-        throw new ValidationException(ATTR_PUBLIC_KEY, publicKey,
-            format("too short %s : min=%d, %s.length=%d",
-                ATTR_PUBLIC_KEY, PUBLIC_KEY_MIN_LENGTH, ATTR_PUBLIC_KEY, publicKey.length()));
+        throw new ValidationException(ATTR_PUBLIC_KEY, publicKey, format("too short %s : min=%d, %s.length=%d",
+            ATTR_PUBLIC_KEY, PUBLIC_KEY_MIN_LENGTH, ATTR_PUBLIC_KEY, publicKey.length()));
       } else if (PUBLIC_KEY_MAX_LENGTH < publicKey.length()) {
-        throw new ValidationException(ATTR_PUBLIC_KEY, publicKey,
-            format("too long %s : max=%d, %s.length=%d",
-                ATTR_PUBLIC_KEY, PUBLIC_KEY_MAX_LENGTH, ATTR_PUBLIC_KEY, publicKey.length()));
+        throw new ValidationException(ATTR_PUBLIC_KEY, publicKey, format("too long %s : max=%d, %s.length=%d",
+            ATTR_PUBLIC_KEY, PUBLIC_KEY_MAX_LENGTH, ATTR_PUBLIC_KEY, publicKey.length()));
       }
 
       super.validate(publicKey);
@@ -89,14 +103,13 @@ public interface Credential extends Creatable<Instant> {
   /**
    * 유효한 비공개키 해시인지 확인한다.
    */
-  Validator<String> SECRET_HASH_VALIDATOR = new RegexValidator<>(ATTR_SECRET_HASH, SECRET_HASH_REGEX) {
+  Validator<String> SECRET_HASH_VALIDATOR = new RegexValidator(ATTR_SECRET_HASH, SECRET_HASH_REGEX) {
     @Override
     public void validate(final String secretHash) throws ValidationException {
-      if (null == secretHash) {
+      if (null == secretHash)
         throw new ValidationException(ATTR_SECRET_HASH, null, ATTR_SECRET_HASH + " is null.");
-      } else if (secretHash.isEmpty()) {
+      else if (secretHash.isEmpty())
         throw new ValidationException(ATTR_SECRET_HASH, secretHash, ATTR_SECRET_HASH + " is empty.");
-      }
 
       super.validate(secretHash);
     }

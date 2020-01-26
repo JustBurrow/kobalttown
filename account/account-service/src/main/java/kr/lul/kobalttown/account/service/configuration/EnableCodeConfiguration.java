@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.account.service.configuration;
 
-import kr.lul.kobalttown.account.service.properties.ActivateCodeProperties;
+import kr.lul.kobalttown.account.service.properties.ValidationCodeProperties;
 import kr.lul.support.spring.mail.MailConfiguration;
 
 import static kr.lul.common.util.Arguments.notNull;
@@ -10,21 +10,27 @@ import static kr.lul.common.util.Texts.singleQuote;
  * @author justburrow
  * @since 2019/12/18
  */
-public class ActivateCodeConfiguration {
+public class EnableCodeConfiguration {
   private boolean enable;
+  private boolean async;
   private String domain;
   private MailConfiguration mail;
 
-  public ActivateCodeConfiguration(final ActivateCodeProperties properties) {
+  public EnableCodeConfiguration(final ValidationCodeProperties properties) {
     notNull(properties, "properties");
 
     this.enable = properties.isEnable();
+    this.async = properties.isAsync();
     this.domain = properties.getDomain();
     this.mail = new MailConfiguration(properties.getMail());
   }
 
   public boolean isEnable() {
     return this.enable;
+  }
+
+  public boolean isAsync() {
+    return this.async;
   }
 
   public String getDomain() {
@@ -38,9 +44,10 @@ public class ActivateCodeConfiguration {
   @Override
   public String toString() {
     return new StringBuilder()
-        .append("{enable=").append(this.enable)
-        .append(", domain=").append(singleQuote(this.domain))
-        .append(", mail=").append(this.mail)
-        .append('}').toString();
+               .append("{enable=").append(this.enable)
+               .append(", async=").append(this.async)
+               .append(", domain=").append(singleQuote(this.domain))
+               .append(", mail=").append(this.mail)
+               .append('}').toString();
   }
 }

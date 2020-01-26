@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2020/01/18 23:28" th:remove="all"/>
+    <meta charset="UTF-8"/>
+    <title>Issue Enable Code</title>
+</head>
+<body>
+<header th:replace="component/navbar/index :: navbar">
+    navigation bar
+</header>
+<main>
+    <h1>Issue Enable Code</h1>
+    <form id="form-issue" action="enable_code_issued.html" method="post"
+          th:action="@{/accounts/enable}"></form>
+    <!--/*@thymesVar id="issueEnableCode" type="kr.lul.kobalttown.account.web.controller.request.IssueEnableCodeReq"*/-->
+    <div th:object="${issueEnableCode}">
+        <ul th:if="${#fields.hasGlobalErrors()}">
+            <li th:each="err : ${#fields.globalErrors()}">
+                <span th:text="${err}">global error</span>
+            </li>
+        </ul>
+        <div>
+            <label for="email">E-Mail</label>
+            <div>
+                <input type="email" id="email"
+                       form="form-issue" name="email"
+                       required="required"
+                       th:field="*{email}"/>
+                <ul th:if="${#fields.hasErrors('email')}">
+                    <li th:each="err : ${#fields.errors('email')}">
+                        <span th:text="${err}">error</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div>
+        <button form="form-issue">submit</button>
+    </div>
+</main>
+</body>
+</html>

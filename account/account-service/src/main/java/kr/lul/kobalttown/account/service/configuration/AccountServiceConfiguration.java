@@ -11,24 +11,24 @@ import static kr.lul.common.util.Arguments.notNull;
  */
 public class AccountServiceConfiguration {
   private WelcomeConfiguration welcome;
-  private ActivateCodeConfiguration activateCode;
+  private EnableCodeConfiguration validationCode;
 
   public AccountServiceConfiguration(final AccountServiceProperties properties) {
     notNull(properties, "properties");
     this.welcome = new WelcomeConfiguration(properties.getWelcome());
-    this.activateCode = new ActivateCodeConfiguration(properties.getActivateCode());
+    this.validationCode = new EnableCodeConfiguration(properties.getValidationCode());
   }
 
   public WelcomeConfiguration getWelcome() {
     return this.welcome;
   }
 
-  public ActivateCodeConfiguration getActivateCode() {
-    return this.activateCode;
+  public EnableCodeConfiguration getValidationCode() {
+    return this.validationCode;
   }
 
   @Override
   public String toString() {
-    return format("{welcome=%s, activateCode=%s}", this.welcome, this.activateCode);
+    return format("{welcome=%s, validationCode=%s}", this.welcome, this.validationCode);
   }
 }

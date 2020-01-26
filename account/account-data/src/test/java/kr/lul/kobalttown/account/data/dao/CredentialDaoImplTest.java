@@ -9,7 +9,6 @@ import kr.lul.kobalttown.account.data.repository.AccountRepository;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.support.spring.security.crypto.SecurityEncoder;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,8 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.time.Instant;
 
-import static java.lang.Integer.MAX_VALUE;
-import static java.util.concurrent.ThreadLocalRandom.current;
+import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
+import static kr.lul.kobalttown.account.domain.CredentialUtil.userKey;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -49,27 +48,29 @@ public class CredentialDaoImplTest {
   @Autowired
   private EntityManager entityManager;
 
-  private Instant instant;
+  private Instant before;
 
   @Before
   public void setUp() throws Exception {
     assertThat(this.dao).isNotNull();
     assertThat(this.accountRepository).isNotNull();
     assertThat(this.timeProvider).isNotNull();
-    Assertions.assertThat(this.securityEncoder).isNotNull();
+    assertThat(this.securityEncoder).isNotNull();
     assertThat(this.entityManager).isNotNull();
 
-    this.instant = this.timeProvider.now();
+    this.before = this.timeProvider.now();
   }
 
   @Test
   public void test_create() throws Exception {
     // GIVEN
-    final String nickname = "nickname #" + current().nextInt(MAX_VALUE);
-    final Account account = this.accountRepository.saveAndFlush(new AccountEntity(nickname, false, this.instant));
+    final String nickname = nickname();
+    final Account account = this.accountRepository.saveAndFlush(new AccountEntity(nickname, false, this.before));
     this.entityManager.clear();
-    final Credential expected = new CredentialEntity(account, nickname, this.securityEncoder.encode("password"),
-        this.instant);
+
+    final String userKey = userKey();
+    final Credential expected = new CredentialEntity(account, userKey, this.securityEncoder.encode("password"),
+        this.before);
     log.info("GIVEN - expected={}", expected);
 
     // WHEN
@@ -80,10 +81,10 @@ public class CredentialDaoImplTest {
     assertThat(actual)
         .isNotNull()
         .extracting(Credential::getAccount, Credential::getPublicKey, Creatable::getCreatedAt)
-        .containsSequence(account, nickname, this.instant);
+        .containsSequence(account, userKey, this.before);
     assertThat(actual.getId())
         .isPositive();
-    Assertions.assertThat(this.securityEncoder.matches("password", actual.getSecretHash()))
+    assertThat(this.securityEncoder.matches("password", actual.getSecretHash()))
         .isTrue();
   }
 }

@@ -2,7 +2,6 @@ package kr.lul.kobalttown.account.data.repository;
 
 import kr.lul.kobalttown.account.data.entity.AccountEntity;
 import kr.lul.support.spring.data.jpa.entiy.SavableEntity;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -14,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.List;
 
+import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -30,11 +30,6 @@ public class AccountRepositoryTest {
   @Autowired
   private AccountRepository repository;
 
-  @Before
-  public void setUp() throws Exception {
-    assertThat(this.repository).isNotNull();
-  }
-
   @Test
   public void test_findAll() throws Exception {
     final List<AccountEntity> list = this.repository.findAll();
@@ -46,7 +41,7 @@ public class AccountRepositoryTest {
   @Test
   public void test_save() throws Exception {
     // GIVEN
-    final String nickname = "test";
+    final String nickname = nickname();
     final Instant createdAt = Instant.now();
     log.info("GIVEN - nickname={}, createdAt={}", nickname, createdAt);
     final AccountEntity expected = new AccountEntity(nickname, false, createdAt);

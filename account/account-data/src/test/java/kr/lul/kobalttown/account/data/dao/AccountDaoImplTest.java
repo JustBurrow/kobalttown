@@ -17,10 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 
-import static java.lang.Integer.MAX_VALUE;
-import static java.util.concurrent.ThreadLocalRandom.current;
-import static kr.lul.kobalttown.account.domain.Account.NICKNAME_MAX_LENGTH;
-import static org.apache.commons.lang3.RandomStringUtils.random;
+import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -44,9 +41,6 @@ public class AccountDaoImplTest {
 
   @Before
   public void setUp() throws Exception {
-    assertThat(this.dao).isNotNull();
-    assertThat(this.timeProvider).isNotNull();
-
     this.instant = this.timeProvider.now();
     log.info("SETUP - instant={}", this.instant);
   }
@@ -83,7 +77,7 @@ public class AccountDaoImplTest {
   @Test
   public void test_create_with_context_and_account() throws Exception {
     // GIVEN
-    final String nickname = "nickname #" + current().nextInt(MAX_VALUE);
+    final String nickname = nickname();
     log.info("GIVEN - nickname={}", nickname);
     final AccountEntity expected = new AccountEntity(nickname, false, this.instant);
     log.info("GIVEN - expected={}", expected);
@@ -104,7 +98,7 @@ public class AccountDaoImplTest {
   @Test
   public void test_read_with_context_and_exist_id() throws Exception {
     // GIVEN
-    final String nickname = "nickname #" + random(current().nextInt(1, NICKNAME_MAX_LENGTH - 9));
+    final String nickname = nickname();
     final Account expected = this.dao.create(new Context(), new AccountEntity(nickname, false, this.instant));
     log.info("GIVEN - expected={}", expected);
 
@@ -115,7 +109,8 @@ public class AccountDaoImplTest {
     // THEN
     assertThat(actual)
         .isNotNull()
-        .extracting(Account::getId, Account::isEnabled, Creatable::getCreatedAt, Updatable::getUpdatedAt)
-        .containsSequence(expected.getId(), false, this.instant, this.instant);
+        .extracting(Account::getId, Account::getNickname, Account::isEnabled, Creatable::getCreatedAt,
+            Updatable::getUpdatedAt)
+        .containsSequence(expected.getId(), nickname, false, this.instant, this.instant);
   }
 }

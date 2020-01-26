@@ -1,7 +1,7 @@
 package kr.lul.kobalttown.page.account;
 
-import kr.lul.common.web.Action;
-import kr.lul.common.web.Api;
+import kr.lul.common.web.api.Action;
+import kr.lul.common.web.api.Api;
 
 import static kr.lul.kobalttown.page.account.AccountMvc.C;
 
@@ -16,12 +16,14 @@ public enum AccountPage {
   LIST(new Api(Action.READ, C.GROUP, C.LIST), "신규 계정 목록."),
   DETAIL(new Api(Action.READ, C.GROUP, C.DETAIL), "계정 프로필."),
 
-  ACTIVATE(new Api(Action.READ, C.GROUP, C.ACTIVATE), "새로 등록한 계정을 활성화한다.");
+  ENABLE(new Api(Action.READ, C.GROUP, C.ENABLE), "새로 등록한 계정을 활성화한다."),
+  ISSUE_ENABLE_CODE_FORM(new Api(Action.READ, C.GROUP, C.ISSUE_ENABLE_CODE_FORM), "새 계정 활성화 코드 발급 폼."),
+  ISSUE_ENABLE_CODE(new Api(Action.CREATE, C.GROUP, C.ISSUE_ENABLE_CODE), "새 계정 활성화 코드 발급.");
 
   public final Api api;
   public final String description;
 
-  AccountPage(Api api, String description) {
+  AccountPage(final Api api, final String description) {
     this.api = api;
     this.description = description;
   }

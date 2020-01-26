@@ -17,7 +17,7 @@ import static kr.lul.kobalttown.account.data.mapping.AccountMapping.*;
  */
 @Entity(name = ENTITY)
 @Table(name = TABLE,
-    uniqueConstraints = {@UniqueConstraint(name = UQ_NICKNAME, columnNames = {COL_NICKNAME})})
+    uniqueConstraints = {@UniqueConstraint(name = UQ_ACCOUNT_NICKNAME, columnNames = {COL_NICKNAME})})
 public class AccountEntity extends SavableEntity implements Account {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +33,7 @@ public class AccountEntity extends SavableEntity implements Account {
 
   public AccountEntity(final String nickname, final boolean enabled, final Instant createdAt) {
     NICKNAME_VALIDATOR.validate(nickname);
-    notNull(createdAt, SavableEntity.ATTR_CREATED_AT);
+    notNull(createdAt, Account.ATTR_CREATED_AT);
 
     this.nickname = nickname;
     this.enabled = enabled;
@@ -56,6 +56,22 @@ public class AccountEntity extends SavableEntity implements Account {
     return this.enabled;
   }
 
+  @Override
+  public void enable(final Instant enableAt) {
+    notNull(enableAt, "enableAt");
+    if (this.createdAt.equals(enableAt) || this.createdAt.isAfter(enableAt))
+      throw new IllegalArgumentException("too early enable at " + enableAt);
+
+    if (this.enabled)
+      throw new IllegalStateException("already enabled.");
+
+    this.enabled = true;
+    this.updatedAt = enableAt;
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // java.lang.Object
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
   public boolean equals(final Object o) {
     if (this == o) return true;

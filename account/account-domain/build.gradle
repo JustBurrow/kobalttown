@@ -1,3 +1,5 @@
 dependencies {
   api "kr.lul.common:common-data:$COMMON_VERSION"
+
+  implementation "org.apache.commons:commons-lang3"
 }
