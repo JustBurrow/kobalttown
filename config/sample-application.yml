@@ -15,7 +15,7 @@ kr.lul.kobalttown:
         mail:
           from: 'Kobalttown Dev<dev@lul.kr>'
           title: 'Verify Your Kobalttown Account'
-          template: 'mail/account/validation-code'
+          template: 'mail/account/enable_code'
 
 spring:
   datasource:

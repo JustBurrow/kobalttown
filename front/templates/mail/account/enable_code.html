@@ -7,17 +7,17 @@
 </head>
 <body>
 <div>
-    <h1 th:text="#{mail.activation-code.message.title}">Verify Your Account</h1>
+    <h1 th:text="#{mail.enable-code.message.title}">Verify Your Account</h1>
     <!--/*@thymesVar id="expireAt" type="java.time.ZonedDateTime"*/-->
     <!--/*@thymesVar id="domain" type="java.lang.String"*/-->
     <!--/*@thymesVar id="code" type="java.lang.String"*/-->
     <div>
-        <p th:text="#{mail.activation-code.message.description}">Copy & Goto bellow url until</p>
+        <p th:text="#{mail.enable-code.message.description}">Copy & Goto bellow url until</p>
         <dl>
-            <dt th:text="#{mail.activation-code.message.url.label}">URL</dt>
-            <dd><span th:text="'http://'+${domain}+'/accounts/validate/'+${code}">
-                http://kobalttown.lul.kr/accounts/activate/code</span></dd>
-            <dt th:text="#{mail.activation-code.message.expire.label}">EXPIRE</dt>
+            <dt th:text="#{mail.enable-code.message.url.label}">URL</dt>
+            <dd><span th:text="'http://'+${domain}+'/accounts/enable/'+${code}">
+                http://kobalttown.lul.kr/accounts/enable_code</span></dd>
+            <dt th:text="#{mail.enable-code.message.expire.label}">EXPIRE</dt>
             <dd>
                 <time th:datetime="${expireAt}"
                       th:text="${#temporals.format(expireAt,'yyyy-MM-dd HH:mm')}">expire at
