@@ -41,9 +41,9 @@ public class AccountServiceConfigurer {
   }
 
   @Bean
-  public ValidationCodeConfiguration validationCodeConfiguration() {
-    final ValidationCodeConfiguration configuration = accountServiceConfiguration().getValidationCode();
-    log.info("#validationCodeConfiguration configuration={}", configuration);
+  public EnableCodeConfiguration enableCodeConfiguration() {
+    final EnableCodeConfiguration configuration = accountServiceConfiguration().getValidationCode();
+    log.info("#enableCodeConfiguration configuration={}", configuration);
     return configuration;
   }
 }

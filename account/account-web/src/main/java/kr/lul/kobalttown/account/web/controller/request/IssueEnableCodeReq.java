@@ -11,15 +11,15 @@ import static kr.lul.common.util.Texts.singleQuote;
  * @author justburrow
  * @since 2020/01/19
  */
-public class IssueValidateReq {
+public class IssueEnableCodeReq {
   @NotEmpty
   @Email
   private String email;
 
-  public IssueValidateReq() {
+  public IssueEnableCodeReq() {
   }
 
-  public IssueValidateReq(final String email) {
+  public IssueEnableCodeReq(final String email) {
     setEmail(email);
   }
 
@@ -38,7 +38,7 @@ public class IssueValidateReq {
   public boolean equals(final Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    final IssueValidateReq that = (IssueValidateReq) o;
+    final IssueEnableCodeReq that = (IssueEnableCodeReq) o;
     return Objects.equals(this.email, that.email);
   }
 
@@ -49,6 +49,6 @@ public class IssueValidateReq {
 
   @Override
   public String toString() {
-    return format("%s{email=%s}", IssueValidateReq.class.getSimpleName(), singleQuote(this.email));
+    return format("%s{email=%s}", IssueEnableCodeReq.class.getSimpleName(), singleQuote(this.email));
   }
 }

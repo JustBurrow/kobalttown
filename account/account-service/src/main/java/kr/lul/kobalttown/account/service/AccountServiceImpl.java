@@ -6,19 +6,19 @@ import kr.lul.common.util.TimeProvider;
 import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.account.data.dao.AccountDao;
 import kr.lul.kobalttown.account.data.dao.CredentialDao;
-import kr.lul.kobalttown.account.data.dao.ValidationCodeDao;
+import kr.lul.kobalttown.account.data.dao.EnableCodeDao;
 import kr.lul.kobalttown.account.data.factory.AccountFactory;
 import kr.lul.kobalttown.account.data.factory.CredentialFactory;
-import kr.lul.kobalttown.account.data.factory.ValidationCodeFactory;
+import kr.lul.kobalttown.account.data.factory.EnableCodeFactory;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
-import kr.lul.kobalttown.account.domain.ValidationCode;
-import kr.lul.kobalttown.account.service.configuration.ValidationCodeConfiguration;
+import kr.lul.kobalttown.account.domain.EnableCode;
+import kr.lul.kobalttown.account.service.configuration.EnableCodeConfiguration;
 import kr.lul.kobalttown.account.service.configuration.WelcomeConfiguration;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
-import kr.lul.kobalttown.account.service.params.IssueValidateParams;
+import kr.lul.kobalttown.account.service.params.EnableAccountParams;
+import kr.lul.kobalttown.account.service.params.IssueEnableCodeParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
-import kr.lul.kobalttown.account.service.params.ValidateAccountParams;
 import kr.lul.support.spring.mail.MailConfiguration;
 import kr.lul.support.spring.mail.MailParams;
 import kr.lul.support.spring.mail.MailResult;
@@ -41,7 +41,7 @@ import static java.lang.String.format;
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 import static kr.lul.common.util.Arguments.notNull;
-import static kr.lul.kobalttown.account.domain.ValidationCodeUtil.code;
+import static kr.lul.kobalttown.account.domain.EnableCodeUtil.token;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -55,7 +55,7 @@ class AccountServiceImpl implements AccountService {
   @Autowired
   private WelcomeConfiguration welcome;
   @Autowired
-  private ValidationCodeConfiguration validationCode;
+  private EnableCodeConfiguration enableCode;
 
   @Autowired
   private AccountFactory factory;
@@ -66,9 +66,9 @@ class AccountServiceImpl implements AccountService {
   @Autowired
   private CredentialDao credentialDao;
   @Autowired
-  private ValidationCodeFactory validationCodeFactory;
+  private EnableCodeFactory enableCodeFactory;
   @Autowired
-  private ValidationCodeDao validationCodeDao;
+  private EnableCodeDao enableCodeDao;
   @Autowired
   private SecurityEncoder securityEncoder;
   @Autowired
@@ -79,11 +79,11 @@ class AccountServiceImpl implements AccountService {
   @PostConstruct
   private void postConstruct() {
     log.info("#postConstruct welcome={}", this.welcome);
-    log.info("#postConstruct validationCode={}", this.validationCode);
+    log.info("#postConstruct enableCode={}", this.enableCode);
   }
 
-  private Credential createCredential(
-      final Context context, final Account account, final String publicKey, final String password, final Instant createdAt) {
+  private Credential createCredential(final Context context, final Account account, final String publicKey, final String password,
+      final Instant createdAt) {
     if (log.isTraceEnabled())
       log.trace("#createCredential args : context={}, account={}, publicKey={}, password={}, createdAt={}",
           context, account, publicKey, password, createdAt);
@@ -109,8 +109,7 @@ class AccountServiceImpl implements AccountService {
    */
   private Future<MailResult> sendWelcome(final Context context, final Account account, final String email, final String userKey) {
     if (log.isTraceEnabled())
-      log.trace("#sendWelcome args : context={}, account={}, email={}, userKey={}",
-          context, account, email, userKey);
+      log.trace("#sendWelcome args : context={}, account={}, email={}, userKey={}", context, account, email, userKey);
 
     // 설정.
     final MailConfiguration mailConfig = this.welcome.getMail();
@@ -141,55 +140,55 @@ class AccountServiceImpl implements AccountService {
     }
   }
 
-  private ValidationCode createValidationCode(final Context context, final Account account, final String email,
+  private EnableCode createEnableCode(final Context context, final Account account, final String email,
       final Instant createdAt) {
     if (log.isTraceEnabled())
-      log.trace("#createValidationCode args : context={}, account={}, email={}, createdAt={}",
+      log.trace("#createEnableCode args : context={}, account={}, email={}, createdAt={}",
           context, account, email, createdAt);
 
-    String code;
+    String token;
     do {
-      code = code();
-    } while (this.validationCodeDao.exists(context, code));
+      token = token();
+    } while (this.enableCodeDao.exists(context, token));
 
-    ValidationCode validationCode = this.validationCodeFactory.create(context, account, email, code, createdAt);
-    validationCode = this.validationCodeDao.create(context, validationCode);
+    EnableCode code = this.enableCodeFactory.create(context, account, email, token, createdAt);
+    code = this.enableCodeDao.create(context, code);
 
     if (log.isTraceEnabled())
-      log.trace("#createValidationCode (context={}) return : {}", context, validationCode);
-    return validationCode;
+      log.trace("#createEnableCode (context={}) return : {}", context, code);
+    return code;
   }
 
-  private Future<MailResult> sendValidationCode(final Context context, final ValidationCode validationCode) {
+  private Future<MailResult> sendEnableCode(final Context context, final EnableCode code) {
     if (log.isTraceEnabled())
-      log.trace("#sendActivationCode args : context={}, validationCode={}", context, validationCode);
+      log.trace("#sendEnableCode args : context={}, code={}", context, code);
 
-    final MailConfiguration mailConfig = this.validationCode.getMail();
+    final MailConfiguration mailConfig = this.enableCode.getMail();
     if (log.isDebugEnabled())
-      log.debug("#sendActivateCode (context={}) mailConfig={}", context, mailConfig);
+      log.debug("#sendEnableCode (context={}) mailConfig={}", context, mailConfig);
 
     // 검증 코드 발행.
 
     // 메일 내용 설정.
     final Map<String, Object> model = ofEntries(
-        entry("domain", this.validationCode.getDomain()),
-        entry("code", validationCode.getCode()),
-        entry("expireAt", this.timeProvider.zonedDateTime(validationCode.getExpireAt())));
+        entry("domain", this.enableCode.getDomain()),
+        entry("code", code.getToken()),
+        entry("expireAt", this.timeProvider.zonedDateTime(code.getExpireAt())));
     if (log.isDebugEnabled())
-      log.debug("#issueActivationCode (context={}) model={}", context, model);
+      log.debug("#sendEnableCode (context={}) model={}", context, model);
 
     // 검증 코드 메일 전송.
-    final MailParams params = new MailParams(context, mailConfig.getFrom(), validationCode.getEmail(),
+    final MailParams params = new MailParams(context, mailConfig.getFrom(), code.getEmail(),
         mailConfig.getTitle(), mailConfig.getTemplate(), true, model);
-    if (this.validationCode.isAsync()) {
+    if (this.enableCode.isAsync()) {
       final Future<MailResult> result = this.mailService.asyncSend(params);
       if (log.isTraceEnabled())
-        log.trace("#issueActivationCode (context={}) return : {}", context, result);
+        log.trace("#sendEnableCode (context={}) return : {}", context, result);
       return result;
     } else {
       final MailResult result = this.mailService.send(params);
       if (log.isTraceEnabled())
-        log.trace("#issueActivationCode (context={}) result : result={}", context, result);
+        log.trace("#sendEnableCode (context={}) result : result={}", context, result);
       return null;
     }
   }
@@ -205,7 +204,7 @@ class AccountServiceImpl implements AccountService {
 
     // 계정 정보 등록.
     Account account = this.factory.create(
-        params.getContext(), params.getNickname(), !this.validationCode.isEnable(), params.getTimestamp());
+        params.getContext(), params.getNickname(), !this.enableCode.isEnable(), params.getTimestamp());
     account = this.dao.create(params.getContext(), account);
     if (log.isDebugEnabled())
       log.debug("#create (context={}) account={}", params.getContext(), account);
@@ -223,11 +222,11 @@ class AccountServiceImpl implements AccountService {
       tasks.add(sendWelcome(params.getContext(), account, params.getEmail(), params.getUserKey()));
 
     // 계정 활성화 코드 발행 및 전송.
-    if (this.validationCode.isEnable()) {
-      final ValidationCode code = createValidationCode(params.getContext(), account, params.getEmail(), params.getTimestamp());
+    if (this.enableCode.isEnable()) {
+      final EnableCode code = createEnableCode(params.getContext(), account, params.getEmail(), params.getTimestamp());
       if (log.isDebugEnabled())
         log.debug("#create (context={}) code={}", params.getContext(), code);
-      tasks.add(sendValidationCode(params.getContext(), code));
+      tasks.add(sendEnableCode(params.getContext(), code));
     }
 
     // 비동기 작업 결과 처리.
@@ -247,22 +246,22 @@ class AccountServiceImpl implements AccountService {
   }
 
   @Override
-  public Account validate(final ValidateAccountParams params) {
+  public Account enable(final EnableAccountParams params) {
     if (log.isTraceEnabled())
-      log.trace("#validate args : params={}", params);
+      log.trace("#enable args : params={}", params);
 
-    if (!this.validationCode.isEnable())
+    if (!this.enableCode.isEnable())
       throw new DisabledPropertyException("validationCode.enabled");
 
-    final ValidationCode validationCode = this.validationCodeDao.read(params.getContext(), params.getValidationCode());
+    final EnableCode code = this.enableCodeDao.read(params.getContext(), params.getToken());
     if (log.isDebugEnabled())
-      log.debug("#validate (context={}) validationCode={}", params.getContext(), validationCode);
+      log.debug("#enable (context={}) code={}", params.getContext(), code);
 
-    validationCode.use(params.getTimestamp());
+    code.use(params.getTimestamp());
 
-    final Account account = validationCode.getAccount();
+    final Account account = code.getAccount();
     if (log.isTraceEnabled())
-      log.trace("#validate (context={}) return : {}", params.getContext(), account);
+      log.trace("#enable (context={}) return : {}", params.getContext(), account);
     return account;
   }
 
@@ -280,21 +279,21 @@ class AccountServiceImpl implements AccountService {
   }
 
   @Override
-  public ValidationCode issue(final IssueValidateParams params) {
+  public EnableCode issue(final IssueEnableCodeParams params) {
     if (log.isTraceEnabled())
       log.trace("#issue args : params={}", params);
 
-    final List<ValidationCode> validationCodes = this.validationCodeDao.list(params.getContext(), params.getEmail());
-    if (validationCodes.isEmpty())
-      throw new ValidationException(ValidationCode.ATTR_EMAIL, params.getEmail(), "no data : email=" + params.getEmail());
+    final List<EnableCode> codes = this.enableCodeDao.list(params.getContext(), params.getEmail());
+    if (codes.isEmpty())
+      throw new ValidationException(EnableCode.ATTR_EMAIL, params.getEmail(), "no data : email=" + params.getEmail());
 
-    validationCodes.forEach(vc -> vc.inactive(params.getTimestamp()));
-    final ValidationCode validationCode = createValidationCode(params.getContext(), validationCodes.get(0).getAccount(),
-        params.getEmail(), params.getTimestamp());
-    sendValidationCode(params.getContext(), validationCode);
+    codes.forEach(vc -> vc.inactive(params.getTimestamp()));
+    final EnableCode code = createEnableCode(params.getContext(), codes.get(0).getAccount(), params.getEmail(),
+        params.getTimestamp());
+    sendEnableCode(params.getContext(), code);
 
     if (log.isTraceEnabled())
-      log.trace("#issue (context={}) return : {}", params.getContext(), validationCode);
-    return validationCode;
+      log.trace("#issue (context={}) return : {}", params.getContext(), code);
+    return code;
   }
 }

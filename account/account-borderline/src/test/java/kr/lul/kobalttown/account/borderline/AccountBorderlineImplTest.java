@@ -4,13 +4,13 @@ import kr.lul.common.data.Context;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
 import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
-import kr.lul.kobalttown.account.data.dao.ValidationCodeDao;
+import kr.lul.kobalttown.account.data.dao.EnableCodeDao;
 import kr.lul.kobalttown.account.data.repository.CredentialRepository;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
-import kr.lul.kobalttown.account.domain.ValidationCode;
+import kr.lul.kobalttown.account.domain.EnableCode;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
-import kr.lul.kobalttown.account.service.configuration.ValidationCodeConfiguration;
+import kr.lul.kobalttown.account.service.configuration.EnableCodeConfiguration;
 import kr.lul.support.spring.web.context.ContextService;
 import org.junit.After;
 import org.junit.Before;
@@ -42,12 +42,12 @@ public class AccountBorderlineImplTest {
   private static final Logger log = getLogger(AccountBorderlineImplTest.class);
 
   @Autowired
-  private ValidationCodeConfiguration validationCode;
+  private EnableCodeConfiguration enableCode;
 
   @Autowired
   private AccountBorderline borderline;
   @Autowired
-  private ValidationCodeDao validationCodeDao;
+  private EnableCodeDao enableCodeDao;
   @Autowired
   private CredentialRepository credentialRepository;
   @Autowired
@@ -120,7 +120,7 @@ public class AccountBorderlineImplTest {
         .isNotNull()
         .extracting(AccountDetailDto::getId, AccountDetailDto::getNickname, AccountDetailDto::isEnabled,
             AccountDetailDto::getCreatedAt, AccountDetailDto::getUpdatedAt)
-        .containsSequence(expected.getId(), nickname, !this.validationCode.isEnable(),
+        .containsSequence(expected.getId(), nickname, !this.enableCode.isEnable(),
             this.timeProvider.zonedDateTime(createdAt), this.timeProvider.zonedDateTime(createdAt));
   }
 
@@ -150,7 +150,7 @@ public class AccountBorderlineImplTest {
     assertThat(dto)
         .isNotNull()
         .extracting(AccountDetailDto::getNickname, AccountDetailDto::isEnabled)
-        .containsSequence(nickname, !this.validationCode.isEnable());
+        .containsSequence(nickname, !this.enableCode.isEnable());
     assertThat(dto.getId())
         .isPositive();
     assertThat(dto.getCreatedAt())
@@ -170,16 +170,16 @@ public class AccountBorderlineImplTest {
         .extracting(Credential::getPublicKey)
         .isEqualTo(userKey);
 
-    final List<ValidationCode> validationCodes = this.validationCodeDao.list(new Context(), email);
-    log.info("THEN - validationCodes={}", validationCodes);
-    if (this.validationCode.isEnable()) {
-      assertThat(validationCodes)
+    final List<EnableCode> codes = this.enableCodeDao.list(new Context(), email);
+    log.info("THEN - validationCodes={}", codes);
+    if (this.enableCode.isEnable()) {
+      assertThat(codes)
           .isNotNull();
-      assertThat(validationCodes.get(0))
+      assertThat(codes.get(0))
           .isNotNull()
-          .extracting(ValidationCode::isUsed, ValidationCode::getStatusAt, ValidationCode::isExpired)
+          .extracting(EnableCode::isUsed, EnableCode::getStatusAt, EnableCode::isExpired)
           .containsSequence(false, createdAt, false);
-      assertThat(validationCodes.get(0).getAccount())
+      assertThat(codes.get(0).getAccount())
           .isNotNull()
           .extracting(Account::getId, Account::isEnabled)
           .containsSequence(dto.getId(), false);

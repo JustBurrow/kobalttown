@@ -1,11 +1,11 @@
 package kr.lul.kobalttown.account.service;
 
 import kr.lul.kobalttown.account.domain.Account;
-import kr.lul.kobalttown.account.domain.ValidationCode;
+import kr.lul.kobalttown.account.domain.EnableCode;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
-import kr.lul.kobalttown.account.service.params.IssueValidateParams;
+import kr.lul.kobalttown.account.service.params.EnableAccountParams;
+import kr.lul.kobalttown.account.service.params.IssueEnableCodeParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
-import kr.lul.kobalttown.account.service.params.ValidateAccountParams;
 
 /**
  * @author justburrow
@@ -28,7 +28,7 @@ public interface AccountService {
    *
    * @return 인증된 계정.
    */
-  Account validate(ValidateAccountParams params);
+  Account enable(EnableAccountParams params);
 
   /**
    * 계정 조회.
@@ -46,5 +46,5 @@ public interface AccountService {
    *
    * @return 신규 발급한 계정 인증 코드.
    */
-  ValidationCode issue(IssueValidateParams params);
+  EnableCode issue(IssueEnableCodeParams params);
 }

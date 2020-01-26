@@ -16,7 +16,9 @@ public enum AccountPage {
   LIST(new Api(Action.READ, C.GROUP, C.LIST), "신규 계정 목록."),
   DETAIL(new Api(Action.READ, C.GROUP, C.DETAIL), "계정 프로필."),
 
-  ACTIVATE(new Api(Action.READ, C.GROUP, C.VALIDATE), "새로 등록한 계정을 활성화한다.");
+  ENABLE(new Api(Action.READ, C.GROUP, C.ENABLE), "새로 등록한 계정을 활성화한다."),
+  ISSUE_ENABLE_CODE_FORM(new Api(Action.READ, C.GROUP, C.ISSUE_ENABLE_CODE_FORM), "새 계정 활성화 코드 발급 폼."),
+  ISSUE_ENABLE_CODE(new Api(Action.CREATE, C.GROUP, C.ISSUE_ENABLE_CODE), "새 계정 활성화 코드 발급.");
 
   public final Api api;
   public final String description;

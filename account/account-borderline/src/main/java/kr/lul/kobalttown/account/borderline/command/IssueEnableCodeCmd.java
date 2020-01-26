@@ -1,25 +1,26 @@
-package kr.lul.kobalttown.account.service.params;
+package kr.lul.kobalttown.account.borderline.command;
 
+import kr.lul.common.data.Context;
 import kr.lul.common.data.ContextContainer;
 
 import java.time.Instant;
 import java.util.Objects;
 
 import static java.lang.String.format;
-import static kr.lul.common.util.Arguments.notEmpty;
 import static kr.lul.common.util.Arguments.notNull;
+import static kr.lul.common.util.Texts.singleQuote;
 
 /**
  * @author justburrow
  * @since 2020/01/19
  */
-public class IssueValidateParams extends ContextContainer {
+public class IssueEnableCodeCmd extends ContextContainer {
   private String email;
   private Instant timestamp;
 
-  public IssueValidateParams(final ContextContainer container, final String email, final Instant timestamp) {
-    super(container);
-    notEmpty(email, "email");
+  public IssueEnableCodeCmd(final Context context, final String email, final Instant timestamp) {
+    super(context);
+    notNull(email, "email");
     notNull(timestamp, "timestamp");
 
     this.email = email;
@@ -42,9 +43,8 @@ public class IssueValidateParams extends ContextContainer {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    final IssueValidateParams that = (IssueValidateParams) o;
-    return this.context.equals(that.timestamp) &&
-               this.email.equals(that.email) &&
+    final IssueEnableCodeCmd that = (IssueEnableCodeCmd) o;
+    return this.email.equals(that.email) &&
                this.timestamp.equals(that.timestamp);
   }
 
@@ -55,7 +55,7 @@ public class IssueValidateParams extends ContextContainer {
 
   @Override
   public String toString() {
-    return format("%s{context=%s, email='%s', timestamp=%s}", IssueValidateParams.class.getSimpleName(),
-        this.context, this.email, this.timestamp);
+    return format("%s{context=%s, email=%s, timestamp=%s}", IssueEnableCodeCmd.class.getSimpleName(), this.context,
+        singleQuote(this.email), this.timestamp);
   }
 }

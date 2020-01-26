@@ -1,21 +1,21 @@
 package kr.lul.kobalttown.account.borderline;
 
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
-import kr.lul.kobalttown.account.borderline.command.IssueValidateCmd;
+import kr.lul.kobalttown.account.borderline.command.EnableAccountCmd;
+import kr.lul.kobalttown.account.borderline.command.IssueEnableCodeCmd;
 import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
-import kr.lul.kobalttown.account.borderline.command.ValidateAccountCmd;
 import kr.lul.kobalttown.account.converter.AccountConverter;
-import kr.lul.kobalttown.account.converter.ValidateCodeConverter;
+import kr.lul.kobalttown.account.converter.EnableCodeConverter;
 import kr.lul.kobalttown.account.domain.Account;
-import kr.lul.kobalttown.account.domain.ValidationCode;
-import kr.lul.kobalttown.account.domain.ValidationCodeStatusException;
+import kr.lul.kobalttown.account.domain.EnableCode;
+import kr.lul.kobalttown.account.domain.EnableCodeStatusException;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
-import kr.lul.kobalttown.account.dto.ValidationCodeSummaryDto;
+import kr.lul.kobalttown.account.dto.EnableCodeSummaryDto;
 import kr.lul.kobalttown.account.service.AccountService;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
-import kr.lul.kobalttown.account.service.params.IssueValidateParams;
+import kr.lul.kobalttown.account.service.params.EnableAccountParams;
+import kr.lul.kobalttown.account.service.params.IssueEnableCodeParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
-import kr.lul.kobalttown.account.service.params.ValidateAccountParams;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,7 +41,7 @@ class AccountBorderlineImpl implements AccountBorderline {
   @Autowired
   private AccountConverter converter;
   @Autowired
-  private ValidateCodeConverter validateCodeConverter;
+  private EnableCodeConverter enableCodeConverter;
 
   @PostConstruct
   private void postConstruct() {
@@ -71,20 +71,20 @@ class AccountBorderlineImpl implements AccountBorderline {
   }
 
   @Override
-  @Transactional(noRollbackFor = ValidationCodeStatusException.class)
-  public AccountDetailDto validate(final ValidateAccountCmd cmd) {
+  @Transactional(noRollbackFor = EnableCodeStatusException.class)
+  public AccountDetailDto enable(final EnableAccountCmd cmd) {
     if (log.isTraceEnabled())
-      log.trace("#validate args : cmd={}", cmd);
+      log.trace("#enable args : cmd={}", cmd);
     notNull(cmd, "cmd");
 
-    final ValidateAccountParams params = new ValidateAccountParams(cmd.getContext(), cmd.getValidationCode(), cmd.getTimestamp());
+    final EnableAccountParams params = new EnableAccountParams(cmd.getContext(), cmd.getValidationCode(), cmd.getTimestamp());
     if (log.isDebugEnabled())
-      log.debug("#validate params={}", params);
-    final Account account = this.service.validate(params);
+      log.debug("#enable params={}", params);
+    final Account account = this.service.enable(params);
     final AccountDetailDto dto = this.converter.convert(account, AccountDetailDto.class);
 
     if (log.isTraceEnabled())
-      log.trace("#validate (context={}) return : {}", cmd.getContext(), dto);
+      log.trace("#enable (context={}) return : {}", cmd.getContext(), dto);
     return dto;
   }
 
@@ -106,13 +106,13 @@ class AccountBorderlineImpl implements AccountBorderline {
   }
 
   @Override
-  public ValidationCodeSummaryDto issue(final IssueValidateCmd cmd) {
+  public EnableCodeSummaryDto issue(final IssueEnableCodeCmd cmd) {
     if (log.isTraceEnabled())
       log.trace("#issue args : cmd={}", cmd);
 
-    final IssueValidateParams params = new IssueValidateParams(cmd, cmd.getEmail(), cmd.getTimestamp());
-    final ValidationCode validationCode = this.service.issue(params);
-    final ValidationCodeSummaryDto dto = this.validateCodeConverter.convert(validationCode, ValidationCodeSummaryDto.class);
+    final IssueEnableCodeParams params = new IssueEnableCodeParams(cmd, cmd.getEmail(), cmd.getTimestamp());
+    final EnableCode enableCode = this.service.issue(params);
+    final EnableCodeSummaryDto dto = this.enableCodeConverter.convert(enableCode, EnableCodeSummaryDto.class);
 
     if (log.isTraceEnabled())
       log.trace("#issue (context={}) return : {}", cmd.getContext(), dto);

@@ -10,13 +10,13 @@ import static kr.lul.common.util.Texts.singleQuote;
  * @author justburrow
  * @since 2019/12/18
  */
-public class ValidationCodeConfiguration {
+public class EnableCodeConfiguration {
   private boolean enable;
   private boolean async;
   private String domain;
   private MailConfiguration mail;
 
-  public ValidationCodeConfiguration(final ValidationCodeProperties properties) {
+  public EnableCodeConfiguration(final ValidationCodeProperties properties) {
     notNull(properties, "properties");
 
     this.enable = properties.isEnable();

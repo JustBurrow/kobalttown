@@ -11,19 +11,19 @@ import static kr.lul.common.util.Arguments.notNull;
  */
 public class AccountServiceConfiguration {
   private WelcomeConfiguration welcome;
-  private ValidationCodeConfiguration validationCode;
+  private EnableCodeConfiguration validationCode;
 
   public AccountServiceConfiguration(final AccountServiceProperties properties) {
     notNull(properties, "properties");
     this.welcome = new WelcomeConfiguration(properties.getWelcome());
-    this.validationCode = new ValidationCodeConfiguration(properties.getValidationCode());
+    this.validationCode = new EnableCodeConfiguration(properties.getValidationCode());
   }
 
   public WelcomeConfiguration getWelcome() {
     return this.welcome;
   }
 
-  public ValidationCodeConfiguration getValidationCode() {
+  public EnableCodeConfiguration getValidationCode() {
     return this.validationCode;
   }
 

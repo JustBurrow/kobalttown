@@ -10,18 +10,21 @@ import static kr.lul.common.util.Arguments.*;
  * @author justburrow
  * @since 2020/01/19
  */
-public class ValidationCodeSummaryDto {
+public class EnableCodeSummaryDto {
   private long id;
   private String email;
+  private String token;
   private ZonedDateTime expireAt;
 
-  public ValidationCodeSummaryDto(final long id, final String email, final ZonedDateTime expireAt) {
+  public EnableCodeSummaryDto(final long id, final String email, final String token, final ZonedDateTime expireAt) {
     positive(id, "id");
     notEmpty(email, "email");
+    notEmpty(token, "token");
     notNull(expireAt, "expireAt");
 
     this.id = id;
     this.email = email;
+    this.token = token;
     this.expireAt = expireAt;
   }
 
@@ -31,6 +34,10 @@ public class ValidationCodeSummaryDto {
 
   public String getEmail() {
     return this.email;
+  }
+
+  public String getToken() {
+    return this.token;
   }
 
   public ZonedDateTime getExpireAt() {
@@ -44,20 +51,21 @@ public class ValidationCodeSummaryDto {
   public boolean equals(final Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    final ValidationCodeSummaryDto that = (ValidationCodeSummaryDto) o;
+    final EnableCodeSummaryDto that = (EnableCodeSummaryDto) o;
     return this.id == that.id &&
                this.email.equals(that.email) &&
+               this.token.equals(that.token) &&
                this.expireAt.equals(that.expireAt);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.id, this.email, this.expireAt);
+    return Objects.hash(this.id, this.email, this.token, this.expireAt);
   }
 
   @Override
   public String toString() {
-    return format("%s{id=%d, email='%s', expireAt=%s}", ValidationCodeSummaryDto.class.getSimpleName(), this.id, this.email,
-        this.expireAt);
+    return format("%s{id=%d, email='%s', token='%s', expireAt=%s}", EnableCodeSummaryDto.class.getSimpleName(),
+        this.id, this.email, this.token, this.expireAt);
   }
 }

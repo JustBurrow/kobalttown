@@ -2,7 +2,7 @@ package kr.lul.kobalttown.account.web.controller;
 
 import kr.lul.common.web.http.status.exception.client.NotFound;
 import kr.lul.kobalttown.account.web.controller.request.CreateAccountReq;
-import kr.lul.kobalttown.account.web.controller.request.IssueValidateReq;
+import kr.lul.kobalttown.account.web.controller.request.IssueEnableCodeReq;
 import kr.lul.kobalttown.page.account.AccountMvc.C;
 import kr.lul.kobalttown.page.account.AccountMvc.M;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,9 +40,9 @@ public interface AccountController {
    *
    * @return 템플릿 이름.
    */
-  @GetMapping(C.VALIDATE)
+  @GetMapping(C.ENABLE)
   @PreAuthorize("isAnonymous()")
-  String validate(@PathVariable(M.TOKEN) String token, Model model);
+  String enable(@PathVariable(M.TOKEN) String token, Model model);
 
   /**
    * 유효기간 만료 등의 경우에 코드 재발급하기.
@@ -51,20 +51,20 @@ public interface AccountController {
    *
    * @return 템플릿 이름.
    */
-  @GetMapping(C.VALIDATE_ISSUE_FORM)
+  @GetMapping(C.ISSUE_ENABLE_CODE_FORM)
   @PreAuthorize("isAnonymous()")
-  String issueValidateCode(Model model);
+  String issueEnableCodeForm(Model model);
 
-  @PostMapping(C.VALIDATE_ISSUE)
+  @PostMapping(C.ISSUE_ENABLE_CODE)
   @PreAuthorize("isAnonymous()")
-  String issue(@ModelAttribute(M.ISSUE_VALIDATE_REQ) @Valid IssueValidateReq req, BindingResult binding, Model model);
+  String issueEnableCode(@ModelAttribute(M.ISSUE_ENABLE_CODE) @Valid IssueEnableCodeReq req, BindingResult binding, Model model);
 
   /**
    * {@code POST} 매핑 때문에 {@code HTTP 405 Method Not Allowed}로 응답하기 때문에 {@code 404 Not Found}가 되도록 추가.
    *
    * @return N/A
    */
-  @GetMapping(C.VALIDATE_ISSUE)
+  @GetMapping(C.ISSUE_ENABLE_CODE)
   default String notFoundGetValidate() {
     throw new NotFound();
   }

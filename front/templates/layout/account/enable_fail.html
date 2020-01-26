@@ -5,14 +5,14 @@
     <meta name="author" content="justburrow" th:remove="all"/>
     <meta name="since" content="2020/01/05 22:41" th:remove="all"/>
     <meta charset="UTF-8"/>
-    <title th:text="#{account.validate-fail.head.title(#{global.head.title.postfix})}">Validate Fail</title>
+    <title th:text="#{account.validate-fail.head.title(#{global.head.title.postfix})}">Enable Fail</title>
 </head>
 <body>
 <header th:replace="component/navbar/index :: navbar">
     navigation bar
 </header>
 <main>
-    <h1 th:text="#{account.validate-fail.title}">Validate Fail</h1>
+    <h1 th:text="#{account.validate-fail.title}">Enable Fail</h1>
     <p th:text="#{account.validate-fail.description}">사용할 수 없는 인증코드입니다.</p>
     <ul>
         <li><span th:text="#{account.validate-fail.case1}">발행되지 않은 코드.</span></li>
@@ -22,7 +22,7 @@
     <div>
         <p>인증 코드를 디시 발급하시겠습니까?</p>
         <div>
-            <a href="validate-issue.html" th:href="@{/accounts/validate/issue}">네</a>
+            <a href="issue_enable_code.html" th:href="@{/accounts/validate/issue}">네</a>
         </div>
     </div>
 </main>

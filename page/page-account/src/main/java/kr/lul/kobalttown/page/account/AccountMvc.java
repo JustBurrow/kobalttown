@@ -10,9 +10,9 @@ public abstract class AccountMvc {
     public static final String CREATE_REQ = "createReq";
     public static final String ACCOUNT = "account";
     public static final String TOKEN = "token";
-    public static final String VALIDATED_AT = "validatedAt";
-    public static final String ISSUE_VALIDATE_REQ = "issueValidate";
-    public static final String VALIDATE_CODE = "validateCode";
+    public static final String ENABLED_AT = "enabledAt";
+    public static final String ISSUE_ENABLE_CODE = "issueEnableCode";
+    public static final String ENABLE_CODE = "enableCode";
 
     public M() {
       throw new UnsupportedOperationException();
@@ -25,10 +25,10 @@ public abstract class AccountMvc {
     public static final String CREATE_FORM = GROUP + "/create";
     public static final String LIST = GROUP + "/list";
     public static final String DETAIL = GROUP + "/detail";
-    public static final String VALIDATE_SUCCESS = GROUP + "/validate-success";
-    public static final String VALIDATE_FAIL = GROUP + "/validate-fail";
-    public static final String VALIDATE_ISSUE = GROUP + "/validate-issue";
-    public static final String VALIDATE_ISSUED = GROUP + "/validate-issued";
+    public static final String ENABLE_SUCCESS = GROUP + "/enable_success";
+    public static final String ENABLE_FAIL = GROUP + "/enable_fail";
+    public static final String ISSUE_ENABLE_CODE = GROUP + "/issue_enable_code";
+    public static final String ENABLE_CODE_ISSUED = GROUP + "/enable_code_issued";
 
     public V() {
       throw new UnsupportedOperationException();
@@ -44,9 +44,9 @@ public abstract class AccountMvc {
     public static final String LIST = GROUP;
     public static final String DETAIL = GROUP + "/{" + M.ID + ":[1-9]\\d*}";
 
-    public static final String VALIDATE = GROUP + "/validate/{" + M.TOKEN + "}";
-    public static final String VALIDATE_ISSUE_FORM = GROUP + "/validate/issue";
-    public static final String VALIDATE_ISSUE = GROUP + "/validate";
+    public static final String ENABLE = GROUP + "/enable/{" + M.TOKEN + "}";
+    public static final String ISSUE_ENABLE_CODE_FORM = GROUP + "/enable/issue";
+    public static final String ISSUE_ENABLE_CODE = GROUP + "/enable";
 
     public C() {
       throw new UnsupportedOperationException();

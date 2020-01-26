@@ -1,11 +1,11 @@
 package kr.lul.kobalttown.account.borderline;
 
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
-import kr.lul.kobalttown.account.borderline.command.IssueValidateCmd;
+import kr.lul.kobalttown.account.borderline.command.EnableAccountCmd;
+import kr.lul.kobalttown.account.borderline.command.IssueEnableCodeCmd;
 import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
-import kr.lul.kobalttown.account.borderline.command.ValidateAccountCmd;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
-import kr.lul.kobalttown.account.dto.ValidationCodeSummaryDto;
+import kr.lul.kobalttown.account.dto.EnableCodeSummaryDto;
 
 /**
  * @author justburrow
@@ -28,7 +28,7 @@ public interface AccountBorderline {
    *
    * @return 인증된 계정 정보. 없으면 {@code null}.
    */
-  AccountDetailDto validate(ValidateAccountCmd cmd);
+  AccountDetailDto enable(EnableAccountCmd cmd);
 
   /**
    * 등록된 계정 정보 조회.
@@ -46,5 +46,5 @@ public interface AccountBorderline {
    *
    * @return 재발급한 코드.
    */
-  ValidationCodeSummaryDto issue(IssueValidateCmd cmd);
+  EnableCodeSummaryDto issue(IssueEnableCodeCmd cmd);
 }

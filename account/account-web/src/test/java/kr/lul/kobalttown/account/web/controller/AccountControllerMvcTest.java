@@ -32,7 +32,7 @@ import static java.util.concurrent.ThreadLocalRandom.current;
 import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.userKey;
-import static kr.lul.kobalttown.account.domain.ValidationCodeUtil.code;
+import static kr.lul.kobalttown.account.domain.EnableCodeUtil.token;
 import static kr.lul.kobalttown.page.account.AccountMvc.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -186,11 +186,11 @@ public class AccountControllerMvcTest {
   @Test
   public void test_validate_with_short_code() throws Exception {
     // GIVEN
-    final String code = code().substring(1);
+    final String code = token().substring(1);
     log.info("GIVEN - code={}", code);
 
     // WHEN
-    this.mock.perform(get(C.GROUP + "/validate/" + code)
+    this.mock.perform(get(C.GROUP + "/enable/" + code)
                           .with(anonymous()))
 
         // THEN
@@ -198,17 +198,17 @@ public class AccountControllerMvcTest {
         .andExpect(view().name(GlobalMvc.V.ERROR_404))
         .andDo(print());
 
-    verify(this.borderline, never()).validate(any());
+    verify(this.borderline, never()).enable(any());
   }
 
   @Test
   public void test_validate_with_long_code() throws Exception {
     // GIVEN
-    final String code = code() + "a";
+    final String code = token() + "a";
     log.info("GIVEN - code={}", code);
 
     // WHEN
-    this.mock.perform(get(C.GROUP + "/validate/" + code)
+    this.mock.perform(get(C.GROUP + "/enable/" + code)
                           .with(anonymous()))
 
         // THEN
@@ -216,13 +216,13 @@ public class AccountControllerMvcTest {
         .andExpect(view().name(GlobalMvc.V.ERROR_404))
         .andDo(print());
 
-    verify(this.borderline, never()).validate(any());
+    verify(this.borderline, never()).enable(any());
   }
 
   @Test
   public void test_VALIDATE_ISSUE_FORM_with_authenticated() throws Exception {
     // WHEN
-    this.mock.perform(get(C.VALIDATE_ISSUE_FORM)
+    this.mock.perform(get(C.ISSUE_ENABLE_CODE_FORM)
                           .with(user("nickname #" + current().nextInt(Integer.MAX_VALUE))))
 
         // THEN
@@ -231,15 +231,15 @@ public class AccountControllerMvcTest {
   }
 
   @Test
-  public void test_VALIDATE_ISSUE_FORM() throws Exception {
+  public void test_ENABLE_CODE_ISSUE_form() throws Exception {
     // WHEN
-    this.mock.perform(get(C.VALIDATE_ISSUE_FORM)
+    this.mock.perform(get(C.ISSUE_ENABLE_CODE_FORM)
                           .with(anonymous()))
 
         // THEN
         .andExpect(status().isOk())
-        .andExpect(view().name(V.VALIDATE_ISSUE))
-        .andExpect(model().attributeExists(M.ISSUE_VALIDATE_REQ))
+        .andExpect(view().name(V.ISSUE_ENABLE_CODE))
+        .andExpect(model().attributeExists(M.ISSUE_ENABLE_CODE))
         .andDo(print());
   }
 

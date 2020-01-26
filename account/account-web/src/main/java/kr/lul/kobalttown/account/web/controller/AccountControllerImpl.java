@@ -7,15 +7,15 @@ import kr.lul.common.util.ValidationException;
 import kr.lul.common.web.http.status.exception.client.NotFound;
 import kr.lul.kobalttown.account.borderline.AccountBorderline;
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
-import kr.lul.kobalttown.account.borderline.command.IssueValidateCmd;
+import kr.lul.kobalttown.account.borderline.command.EnableAccountCmd;
+import kr.lul.kobalttown.account.borderline.command.IssueEnableCodeCmd;
 import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
-import kr.lul.kobalttown.account.borderline.command.ValidateAccountCmd;
-import kr.lul.kobalttown.account.domain.ValidationCode;
-import kr.lul.kobalttown.account.domain.ValidationCodeStatusException;
+import kr.lul.kobalttown.account.domain.EnableCode;
+import kr.lul.kobalttown.account.domain.EnableCodeStatusException;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
-import kr.lul.kobalttown.account.dto.ValidationCodeSummaryDto;
+import kr.lul.kobalttown.account.dto.EnableCodeSummaryDto;
 import kr.lul.kobalttown.account.web.controller.request.CreateAccountReq;
-import kr.lul.kobalttown.account.web.controller.request.IssueValidateReq;
+import kr.lul.kobalttown.account.web.controller.request.IssueEnableCodeReq;
 import kr.lul.kobalttown.page.account.AccountError;
 import kr.lul.kobalttown.page.account.AccountMvc.M;
 import kr.lul.kobalttown.page.account.AccountMvc.V;
@@ -67,10 +67,21 @@ class AccountControllerImpl implements AccountController {
     return V.CREATE_FORM;
   }
 
+  private void validate(final CreateAccountReq req, final BindingResult binding) {
+    if (null != req.getPassword() && !req.getPassword().equals(req.getConfirm())) {
+      binding.addError(new FieldError(M.CREATE_REQ, "confirm", null, false,
+          new String[]{AccountError.CREATE_CONFIRM_NOT_MATCH}, null, "비밀번호가 일치하지 않습니다."));
+    }
+  }
+
   private String doCreate(final CreateAccountReq req, final BindingResult result, final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#doCreate args : req={}, result={}, model={}", req, result, model);
+
+    final Context context = this.contextService.get();
     String template;
     try {
-      final CreateAccountCmd cmd = new CreateAccountCmd(this.contextService.get(), req.getNickname(),
+      final CreateAccountCmd cmd = new CreateAccountCmd(context, req.getNickname(),
           req.getEmail(), req.getUserKey(), req.getPassword(), this.timeProvider.now());
       final AccountDetailDto account = this.borderline.create(cmd);
       if (log.isDebugEnabled())
@@ -81,87 +92,82 @@ class AccountControllerImpl implements AccountController {
       template = doCreateForm(model);
     }
 
+    if (log.isTraceEnabled())
+      log.trace("#doCreate (context={}) result : template={}, result={}, model={}", context, template, result, model);
     return template;
   }
 
-  private void validate(final CreateAccountReq req, final BindingResult binding) {
-    if (null != req.getPassword() && !req.getPassword().equals(req.getConfirm())) {
-      binding.addError(new FieldError(M.CREATE_REQ, "confirm", null, false,
-          new String[]{AccountError.CREATE_CONFIRM_NOT_MATCH}, null, "비밀번호가 일치하지 않습니다."));
-    }
-  }
-
-  private String doValidate(final Context context, final String token, final Model model) {
+  private String doEnable(final Context context, final String token, final Model model) {
     if (log.isTraceEnabled())
-      log.trace("#doValidate args : context={}, token={}, model={}", context, token, model);
+      log.trace("#doEnable args : context={}, token={}, model={}", context, token, model);
 
-    final ValidateAccountCmd cmd = new ValidateAccountCmd(context, token, this.timeProvider.now());
+    final EnableAccountCmd cmd = new EnableAccountCmd(context, token, this.timeProvider.now());
     if (log.isDebugEnabled())
-      log.debug("#doValidate (context={}) cmd={}", context, cmd);
+      log.debug("#doEnable (context={}) cmd={}", context, cmd);
 
     String template;
     try {
-      final AccountDetailDto account = this.borderline.validate(cmd);
+      final AccountDetailDto account = this.borderline.enable(cmd);
       if (log.isDebugEnabled())
-        log.debug("#doValidate (context={}) account={}", context, account);
+        log.debug("#doEnable (context={}) account={}", context, account);
 
       model.addAttribute(M.ACCOUNT, account);
-      model.addAttribute(M.VALIDATED_AT, cmd.getTimestamp());
+      model.addAttribute(M.ENABLED_AT, cmd.getTimestamp());
 
-      template = V.VALIDATE_SUCCESS;
+      template = V.ENABLE_SUCCESS;
     } catch (final DisabledPropertyException e) {
-      log.warn(format("#doValidate (context=%s) e=%s", context, e), e);
+      log.warn(format("#doEnable (context=%s) e=%s", context, e), e);
       throw new NotFound(e);
-    } catch (final ValidationCodeStatusException e) {
-      log.warn(format("#doValidate (context=%s) e=%s", context, e), e);
-      template = V.VALIDATE_FAIL;
+    } catch (final EnableCodeStatusException e) {
+      log.warn(format("#doEnable (context=%s) e=%s", context, e), e);
+      template = V.ENABLE_FAIL;
     }
 
     if (log.isTraceEnabled())
-      log.trace("#doValidate (context={}) result : template={}, model={}", context, template, model);
+      log.trace("#doEnable (context={}) result : template={}, model={}", context, template, model);
     return template;
   }
 
-  private String doIssueValidateCodeForm(final Context context,
-      final IssueValidateReq req, final BindingResult binding,
+  private String doIssueEnableCodeForm(final Context context,
+      final IssueEnableCodeReq req, final BindingResult binding,
       final Model model) {
     if (log.isTraceEnabled())
-      log.trace("#doIssueValidateCodeForm args : context={}, req={}, binding={}, model={}", context, req, binding, model);
+      log.trace("#doIssueEnableCodeForm args : context={}, req={}, binding={}, model={}", context, req, binding, model);
 
     if (null == req) {
-      model.addAttribute(M.ISSUE_VALIDATE_REQ, new IssueValidateReq());
+      model.addAttribute(M.ISSUE_ENABLE_CODE, new IssueEnableCodeReq());
     } else {
       req.setEmail(null);
     }
 
     if (log.isTraceEnabled())
-      log.trace("#doIssueValidateCodeForm (context={}) result : template={}, model={}", context, V.VALIDATE_ISSUE, model);
-    return V.VALIDATE_ISSUE;
+      log.trace("#doIssueEnableCodeForm (context={}) result : template={}, model={}", context, V.ISSUE_ENABLE_CODE, model);
+    return V.ISSUE_ENABLE_CODE;
   }
 
-  private String doIssueValidateCode(final Context context, final IssueValidateReq req, final BindingResult binding,
+  private String doIssueEnableCode(final Context context, final IssueEnableCodeReq req, final BindingResult binding,
       final Model model) {
     if (log.isTraceEnabled())
-      log.trace("#doIssueValidateCode args : context={}, req={}, binding={}, model={}", context, req, binding, model);
+      log.trace("#doIssueEnableCode args : context={}, req={}, binding={}, model={}", context, req, binding, model);
 
-    final IssueValidateCmd cmd = new IssueValidateCmd(context, req.getEmail(), this.timeProvider.now());
-    log.info("#issue (context={}) cmd={}", context, cmd);
+    final IssueEnableCodeCmd cmd = new IssueEnableCodeCmd(context, req.getEmail(), this.timeProvider.now());
+    log.info("#doIssueEnableCode (context={}) cmd={}", context, cmd);
     String template;
     try {
-      final ValidationCodeSummaryDto dto = this.borderline.issue(cmd);
-      model.addAttribute(M.VALIDATE_CODE, dto);
-      template = V.VALIDATE_ISSUED;
+      final EnableCodeSummaryDto dto = this.borderline.issue(cmd);
+      model.addAttribute(M.ENABLE_CODE, dto);
+      template = V.ENABLE_CODE_ISSUED;
     } catch (final ValidationException e) {
-      log.warn(format("#doIssueValidateCode (context=%s) cmd=%s, e=%s", context, cmd, e), e);
+      log.warn(format("#doIssueEnableCode (context=%s) cmd=%s, e=%s", context, cmd, e), e);
 
-      binding.addError(new FieldError(M.ISSUE_VALIDATE_REQ, e.getTargetName(), e.getTarget(), false,
-          new String[]{AccountError.ISSUE_VALIDATE_CODE_FAIL}, null, "Fail to issue account validate code."));
+      binding.addError(new FieldError(M.ISSUE_ENABLE_CODE, e.getTargetName(), e.getTarget(), false,
+          new String[]{AccountError.ISSUE_VALIDATE_CODE_FAIL}, null, "Fail to issue account enable code."));
 
-      template = doIssueValidateCodeForm(context, req, binding, model);
+      template = doIssueEnableCodeForm(context, req, binding, model);
     }
 
     if (log.isTraceEnabled())
-      log.trace("#doIssueValidateCode (context={}) result : template={}, model={}", context, template, model);
+      log.trace("#doIssueEnableCode (context={}) result : template={}, model={}", context, template, model);
     return template;
   }
 
@@ -205,55 +211,56 @@ class AccountControllerImpl implements AccountController {
   }
 
   @Override
-  public String validate(@PathVariable(M.TOKEN) final String token, final Model model) {
+  public String enable(@PathVariable(M.TOKEN) final String token, final Model model) {
     if (log.isTraceEnabled())
-      log.trace("#validate args : token={}, model={}", token, model);
+      log.trace("#enable args : token={}, model={}", token, model);
 
     final Context context = this.contextService.get();
     final String template;
 
     try {
-      ValidationCode.CODE_VALIDATOR.validate(token);
-      template = doValidate(context, token, model);
+      EnableCode.TOKEN_VALIDATOR.validate(token);
+      template = doEnable(context, token, model);
     } catch (final ValidationException e) {
-      log.warn("#validate (context={}) e=" + e, context, e);
+      log.warn("#enable (context={}) e=" + e, context, e);
       throw new NotFound(e);
     }
 
     if (log.isTraceEnabled())
-      log.trace("#validate (context={}) result : template={}, model={}", context, template, model);
+      log.trace("#enable (context={}) result : template={}, model={}", context, template, model);
     return template;
   }
 
   @Override
-  public String issueValidateCode(final Model model) {
+  public String issueEnableCodeForm(final Model model) {
     if (log.isTraceEnabled())
-      log.trace("#issueValidateCode args : model={}", model);
+      log.trace("#issueEnableCode args : model={}", model);
 
     final Context context = this.contextService.get();
-    final String template = doIssueValidateCodeForm(context, null, null, model);
+    final String template = doIssueEnableCodeForm(context, null, null, model);
 
     if (log.isTraceEnabled())
-      log.trace("#issueValidateCode (context={}) result : model={}", context, model);
+      log.trace("#issueEnableCode (context={}) result : model={}", context, model);
     return template;
   }
 
   @Override
-  public String issue(@ModelAttribute(M.ISSUE_VALIDATE_REQ) @Valid final IssueValidateReq req, final BindingResult binding,
+  public String issueEnableCode(@ModelAttribute(M.ISSUE_ENABLE_CODE) @Valid final IssueEnableCodeReq req,
+      final BindingResult binding,
       final Model model) {
     if (log.isTraceEnabled())
-      log.trace("#issue args : req={}, binding={}, model={}", req, binding, model);
+      log.trace("#issueEnableCode args : req={}, binding={}, model={}", req, binding, model);
 
     final Context context = this.contextService.get();
     final String template;
     if (binding.hasErrors()) {
-      template = doIssueValidateCodeForm(context, req, binding, model);
+      template = doIssueEnableCodeForm(context, req, binding, model);
     } else {
-      template = doIssueValidateCode(context, req, binding, model);
+      template = doIssueEnableCode(context, req, binding, model);
     }
 
     if (log.isTraceEnabled())
-      log.trace("#issue (context={}) result : template={}, model={}", context, template, model);
+      log.trace("#issueEnableCode (context={}) result : template={}, model={}", context, template, model);
     return template;
   }
 

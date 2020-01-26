@@ -6,11 +6,11 @@ import kr.lul.common.data.Updatable;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.data.entity.AccountEntity;
 import kr.lul.kobalttown.account.data.repository.CredentialRepository;
-import kr.lul.kobalttown.account.data.repository.ValidationCodeRepository;
+import kr.lul.kobalttown.account.data.repository.EnableCodeRepository;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
-import kr.lul.kobalttown.account.domain.ValidationCode;
-import kr.lul.kobalttown.account.service.configuration.ValidationCodeConfiguration;
+import kr.lul.kobalttown.account.domain.EnableCode;
+import kr.lul.kobalttown.account.service.configuration.EnableCodeConfiguration;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
 import org.junit.Before;
@@ -30,8 +30,8 @@ import java.util.List;
 import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.userKey;
-import static kr.lul.kobalttown.account.domain.ValidationCode.CODE_REGEX;
-import static kr.lul.kobalttown.account.domain.ValidationCode.TTL_DEFAULT;
+import static kr.lul.kobalttown.account.domain.EnableCode.TOKEN_REGEX;
+import static kr.lul.kobalttown.account.domain.EnableCode.TTL_DEFAULT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -47,14 +47,14 @@ public class AccountServiceImplTest {
   private static final Logger log = getLogger(AccountServiceImplTest.class);
 
   @Autowired
-  private ValidationCodeConfiguration validationCode;
+  private EnableCodeConfiguration enableCode;
 
   @Autowired
   private AccountService service;
   @Autowired
   private CredentialRepository credentialRepository;
   @Autowired
-  private ValidationCodeRepository validationCodeRepository;
+  private EnableCodeRepository enableCodeRepository;
   @Autowired
   private EntityManager entityManager;
   @Autowired
@@ -64,7 +64,7 @@ public class AccountServiceImplTest {
 
   @Before
   public void setUp() throws Exception {
-    log.info("SETUP - validationCode={}", this.validationCode);
+    log.info("SETUP - enableCode={}", this.enableCode);
 
     this.before = this.timeProvider.now();
     log.info("SETUP - before={}", this.before);
@@ -109,7 +109,7 @@ public class AccountServiceImplTest {
     assertThat(actual)
         .isNotNull()
         .extracting(Account::getId, Account::getNickname, Account::isEnabled, Account::getCreatedAt, Account::getUpdatedAt)
-        .containsSequence(expected.getId(), nickname, !this.validationCode.isEnable(), this.before, this.before);
+        .containsSequence(expected.getId(), nickname, !this.enableCode.isEnable(), this.before, this.before);
   }
 
   @Test
@@ -137,7 +137,7 @@ public class AccountServiceImplTest {
     assertThat(account)
         .isNotNull()
         .extracting(Account::getNickname, Account::isEnabled, Creatable::getCreatedAt, Updatable::getUpdatedAt)
-        .containsSequence(nickname, !this.validationCode.isEnable(), this.before, this.before);
+        .containsSequence(nickname, !this.enableCode.isEnable(), this.before, this.before);
     assertThat(account.getId())
         .isPositive();
 
@@ -161,34 +161,34 @@ public class AccountServiceImplTest {
     assertThat(credential.getSecretHash())
         .isNotEmpty();
 
-    if (this.validationCode.isEnable()) {
+    if (this.enableCode.isEnable()) {
       // TODO mockup으로 활성화 비활성화 모두 테스트하기.
-      final List<ValidationCode> validationCodes = this.validationCodeRepository.findAllByAccount((AccountEntity) account);
+      final List<EnableCode> codes = this.enableCodeRepository.findAllByAccount((AccountEntity) account);
 
-      assertThat(validationCodes)
+      assertThat(codes)
           .isNotNull()
           .hasSize(1)
           .doesNotContainNull();
 
-      final ValidationCode validationCode = validationCodes.get(0);
-      log.info("THEN - validationCode={}", validationCode);
+      final EnableCode code = codes.get(0);
+      log.info("THEN - code={}", code);
 
-      assertThat(validationCode)
-          .extracting(ValidationCode::getExpireAt, ValidationCode::isUsed, ValidationCode::getStatusAt, ValidationCode::isExpired)
+      assertThat(code)
+          .extracting(EnableCode::getExpireAt, EnableCode::isUsed, EnableCode::getStatusAt, EnableCode::isExpired)
           .containsSequence(this.before.plus(TTL_DEFAULT), false, this.before, false);
-      assertThat(validationCode.getId())
+      assertThat(code.getId())
           .isPositive();
-      assertThat(validationCode.getCode())
+      assertThat(code.getToken())
           .isNotNull()
-          .matches(CODE_REGEX);
+          .matches(TOKEN_REGEX);
     }
   }
 
   @Test
-  public void test_create_when_activate_code_disabled() throws Exception {
+  public void test_create_when_enabe_code_disabled() throws Exception {
     // TODO 설정을 mockup으로 변경.
-    if (this.validationCode.isEnable()) {
-      log.info("activate code is enabled.");
+    if (this.enableCode.isEnable()) {
+      log.info("enable code is enabled.");
       return;
     }
 
