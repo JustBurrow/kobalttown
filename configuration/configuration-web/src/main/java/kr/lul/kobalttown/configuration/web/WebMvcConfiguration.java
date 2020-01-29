@@ -6,6 +6,7 @@ import kr.lul.kobalttown.page.root.RootMvc;
 import kr.lul.support.spring.web.context.ContextService;
 import kr.lul.support.spring.web.context.DefaultContextService;
 import kr.lul.support.spring.web.controller.CommonWebHttpExceptionHandler;
+import kr.lul.support.spring.web.controller.SpringWebExceptionHandler;
 import kr.lul.support.spring.web.interceptor.LoggingInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,6 +49,11 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         return V.ERROR_404;
       }
     };
+  }
+
+  @Bean
+  public SpringWebExceptionHandler springWebExceptionHandler() {
+    return new SpringWebExceptionHandler();
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
