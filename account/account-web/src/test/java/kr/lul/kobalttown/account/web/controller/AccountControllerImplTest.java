@@ -10,12 +10,14 @@ import kr.lul.kobalttown.account.web.AccountWebTestConfiguration;
 import kr.lul.kobalttown.account.web.controller.request.CreateAccountReq;
 import kr.lul.kobalttown.page.account.AccountMvc.M;
 import kr.lul.kobalttown.page.account.AccountMvc.V;
+import kr.lul.support.spring.security.userdetails.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
@@ -23,6 +25,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 
 import java.time.Instant;
+import java.util.List;
 
 import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
@@ -115,8 +118,17 @@ public class AccountControllerImplTest {
   }
 
   @Test
-  public void test_detail_with_0() throws Exception {
-    assertThatThrownBy(() -> this.controller.detail(0L, new ExtendedModelMap()))
+  public void test_detail_with_null_user() throws Exception {
+    assertThatThrownBy(() -> this.controller.profile(null, 1L, new ExtendedModelMap()))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("user is null.");
+  }
+
+  @Test
+  public void test_detail_with_id_0() throws Exception {
+    assertThatThrownBy(
+        () -> this.controller.profile(new User(1L, "testuser", "", List.of(new SimpleGrantedAuthority("ROLE_USER"))),
+            0L, new ExtendedModelMap()))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessageStartingWith("id is not positive");
   }
@@ -124,6 +136,8 @@ public class AccountControllerImplTest {
   @Test
   public void test_detail() throws Exception {
     // GIVEN
+    final User user = new User(1L, "testuser", "", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    log.info("GIVEN - user={}", user);
     final AccountDetailDto expected = this.borderline.create(
         new CreateAccountCmd(new Context(), nickname(), email(), userKey(), "password", this.before));
     log.info("GIVEN - expected={}", expected);
@@ -132,7 +146,7 @@ public class AccountControllerImplTest {
     log.info("GIVEN - model={}", model);
 
     // WHEN
-    final String view = this.controller.detail(expected.getId(), model);
+    final String view = this.controller.profile(user, expected.getId(), model);
     log.info("WHEN - view={}", view);
 
     // THEN

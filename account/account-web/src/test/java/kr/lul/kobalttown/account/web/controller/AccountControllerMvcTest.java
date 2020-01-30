@@ -246,14 +246,14 @@ public class AccountControllerMvcTest {
   @Test
   public void test_detail_with_non_digits() throws Exception {
     // WHEN
-    this.mock.perform(get(C.DETAIL, "non-digit"))
+    this.mock.perform(get(C.PROFILE, "non-digit"))
         .andExpect(status().isNotFound())
         .andDo(print());
   }
 
   @Test
   public void test_detail_with_leading_0() throws Exception {
-    this.mock.perform(get(C.DETAIL, "01"))
+    this.mock.perform(get(C.PROFILE, "01"))
         .andExpect(status().isNotFound())
         .andDo(print());
   }
@@ -270,7 +270,7 @@ public class AccountControllerMvcTest {
         .thenReturn(dto);
 
     // WHEN
-    this.mock.perform(get(C.DETAIL, 1L)
+    this.mock.perform(get(C.PROFILE, 1L)
                           .with(user(user)))
 
         // THEN

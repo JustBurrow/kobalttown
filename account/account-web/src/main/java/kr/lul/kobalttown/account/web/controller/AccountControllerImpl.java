@@ -16,12 +16,15 @@ import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.dto.EnableCodeSummaryDto;
 import kr.lul.kobalttown.account.web.controller.request.CreateAccountReq;
 import kr.lul.kobalttown.account.web.controller.request.IssueEnableCodeReq;
+import kr.lul.kobalttown.account.web.controller.request.UpdatePasswordReq;
 import kr.lul.kobalttown.page.account.AccountError;
 import kr.lul.kobalttown.page.account.AccountMvc.M;
 import kr.lul.kobalttown.page.account.AccountMvc.V;
+import kr.lul.support.spring.security.userdetails.User;
 import kr.lul.support.spring.web.context.ContextService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -171,6 +174,22 @@ class AccountControllerImpl implements AccountController {
     return template;
   }
 
+  private String doPasswordForm(final Context context, final User user, final UpdatePasswordReq req, final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#doPasswordForm args : context={}, user={}, req={}, model={}", context, user, req, model);
+
+    final ReadAccountCmd cmd = new ReadAccountCmd(context, user.getId(), this.timeProvider.now());
+    final AccountDetailDto account = this.borderline.read(cmd);
+    log.info("#doPasswordForm (context={}) account={}", context, account);
+
+    model.addAttribute(M.ACCOUNT, account);
+    if (null == req) {
+      model.addAttribute(M.UPDATE_PASSWORD_REQ, new UpdatePasswordReq());
+    }
+
+    return V.PASSWORD;
+  }
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.kobalttown.account.web.controller.AccountController
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -265,23 +284,57 @@ class AccountControllerImpl implements AccountController {
   }
 
   @Override
-  public String detail(@PathVariable(M.ID) final long id, final Model model) {
+  public String profile(@AuthenticationPrincipal final User user, @PathVariable(M.ID) final long id, final Model model) {
     if (log.isTraceEnabled())
-      log.trace("#detail args : id={}, model={}", id, model);
+      log.trace("#profile args : user={}, id={}, model={}", user, id, model);
+    notNull(user, "user");
+    positive(user.getId(), "user.id");
     positive(id, M.ID);
     notNull(model, "model");
 
     final ReadAccountCmd cmd = new ReadAccountCmd(this.contextService.get(), id, this.timeProvider.now());
     final AccountDetailDto account = this.borderline.read(cmd);
     if (log.isDebugEnabled())
-      log.debug("#detail account={}", account);
+      log.debug("#profile account={}", account);
 
     model.addAttribute(M.ACCOUNT, account);
 
     final String template = V.DETAIL;
 
     if (log.isTraceEnabled())
-      log.trace("#detail result : template={}, model={}", template, model);
+      log.trace("#profile result : template={}, model={}", template, model);
+    return template;
+  }
+
+  @Override
+  public String setting(@AuthenticationPrincipal final User user, final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#setting args : user={}, model={}", user, model);
+    notNull(user, "user");
+    positive(user.getId(), "user.id");
+    notNull(model, "model");
+
+    final Context context = this.contextService.get();
+
+    final String template = V.SETTING;
+    if (log.isTraceEnabled())
+      log.trace("#setting (context={}) result : template={}, model={}", context, template, model);
+    return template;
+  }
+
+  @Override
+  public String passwordForm(@AuthenticationPrincipal final User user, final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#passwordForm args : user={}, model={}", user, model);
+    notNull(user, "user");
+    positive(user.getId(), "user.id");
+    notNull(model, "model");
+
+    final Context context = this.contextService.get();
+    final String template = doPasswordForm(context, user, null, model);
+
+    if (log.isTraceEnabled())
+      log.trace("#passwordForm (context={}) result : template={}, model={}", context, template, model);
     return template;
   }
 }

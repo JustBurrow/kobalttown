@@ -5,7 +5,9 @@ import kr.lul.kobalttown.account.web.controller.request.CreateAccountReq;
 import kr.lul.kobalttown.account.web.controller.request.IssueEnableCodeReq;
 import kr.lul.kobalttown.page.account.AccountMvc.C;
 import kr.lul.kobalttown.page.account.AccountMvc.M;
+import kr.lul.support.spring.security.userdetails.User;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -72,7 +74,31 @@ public interface AccountController {
   /**
    * See {@link kr.lul.kobalttown.page.account.AccountPage#DETAIL}.
    */
-  @GetMapping(C.DETAIL)
+  @GetMapping(C.PROFILE)
   @PreAuthorize("isAuthenticated()")
-  String detail(@PathVariable(M.ID) long id, Model model);
+  String profile(@AuthenticationPrincipal User user, @PathVariable(M.ID) long id, Model model);
+
+  /**
+   * 유저에게 설정 페이지를 보여준다.
+   *
+   * @param user  인증된 유저.
+   * @param model 모델.
+   *
+   * @return 뷰 이름.
+   */
+  @GetMapping(C.SETTING)
+  @PreAuthorize("isFullyAuthenticated()")
+  String setting(@AuthenticationPrincipal User user, Model model);
+
+  /**
+   * 비밀번호 변경 폼.
+   *
+   * @param user  인증된 유저.
+   * @param model 모델.
+   *
+   * @return 뷰 이름.
+   */
+  @GetMapping(C.PASSWORD_FORM)
+  @PreAuthorize("isFullyAuthenticated()")
+  String passwordForm(@AuthenticationPrincipal User user, Model model);
 }
