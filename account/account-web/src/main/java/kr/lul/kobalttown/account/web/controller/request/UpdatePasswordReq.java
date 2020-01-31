@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.account.web.controller.request;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
@@ -12,20 +12,33 @@ import static kr.lul.kobalttown.account.domain.Credential.SECRET_MIN_LENGTH;
  * @since 2020/01/30
  */
 public class UpdatePasswordReq {
-  @NotNull
+  @NotEmpty
+  @Size(min = SECRET_MIN_LENGTH, max = SECRET_MAX_LENGTH)
+  private String current;
+
+  @NotEmpty
   @Size(min = SECRET_MIN_LENGTH, max = SECRET_MAX_LENGTH)
   private String password;
 
-  @NotNull
+  @NotEmpty
   @Size(min = SECRET_MIN_LENGTH, max = SECRET_MAX_LENGTH)
   private String confirm;
 
   public UpdatePasswordReq() {
   }
 
-  public UpdatePasswordReq(final String password, final String confirm) {
+  public UpdatePasswordReq(final String current, final String password, final String confirm) {
+    setCurrent(current);
     setPassword(password);
     setConfirm(confirm);
+  }
+
+  public String getCurrent() {
+    return this.current;
+  }
+
+  public void setCurrent(final String current) {
+    this.current = current;
   }
 
   public String getPassword() {
@@ -63,6 +76,6 @@ public class UpdatePasswordReq {
 
   @Override
   public String toString() {
-    return "{password=[ PROTECTED ], confirm=[ PROTECTED ]}";
+    return "{current=[ PROTECTED ], password=[ PROTECTED ], confirm=[ PROTECTED ]}";
   }
 }

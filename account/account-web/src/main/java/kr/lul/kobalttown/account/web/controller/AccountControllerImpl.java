@@ -39,6 +39,7 @@ import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Arguments.positive;
+import static kr.lul.kobalttown.page.account.AccountError.UPDATE_CONFIRM_NOT_MATCH;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -190,6 +191,28 @@ class AccountControllerImpl implements AccountController {
     return V.PASSWORD;
   }
 
+  private void validate(final UpdatePasswordReq req, final BindingResult binding) {
+    notNull(req, "req");
+    notNull(binding, "binding");
+
+    if (null != req.getPassword() && !req.getPassword().equals(req.getConfirm())) {
+      binding.addError(new FieldError(M.UPDATE_PASSWORD_REQ, "confirm", null, false, new String[]{
+          UPDATE_CONFIRM_NOT_MATCH}, null, "비밀번호가 일치하지 않습니다."));
+    }
+  }
+
+  private String doPassword(final Context context, final User user, final UpdatePasswordReq req, final BindingResult binding,
+      final Model model) {
+    notNull(user, "user");
+    positive(user.getId(), "user.id");
+    notNull(req, "req");
+    notNull(binding, "binding");
+    notNull(model, "model");
+
+
+    return V.PASSWORD_UPDATED;
+  }
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.kobalttown.account.web.controller.AccountController
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -335,6 +358,39 @@ class AccountControllerImpl implements AccountController {
 
     if (log.isTraceEnabled())
       log.trace("#passwordForm (context={}) result : template={}, model={}", context, template, model);
+    return template;
+  }
+
+  @Override
+  public String password(@AuthenticationPrincipal final User user,
+      @ModelAttribute(M.UPDATE_PASSWORD_REQ) @Valid final UpdatePasswordReq req, final BindingResult binding,
+      final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#password args : user={}, req={}, binding={}, model={}", user, req, binding, model);
+    notNull(user, "user");
+    positive(user.getId(), "user.id");
+    notNull(req, "req");
+    notNull(binding, "binding");
+    notNull(model, "model");
+
+    if (!binding.hasErrors())
+      validate(req, binding);
+
+    final Context context = this.contextService.get();
+
+    final String template;
+    if (binding.hasErrors()) {
+      if (log.isDebugEnabled())
+        log.debug("#password password does not match.");
+      template = doPasswordForm(context, user, req, model);
+    } else {
+      if (log.isDebugEnabled())
+        log.debug("#password request has no binding error.");
+      template = doPassword(context, user, req, binding, model);
+    }
+
+    if (log.isTraceEnabled())
+      log.trace("#password (context={}) result : template={}, model={}", context, template, model);
     return template;
   }
 }

@@ -32,6 +32,7 @@ public abstract class AccountMvc {
     public static final String ENABLE_CODE_ISSUED = GROUP + "/enable_code_issued";
     public static final String SETTING = GROUP + "/setting";
     public static final String PASSWORD = GROUP + "/password";
+    public static final String PASSWORD_UPDATED = GROUP + "/password_updated";
 
     public V() {
       throw new UnsupportedOperationException();

@@ -3,6 +3,7 @@ package kr.lul.kobalttown.account.web.controller;
 import kr.lul.common.web.http.status.exception.client.NotFound;
 import kr.lul.kobalttown.account.web.controller.request.CreateAccountReq;
 import kr.lul.kobalttown.account.web.controller.request.IssueEnableCodeReq;
+import kr.lul.kobalttown.account.web.controller.request.UpdatePasswordReq;
 import kr.lul.kobalttown.page.account.AccountMvc.C;
 import kr.lul.kobalttown.page.account.AccountMvc.M;
 import kr.lul.support.spring.security.userdetails.User;
@@ -81,7 +82,7 @@ public interface AccountController {
   /**
    * 유저에게 설정 페이지를 보여준다.
    *
-   * @param user  인증된 유저.
+   * @param user  현재 유저.
    * @param model 모델.
    *
    * @return 뷰 이름.
@@ -93,7 +94,7 @@ public interface AccountController {
   /**
    * 비밀번호 변경 폼.
    *
-   * @param user  인증된 유저.
+   * @param user  현재 유저.
    * @param model 모델.
    *
    * @return 뷰 이름.
@@ -101,4 +102,20 @@ public interface AccountController {
   @GetMapping(C.PASSWORD_FORM)
   @PreAuthorize("isFullyAuthenticated()")
   String passwordForm(@AuthenticationPrincipal User user, Model model);
+
+  /**
+   * 비밀번호 변경 요청 실힝.
+   *
+   * @param user    현재 유저.
+   * @param req     변경 요청.
+   * @param binding 검증 결과.
+   * @param model   모델.
+   *
+   * @return 뷰 이름.
+   */
+  @PatchMapping(C.PASSWORD)
+  @PreAuthorize("isFullyAuthenticated()")
+  String password(@AuthenticationPrincipal User user,
+      @ModelAttribute(M.UPDATE_PASSWORD_REQ) @Valid UpdatePasswordReq req, BindingResult binding,
+      Model model);
 }
