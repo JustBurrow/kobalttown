@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -51,11 +52,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     return new PasswordEncoderSecurityEncoder(passwordEncoder());
   }
 
-  @Bean
-  public UserDetailsService customUserDetailsService() {
-    return new UserDetailsServiceImpl();
-  }
-
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +76,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Override
   protected UserDetailsService userDetailsService() {
-    final UserDetailsService userDetailsService = customUserDetailsService();
+    final UserDetailsServiceImpl userDetailsService = new UserDetailsServiceImpl();
     this.applicationContext.getAutowireCapableBeanFactory().autowireBean(userDetailsService);
     return userDetailsService;
   }

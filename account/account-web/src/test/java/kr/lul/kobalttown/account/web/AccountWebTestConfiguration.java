@@ -3,7 +3,6 @@ package kr.lul.kobalttown.account.web;
 import kr.lul.kobalttown.configuration.bean.BeanConfiguration;
 import kr.lul.kobalttown.configuration.data.jpa.JpaConfiguration;
 import kr.lul.kobalttown.configuration.mail.MailConfigurer;
-import kr.lul.kobalttown.configuration.security.WebSecurityConfiguration;
 import kr.lul.support.spring.security.crypto.PasswordEncoderSecurityEncoder;
 import kr.lul.support.spring.security.crypto.SecurityEncoder;
 import kr.lul.support.spring.web.context.ContextService;
@@ -21,7 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  * @since 2019/11/24
  */
 @SpringBootApplication(scanBasePackageClasses = AccountWebAnchor.class)
-@Import({BeanConfiguration.class, MailConfigurer.class, JpaConfiguration.class, WebSecurityConfiguration.class})
+@Import({BeanConfiguration.class, MailConfigurer.class, JpaConfiguration.class})
 public class AccountWebTestConfiguration {
   @Bean
   @ConditionalOnMissingBean
