@@ -6,10 +6,7 @@ import kr.lul.common.util.TimeProvider;
 import kr.lul.common.util.ValidationException;
 import kr.lul.common.web.http.status.exception.client.NotFound;
 import kr.lul.kobalttown.account.borderline.AccountBorderline;
-import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
-import kr.lul.kobalttown.account.borderline.command.EnableAccountCmd;
-import kr.lul.kobalttown.account.borderline.command.IssueEnableCodeCmd;
-import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
+import kr.lul.kobalttown.account.borderline.command.*;
 import kr.lul.kobalttown.account.domain.EnableCode;
 import kr.lul.kobalttown.account.domain.EnableCodeStatusException;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
@@ -40,6 +37,7 @@ import static java.util.Objects.requireNonNull;
 import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Arguments.positive;
 import static kr.lul.kobalttown.page.account.AccountError.UPDATE_CONFIRM_NOT_MATCH;
+import static kr.lul.kobalttown.page.account.AccountError.UPDATE_PASSWORD_NOT_UPDATED;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -78,15 +76,13 @@ class AccountControllerImpl implements AccountController {
     }
   }
 
-  private String doCreate(final CreateAccountReq req, final BindingResult result, final Model model) {
+  private String doCreate(final CreateAccountCmd cmd, final BindingResult result, final Model model) {
     if (log.isTraceEnabled())
-      log.trace("#doCreate args : req={}, result={}, model={}", req, result, model);
+      log.trace("#doCreate args : cmd={}, result={}, model={}", cmd, result, model);
 
     final Context context = this.contextService.get();
     String template;
     try {
-      final CreateAccountCmd cmd = new CreateAccountCmd(context, req.getNickname(),
-          req.getEmail(), req.getUserKey(), req.getPassword(), this.timeProvider.now());
       final AccountDetailDto account = this.borderline.create(cmd);
       if (log.isDebugEnabled())
         log.debug("#doCreate account={}", account);
@@ -101,34 +97,33 @@ class AccountControllerImpl implements AccountController {
     return template;
   }
 
-  private String doEnable(final Context context, final String token, final Model model) {
+  private String doEnable(final EnableAccountCmd cmd, final Model model) {
     if (log.isTraceEnabled())
-      log.trace("#doEnable args : context={}, token={}, model={}", context, token, model);
+      log.trace("#doEnable args :cmd={}, model={}", cmd, model);
 
-    final EnableAccountCmd cmd = new EnableAccountCmd(context, token, this.timeProvider.now());
     if (log.isDebugEnabled())
-      log.debug("#doEnable (context={}) cmd={}", context, cmd);
+      log.debug("#doEnable (context={}) cmd={}", cmd.getContext(), cmd);
 
     String template;
     try {
       final AccountDetailDto account = this.borderline.enable(cmd);
       if (log.isDebugEnabled())
-        log.debug("#doEnable (context={}) account={}", context, account);
+        log.debug("#doEnable (context={}) account={}", cmd.getContext(), account);
 
       model.addAttribute(M.ACCOUNT, account);
       model.addAttribute(M.ENABLED_AT, cmd.getTimestamp());
 
       template = V.ENABLE_SUCCESS;
     } catch (final DisabledPropertyException e) {
-      log.warn(format("#doEnable (context=%s) e=%s", context, e), e);
+      log.warn(format("#doEnable (context=%s) e=%s", cmd.getContext(), e), e);
       throw new NotFound(e);
     } catch (final EnableCodeStatusException e) {
-      log.warn(format("#doEnable (context=%s) e=%s", context, e), e);
+      log.warn(format("#doEnable (context=%s) e=%s", cmd.getContext(), e), e);
       template = V.ENABLE_FAIL;
     }
 
     if (log.isTraceEnabled())
-      log.trace("#doEnable (context={}) result : template={}, model={}", context, template, model);
+      log.trace("#doEnable (context={}) result : template={}, model={}", cmd.getContext(), template, model);
     return template;
   }
 
@@ -195,20 +190,24 @@ class AccountControllerImpl implements AccountController {
     notNull(req, "req");
     notNull(binding, "binding");
 
-    if (null != req.getPassword() && !req.getPassword().equals(req.getConfirm())) {
-      binding.addError(new FieldError(M.UPDATE_PASSWORD_REQ, "confirm", null, false, new String[]{
-          UPDATE_CONFIRM_NOT_MATCH}, null, "비밀번호가 일치하지 않습니다."));
+    if (null != req.getPassword()) {
+      if (!req.getPassword().equals(req.getConfirm())) {
+        binding.addError(new FieldError(M.UPDATE_PASSWORD_REQ, "confirm", null, false,
+            new String[]{UPDATE_CONFIRM_NOT_MATCH}, null, "비밀번호가 일치하지 않습니다."));
+      } else if (req.getPassword().equals(req.getCurrent())) {
+        binding.addError(new FieldError(M.UPDATE_PASSWORD_REQ, "password", null, false,
+            new String[]{UPDATE_PASSWORD_NOT_UPDATED}, null, "비밀번호가 병경되지 않았습니다."));
+      }
     }
   }
 
-  private String doPassword(final Context context, final User user, final UpdatePasswordReq req, final BindingResult binding,
-      final Model model) {
-    notNull(user, "user");
-    positive(user.getId(), "user.id");
-    notNull(req, "req");
+  private String doPassword(final Context context, final UpdatePasswordCmd cmd, final BindingResult binding, final Model model) {
+    notNull(context, "context");
+    notNull(cmd, "cmd");
     notNull(binding, "binding");
     notNull(model, "model");
 
+    // TODO
 
     return V.PASSWORD_UPDATED;
   }
@@ -244,7 +243,9 @@ class AccountControllerImpl implements AccountController {
     if (binding.hasErrors()) {
       template = doCreateForm(model);
     } else {
-      template = doCreate(req, binding, model);
+      final CreateAccountCmd cmd = new CreateAccountCmd(this.contextService.get(), req.getNickname(),
+          req.getEmail(), req.getUserKey(), req.getPassword(), this.timeProvider.now());
+      template = doCreate(cmd, binding, model);
     }
 
     if (log.isTraceEnabled())
@@ -262,7 +263,7 @@ class AccountControllerImpl implements AccountController {
 
     try {
       EnableCode.TOKEN_VALIDATOR.validate(token);
-      template = doEnable(context, token, model);
+      template = doEnable(new EnableAccountCmd(context, token, this.timeProvider.now()), model);
     } catch (final ValidationException e) {
       log.warn("#enable (context={}) e=" + e, context, e);
       throw new NotFound(e);
@@ -386,7 +387,10 @@ class AccountControllerImpl implements AccountController {
     } else {
       if (log.isDebugEnabled())
         log.debug("#password request has no binding error.");
-      template = doPassword(context, user, req, binding, model);
+
+      final UpdatePasswordCmd cmd = new UpdatePasswordCmd(context, user.getId(), req.getCurrent(), req.getPassword(),
+          this.timeProvider.now());
+      template = doPassword(context, cmd, binding, model);
     }
 
     if (log.isTraceEnabled())
