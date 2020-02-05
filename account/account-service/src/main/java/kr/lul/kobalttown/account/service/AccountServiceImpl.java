@@ -15,10 +15,7 @@ import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.domain.EnableCode;
 import kr.lul.kobalttown.account.service.configuration.EnableCodeConfiguration;
 import kr.lul.kobalttown.account.service.configuration.WelcomeConfiguration;
-import kr.lul.kobalttown.account.service.params.CreateAccountParams;
-import kr.lul.kobalttown.account.service.params.EnableAccountParams;
-import kr.lul.kobalttown.account.service.params.IssueEnableCodeParams;
-import kr.lul.kobalttown.account.service.params.ReadAccountParams;
+import kr.lul.kobalttown.account.service.params.*;
 import kr.lul.support.spring.mail.MailConfiguration;
 import kr.lul.support.spring.mail.MailParams;
 import kr.lul.support.spring.mail.MailResult;
@@ -41,6 +38,7 @@ import static java.lang.String.format;
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 import static kr.lul.common.util.Arguments.notNull;
+import static kr.lul.kobalttown.account.domain.Credential.ATTR_ACCOUNT;
 import static kr.lul.kobalttown.account.domain.EnableCodeUtil.token;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -295,5 +293,35 @@ class AccountServiceImpl implements AccountService {
     if (log.isTraceEnabled())
       log.trace("#issue (context={}) return : {}", params.getContext(), code);
     return code;
+  }
+
+  @Override
+  public void update(final UpdatePasswordParams params) {
+    if (log.isTraceEnabled())
+      log.trace("#update args : params={}", params);
+    notNull(params, "params");
+
+    final List<Credential> credentials = this.credentialDao.read(params.getContext(), params.getUser());
+    if (credentials.isEmpty())
+      throw new ValidationException(ATTR_ACCOUNT, params.getUser(), "has no credential.");
+
+    // validation
+    for (final Credential credential : credentials) {
+      if (!this.securityEncoder.matches(params.getCurrent(), credential.getSecretHash())) {
+        throw new ValidationException("current", null, "current password does not match.");
+      }
+    }
+
+    // update password.
+    credentials.stream()
+        .map(credential -> {
+          Credential newCredential =
+              this.credentialFactory.create(params.getContext(), params.getUser(), credential.getPublicKey(),
+                  this.securityEncoder.encode(params.getPassword()), params.getTimestamp());
+          log.info("#update newCredential={}", newCredential);
+          this.credentialDao.delete(params.getContext(), credential);
+          return newCredential;
+        })
+        .forEach(credential -> this.credentialDao.create(params.getContext(), credential));
   }
 }

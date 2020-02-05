@@ -2,10 +2,7 @@ package kr.lul.kobalttown.account.service;
 
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.EnableCode;
-import kr.lul.kobalttown.account.service.params.CreateAccountParams;
-import kr.lul.kobalttown.account.service.params.EnableAccountParams;
-import kr.lul.kobalttown.account.service.params.IssueEnableCodeParams;
-import kr.lul.kobalttown.account.service.params.ReadAccountParams;
+import kr.lul.kobalttown.account.service.params.*;
 
 /**
  * @author justburrow
@@ -47,4 +44,11 @@ public interface AccountService {
    * @return 신규 발급한 계정 인증 코드.
    */
   EnableCode issue(IssueEnableCodeParams params);
+
+  /**
+   * 계정의 비밀번호를 변경한다.
+   *
+   * @param params 비밀번호 변경 정보.
+   */
+  void update(UpdatePasswordParams params);
 }

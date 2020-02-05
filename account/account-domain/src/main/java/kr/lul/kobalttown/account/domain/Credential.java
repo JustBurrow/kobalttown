@@ -1,6 +1,7 @@
 package kr.lul.kobalttown.account.domain;
 
 import kr.lul.common.data.Creatable;
+import kr.lul.common.util.SimpleString;
 import kr.lul.common.util.ValidationException;
 import kr.lul.common.util.Validator;
 import kr.lul.common.util.validator.RegexValidator;
@@ -15,7 +16,7 @@ import static java.lang.String.format;
  * @author justburrow
  * @since 2019-02-27
  */
-public interface Credential extends Creatable<Instant> {
+public interface Credential extends Creatable<Instant>, SimpleString {
   String ATTR_ID = "id";
   String ATTR_ACCOUNT = "account";
   /**
@@ -134,4 +135,12 @@ public interface Credential extends Creatable<Instant> {
    * @return 비밀번호 해시.
    */
   String getSecretHash();
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // java.lang.Object
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  @Override
+  default String toSimpleString() {
+    return format("(%d, %s)", getId(), getPublicKey());
+  }
 }

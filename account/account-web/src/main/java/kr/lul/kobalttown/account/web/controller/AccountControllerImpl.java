@@ -213,7 +213,7 @@ class AccountControllerImpl implements AccountController {
         this.timeProvider.now());
     String template;
     try {
-      // TODO
+      this.borderline.update(cmd);
       template = V.PASSWORD_UPDATED;
     } catch (final ValidationException e) {
       binding.addError(new FieldError(M.UPDATE_PASSWORD_REQ, e.getTargetName(), null, false, new String[]{}, null, "UNKNOWN"));

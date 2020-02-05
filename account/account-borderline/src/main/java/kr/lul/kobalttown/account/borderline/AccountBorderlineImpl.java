@@ -1,9 +1,6 @@
 package kr.lul.kobalttown.account.borderline;
 
-import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
-import kr.lul.kobalttown.account.borderline.command.EnableAccountCmd;
-import kr.lul.kobalttown.account.borderline.command.IssueEnableCodeCmd;
-import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
+import kr.lul.kobalttown.account.borderline.command.*;
 import kr.lul.kobalttown.account.converter.AccountConverter;
 import kr.lul.kobalttown.account.converter.EnableCodeConverter;
 import kr.lul.kobalttown.account.domain.Account;
@@ -12,10 +9,7 @@ import kr.lul.kobalttown.account.domain.EnableCodeStatusException;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.dto.EnableCodeSummaryDto;
 import kr.lul.kobalttown.account.service.AccountService;
-import kr.lul.kobalttown.account.service.params.CreateAccountParams;
-import kr.lul.kobalttown.account.service.params.EnableAccountParams;
-import kr.lul.kobalttown.account.service.params.IssueEnableCodeParams;
-import kr.lul.kobalttown.account.service.params.ReadAccountParams;
+import kr.lul.kobalttown.account.service.params.*;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -117,5 +111,16 @@ class AccountBorderlineImpl implements AccountBorderline {
     if (log.isTraceEnabled())
       log.trace("#issue (context={}) return : {}", cmd.getContext(), dto);
     return dto;
+  }
+
+  @Override
+  public void update(final UpdatePasswordCmd cmd) {
+    if (log.isTraceEnabled())
+      log.trace("#update args : cmd={}", cmd);
+    notNull(cmd, "cmd");
+
+    final Account user = this.service.read(new ReadAccountParams(cmd, cmd.getUser(), cmd.getTimestamp()));
+    final UpdatePasswordParams params = new UpdatePasswordParams(cmd, user, cmd.getCurrent(), cmd.getPassword(), cmd.getTimestamp());
+    this.service.update(params);
   }
 }
