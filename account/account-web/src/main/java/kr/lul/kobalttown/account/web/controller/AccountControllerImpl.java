@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
+import java.time.Instant;
 
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
@@ -201,15 +202,25 @@ class AccountControllerImpl implements AccountController {
     }
   }
 
-  private String doPassword(final Context context, final UpdatePasswordCmd cmd, final BindingResult binding, final Model model) {
+  private String doPassword(final Context context, final User user, final UpdatePasswordReq req, final BindingResult binding,
+      final Model model) {
     notNull(context, "context");
-    notNull(cmd, "cmd");
+    notNull(req, "req");
     notNull(binding, "binding");
     notNull(model, "model");
 
-    // TODO
+    final UpdatePasswordCmd cmd = new UpdatePasswordCmd(context, user.getId(), req.getCurrent(), req.getPassword(),
+        this.timeProvider.now());
+    String template;
+    try {
+      // TODO
+      template = V.PASSWORD_UPDATED;
+    } catch (final ValidationException e) {
+      binding.addError(new FieldError(M.UPDATE_PASSWORD_REQ, e.getTargetName(), null, false, new String[]{}, null, "UNKNOWN"));
+      template = doPasswordForm(cmd.getContext(), user, req, model);
+    }
 
-    return V.PASSWORD_UPDATED;
+    return template;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -378,6 +389,7 @@ class AccountControllerImpl implements AccountController {
       validate(req, binding);
 
     final Context context = this.contextService.get();
+    final Instant timestamp = this.timeProvider.now();
 
     final String template;
     if (binding.hasErrors()) {
@@ -388,9 +400,7 @@ class AccountControllerImpl implements AccountController {
       if (log.isDebugEnabled())
         log.debug("#password request has no binding error.");
 
-      final UpdatePasswordCmd cmd = new UpdatePasswordCmd(context, user.getId(), req.getCurrent(), req.getPassword(),
-          this.timeProvider.now());
-      template = doPassword(context, cmd, binding, model);
+      template = doPassword(context, user, req, binding, model);
     }
 
     if (log.isTraceEnabled())
