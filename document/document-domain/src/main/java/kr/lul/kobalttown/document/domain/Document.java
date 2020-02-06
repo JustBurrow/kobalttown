@@ -10,7 +10,7 @@ import java.time.Instant;
  * @author justburrow
  * @since 2020/01/28
  */
-public interface Document<D extends Document<?>> extends Savable<Instant> {
+public interface Document extends Savable<Instant> {
   long getId();
 
   /**
@@ -26,13 +26,5 @@ public interface Document<D extends Document<?>> extends Savable<Instant> {
    *
    * @return
    */
-  History<D> getHistory(int size, int page);
-
-  default History<D> getHistory(final int page) {
-    return getHistory(100, page);
-  }
-
-  default History<D> getHistory() {
-    return getHistory(0);
-  }
+  History getHistory(int size, int page);
 }

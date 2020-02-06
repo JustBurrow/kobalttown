@@ -4,7 +4,7 @@ package kr.lul.kobalttown.document.domain;
  * @author justburrow
  * @since 2020/01/28
  */
-public interface NoteSnapshot extends Snapshot<Note, NoteSnapshot.Id> {
+public interface NoteSnapshot extends Snapshot {
   interface Id extends Snapshot.Id {
     @Override
     default Class<?> type() {

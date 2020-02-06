@@ -6,7 +6,7 @@ package kr.lul.kobalttown.document.domain;
  * @author justburrow
  * @since 2020/01/28
  */
-public interface Comment<D extends Document<?>> {
+public interface Comment {
   long getId();
 
   String getKey();
@@ -14,12 +14,12 @@ public interface Comment<D extends Document<?>> {
   /**
    * @return 대상 도큐먼트.
    */
-  D getDocument();
+  Document getDocument();
 
   /**
    * @return 댓글이 달린 시점의 도큐먼트.
    */
-  Snapshot<D, ?> getSnapshot();
+  Snapshot getSnapshot();
 
   /**
    * @return 댓글 내용.

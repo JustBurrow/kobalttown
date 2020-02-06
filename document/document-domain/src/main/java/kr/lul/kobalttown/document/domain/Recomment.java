@@ -6,9 +6,9 @@ package kr.lul.kobalttown.document.domain;
  * @author justburrow
  * @since 2020/01/29
  */
-public interface Recomment<D extends Document<?>> extends Comment<D> {
+public interface Recomment extends Comment {
   /**
    * @return 대상 댓글.
    */
-  Comment<D> getComment();
+  Comment getComment();
 }

@@ -8,7 +8,7 @@ import static java.lang.String.format;
  * @author justburrow
  * @since 2020/01/28
  */
-public interface Note extends Document<Note> {
+public interface Note extends Document {
   /**
    * @return 내용.
    */
@@ -21,4 +21,7 @@ public interface Note extends Document<Note> {
   default String getKey() {
     return format("%s.%d", Note.class.getCanonicalName(), getId());
   }
+
+  @Override
+  History getHistory(int size, int page);
 }

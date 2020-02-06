@@ -8,7 +8,7 @@ import java.util.List;
  * @author justburrow
  * @since 2020/01/28
  */
-public interface History<D extends Document<?>, S extends Snapshot<D, ?>> {
+public interface History {
   int size();
 
   /**
@@ -43,5 +43,5 @@ public interface History<D extends Document<?>, S extends Snapshot<D, ?>> {
   /**
    * @return 현재 이력의 스냅샷.
    */
-  List<S> content();
+  <S extends Snapshot> List<S> content();
 }

@@ -11,7 +11,7 @@ import java.time.Instant;
  * @author justburrow
  * @since 2020/01/28
  */
-public interface Snapshot<D extends Document<?>, ID extends Snapshot.Id> extends Creatable<Instant> {
+public interface Snapshot extends Creatable<Instant> {
   interface Id extends Serializable {
     Class<?> type();
 
@@ -20,7 +20,7 @@ public interface Snapshot<D extends Document<?>, ID extends Snapshot.Id> extends
     int revision();
   }
 
-  ID getId();
+  Id getId();
 
   /**
    * @return 스냅샷의 버전. 0-based.
@@ -32,5 +32,5 @@ public interface Snapshot<D extends Document<?>, ID extends Snapshot.Id> extends
   /**
    * @return 대상 도큐먼트.
    */
-  D getDocument();
+  Document getDocument();
 }

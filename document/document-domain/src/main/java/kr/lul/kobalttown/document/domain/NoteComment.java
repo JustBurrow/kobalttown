@@ -8,7 +8,7 @@ import static java.lang.String.format;
  * @author justburrow
  * @since 2020/01/29
  */
-public interface NoteComment extends Comment<Note> {
+public interface NoteComment extends Comment {
   Note getNote();
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

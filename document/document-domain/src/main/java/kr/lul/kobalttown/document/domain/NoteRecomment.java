@@ -6,7 +6,7 @@ import static java.lang.String.format;
  * @author justburrow
  * @since 2020/01/29
  */
-public interface NoteRecomment extends Recomment<Note> {
+public interface NoteRecomment extends Recomment {
   Note getNote();
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
