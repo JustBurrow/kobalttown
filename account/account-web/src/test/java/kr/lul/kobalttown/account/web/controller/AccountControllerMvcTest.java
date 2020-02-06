@@ -12,6 +12,7 @@ import kr.lul.support.spring.security.userdetails.User;
 import kr.lul.support.spring.web.context.ContextService;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -38,8 +39,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -246,14 +246,14 @@ public class AccountControllerMvcTest {
   @Test
   public void test_detail_with_non_digits() throws Exception {
     // WHEN
-    this.mock.perform(get(C.DETAIL, "non-digit"))
+    this.mock.perform(get(C.PROFILE, "non-digit"))
         .andExpect(status().isNotFound())
         .andDo(print());
   }
 
   @Test
   public void test_detail_with_leading_0() throws Exception {
-    this.mock.perform(get(C.DETAIL, "01"))
+    this.mock.perform(get(C.PROFILE, "01"))
         .andExpect(status().isNotFound())
         .andDo(print());
   }
@@ -270,13 +270,145 @@ public class AccountControllerMvcTest {
         .thenReturn(dto);
 
     // WHEN
-    this.mock.perform(get(C.DETAIL, 1L)
+    this.mock.perform(get(C.PROFILE, 1L)
                           .with(user(user)))
 
         // THEN
         .andExpect(status().isOk())
         .andExpect(view().name(V.DETAIL))
         .andExpect(model().attribute(M.ACCOUNT, dto))
+        .andDo(print());
+  }
+
+  @Test
+  public void test_setting() throws Exception {
+    // GIVEN
+    final User user = new User(1L, nickname(), "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    log.info("GIVEN - user={}", user);
+    final AccountDetailDto dto = new AccountDetailDto(1L, "nickname", true, this.before, this.before);
+    log.info("GIVEN - dto={}", dto);
+
+    // WHEN
+    this.mock.perform(get(C.SETTING)
+                          .with(user(user)))
+
+        // THEN
+        .andExpect(status().isOk())
+        .andExpect(view().name(V.SETTING))
+        .andDo(print());
+  }
+
+  @Test
+  public void test_passwordForm() throws Exception {
+    // GIVEN
+    final User user = new User(1L, nickname(), "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    log.info("GIVEN - user={}", user);
+
+    // WHEN
+    this.mock.perform(get(C.PASSWORD_FORM)
+                          .with(user(user)))
+
+        // THEN
+        .andExpect(status().isOk())
+        .andExpect(view().name(V.PASSWORD))
+        .andExpect(model().attributeExists(M.UPDATE_PASSWORD_REQ))
+        .andDo(print());
+  }
+
+  @Test
+  @Ignore
+  public void test_password_without_current() throws Exception {
+    // GIVEN
+    final User user = new User(1L, nickname(), "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    log.info("GIVEN - user={}", user);
+
+    // WHEN
+    this.mock.perform(patch(C.PASSWORD)
+                          .param("password", "password2")
+                          .param("confirm", "password2")
+                          .with(user(user)))
+
+        // THEN
+        .andExpect(status().isOk())
+        .andExpect(view().name(V.PASSWORD))
+        .andDo(print());
+  }
+
+  @Test
+  @Ignore
+  public void test_password_without_password() throws Exception {
+    // GIVEN
+    final User user = new User(1L, nickname(), "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    log.info("GIVEN - user={}", user);
+
+    // WHEN
+    this.mock.perform(patch(C.PASSWORD)
+                          .param(M.UPDATE_PASSWORD_REQ + ".current", "password")
+                          .param(M.UPDATE_PASSWORD_REQ + ".confirm", "password2")
+                          .with(user(user)))
+
+        // THEN
+        .andExpect(status().isOk())
+        .andExpect(view().name(V.PASSWORD))
+        .andDo(print());
+  }
+
+  @Test
+  @Ignore
+  public void test_password_without_confirm() throws Exception {
+    // GIVEN
+    final User user = new User(1L, nickname(), "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    log.info("GIVEN - user={}", user);
+
+    // WHEN
+    this.mock.perform(patch(C.PASSWORD)
+                          .param("current", "password")
+                          .param("password", "password2")
+                          .with(user(user)))
+
+        // THEN
+        .andExpect(status().isOk())
+        .andExpect(view().name(V.PASSWORD))
+        .andDo(print());
+  }
+
+  @Test
+  @Ignore
+  public void test_password_without_confirm_not_match() throws Exception {
+    // GIVEN
+    final User user = new User(1L, nickname(), "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    log.info("GIVEN - user={}", user);
+
+    // WHEN
+    this.mock.perform(patch(C.PASSWORD)
+                          .param("current", "password")
+                          .param("password", "password2")
+                          .param("confirm", "password3")
+                          .with(user(user)))
+
+        // THEN
+        .andExpect(status().isOk())
+        .andExpect(view().name(V.PASSWORD))
+        .andDo(print());
+  }
+
+  @Test
+  @Ignore
+  public void test_password() throws Exception {
+    // GIVEN
+    final User user = new User(1L, nickname(), "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    log.info("GIVEN - user={}", user);
+
+    // WHEN
+    this.mock.perform(patch(C.PASSWORD)
+                          .param("current", "password")
+                          .param("password", "password2")
+                          .param("confirm", "password2")
+                          .with(user(user)))
+
+        // THEN
+        .andExpect(status().isOk())
+        .andExpect(view().name(V.PASSWORD_UPDATED))
         .andDo(print());
   }
 }

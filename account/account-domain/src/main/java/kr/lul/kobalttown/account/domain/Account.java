@@ -1,6 +1,7 @@
 package kr.lul.kobalttown.account.domain;
 
 import kr.lul.common.data.Savable;
+import kr.lul.common.util.SimpleString;
 import kr.lul.common.util.ValidationException;
 import kr.lul.common.util.Validator;
 import kr.lul.common.util.validator.RegexValidator;
@@ -15,7 +16,7 @@ import static kr.lul.common.util.Texts.singleQuote;
  * @author justburrow
  * @since 2019-02-27
  */
-public interface Account extends Savable<Instant> {
+public interface Account extends Savable<Instant>, SimpleString {
   String ATTR_ID = "id";
   String ATTR_NICKNAME = "nickname";
   String ATTR_CREATED_AT = "createdAt";
@@ -82,4 +83,12 @@ public interface Account extends Savable<Instant> {
    * @param enableAt 활성화 시각.
    */
   void enable(Instant enableAt);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // kr.lul.common.util.SimpleString
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  @Override
+  default String toSimpleString() {
+    return format("(%d, %s)", getId(), getNickname());
+  }
 }

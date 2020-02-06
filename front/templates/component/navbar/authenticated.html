@@ -10,8 +10,12 @@
 <body>
 <header>
     <div th:fragment="navbar">
-        <form id="form-logout" action="anonymous.html" method="post" th:action="@{/logout}"></form>
-        <button form="form-logout" th:text="#{global.navbar.sign-out}">log-out</button>
+        <div>
+            <a href="../../layout/account/setting.html"
+               th:href="@{/accounts/setting}">계정 관리</a>
+            <form id="form-logout" action="anonymous.html" method="post" th:action="@{/logout}"></form>
+            <button form="form-logout" th:text="#{global.navbar.sign-out}">log-out</button>
+        </div>
     </div>
 </header>
 <main>

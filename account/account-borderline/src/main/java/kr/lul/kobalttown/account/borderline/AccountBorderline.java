@@ -1,9 +1,6 @@
 package kr.lul.kobalttown.account.borderline;
 
-import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
-import kr.lul.kobalttown.account.borderline.command.EnableAccountCmd;
-import kr.lul.kobalttown.account.borderline.command.IssueEnableCodeCmd;
-import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
+import kr.lul.kobalttown.account.borderline.command.*;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.dto.EnableCodeSummaryDto;
 
@@ -47,4 +44,11 @@ public interface AccountBorderline {
    * @return 재발급한 코드.
    */
   EnableCodeSummaryDto issue(IssueEnableCodeCmd cmd);
+
+  /**
+   * 비밀번호 갱신.
+   *
+   * @param cmd 비밀번호 정보.
+   */
+  void update(UpdatePasswordCmd cmd);
 }

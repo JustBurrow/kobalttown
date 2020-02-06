@@ -17,8 +17,17 @@ public class ReadAccountParams extends ContextContainer {
   private long id;
   private Instant timestamp;
 
-  public ReadAccountParams(Context context, long id, Instant timestamp) {
+  public ReadAccountParams(final Context context, final long id, final Instant timestamp) {
     super(context);
+    positive(id, "id");
+    notNull(timestamp, "timestamp");
+
+    this.id = id;
+    this.timestamp = timestamp;
+  }
+
+  public ReadAccountParams(final ContextContainer container, final long id, final Instant timestamp) {
+    super(container);
     positive(id, "id");
     notNull(timestamp, "timestamp");
 
@@ -35,13 +44,13 @@ public class ReadAccountParams extends ContextContainer {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    ReadAccountParams that = (ReadAccountParams) o;
+    final ReadAccountParams that = (ReadAccountParams) o;
     return this.context.equals(that.context) &&
-        this.id == that.id;
+               this.id == that.id;
   }
 
   @Override
@@ -52,10 +61,10 @@ public class ReadAccountParams extends ContextContainer {
   @Override
   public String toString() {
     return new StringBuilder(ReadAccountParams.class.getSimpleName())
-        .append("{context=").append(this.context)
-        .append(", id=").append(this.id)
-        .append(", timestamp=").append(this.timestamp)
-        .append('}')
-        .toString();
+               .append("{context=").append(this.context)
+               .append(", id=").append(this.id)
+               .append(", timestamp=").append(this.timestamp)
+               .append('}')
+               .toString();
   }
 }
