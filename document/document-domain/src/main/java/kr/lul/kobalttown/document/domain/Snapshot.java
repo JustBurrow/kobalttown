@@ -21,7 +21,7 @@ public interface Snapshot extends Creatable<Instant>, SimpleString, UniqueIdenti
   interface Id extends Serializable {
     long document();
 
-    int revision();
+    int version();
   }
 
   Class<? extends Document> type();
@@ -31,7 +31,7 @@ public interface Snapshot extends Creatable<Instant>, SimpleString, UniqueIdenti
   /**
    * @return 스냅샷의 버전. 0-based.
    */
-  int getRevision();
+  int getVision();
 
   /**
    * @return 대상 도큐먼트.
@@ -53,7 +53,7 @@ public interface Snapshot extends Creatable<Instant>, SimpleString, UniqueIdenti
   default URI uri() {
     try {
       return new URI(Document.URI_SCHEME, Document.URI_HOST,
-          format("/%s/%d/%d", type().getCanonicalName(), getId().document(), getId().revision()),
+          format("/%s/%d/%d", type().getCanonicalName(), getId().document(), getId().version()),
           null);
     } catch (final URISyntaxException e) {
       throw new RuntimeException(e);

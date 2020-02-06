@@ -11,7 +11,7 @@ import java.util.List;
  */
 public abstract class EnableCodeMapping {
   public static final String ENTITY = "EnableCode";
-  public static final Class ENTITY_TYPE = EnableCode.class;
+  public static final Class<?> ENTITY_TYPE = EnableCode.class;
   public static final String TABLE = "user_enable_code";
 
   public static final String COL_ID = "id";

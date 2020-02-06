@@ -5,7 +5,7 @@ def groups = [
     page         : ["root", "account"],
     global       : ["security"],
     account      : ["domain", "data", "service", "dto", "converter", "borderline", "web"],
-    document     : ["domain"],
+    document     : ["domain", "data"],
     runner       : ["standalone"]
 ]
 

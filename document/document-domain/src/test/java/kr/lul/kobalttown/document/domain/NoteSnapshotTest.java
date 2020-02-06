@@ -31,14 +31,14 @@ public class NoteSnapshotTest {
         }
 
         @Override
-        public int revision() {
+        public int version() {
           return 0;
         }
       };
     }
 
     @Override
-    public int getRevision() {
+    public int getVision() {
       return 0;
     }
 

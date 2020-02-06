@@ -11,7 +11,7 @@ import java.util.List;
  */
 public abstract class CredentialMapping {
   public static final String ENTITY = "Credential";
-  public static final Class ENTITY_TYPE = Credential.class;
+  public static final Class<?> ENTITY_TYPE = Credential.class;
   public static final String TABLE = "user_credential";
 
   public static final String COL_ID = "id";

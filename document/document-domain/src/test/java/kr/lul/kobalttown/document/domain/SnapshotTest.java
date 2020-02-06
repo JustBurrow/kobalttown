@@ -27,7 +27,7 @@ public class SnapshotTest {
       }
 
       @Override
-      public int revision() {
+      public int version() {
         return SnapshotTest.this.ssDocRev;
       }
     }
@@ -43,7 +43,7 @@ public class SnapshotTest {
     }
 
     @Override
-    public int getRevision() {
+    public int getVision() {
       return SnapshotTest.this.ssDocRev;
     }
 
