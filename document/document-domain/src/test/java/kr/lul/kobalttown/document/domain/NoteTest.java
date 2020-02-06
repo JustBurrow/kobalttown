@@ -11,15 +11,15 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author justburrow
- * @since 2020/01/29
+ * @since 2020/02/06
  */
-public class DocumentTest {
-  protected static final Logger log = getLogger(DocumentTest.class);
+public class NoteTest {
+  protected static final Logger log = getLogger(NoteTest.class);
 
-  class Doc implements Document {
+  class N implements Note {
     @Override
-    public Class<Document> type() {
-      return Document.class;
+    public String getBody() {
+      return "test note body.";
     }
 
     @Override
@@ -29,11 +29,11 @@ public class DocumentTest {
 
     @Override
     public int getVersion() {
-      return 0;
+      return 3;
     }
 
     @Override
-    public History getHistory(final int size, final int page) {
+    public NoteHistory getHistory(final int size, final int page) {
       return null;
     }
 
@@ -51,16 +51,16 @@ public class DocumentTest {
   @Test
   public void test_uri() throws Exception {
     // GIVEN
-    final Document document = new Doc();
-    log.info("GIVEN - document={}", document);
+    final Note note = new N();
+    log.info("GIVEN - note={}", note);
 
     // WHEN
-    final URI uri = document.uri();
+    final URI uri = note.uri();
     log.info("WHEN - uri={}", uri);
 
     // THEN
     assertThat(uri)
         .isNotNull()
-        .isEqualTo(new URI("kd://kobalttown/kr.lul.kobalttown.document.domain.Document/1"));
+        .isEqualTo(new URI("kd://kobalttown/kr.lul.kobalttown.document.domain.Note/1"));
   }
 }

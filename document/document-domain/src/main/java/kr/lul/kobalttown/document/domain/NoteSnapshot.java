@@ -6,10 +6,6 @@ package kr.lul.kobalttown.document.domain;
  */
 public interface NoteSnapshot extends Snapshot {
   interface Id extends Snapshot.Id {
-    @Override
-    default Class<?> type() {
-      return NoteSnapshot.class;
-    }
   }
 
   Note getNote();
@@ -18,7 +14,13 @@ public interface NoteSnapshot extends Snapshot {
   // kr.lul.kobalttown.document.domain.Snapshot
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
+  default Class<Note> type() {
+    return Note.class;
+  }
+
+  @Override
   NoteSnapshot.Id getId();
+
 
   @Override
   default Note getDocument() {

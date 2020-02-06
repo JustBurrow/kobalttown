@@ -1,7 +1,5 @@
 package kr.lul.kobalttown.document.domain;
 
-import static java.lang.String.format;
-
 /**
  * 단순 텍스트 도큐먼트.
  *
@@ -18,10 +16,10 @@ public interface Note extends Document {
   // kr.lul.kobalttown.document.domain.Document
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
-  default String getKey() {
-    return format("%s.%d", Note.class.getCanonicalName(), getId());
+  default Class<Note> type() {
+    return Note.class;
   }
 
   @Override
-  History getHistory(int size, int page);
+  NoteHistory getHistory(int size, int page);
 }
