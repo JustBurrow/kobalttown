@@ -1,5 +1,11 @@
 package kr.lul.kobalttown.document.domain;
 
+import kr.lul.common.util.ValidationException;
+import kr.lul.common.util.Validator;
+import kr.lul.kobalttown.account.domain.Account;
+
+import static kr.lul.common.util.Texts.head;
+
 /**
  * 단순 텍스트 도큐먼트.
  *
@@ -7,6 +13,28 @@ package kr.lul.kobalttown.document.domain;
  * @since 2020/01/28
  */
 public interface Note extends Document {
+  String ATTR_AUTHOR = "author";
+  String ATTR_BODY = "body";
+
+  Validator<Account> AUTHOR_VALIDATOR = OWNER_VALIDATOR;
+
+  int BODY_MAX_LENGTH = 1_000;
+
+  Validator<String> BODY_VALIDATOR = body -> {
+    if (null == body) {
+      throw new ValidationException(ATTR_BODY, null, "body is null.");
+    } else if (body.isEmpty()) {
+      throw new ValidationException(ATTR_BODY, body, "body is empty.");
+    } else if (BODY_MAX_LENGTH < body.length()) {
+      throw new ValidationException(ATTR_BODY, head(body, 20), "too long body.");
+    }
+  };
+
+  /**
+   * @return 작성자.
+   */
+  Account getAuthor();
+
   /**
    * @return 내용.
    */
@@ -21,5 +49,10 @@ public interface Note extends Document {
   }
 
   @Override
-  NoteHistory getHistory(int size, int page);
+  default Account getOwner() {
+    return getAuthor();
+  }
+
+  @Override
+  NoteHistory history(int size, int page);
 }

@@ -1,5 +1,6 @@
 package kr.lul.kobalttown.document.domain;
 
+import kr.lul.kobalttown.account.domain.Account;
 import org.junit.Test;
 import org.slf4j.Logger;
 
@@ -18,6 +19,11 @@ public class NoteTest {
 
   class N implements Note {
     @Override
+    public Account getAuthor() {
+      return null;
+    }
+
+    @Override
     public String getBody() {
       return "test note body.";
     }
@@ -33,7 +39,7 @@ public class NoteTest {
     }
 
     @Override
-    public NoteHistory getHistory(final int size, final int page) {
+    public NoteHistory history(final int size, final int page) {
       return null;
     }
 
