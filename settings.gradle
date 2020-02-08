@@ -4,7 +4,7 @@ def groups = [
     configuration: ["bean", "mail", "data-jpa", "web", "security", "dependencies"],
     page         : ["root", "account"],
     global       : ["security"],
-    account      : ["domain", "data", "service", "dto", "converter", "borderline", "web"],
+    account      : ["domain", "data", "service", "dto", "converter", "borderline", "web", "test"],
     document     : ["domain", "data"],
     runner       : ["standalone"]
 ]
