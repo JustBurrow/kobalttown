@@ -18,11 +18,13 @@ import static org.apache.commons.lang3.RandomStringUtils.random;
 public abstract class CredentialUtil {
   private static final ThreadLocalRandom random = ThreadLocalRandom.current();
 
+  public static final String DEFAULT_DOMAIN = "example.com";
+
   /**
    * @return {@link Credential#getPublicKey()}용 이메일.
    */
   public static String email() {
-    return email("example.com");
+    return email(DEFAULT_DOMAIN);
   }
 
 

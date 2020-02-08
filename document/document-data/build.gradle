@@ -1,11 +1,13 @@
 dependencies {
   api project(":document-domain")
 
+  implementation project(":account-data")
+
   compileOnly "kr.lul.support.spring:support-spring-data-jpa"
 
+  testImplementation project(":account-test")
   testImplementation project(":configuration-bean")
   testImplementation project(":configuration-data-jpa")
-  testImplementation "com.h2database:h2"
 
   testRuntimeOnly "mysql:mysql-connector-java"
 }
