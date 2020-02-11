@@ -23,8 +23,6 @@ public interface Note extends Document {
   Validator<String> BODY_VALIDATOR = body -> {
     if (null == body) {
       throw new ValidationException(ATTR_BODY, null, "body is null.");
-    } else if (body.isEmpty()) {
-      throw new ValidationException(ATTR_BODY, body, "body is empty.");
     } else if (BODY_MAX_LENGTH < body.length()) {
       throw new ValidationException(ATTR_BODY, head(body, 20), "too long body.");
     }

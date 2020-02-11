@@ -1,0 +1,7 @@
+dependencies {
+  api project(":document-domain")
+
+  implementation project(":document-data")
+
+  testImplementation project(":document-test")
+}
