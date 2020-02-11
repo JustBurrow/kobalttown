@@ -11,6 +11,7 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.Objects;
 
+import static java.lang.String.format;
 import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Arguments.positive;
 import static kr.lul.common.util.Texts.head;
@@ -48,6 +49,10 @@ public class NoteEntity extends SavableEntity implements Note {
     notNull(author, "author");
     positive(author.getId(), "author.id");
     notNull(body, "body");
+
+    if (author.getCreatedAt().isAfter(createdAt))
+      throw new IllegalArgumentException(format("author.createdAt is after than createdAt : author.createdAt=%s, createdAt=%s",
+          author.getCreatedAt(), createdAt));
 
     this.author = author;
     this.body = body;
@@ -96,7 +101,7 @@ public class NoteEntity extends SavableEntity implements Note {
   @Override
   public String toString() {
     return new StringBuilder(NoteEntity.class.getSimpleName())
-               .append("id=").append(this.id)
+               .append("{id=").append(this.id)
                .append(", version=").append(this.version)
                .append(", author=").append(this.author.toSimpleString())
                .append(", body=").append(singleQuote(head(this.body, 10)))

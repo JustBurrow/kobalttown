@@ -58,7 +58,8 @@ public class NoteRepositoryTest {
     // GIVEN
     final Account account = this.accountTestTool.account();
     final String body = "test body.";
-    final NoteEntity note = new NoteEntity(account, body, this.before);
+    final Instant createdAt = this.timeProvider.now();
+    final NoteEntity note = new NoteEntity(account, body, createdAt);
     log.info("GIVEN - note={}", note);
 
     // WHEN
@@ -69,7 +70,7 @@ public class NoteRepositoryTest {
     assertThat(saved)
         .isNotNull()
         .extracting(NoteEntity::getAuthor, NoteEntity::getBody, SavableEntity::getCreatedAt, SavableEntity::getUpdatedAt)
-        .containsSequence(account, body, this.before, this.before);
+        .containsSequence(account, body, createdAt, createdAt);
     assertThat(saved.getId())
         .isPositive();
   }

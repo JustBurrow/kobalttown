@@ -6,7 +6,8 @@ import static kr.lul.common.util.Arguments.notEmpty;
 import static kr.lul.common.util.Arguments.positive;
 import static kr.lul.kobalttown.account.domain.Credential.PUBLIC_KEY_MAX_LENGTH;
 import static kr.lul.kobalttown.account.domain.Credential.PUBLIC_KEY_MIN_LENGTH;
-import static org.apache.commons.lang3.RandomStringUtils.random;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 
 /**
  * {@link Credential}용 유틸리티.
@@ -52,7 +53,7 @@ public abstract class CredentialUtil {
   public static String userKey(final int length) {
     positive(length, "length");
 
-    return random(length);
+    return randomAlphanumeric(1) + randomAlphabetic(PUBLIC_KEY_MAX_LENGTH - 1);
   }
 
   protected CredentialUtil() {
