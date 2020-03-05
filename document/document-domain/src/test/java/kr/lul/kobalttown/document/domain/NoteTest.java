@@ -29,6 +29,11 @@ public class NoteTest {
     }
 
     @Override
+    public NoteUpdater updater(final Instant updatedAt) {
+      return null;
+    }
+
+    @Override
     public long getId() {
       return 1L;
     }

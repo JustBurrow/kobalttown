@@ -1,5 +1,6 @@
 package kr.lul.kobalttown.document.domain;
 
+import kr.lul.kobalttown.account.domain.Account;
 import org.junit.Test;
 import org.slf4j.Logger;
 
@@ -40,6 +41,11 @@ public class RecommentTest {
         }
 
         @Override
+        public Account getAuthor() {
+          return null;
+        }
+
+        @Override
         public String getBody() {
           return null;
         }
@@ -63,6 +69,11 @@ public class RecommentTest {
 
     @Override
     public Snapshot getSnapshot() {
+      return null;
+    }
+
+    @Override
+    public Account getAuthor() {
       return null;
     }
 

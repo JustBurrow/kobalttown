@@ -23,6 +23,11 @@ public class NoteSnapshotTest {
     }
 
     @Override
+    public String getBody() {
+      return null;
+    }
+
+    @Override
     public NoteSnapshot.Id getId() {
       return new NoteSnapshot.Id() {
         @Override
