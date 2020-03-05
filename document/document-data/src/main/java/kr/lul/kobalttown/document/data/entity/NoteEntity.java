@@ -5,6 +5,7 @@ import kr.lul.kobalttown.account.data.mapping.AccountMapping;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.document.domain.Note;
 import kr.lul.kobalttown.document.domain.NoteHistory;
+import kr.lul.kobalttown.document.domain.NoteUpdater;
 import kr.lul.support.spring.data.jpa.entiy.SavableEntity;
 
 import javax.persistence.*;
@@ -76,6 +77,12 @@ public class NoteEntity extends SavableEntity implements Note {
   @Override
   public String getBody() {
     return this.body;
+  }
+
+  @Override
+  public NoteUpdater updater(final Instant updatedAt) {
+    notNull(updatedAt, "updatedAt");
+    return null;
   }
 
   @Override

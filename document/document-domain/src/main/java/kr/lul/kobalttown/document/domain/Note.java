@@ -4,6 +4,8 @@ import kr.lul.common.util.ValidationException;
 import kr.lul.common.util.Validator;
 import kr.lul.kobalttown.account.domain.Account;
 
+import java.time.Instant;
+
 import static kr.lul.common.util.Texts.head;
 
 /**
@@ -37,6 +39,15 @@ public interface Note extends Document {
    * @return 내용.
    */
   String getBody();
+
+  /**
+   * 노트를 수정할 수 있는 업데이터 오브젝트 요청.
+   *
+   * @param updatedAt 수정 시각.
+   *
+   * @return 업데이터 오브젝트.
+   */
+  NoteUpdater updater(Instant updatedAt);
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.kobalttown.document.domain.Document

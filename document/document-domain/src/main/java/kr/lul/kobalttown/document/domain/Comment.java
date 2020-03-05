@@ -2,6 +2,7 @@ package kr.lul.kobalttown.document.domain;
 
 import kr.lul.common.util.SimpleString;
 import kr.lul.common.util.UniqueIdentity;
+import kr.lul.kobalttown.account.domain.Account;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,6 +36,8 @@ public interface Comment extends SimpleString, UniqueIdentity {
    * @return 댓글이 달린 시점의 도큐먼트.
    */
   Snapshot getSnapshot();
+
+  Account getAuthor();
 
   /**
    * @return 댓글 내용.
