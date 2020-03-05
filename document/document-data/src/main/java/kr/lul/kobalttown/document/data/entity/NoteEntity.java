@@ -3,18 +3,18 @@ package kr.lul.kobalttown.document.data.entity;
 import kr.lul.kobalttown.account.data.entity.AccountEntity;
 import kr.lul.kobalttown.account.data.mapping.AccountMapping;
 import kr.lul.kobalttown.account.domain.Account;
-import kr.lul.kobalttown.document.domain.Note;
-import kr.lul.kobalttown.document.domain.NoteHistory;
-import kr.lul.kobalttown.document.domain.NoteUpdater;
+import kr.lul.kobalttown.document.data.mapping.NoteSnapshotMapping;
+import kr.lul.kobalttown.document.domain.*;
 import kr.lul.support.spring.data.jpa.entiy.SavableEntity;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static java.lang.String.format;
-import static kr.lul.common.util.Arguments.notNull;
-import static kr.lul.common.util.Arguments.positive;
+import static kr.lul.common.util.Arguments.*;
 import static kr.lul.common.util.Texts.head;
 import static kr.lul.common.util.Texts.singleQuote;
 import static kr.lul.kobalttown.document.data.mapping.NoteMapping.*;
@@ -41,6 +41,9 @@ public class NoteEntity extends SavableEntity implements Note {
   private Account author;
   @Column(name = COL_BODY, nullable = false)
   private String body;
+  @OneToMany(targetEntity = NoteSnapshotEntity.class, mappedBy = NoteSnapshotMapping.COL_NOTE, cascade = CascadeType.PERSIST)
+  @OrderBy(NoteSnapshotMapping.COL_VERSION + " ASC")
+  private List<NoteSnapshot> history = new ArrayList<>();
 
   public NoteEntity() { // JPA only
   }
@@ -57,6 +60,10 @@ public class NoteEntity extends SavableEntity implements Note {
 
     this.author = author;
     this.body = body;
+
+    final NoteSnapshotEntity init = new NoteSnapshotEntity(this, createdAt);
+    init.setBody(body);
+    this.history.add(init);
   }
 
   @Override
@@ -86,8 +93,19 @@ public class NoteEntity extends SavableEntity implements Note {
   }
 
   @Override
-  public NoteHistory history(final int size, final int page) {
-    return null;
+  public History<NoteSnapshot> history(final int size, final int page) {
+    positive(size, "size");
+    notNegative(page, "page");
+
+    final List<NoteSnapshot> content;
+    final int from = size * page;
+    if (this.history.size() < from) {
+      content = List.of();
+    } else {
+      final int to = Math.min(from + size, this.history.size());
+      content = this.history.subList(from, to);
+    }
+    return new HistoryImpl<>(size, page, this.history.size(), content);
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

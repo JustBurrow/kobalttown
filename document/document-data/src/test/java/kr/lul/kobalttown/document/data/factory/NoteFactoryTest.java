@@ -8,7 +8,9 @@ import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.test.AccountTestTool;
 import kr.lul.kobalttown.document.data.DocumentDataTestConfiguration;
 import kr.lul.kobalttown.document.domain.Document;
+import kr.lul.kobalttown.document.domain.History;
 import kr.lul.kobalttown.document.domain.Note;
+import kr.lul.kobalttown.document.domain.NoteSnapshot;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
+import java.util.List;
 
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.apache.commons.lang3.RandomStringUtils.random;
@@ -115,5 +118,13 @@ public class NoteFactoryTest {
         .extracting(Document::getId, Document::getVersion, Note::getAuthor, Note::getBody,
             Creatable::getCreatedAt, Updatable::getUpdatedAt)
         .containsSequence(0L, 0, account, body, createdAt, createdAt);
+
+    final History<NoteSnapshot> history = note.history(Integer.MAX_VALUE, 0);
+    assertThat(history)
+        .isNotNull();
+    final List<NoteSnapshot> content = history.content();
+    assertThat(content)
+        .isNotNull()
+        .hasSize(1);
   }
 }

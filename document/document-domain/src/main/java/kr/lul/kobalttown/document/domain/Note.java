@@ -63,5 +63,5 @@ public interface Note extends Document {
   }
 
   @Override
-  NoteHistory history(int size, int page);
+  History<NoteSnapshot> history(int size, int page);
 }

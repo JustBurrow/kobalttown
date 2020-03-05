@@ -1,5 +1,6 @@
 package kr.lul.kobalttown.document.data.entity;
 
+import kr.lul.kobalttown.document.data.mapping.NoteMapping;
 import kr.lul.kobalttown.document.domain.Note;
 import kr.lul.kobalttown.document.domain.NoteSnapshot;
 
@@ -8,19 +9,22 @@ import java.time.Instant;
 import java.util.Objects;
 
 import static java.lang.String.format;
-import static javax.persistence.CascadeType.PERSIST;
-import static kr.lul.common.util.Arguments.*;
+import static kr.lul.common.util.Arguments.notNegative;
+import static kr.lul.common.util.Arguments.notNull;
+import static kr.lul.kobalttown.document.data.mapping.NoteSnapshotMapping.*;
 
 /**
  * @author justburrow
  * @since 2020/03/04
  */
-@Entity
-@Table
+@Entity(name = ENTITY)
+@Table(name = TABLE)
 public class NoteSnapshotEntity implements NoteSnapshot {
   @Embeddable
   public static class NoteSnapshotId implements NoteSnapshot.Id {
+    @Column(name = COL_NOTE, nullable = false, updatable = false)
     private long document;
+    @Column(name = COL_VERSION, nullable = false, updatable = false)
     private int version;
 
     /**
@@ -30,7 +34,7 @@ public class NoteSnapshotEntity implements NoteSnapshot {
     }
 
     public NoteSnapshotId(final long document, final int version) {
-      positive(document, "document");
+      notNegative(document, "document");
       notNegative(version, "version");
 
       this.document = document;
@@ -69,9 +73,14 @@ public class NoteSnapshotEntity implements NoteSnapshot {
 
   @EmbeddedId
   private NoteSnapshotId id;
-  @ManyToOne(targetEntity = NoteEntity.class, cascade = {PERSIST})
+  @ManyToOne(targetEntity = NoteEntity.class)
+  @JoinColumn(name = COL_NOTE, nullable = false, updatable = false,
+      foreignKey = @ForeignKey(name = FK_NOTE_SNAPSHOT_PK_NOTE), referencedColumnName = NoteMapping.COL_ID)
+  @MapsId(COL_NOTE)
   private Note note;
+  @Column(name = COL_BODY, nullable = false, updatable = false)
   private String body;
+  @Column(name = COL_CREATED_AT, nullable = false, updatable = false)
   private Instant createdAt;
 
   /**

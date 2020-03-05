@@ -44,7 +44,7 @@ public class NoteTest {
     }
 
     @Override
-    public NoteHistory history(final int size, final int page) {
+    public History<NoteSnapshot> history(final int size, final int page) {
       return null;
     }
 
