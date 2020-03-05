@@ -60,12 +60,18 @@ public class NoteEntity extends SavableEntity implements Note {
 
     this.author = author;
     this.body = body;
+  }
 
-    final NoteSnapshotEntity init = new NoteSnapshotEntity(this, createdAt);
-    init.setBody(body);
+  @PostPersist
+  private void postPersist() {
+    final NoteSnapshotEntity init = new NoteSnapshotEntity(this, this.createdAt);
+    init.setBody(this.body);
     this.history.add(init);
   }
 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // kr.lul.kobalttown.document.domain.Note
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
   public long getId() {
     return this.id;
