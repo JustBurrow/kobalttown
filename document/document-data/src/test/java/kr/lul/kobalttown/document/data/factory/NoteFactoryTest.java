@@ -125,6 +125,6 @@ public class NoteFactoryTest {
     final List<NoteSnapshot> content = history.content();
     assertThat(content)
         .isNotNull()
-        .hasSize(1);
+        .isEmpty();
   }
 }
