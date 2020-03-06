@@ -31,7 +31,7 @@ public interface Snapshot extends Creatable<Instant>, SimpleString, UniqueIdenti
   /**
    * @return 스냅샷의 버전. 0-based.
    */
-  int getVision();
+  int getVersion();
 
   /**
    * @return 대상 도큐먼트.

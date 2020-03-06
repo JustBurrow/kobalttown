@@ -43,7 +43,7 @@ public class NoteSnapshotTest {
     }
 
     @Override
-    public int getVision() {
+    public int getVersion() {
       return 0;
     }
 

@@ -120,7 +120,7 @@ public class NoteSnapshotEntity implements NoteSnapshot {
   }
 
   @Override
-  public int getVision() {
+  public int getVersion() {
     return this.id.version;
   }
 
