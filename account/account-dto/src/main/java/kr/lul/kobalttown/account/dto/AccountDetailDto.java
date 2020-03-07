@@ -47,10 +47,10 @@ public class AccountDetailDto extends AbstractAccountDto {
     if (o == null || getClass() != o.getClass()) return false;
     final AccountDetailDto that = (AccountDetailDto) o;
     return this.id == that.id &&
-        this.nickname.equals(that.nickname) &&
-        this.enabled == that.enabled &&
-        this.createdAt.equals(that.createdAt) &&
-        this.updatedAt.equals(that.updatedAt);
+               this.nickname.equals(that.nickname) &&
+               this.enabled == that.enabled &&
+               this.createdAt.equals(that.createdAt) &&
+               this.updatedAt.equals(that.updatedAt);
   }
 
   @Override
@@ -60,12 +60,12 @@ public class AccountDetailDto extends AbstractAccountDto {
 
   @Override
   public String toString() {
-    return new StringBuilder(AccountDetailDto.class.getSimpleName())
-        .append("{id=").append(this.id)
-        .append(", nickname=").append(singleQuote(this.nickname))
-        .append(", enabled=").append(this.enabled)
-        .append(", createdAt=").append(this.createdAt)
-        .append(", updatedAt=").append(this.updatedAt)
-        .append('}').toString();
+    return new StringBuilder()
+               .append("{id=").append(this.id)
+               .append(", nickname=").append(singleQuote(this.nickname))
+               .append(", enabled=").append(this.enabled)
+               .append(", createdAt=").append(this.createdAt)
+               .append(", updatedAt=").append(this.updatedAt)
+               .append('}').toString();
   }
 }
