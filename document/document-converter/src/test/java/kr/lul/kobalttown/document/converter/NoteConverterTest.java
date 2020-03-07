@@ -30,7 +30,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @since 2020/03/07
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = NoteConverterTestConfiguration.class)
+@SpringBootTest(classes = DocumentConverterTestConfiguration.class)
 public class NoteConverterTest {
   protected static final Logger log = getLogger(NoteConverterTest.class);
 

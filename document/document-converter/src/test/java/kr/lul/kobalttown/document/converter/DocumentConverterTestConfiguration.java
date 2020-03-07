@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author justburrow
  * @since 2020/03/07
  */
-@SpringBootApplication(scanBasePackageClasses = {NoteConverterAnchor.class, DocumentTestAnchor.class})
+@SpringBootApplication(scanBasePackageClasses = {DocumentConverterAnchor.class, DocumentTestAnchor.class})
 //@Import({BeanConfiguration.class})
-public class NoteConverterTestConfiguration {
+public class DocumentConverterTestConfiguration {
 }

@@ -10,5 +10,5 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ComponentScan(basePackageClasses = AccountConverterAnchor.class)
-public class NoteConverterConfiguration {
+public class DocumentConverterConfiguration {
 }

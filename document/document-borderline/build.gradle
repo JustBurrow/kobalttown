@@ -1,6 +1,7 @@
 dependencies {
   implementation project(":document-service")
   implementation project(":document-converter")
+  implementation project(":account-service")
 
   api project(":document-domain")
   api project(":document-dto")
