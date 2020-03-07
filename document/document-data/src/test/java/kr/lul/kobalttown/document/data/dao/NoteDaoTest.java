@@ -7,9 +7,12 @@ import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.test.AccountTestTool;
 import kr.lul.kobalttown.document.data.DocumentDataTestConfiguration;
+import kr.lul.kobalttown.document.data.entity.NoteSnapshotEntity;
 import kr.lul.kobalttown.document.data.factory.NoteFactory;
 import kr.lul.kobalttown.document.domain.Document;
+import kr.lul.kobalttown.document.domain.History;
 import kr.lul.kobalttown.document.domain.Note;
+import kr.lul.kobalttown.document.domain.NoteSnapshot;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -94,6 +97,20 @@ public class NoteDaoTest {
         .containsSequence(0, account, body, createdAt, createdAt);
     assertThat(created.getId())
         .isPositive();
+
+    final History<NoteSnapshot> history = created.history(Integer.MAX_VALUE, 0);
+    assertThat(history)
+        .isNotNull()
+        .extracting(History::size, History::page, History::totalSize, History::totalPage)
+        .containsSequence(1, 0, 1L, 1L);
+    assertThat(history.content())
+        .isNotNull()
+        .hasSize(1);
+    final NoteSnapshot snapshot = history.content().get(0);
+    assertThat(snapshot)
+        .isNotNull()
+        .extracting(NoteSnapshot::getId, NoteSnapshot::getNote, NoteSnapshot::getBody, NoteSnapshot::getCreatedAt)
+        .containsSequence(new NoteSnapshotEntity.NoteSnapshotId(created.getId(), 0), created, body, createdAt);
   }
 
   @Test

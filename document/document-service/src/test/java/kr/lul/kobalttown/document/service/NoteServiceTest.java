@@ -6,8 +6,11 @@ import kr.lul.common.data.Updatable;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.test.AccountTestTool;
+import kr.lul.kobalttown.document.data.entity.NoteSnapshotEntity;
 import kr.lul.kobalttown.document.domain.Document;
+import kr.lul.kobalttown.document.domain.History;
 import kr.lul.kobalttown.document.domain.Note;
+import kr.lul.kobalttown.document.domain.NoteSnapshot;
 import kr.lul.kobalttown.document.service.params.CreateNoteParams;
 import kr.lul.kobalttown.document.service.params.ReadNoteParams;
 import kr.lul.kobalttown.document.test.NoteTestTool;
@@ -22,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
+import java.util.List;
 
 import static kr.lul.kobalttown.document.domain.NoteUtil.body;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -173,5 +177,20 @@ public class NoteServiceTest {
             Note::getAuthor, Note::getBody, Creatable::getCreatedAt, Updatable::getUpdatedAt)
         .containsSequence(id, 0, author,
             author, body, createdAt, updatedAt);
+
+    final History<NoteSnapshot> history = note.history(Integer.MAX_VALUE, 0);
+    assertThat(history)
+        .isNotNull()
+        .extracting(History::page, History::size, History::totalSize, History::totalPage)
+        .containsSequence(0, 1, 1L, 1L);
+
+    final List<NoteSnapshot> content = history.content();
+    assertThat(content)
+        .isNotNull()
+        .hasSize(1);
+    assertThat(content.get(0))
+        .isNotNull()
+        .extracting(NoteSnapshot::getId, NoteSnapshot::getNote, NoteSnapshot::getBody, NoteSnapshot::getCreatedAt)
+        .containsSequence(new NoteSnapshotEntity.NoteSnapshotId(note.getId(), 0), actual, body, createdAt);
   }
 }
