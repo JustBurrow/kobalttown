@@ -1,5 +1,6 @@
 package kr.lul.kobalttown.document.borderline;
 
+import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.service.AccountService;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
@@ -42,9 +43,8 @@ class NoteBorderlineImpl implements NoteBorderline {
     notNull(cmd, "cmd");
 
     final Account user = this.accountService.read(new ReadAccountParams(cmd, cmd.getUser(), cmd.getTimestamp()));
-    if (null == user) {
-      throw new RuntimeException("user does not exist : " + cmd.getUser());
-    }
+    if (null == user)
+      throw new ValidationException("user", cmd.getUser(), "user does not exist : " + cmd.getUser());
 
     final CreateNoteParams params = new CreateNoteParams(cmd, user, cmd.getBody(), cmd.getTimestamp());
     final Note note = this.service.create(params);
@@ -63,7 +63,7 @@ class NoteBorderlineImpl implements NoteBorderline {
 
     final Account user = this.accountService.read(new ReadAccountParams(cmd, cmd.getUser(), cmd.getTimestamp()));
     if (null == user)
-      throw new RuntimeException("user does not exist : " + cmd.getUser());
+      throw new ValidationException("user", cmd.getUser(), "user does not exist : " + cmd.getUser());
 
     final ReadNoteParams params = new ReadNoteParams(cmd, user, cmd.getNote(), cmd.getTimestamp());
     final Note note = this.service.read(params);

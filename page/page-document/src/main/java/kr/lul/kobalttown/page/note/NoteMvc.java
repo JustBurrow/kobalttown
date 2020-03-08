@@ -9,6 +9,7 @@ public abstract class NoteMvc {
     public static final String NOTE = "note";
     public static final String ID = "id";
     public static final String NOTES = "notes";
+    public static final String CREATE_REQ = "createReq";
 
     protected M() {
       throw new UnsupportedOperationException();

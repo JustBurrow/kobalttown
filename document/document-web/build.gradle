@@ -6,6 +6,7 @@ dependencies {
   api project(":document-dto")
 
   compileOnly project(":configuration-web")
+  compileOnly project(":configuration-security")
 
   testImplementation project(":document-test")
   testImplementation project(":configuration-dependencies")
