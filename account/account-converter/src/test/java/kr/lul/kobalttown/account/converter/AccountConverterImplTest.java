@@ -4,6 +4,7 @@ import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.dto.AbstractAccountDto;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
+import kr.lul.kobalttown.account.dto.AccountSimpleDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +47,7 @@ public class AccountConverterImplTest {
   @Test
   public void test_supportTargetTypes() throws Exception {
     assertThat(this.converter.supportTargetTypes())
-        .containsOnly(AccountDetailDto.class);
+        .containsOnly(AccountSimpleDto.class, AccountDetailDto.class);
   }
 
   @Test
