@@ -34,9 +34,9 @@ class NoteServiceImpl implements NoteService {
     if (log.isTraceEnabled())
       log.trace("#create args : params={}", params);
     notNull(params, "params");
-    positive(params.getAuthor().getId(), "params.author.id");
+    positive(params.getUser().getId(), "params.author.id");
 
-    Note note = this.factory.create(params.getContext(), params.getAuthor(), params.getBody(), params.getTimestamp());
+    Note note = this.factory.create(params.getContext(), params.getUser(), params.getBody(), params.getTimestamp());
     note = this.dao.create(params.getContext(), note);
 
     if (log.isTraceEnabled())

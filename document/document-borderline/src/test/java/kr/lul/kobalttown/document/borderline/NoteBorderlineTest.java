@@ -6,6 +6,8 @@ import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.dto.AccountSimpleDto;
 import kr.lul.kobalttown.account.test.AccountTestTool;
 import kr.lul.kobalttown.document.borderline.command.CreateNoteCmd;
+import kr.lul.kobalttown.document.borderline.command.ReadNoteCmd;
+import kr.lul.kobalttown.document.domain.Note;
 import kr.lul.kobalttown.document.dto.AbstractNoteDto;
 import kr.lul.kobalttown.document.dto.NoteDetailDto;
 import kr.lul.kobalttown.document.test.NoteTestTool;
@@ -84,5 +86,38 @@ public class NoteBorderlineTest {
             this.timeProvider.zonedDateTime(timestamp), this.timeProvider.zonedDateTime(timestamp));
     assertThat(note.getId())
         .isPositive();
+  }
+
+  @Test
+  public void test_read_with_null() throws Exception {
+    assertThatThrownBy(() -> this.borderline.read(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("cmd is null.");
+  }
+
+  @Test
+  public void test_read() throws Exception {
+    // GIVEN
+    final Account user = this.accountTestTool.account();
+    log.info("GIVEN - user={}", user);
+    final Note note = this.tool.note();
+    log.info("GIVEN - note={}", note);
+    final Instant timestamp = this.timeProvider.now();
+    log.info("GIVEN - timestamp={}", timestamp);
+
+    final ReadNoteCmd cmd = new ReadNoteCmd(new Context(), user.getId(), note.getId(), timestamp);
+    log.info("GIVEN - cmd={}", cmd);
+
+    // WHEN
+    final NoteDetailDto dto = this.borderline.read(cmd);
+    log.info("WHEN - dto={}", dto);
+
+    // THEN
+    assertThat(dto)
+        .isNotNull()
+        .extracting(AbstractNoteDto::getId, NoteDetailDto::getVersion, AbstractNoteDto::getAuthor,
+            AbstractNoteDto::getBody, NoteDetailDto::getCreatedAt, NoteDetailDto::getUpdatedAt)
+        .containsSequence(note.getId(), 0, new AccountSimpleDto(note.getAuthor().getId(), note.getAuthor().getNickname()),
+            note.getBody(), this.timeProvider.zonedDateTime(note.getCreatedAt()), this.timeProvider.zonedDateTime(note.getUpdatedAt()));
   }
 }

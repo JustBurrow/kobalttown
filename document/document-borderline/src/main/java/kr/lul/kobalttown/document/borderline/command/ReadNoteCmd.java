@@ -3,6 +3,7 @@ package kr.lul.kobalttown.document.borderline.command;
 import kr.lul.common.data.Context;
 import kr.lul.common.data.ContextContainer;
 import kr.lul.kobalttown.account.domain.Account;
+import kr.lul.kobalttown.document.domain.Note;
 
 import java.time.Instant;
 
@@ -11,43 +12,46 @@ import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Arguments.positive;
 
 /**
- * 신규 노트 작성 커맨드.
- *
  * @author justburrow
- * @since 2020/03/07
+ * @since 2020/03/08
  */
-public class CreateNoteCmd extends ContextContainer {
+public class ReadNoteCmd extends ContextContainer {
   /**
-   * 작성자 ID.
+   * 노트를 요청한 계정 ID.
    *
    * @see Account#getId()
    */
   private long user;
   /**
-   * 내용.
+   * 노트 ID.
+   *
+   * @see Note#getId()
    */
-  private String body;
+  private long note;
+  /**
+   * 요청 시각.
+   */
   private Instant timestamp;
 
-  public CreateNoteCmd(final Context context, final long user, final String body, final Instant timestamp) {
+  public ReadNoteCmd(final Context context, final long user, final long note, final Instant timestamp) {
     super(context);
-    positive(user, "user");
-    notNull(body, "body");
+    positive(user, "account");
+    positive(note, "note");
     notNull(timestamp, "timestamp");
 
     this.user = user;
-    this.body = body;
+    this.note = note;
     this.timestamp = timestamp;
   }
 
-  public CreateNoteCmd(final ContextContainer container, final long user, final String body, final Instant timestamp) {
+  public ReadNoteCmd(final ContextContainer container, final long user, final long note, final Instant timestamp) {
     super(container);
-    positive(user, "user");
-    notNull(body, "body");
+    positive(user, "account");
+    positive(note, "note");
     notNull(timestamp, "timestamp");
 
     this.user = user;
-    this.body = body;
+    this.note = note;
     this.timestamp = timestamp;
   }
 
@@ -55,8 +59,8 @@ public class CreateNoteCmd extends ContextContainer {
     return this.user;
   }
 
-  public String getBody() {
-    return this.body;
+  public long getNote() {
+    return this.note;
   }
 
   public Instant getTimestamp() {
@@ -65,7 +69,6 @@ public class CreateNoteCmd extends ContextContainer {
 
   @Override
   public String toString() {
-    return format("{context=%s, user=%d, body='%s', timestamp=%s}",
-        this.context, this.user, this.body, this.timestamp);
+    return format("{context=%s, user=%d, note=%d, timestamp=Ts}", this.context, this.user, this.note, this.timestamp);
   }
 }

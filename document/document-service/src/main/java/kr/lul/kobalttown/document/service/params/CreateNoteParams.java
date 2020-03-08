@@ -16,27 +16,27 @@ import static kr.lul.common.util.Texts.singleQuote;
  * @since 2020/02/11
  */
 public class CreateNoteParams extends ContextContainer {
-  private Account author;
+  private Account user;
   private String body;
   private Instant timestamp;
 
-  public CreateNoteParams(final ContextContainer container, final Account author, final String body, final Instant timestamp) {
-    this(container.getContext(), author, body, timestamp);
+  public CreateNoteParams(final ContextContainer container, final Account user, final String body, final Instant timestamp) {
+    this(container.getContext(), user, body, timestamp);
   }
 
-  public CreateNoteParams(final Context context, final Account author, final String body, final Instant timestamp) {
+  public CreateNoteParams(final Context context, final Account user, final String body, final Instant timestamp) {
     super(context);
-    notNull(author, "author");
+    notNull(user, "user");
     notNull(body, "body");
     notNull(timestamp, "timestamp");
 
-    this.author = author;
+    this.user = user;
     this.body = body;
     this.timestamp = timestamp;
   }
 
-  public Account getAuthor() {
-    return this.author;
+  public Account getUser() {
+    return this.user;
   }
 
   public String getBody() {
@@ -53,6 +53,6 @@ public class CreateNoteParams extends ContextContainer {
   @Override
   public String toString() {
     return format("{context=%s, author=%s, body=%s, timestamp=%s}",
-        this.context, this.author.toSimpleString(), singleQuote(head(this.body, 20)), this.timestamp);
+        this.context, this.user.toSimpleString(), singleQuote(head(this.body, 20)), this.timestamp);
   }
 }
