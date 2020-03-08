@@ -81,7 +81,7 @@ public class NoteBorderlineTest {
         .extracting(NoteDetailDto::getVersion, AbstractNoteDto::getAuthor, AbstractNoteDto::getBody,
             NoteDetailDto::getCreatedAt, NoteDetailDto::getUpdatedAt)
         .containsSequence(0, new AccountSimpleDto(author.getId(), author.getNickname()), body,
-            timestamp, timestamp);
+            this.timeProvider.zonedDateTime(timestamp), this.timeProvider.zonedDateTime(timestamp));
     assertThat(note.getId())
         .isPositive();
   }

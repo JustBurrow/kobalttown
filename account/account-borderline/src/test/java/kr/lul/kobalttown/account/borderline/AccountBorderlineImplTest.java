@@ -10,7 +10,7 @@ import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.domain.EnableCode;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
-import kr.lul.kobalttown.account.service.configuration.EnableCodeConfiguration;
+import kr.lul.kobalttown.account.service.configuration.EnableCodeConfig;
 import kr.lul.support.spring.web.context.ContextService;
 import org.junit.After;
 import org.junit.Before;
@@ -42,7 +42,7 @@ public class AccountBorderlineImplTest {
   private static final Logger log = getLogger(AccountBorderlineImplTest.class);
 
   @Autowired
-  private EnableCodeConfiguration enableCode;
+  private EnableCodeConfig enableCode;
 
   @Autowired
   private AccountBorderline borderline;

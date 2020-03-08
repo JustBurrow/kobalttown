@@ -25,24 +25,24 @@ public class AccountServiceConfigurer {
   private AccountServiceProperties accountServiceProperties;
 
   @Bean
-  public AccountServiceConfiguration accountServiceConfiguration() {
+  public AccountServiceConfig accountServiceConfig() {
     log.info("#accountServiceConfiguration accountServiceProperties={}", this.accountServiceProperties);
 
-    final AccountServiceConfiguration configuration = new AccountServiceConfiguration(this.accountServiceProperties);
+    final AccountServiceConfig configuration = new AccountServiceConfig(this.accountServiceProperties);
     log.info("#accountServiceConfiguration configuration={}", configuration);
     return configuration;
   }
 
   @Bean
-  public WelcomeConfiguration welcomeConfiguration() {
-    final WelcomeConfiguration configuration = accountServiceConfiguration().getWelcome();
+  public WelcomeConfig welcomeConfig() {
+    final WelcomeConfig configuration = accountServiceConfig().getWelcome();
     log.info("#welcomeConfiguration configuration={}", configuration);
     return configuration;
   }
 
   @Bean
-  public EnableCodeConfiguration enableCodeConfiguration() {
-    final EnableCodeConfiguration configuration = accountServiceConfiguration().getValidationCode();
+  public EnableCodeConfig enableCodeConfig() {
+    final EnableCodeConfig configuration = accountServiceConfig().getValidationCode();
     log.info("#enableCodeConfiguration configuration={}", configuration);
     return configuration;
   }

@@ -13,8 +13,8 @@ import kr.lul.kobalttown.account.data.factory.EnableCodeFactory;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.domain.EnableCode;
-import kr.lul.kobalttown.account.service.configuration.EnableCodeConfiguration;
-import kr.lul.kobalttown.account.service.configuration.WelcomeConfiguration;
+import kr.lul.kobalttown.account.service.configuration.EnableCodeConfig;
+import kr.lul.kobalttown.account.service.configuration.WelcomeConfig;
 import kr.lul.kobalttown.account.service.params.*;
 import kr.lul.support.spring.mail.MailConfiguration;
 import kr.lul.support.spring.mail.MailParams;
@@ -51,9 +51,9 @@ class AccountServiceImpl implements AccountService {
   private static final Logger log = getLogger(AccountServiceImpl.class);
 
   @Autowired
-  private WelcomeConfiguration welcome;
+  private WelcomeConfig welcome;
   @Autowired
-  private EnableCodeConfiguration enableCode;
+  private EnableCodeConfig enableCode;
 
   @Autowired
   private AccountFactory factory;
