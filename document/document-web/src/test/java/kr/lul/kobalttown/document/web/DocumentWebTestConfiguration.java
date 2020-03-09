@@ -1,6 +1,7 @@
 package kr.lul.kobalttown.document.web;
 
 import kr.lul.kobalttown.configuration.bean.BeanConfiguration;
+import kr.lul.kobalttown.configuration.data.jpa.JpaConfiguration;
 import kr.lul.kobalttown.configuration.mail.MailConfigurer;
 import kr.lul.kobalttown.document.test.DocumentTestAnchor;
 import kr.lul.support.spring.security.crypto.PasswordEncoderSecurityEncoder;
@@ -20,7 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  * @since 2020/03/08
  */
 @SpringBootApplication(scanBasePackageClasses = {DocumentWebAnchor.class, DocumentTestAnchor.class})
-@Import({BeanConfiguration.class, MailConfigurer.class})
+@Import({BeanConfiguration.class, MailConfigurer.class, JpaConfiguration.class})
 public class DocumentWebTestConfiguration {
   @Bean
   @ConditionalOnMissingBean
