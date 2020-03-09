@@ -17,7 +17,7 @@ public abstract class NoteMvc {
   }
 
   public static class V {
-    public static final String GROUP = "layout/document";
+    public static final String GROUP = "layout/note";
 
     public static final String CREATE = GROUP + "/create";
     public static final String LIST = GROUP + "/list";
