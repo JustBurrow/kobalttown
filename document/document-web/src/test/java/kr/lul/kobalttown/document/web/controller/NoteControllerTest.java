@@ -6,6 +6,7 @@ import kr.lul.kobalttown.account.test.AccountTestTool;
 import kr.lul.kobalttown.document.test.NoteTestTool;
 import kr.lul.kobalttown.document.web.DocumentWebTestConfiguration;
 import kr.lul.kobalttown.document.web.controller.request.CreateNoteReq;
+import kr.lul.kobalttown.page.note.NoteMvc.C;
 import kr.lul.kobalttown.page.note.NoteMvc.M;
 import kr.lul.kobalttown.page.note.NoteMvc.V;
 import kr.lul.support.spring.security.userdetails.User;
@@ -166,7 +167,7 @@ public class NoteControllerTest {
     // THEN
     assertThat(viewname)
         .isNotNull()
-        .startsWith(V.GROUP + "/");
+        .startsWith("redirect:" + C.GROUP);
     assertThat(binding)
         .extracting(BindingResult::hasErrors)
         .isEqualTo(false);

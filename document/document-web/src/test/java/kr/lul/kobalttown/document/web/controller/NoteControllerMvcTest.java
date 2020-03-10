@@ -2,9 +2,11 @@ package kr.lul.kobalttown.document.web.controller;
 
 import kr.lul.common.data.Context;
 import kr.lul.common.util.TimeProvider;
+import kr.lul.kobalttown.account.dto.AccountSimpleDto;
 import kr.lul.kobalttown.configuration.security.WebSecurityConfiguration;
 import kr.lul.kobalttown.configuration.web.WebMvcConfiguration;
 import kr.lul.kobalttown.document.borderline.NoteBorderline;
+import kr.lul.kobalttown.document.dto.NoteDetailDto;
 import kr.lul.kobalttown.document.web.DocumentWebTestConfiguration;
 import kr.lul.kobalttown.page.note.NoteMvc.C;
 import kr.lul.kobalttown.page.note.NoteMvc.M;
@@ -27,10 +29,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.slf4j.LoggerFactory.getLogger;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -88,6 +92,60 @@ public class NoteControllerMvcTest {
         .andExpect(status().isOk())
         .andExpect(model().attributeExists(M.CREATE_REQ))
         .andExpect(view().name(V.CREATE))
+        .andDo(print());
+  }
+
+  @Test
+  public void test_create_with_anonymous() throws Exception {
+    this.mock.perform(
+        post(C.CREATE)
+            .param("body", "test body")
+            .with(csrf())
+            .with(anonymous()))
+        .andExpect(status().is3xxRedirection())
+        .andDo(print());
+  }
+
+  @Test
+  public void test_create_without_csrf() throws Exception {
+    // GIVEN
+    final User user = new User(1L, "nickname", "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    log.info("GIVEN - user={}", user);
+    final long id = 123L;
+
+    when(this.noteBorderline.create(any()))
+        .thenReturn(new NoteDetailDto(id, 0, new AccountSimpleDto(1L, "nickname"), "test body", this.before, this.before));
+
+    // WHEN
+    this.mock.perform(
+        post(C.CREATE)
+            .param("body", "test body")
+            .with(user(user)))
+
+        // THEN
+        .andExpect(status().is4xxClientError())
+        .andDo(print());
+  }
+
+  @Test
+  public void test_create() throws Exception {
+    // GIVEN
+    final User user = new User(1L, "nickname", "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    log.info("GIVEN - user={}", user);
+    final long id = 123L;
+
+    when(this.noteBorderline.create(any()))
+        .thenReturn(new NoteDetailDto(id, 0, new AccountSimpleDto(1L, "nickname"), "test body", this.before, this.before));
+
+    // WHEN
+    this.mock.perform(
+        post(C.CREATE)
+            .param("body", "test body")
+            .with(csrf())
+            .with(user(user)))
+        // THEN
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(C.GROUP + "/" + id))
         .andDo(print());
   }
 }

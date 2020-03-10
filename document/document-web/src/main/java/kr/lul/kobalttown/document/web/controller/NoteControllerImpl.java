@@ -4,6 +4,8 @@ import kr.lul.common.data.Context;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.document.borderline.NoteBorderline;
+import kr.lul.kobalttown.document.borderline.command.CreateNoteCmd;
+import kr.lul.kobalttown.document.dto.NoteDetailDto;
 import kr.lul.kobalttown.document.web.controller.request.CreateNoteReq;
 import kr.lul.kobalttown.page.note.NoteMvc;
 import kr.lul.kobalttown.page.note.NoteMvc.M;
@@ -58,7 +60,9 @@ class NoteControllerImpl implements NoteController {
 
     String template;
     try {
-      template = format("redirect:%s/%d", NoteMvc.C.GROUP, 0);
+      final CreateNoteCmd cmd = new CreateNoteCmd(context, user.getId(), req.getBody(), this.timeProvider.now());
+      final NoteDetailDto note = this.borderline.create(cmd);
+      template = format("redirect:%s/%d", NoteMvc.C.GROUP, note.getId());
     } catch (final ValidationException e) {
       template = doCreateForm(context, user, req, model);
     }
