@@ -2,7 +2,11 @@ package kr.lul.kobalttown.document.web.controller;
 
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.domain.Account;
+import kr.lul.kobalttown.account.dto.AccountSimpleDto;
 import kr.lul.kobalttown.account.test.AccountTestTool;
+import kr.lul.kobalttown.document.domain.Note;
+import kr.lul.kobalttown.document.dto.AbstractNoteDto;
+import kr.lul.kobalttown.document.dto.NoteDetailDto;
 import kr.lul.kobalttown.document.test.NoteTestTool;
 import kr.lul.kobalttown.document.web.DocumentWebTestConfiguration;
 import kr.lul.kobalttown.document.web.controller.request.CreateNoteReq;
@@ -173,5 +177,37 @@ public class NoteControllerTest {
         .isEqualTo(false);
     assertThat(model.asMap())
         .isEmpty();
+  }
+
+  @Test
+  public void test_detail() throws Exception {
+    // GIVEN
+    final Note note = this.tool.note();
+    final Account author = note.getAuthor();
+    log.info("GIVEN - note={}", note);
+
+    final Account account = this.accountTestTool.account();
+    log.info("GIVEN - account={}", account);
+    final User user = new User(account.getId(), account.getNickname(), "password",
+        List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    log.info("GIVEN - user={}", user);
+    final Model model = new ExtendedModelMap();
+
+    // WHEN
+    final String template = this.controller.detail(user, note.getId(), model);
+    log.info("WHEN - template={}", template);
+
+    // THEN
+    assertThat(template)
+        .isNotNull()
+        .isEqualTo(V.DETAIL);
+    assertThat(model.asMap())
+        .isNotEmpty();
+    assertThat((NoteDetailDto) model.getAttribute(M.NOTE))
+        .isNotNull()
+        .extracting(NoteDetailDto::getId, NoteDetailDto::getVersion, AbstractNoteDto::getAuthor, AbstractNoteDto::getBody,
+            NoteDetailDto::getCreatedAt, NoteDetailDto::getUpdatedAt)
+        .containsSequence(note.getId(), 0, new AccountSimpleDto(author.getId(), author.getNickname()), note.getBody(),
+            this.timeProvider.zonedDateTime(note.getCreatedAt()), this.timeProvider.zonedDateTime(note.getUpdatedAt()));
   }
 }

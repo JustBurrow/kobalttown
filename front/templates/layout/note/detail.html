@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2020/03/11 23:53" th:remove="all"/>
+    <meta charset="UTF-8"/>
+    <title>Note Detail</title>
+</head>
+<body>
+<header th:replace="component/navbar/index :: navbar"></header>
+<main>
+    <h1>Note Detail</h1>
+    <!--/*@thymesVar id="note" type="kr.lul.kobalttown.document.dto.NoteDetailDto"*/-->
+    <div th:object="${note}">
+        <p th:text="*{body}">body</p>
+        <dl>
+            <dt>ID</dt>
+            <dd>
+                <span th:text="*{id}">id</span>
+            </dd>
+            <dt>Version</dt>
+            <dd>
+                <span th:text="*{version}">version</span>
+            </dd>
+            <dt>Author</dt>
+            <dd>
+                <a href="../account/profile.html" th:href="@{/accounts/__*{author.id}__}" th:text="*{author.nickname}">author</a>
+            </dd>
+            <dt>Created at</dt>
+            <dd>
+                <time th:replace="component/tag/time :: time(*{createdAt})">created at</time>
+            </dd>
+            <dt>Updated at</dt>
+            <dd>
+                <time th:replace="component/tag/time :: time(*{updatedAt})">updated at</time>
+            </dd>
+        </dl>
+    </div>
+</main>
+</body>
+</html>

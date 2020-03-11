@@ -3,8 +3,10 @@ package kr.lul.kobalttown.document.web.controller;
 import kr.lul.common.data.Context;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.common.util.ValidationException;
+import kr.lul.common.web.http.status.exception.client.NotFound;
 import kr.lul.kobalttown.document.borderline.NoteBorderline;
 import kr.lul.kobalttown.document.borderline.command.CreateNoteCmd;
+import kr.lul.kobalttown.document.borderline.command.ReadNoteCmd;
 import kr.lul.kobalttown.document.dto.NoteDetailDto;
 import kr.lul.kobalttown.document.web.controller.request.CreateNoteReq;
 import kr.lul.kobalttown.page.note.NoteMvc;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import static java.lang.String.format;
 import static kr.lul.common.util.Arguments.notNull;
@@ -109,7 +112,29 @@ class NoteControllerImpl implements NoteController {
       template = doCreate(context, user, req, binding, model);
 
     if (log.isTraceEnabled())
-      log.trace("#create (context={}) result : template={}, model", context, template, model);
+      log.trace("#create (context={}) result : template={}, model={}", context, template, model);
+    return template;
+  }
+
+  @Override
+  public String detail(@AuthenticationPrincipal final User user, @PathVariable(M.ID) final long id, final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#detail args : user={}, id={}, model={}", user, id, model);
+
+    final Context context = this.contextService.get();
+    final ReadNoteCmd cmd = new ReadNoteCmd(context, user.getId(), id, this.timeProvider.now());
+    final NoteDetailDto note = this.borderline.read(cmd);
+
+    final String template;
+    if (null != note) {
+      model.addAttribute(M.NOTE, note);
+      template = V.DETAIL;
+    } else {
+      throw new NotFound("note does not exist : id=" + id);
+    }
+
+    if (log.isTraceEnabled())
+      log.trace("#detail (context={}) result : template={}, model={}", context, template, model);
     return template;
   }
 }
