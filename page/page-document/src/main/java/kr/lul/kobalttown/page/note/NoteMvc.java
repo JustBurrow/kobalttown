@@ -10,6 +10,7 @@ public abstract class NoteMvc {
     public static final String ID = "id";
     public static final String NOTES = "notes";
     public static final String CREATE_REQ = "createReq";
+    public static final String UPDATE_REQ = "updateReq";
 
     protected M() {
       throw new UnsupportedOperationException();
@@ -38,10 +39,10 @@ public abstract class NoteMvc {
     public static final String LIST = GROUP;
     public static final String DETAIL = GROUP + "/{id:[1-9]\\d*}";
 
-    public static final String UPDATE_FORM = GROUP + "{id:[1-9]\\d*}/update";
-    public static final String UPDATE = GROUP + "{id:[1-9]\\d*}";
+    public static final String UPDATE_FORM = GROUP + "/{id:[1-9]\\d*}/update";
+    public static final String UPDATE = GROUP + "/{id:[1-9]\\d*}";
 
-    public static final String DELETE = GROUP + "{id:[1-9]\\d*}";
+    public static final String DELETE = GROUP + "/{id:[1-9]\\d*}";
 
     protected C() {
       throw new UnsupportedOperationException();

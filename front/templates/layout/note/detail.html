@@ -25,7 +25,8 @@
             </dd>
             <dt>Author</dt>
             <dd>
-                <a href="../account/profile.html" th:href="@{/accounts/__*{author.id}__}" th:text="*{author.nickname}">author</a>
+                <address th:replace="dto/account/index :: author(*{author})"><a href="../account/profile.html"
+                                                                                rel="author">author</a></address>
             </dd>
             <dt>Created at</dt>
             <dd>
@@ -36,6 +37,9 @@
                 <time th:replace="component/tag/time :: time(*{updatedAt})">updated at</time>
             </dd>
         </dl>
+        <div>
+            <a href="update.html" th:href="@{/notes/__*{id}__/update}">EDIT</a>
+        </div>
     </div>
 </main>
 </body>

@@ -9,6 +9,7 @@ import kr.lul.kobalttown.document.borderline.command.CreateNoteCmd;
 import kr.lul.kobalttown.document.borderline.command.ReadNoteCmd;
 import kr.lul.kobalttown.document.dto.NoteDetailDto;
 import kr.lul.kobalttown.document.web.controller.request.CreateNoteReq;
+import kr.lul.kobalttown.document.web.controller.request.UpdateNoteReq;
 import kr.lul.kobalttown.page.note.NoteMvc;
 import kr.lul.kobalttown.page.note.NoteMvc.M;
 import kr.lul.kobalttown.page.note.NoteMvc.V;
@@ -22,6 +23,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import javax.validation.Valid;
 
 import static java.lang.String.format;
 import static kr.lul.common.util.Arguments.notNull;
@@ -75,6 +78,40 @@ class NoteControllerImpl implements NoteController {
     return template;
   }
 
+  /**
+   * @param context 컨텍스트.
+   * @param user    세션 유저.
+   * @param id      노트 ID.
+   * @param req     리퀘스트. nullable.
+   * @param model   모델.
+   *
+   * @return 템플릿.
+   */
+  private String doUpdateForm(final Context context, final User user, final long id, final UpdateNoteReq req, final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#doUpdateForm args : context={}, user={}, id={}, req={}, model={}", context, user, id, req, model);
+
+    final ReadNoteCmd cmd = new ReadNoteCmd(context, user.getId(), id, this.timeProvider.now());
+    final NoteDetailDto note = this.borderline.read(cmd);
+    final UpdateNoteReq updateReq = new UpdateNoteReq(note.getBody());
+
+    model.addAttribute(M.NOTE, note);
+    model.addAttribute(M.UPDATE_REQ, updateReq);
+
+    if (log.isTraceEnabled())
+      log.trace("#doUpdateForm (context={}) result : model={}", context, model);
+    return V.UPDATE;
+  }
+
+  private String doUpdate(final Context context, final User user, final long id,
+      final UpdateNoteReq req, final BindingResult binding,
+      final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#doUpdate args : context={}, user={}, id={}, req={}, binding={}, model={}",
+          context, user, id, req, binding, model);
+    return null;
+  }
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.kobalttown.document.web.controller.NoteController
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,6 +158,9 @@ class NoteControllerImpl implements NoteController {
     if (log.isTraceEnabled())
       log.trace("#detail args : user={}, id={}, model={}", user, id, model);
 
+    if (0L >= id)
+      throw new NotFound("note.id=" + id);
+
     final Context context = this.contextService.get();
     final ReadNoteCmd cmd = new ReadNoteCmd(context, user.getId(), id, this.timeProvider.now());
     final NoteDetailDto note = this.borderline.read(cmd);
@@ -135,6 +175,46 @@ class NoteControllerImpl implements NoteController {
 
     if (log.isTraceEnabled())
       log.trace("#detail (context={}) result : template={}, model={}", context, template, model);
+    return template;
+  }
+
+  @Override
+  public String updateForm(@AuthenticationPrincipal final User user, @PathVariable(M.ID) final long id, final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#updateForm args : user={}, id={}, model={}", user, id, model);
+    notNull(user, "user");
+    notNull(model, "model");
+
+    if (0L >= id)
+      throw new NotFound("note.id=" + id);
+
+    final Context context = this.contextService.get();
+    final String template = doUpdateForm(context, user, id, null, model);
+
+    if (log.isTraceEnabled())
+      log.trace("#updateForm (context={}) result : template={}, model={}", context, template, model);
+    return template;
+  }
+
+  @Override
+  public String update(@AuthenticationPrincipal final User user, @PathVariable(M.ID) final long id,
+      @ModelAttribute(M.UPDATE_REQ) @Valid final UpdateNoteReq req, final BindingResult binding,
+      final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#update args : user={}, id={}, req={}, binding={}, model={}", user, id, req, binding, model);
+    notNull(user, "user");
+    notNull(req, "req");
+    notNull(binding, "binding");
+    notNull(model, "model");
+
+    if (0L >= id)
+      throw new NotFound("note.id=" + id);
+
+    final Context context = this.contextService.get();
+    final String template = doUpdate(context, user, id, req, binding, model);
+
+    if (log.isTraceEnabled())
+      log.trace("#update (context={}) result : template={}, model={}", context, template, model);
     return template;
   }
 }
