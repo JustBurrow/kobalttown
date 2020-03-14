@@ -49,6 +49,15 @@ public interface Note extends Document {
    */
   NoteUpdater updater(Instant updatedAt);
 
+  /**
+   * 노트 삭제하기.
+   *
+   * @param deletedAt 삭제 시각.
+   *
+   * @throws IllegalStateException 이미 삭제된 노트일 때.
+   */
+  void delete(Instant deletedAt) throws IllegalStateException;
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.kobalttown.document.domain.Document
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

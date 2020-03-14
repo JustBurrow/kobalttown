@@ -99,6 +99,9 @@ class NoteServiceImpl implements NoteService {
     if (null == note)
       throw new ValidationException("note", params.getNote(), "note does not exist : note.id=" + params.getNote());
     else
-      this.dao.delete(params.getContext(), note);
+      note.delete(params.getTimestamp());
+
+    if (log.isTraceEnabled())
+      log.trace("#delete (context={}) result : note={}", params.getContext(), note);
   }
 }

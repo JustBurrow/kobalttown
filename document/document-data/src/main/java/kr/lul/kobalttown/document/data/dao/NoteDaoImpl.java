@@ -47,26 +47,18 @@ public class NoteDaoImpl implements NoteDao {
       log.trace("#read args : context={}, id={}", context, id);
     notNull(context, "context");
 
-    final Note note;
+    Note note;
     if (0L >= id)
       note = null;
     else
       note = this.repository.findById(id)
                  .orElse(null);
 
+    if (((NoteEntity) note).isDelete())
+      note = null;
+
     if (log.isTraceEnabled())
       log.trace("#read (context={}) return : {}", context, note);
     return note;
-  }
-
-  @Override
-  public void delete(final Context context, final Note note) {
-    if (log.isTraceEnabled())
-      log.trace("#delete args : context={}, note={}", context, note);
-    notNull(context, "context");
-    notNull(note, "note");
-    typeOf(note, NoteEntity.class, "note");
-
-    ((NoteEntity) note).delete();
   }
 }

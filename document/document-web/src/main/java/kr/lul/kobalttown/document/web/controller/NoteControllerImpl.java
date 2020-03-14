@@ -96,6 +96,9 @@ class NoteControllerImpl implements NoteController {
 
     final ReadNoteCmd cmd = new ReadNoteCmd(context, user.getId(), id, this.timeProvider.now());
     final NoteDetailDto note = this.borderline.read(cmd);
+    if (null == note)
+      throw new NotFound("note does not exist : note.id=" + id);
+
     model.addAttribute(M.NOTE, note);
 
     if (null == req)

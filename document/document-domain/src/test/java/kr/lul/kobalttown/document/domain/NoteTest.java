@@ -34,6 +34,11 @@ public class NoteTest {
     }
 
     @Override
+    public void delete(final Instant deletedAt) throws IllegalStateException {
+
+    }
+
+    @Override
     public long getId() {
       return 1L;
     }

@@ -25,7 +25,8 @@ import static kr.lul.kobalttown.document.data.mapping.NoteMapping.*;
  */
 @Entity(name = ENTITY)
 @Table(name = TABLE,
-    indexes = {@Index(name = IDX_NOTE_DELETE, columnList = IDX_NOTE_DELETE_COLUMNS)})
+    indexes = {@Index(name = FK_NOTE_PK_ACCOUNT, columnList = FK_NOTE_PK_ACCOUNT_COLUMNS),
+        @Index(name = IDX_NOTE_DELETED, columnList = IDX_NOTE_DELETED_COLUMNS)})
 public class NoteEntity extends SavableEntity implements Note {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,8 +46,8 @@ public class NoteEntity extends SavableEntity implements Note {
   @OneToMany(targetEntity = NoteSnapshotEntity.class, mappedBy = NoteSnapshotMapping.COL_NOTE, cascade = CascadeType.PERSIST)
   @OrderBy(NoteSnapshotMapping.COL_VERSION + " ASC")
   private List<NoteSnapshot> history = new ArrayList<>();
-  @Column(name = COL_DELETE, nullable = false)
-  private boolean delete = false;
+  @Column(name = COL_DELETED_AT, nullable = false)
+  private Instant deletedAt;
 
   public NoteEntity() { // JPA only
   }
@@ -72,8 +73,8 @@ public class NoteEntity extends SavableEntity implements Note {
     this.history.add(init);
   }
 
-  public void delete() {
-    this.delete = true;
+  public boolean isDelete() {
+    return null != this.deletedAt;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,6 +101,7 @@ public class NoteEntity extends SavableEntity implements Note {
   }
 
   private abstract class Updater implements NoteUpdater {
+
     @Override
     public long getId() {
       return NoteEntity.this.id;
@@ -129,6 +131,7 @@ public class NoteEntity extends SavableEntity implements Note {
     public Instant getUpdatedAt() {
       return NoteEntity.this.updatedAt;
     }
+
 
   }
 
@@ -169,8 +172,20 @@ public class NoteEntity extends SavableEntity implements Note {
     return new HistoryImpl<>(size, page, this.history.size(), content);
   }
 
+  @Override
+  public void delete(final Instant deletedAt) {
+    notNull(deletedAt, "deletedAt");
+    ae(deletedAt, this.updatedAt, "deletedAt");
+
+    if (null != this.deletedAt)
+      throw new IllegalStateException(format("already deleted note : id=%s, deletedAt=%s", this.id, this.deletedAt));
+    else
+      this.deletedAt = deletedAt;
+  }
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // java.lang.Object
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
   public boolean equals(final Object o) {
@@ -193,6 +208,7 @@ public class NoteEntity extends SavableEntity implements Note {
                .append(", body=").append(singleQuote(head(this.body, 10)))
                .append(", createdAt=").append(this.createdAt)
                .append(", updatedAt=").append(this.updatedAt)
+               .append(", deletedAt=").append(this.deletedAt)
                .append('}').toString();
   }
 }
