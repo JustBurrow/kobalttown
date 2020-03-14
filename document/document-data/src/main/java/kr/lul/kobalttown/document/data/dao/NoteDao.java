@@ -1,6 +1,7 @@
 package kr.lul.kobalttown.document.data.dao;
 
 import kr.lul.common.data.Context;
+import kr.lul.common.data.Page;
 import kr.lul.kobalttown.document.domain.Note;
 
 /**
@@ -27,4 +28,15 @@ public interface NoteDao {
    * @return 노트. 없으면 {@code null}.
    */
   Note read(Context context, long id);
+
+  /**
+   * 노트 목록.
+   *
+   * @param context 컨텍스트.
+   * @param page    페이지. 0-based.
+   * @param limit   한 페이지 최대 노트 수.
+   *
+   * @return 노트 목록.
+   */
+  Page<Note> list(Context context, int page, int limit);
 }

@@ -1,21 +1,17 @@
 package kr.lul.kobalttown.document.borderline;
 
+import kr.lul.common.data.Page;
 import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.service.AccountService;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
-import kr.lul.kobalttown.document.borderline.command.CreateNoteCmd;
-import kr.lul.kobalttown.document.borderline.command.DeleteNoteCmd;
-import kr.lul.kobalttown.document.borderline.command.ReadNoteCmd;
-import kr.lul.kobalttown.document.borderline.command.UpdateNoteCmd;
+import kr.lul.kobalttown.document.borderline.command.*;
 import kr.lul.kobalttown.document.converter.NoteConverter;
 import kr.lul.kobalttown.document.domain.Note;
 import kr.lul.kobalttown.document.dto.NoteDetailDto;
+import kr.lul.kobalttown.document.dto.NoteSimpleDto;
 import kr.lul.kobalttown.document.service.NoteService;
-import kr.lul.kobalttown.document.service.params.CreateNoteParams;
-import kr.lul.kobalttown.document.service.params.DeleteNoteParams;
-import kr.lul.kobalttown.document.service.params.ReadNoteParams;
-import kr.lul.kobalttown.document.service.params.UpdateNoteParams;
+import kr.lul.kobalttown.document.service.params.*;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,6 +72,25 @@ class NoteBorderlineImpl implements NoteBorderline {
     if (log.isTraceEnabled())
       log.trace("#read (context={}) return : {}", cmd.getContext(), dto);
     return dto;
+  }
+
+  @Override
+  public Page<NoteSimpleDto> list(final ListNoteCmd cmd) {
+    if (log.isTraceEnabled())
+      log.trace("#list args : cmd={}", cmd);
+    notNull(cmd, "cmd");
+
+    final Account user = this.accountService.read(new ReadAccountParams(cmd, cmd.getUser(), cmd.getTimestamp()));
+    if (null == user)
+      throw new ValidationException("user", cmd.getUser(), "user does not exist : " + cmd.getUser());
+
+    final ListNoteParams params = new ListNoteParams(cmd, user, cmd.getPage(), cmd.getLimit(), cmd.getTimestamp());
+    final Page<Note> notes = this.service.list(params);
+    final Page<NoteSimpleDto> list = notes.map(note -> this.converter.simple(note));
+
+    if (log.isTraceEnabled())
+      log.trace("#list (context={}) return : {}", cmd.getContext(), list);
+    return list;
   }
 
   @Override

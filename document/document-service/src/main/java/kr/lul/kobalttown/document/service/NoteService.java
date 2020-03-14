@@ -1,10 +1,8 @@
 package kr.lul.kobalttown.document.service;
 
+import kr.lul.common.data.Page;
 import kr.lul.kobalttown.document.domain.Note;
-import kr.lul.kobalttown.document.service.params.CreateNoteParams;
-import kr.lul.kobalttown.document.service.params.DeleteNoteParams;
-import kr.lul.kobalttown.document.service.params.ReadNoteParams;
-import kr.lul.kobalttown.document.service.params.UpdateNoteParams;
+import kr.lul.kobalttown.document.service.params.*;
 
 /**
  * @author justburrow
@@ -14,6 +12,8 @@ public interface NoteService {
   Note create(CreateNoteParams params);
 
   Note read(ReadNoteParams params);
+
+  Page<Note> list(ListNoteParams params);
 
   Note update(UpdateNoteParams params);
 

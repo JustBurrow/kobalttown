@@ -1,6 +1,7 @@
 package kr.lul.kobalttown.document.web.controller;
 
 import kr.lul.kobalttown.document.web.controller.request.CreateNoteReq;
+import kr.lul.kobalttown.document.web.controller.request.ListNoteReq;
 import kr.lul.kobalttown.document.web.controller.request.UpdateNoteReq;
 import kr.lul.kobalttown.page.note.NoteMvc.C;
 import kr.lul.kobalttown.page.note.NoteMvc.M;
@@ -19,6 +20,19 @@ import javax.validation.Valid;
  */
 @RequestMapping
 public interface NoteController {
+  /**
+   * 노트 목록 페이지.
+   *
+   * @param user  현재 유저.
+   * @param req   검색 조건.
+   * @param model 모델.
+   *
+   * @return 템플릿 이름.
+   */
+  @GetMapping(C.INDEX)
+  @PreAuthorize("hasAnyRole('USER')")
+  String index(@AuthenticationPrincipal User user, @Valid ListNoteReq req, Model model);
+
   /**
    * 새 노트 작성 페이지.
    *

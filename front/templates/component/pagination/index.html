@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2020/03/14 23:46" th:remove="all"/>
+    <meta charset="UTF-8"/>
+    <title>Pagination</title>
+</head>
+<body>
+<main>
+    <h1>Pagination</h1>
+    <div th:fragment="render(page)">
+        <!--/*@thymesVar id="page" type="kr.lul.common.data.Page"*/-->
+        <dl th:object="${page}">
+            <dt>Page</dt>
+            <dd th:text="*{page}">page</dd>
+            <dt>Limit</dt>
+            <dd th:text="*{limit}">limit</dd>
+            <dt>Total Page</dt>
+            <dd th:text="*{totalPage}">totalPage</dd>
+            <dt>Total Count</dt>
+            <dd th:text="*{totalCount}">total count</dd>
+            <dt>First</dt>
+            <dd th:text="*{first}">first</dd>
+            <dt>Last</dt>
+            <dd th:text="*{last}">last</dd>
+            <dt>Before</dt>
+            <dd th:text="*{hasBefore()}">before</dd>
+            <dt>Next</dt>
+            <dd th:text="*{hasNext()}">next</dd>
+        </dl>
+    </div>
+</main>
+</body>
+</html>

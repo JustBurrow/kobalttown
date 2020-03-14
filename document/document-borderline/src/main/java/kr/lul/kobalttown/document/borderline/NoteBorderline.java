@@ -1,11 +1,10 @@
 package kr.lul.kobalttown.document.borderline;
 
+import kr.lul.common.data.Page;
 import kr.lul.common.util.ValidationException;
-import kr.lul.kobalttown.document.borderline.command.CreateNoteCmd;
-import kr.lul.kobalttown.document.borderline.command.DeleteNoteCmd;
-import kr.lul.kobalttown.document.borderline.command.ReadNoteCmd;
-import kr.lul.kobalttown.document.borderline.command.UpdateNoteCmd;
+import kr.lul.kobalttown.document.borderline.command.*;
 import kr.lul.kobalttown.document.dto.NoteDetailDto;
+import kr.lul.kobalttown.document.dto.NoteSimpleDto;
 
 /**
  * @author justburrow
@@ -29,6 +28,15 @@ public interface NoteBorderline {
    * @return 노트. 없으면 {@code null}.
    */
   NoteDetailDto read(ReadNoteCmd cmd);
+
+  /**
+   * 노트 목록 읽기.
+   *
+   * @param cmd 페이지 정보.
+   *
+   * @return 노트 목록.
+   */
+  Page<NoteSimpleDto> list(ListNoteCmd cmd);
 
   /**
    * 노트 수정.

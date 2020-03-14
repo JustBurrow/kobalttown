@@ -1,16 +1,16 @@
 package kr.lul.kobalttown.document.web.controller;
 
 import kr.lul.common.data.Context;
+import kr.lul.common.data.Page;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.common.util.ValidationException;
 import kr.lul.common.web.http.status.exception.client.NotFound;
 import kr.lul.kobalttown.document.borderline.NoteBorderline;
-import kr.lul.kobalttown.document.borderline.command.CreateNoteCmd;
-import kr.lul.kobalttown.document.borderline.command.DeleteNoteCmd;
-import kr.lul.kobalttown.document.borderline.command.ReadNoteCmd;
-import kr.lul.kobalttown.document.borderline.command.UpdateNoteCmd;
+import kr.lul.kobalttown.document.borderline.command.*;
 import kr.lul.kobalttown.document.dto.NoteDetailDto;
+import kr.lul.kobalttown.document.dto.NoteSimpleDto;
 import kr.lul.kobalttown.document.web.controller.request.CreateNoteReq;
+import kr.lul.kobalttown.document.web.controller.request.ListNoteReq;
 import kr.lul.kobalttown.document.web.controller.request.UpdateNoteReq;
 import kr.lul.kobalttown.page.note.NoteMvc.C;
 import kr.lul.kobalttown.page.note.NoteMvc.M;
@@ -135,6 +135,26 @@ class NoteControllerImpl implements NoteController {
   // kr.lul.kobalttown.document.web.controller.NoteController
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
+  public String index(@AuthenticationPrincipal final User user, @Valid final ListNoteReq req, final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#index args : user={}, req={}, model={}", user, req, model);
+    notNull(user, "user");
+    notNull(req, "req");
+    notNull(model, "model");
+
+    final Context context = this.contextService.get();
+    final ListNoteCmd cmd = new ListNoteCmd(context, user.getId(), req.getPage(), req.getLimit(), this.timeProvider.now());
+    final Page<NoteSimpleDto> notes = this.borderline.list(cmd);
+
+    model.addAttribute(M.NOTES, notes);
+
+    final String template = V.INDEX;
+    if (log.isTraceEnabled())
+      log.trace("#index (context={}) result : template='{}', model={}", context, template, model);
+    return template;
+  }
+
+  @Override
   public String createForm(@AuthenticationPrincipal final User user, final Model model) {
     if (log.isTraceEnabled())
       log.trace("#createForm args : user={}, model={}", user, model);
@@ -250,7 +270,7 @@ class NoteControllerImpl implements NoteController {
     final DeleteNoteCmd cmd = new DeleteNoteCmd(context, user.getId(), id, this.timeProvider.now());
     this.borderline.delete(cmd);
 
-    final String template = format("redirect:%s", C.LIST);
+    final String template = format("redirect:%s", C.INDEX);
     if (log.isTraceEnabled())
       log.trace("#delete (context={}) result : template='{}', model={}", context, template, model);
     return template;

@@ -20,8 +20,8 @@ public abstract class NoteMvc {
   public static class V {
     public static final String GROUP = "layout/note";
 
+    public static final String INDEX = GROUP + "/index";
     public static final String CREATE = GROUP + "/create";
-    public static final String LIST = GROUP + "/list";
     public static final String DETAIL = GROUP + "/detail";
     public static final String UPDATE = GROUP + "/update";
 
@@ -36,7 +36,7 @@ public abstract class NoteMvc {
     public static final String CREATE_FORM = GROUP + "/create";
     public static final String CREATE = GROUP;
 
-    public static final String LIST = GROUP;
+    public static final String INDEX = GROUP;
     public static final String DETAIL = GROUP + "/{id:[1-9]\\d*}";
 
     public static final String UPDATE_FORM = GROUP + "/{id:[1-9]\\d*}/update";

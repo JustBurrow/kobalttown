@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2020/03/14 18:05" th:remove="all"/>
+    <meta charset="UTF-8"/>
+    <title>Note Index</title>
+</head>
+<body>
+<header th:replace="component/navbar/index :: navbar"></header>
+<main>
+    <h1>Note Index</h1>
+    <div>
+        <!--/*@thymesVar id="notes" type="kr.lul.common.data.Page<kr.lul.kobalttown.document.dto.NoteSimpleDto>">*/-->
+        <ol>
+            <li th:each="note : ${notes.content}">
+                <!--/*@thymesVar id="note" type="kr.lul.kobalttown.document.dto.NoteSimpleDto"*/-->
+                <p th:text="${note}">note</p>
+            </li>
+        </ol>
+        <div th:replace="component/pagination/index :: render(${notes})">
+
+        </div>
+    </div>
+</main>
+</body>
+</html>
