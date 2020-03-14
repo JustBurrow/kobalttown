@@ -24,7 +24,8 @@ import static kr.lul.kobalttown.document.data.mapping.NoteMapping.*;
  * @since 2020/02/06
  */
 @Entity(name = ENTITY)
-@Table(name = TABLE)
+@Table(name = TABLE,
+    indexes = {@Index(name = IDX_NOTE_DELETE, columnList = IDX_NOTE_DELETE_COLUMNS)})
 public class NoteEntity extends SavableEntity implements Note {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,6 +45,8 @@ public class NoteEntity extends SavableEntity implements Note {
   @OneToMany(targetEntity = NoteSnapshotEntity.class, mappedBy = NoteSnapshotMapping.COL_NOTE, cascade = CascadeType.PERSIST)
   @OrderBy(NoteSnapshotMapping.COL_VERSION + " ASC")
   private List<NoteSnapshot> history = new ArrayList<>();
+  @Column(name = COL_DELETE, nullable = false)
+  private boolean delete = false;
 
   public NoteEntity() { // JPA only
   }
@@ -67,6 +70,10 @@ public class NoteEntity extends SavableEntity implements Note {
     final NoteSnapshotEntity init = new NoteSnapshotEntity(this, this.createdAt);
     init.setBody(this.body);
     this.history.add(init);
+  }
+
+  public void delete() {
+    this.delete = true;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

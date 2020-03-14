@@ -39,6 +39,10 @@
         </dl>
         <div>
             <a href="update.html" th:href="@{/notes/__*{id}__/update}">EDIT</a>
+            <form id="form-delete-note-0" action="index.html" method="post"
+                  th:id="${'form-delete-note-' + note.id}"
+                  th:action="@{/notes/__${note.id}__}" th:method="delete"></form>
+            <button form="form-delete-note-0" th:form="${'form-delete-note-'+note.id}">DELETE</button>
         </div>
     </div>
 </main>

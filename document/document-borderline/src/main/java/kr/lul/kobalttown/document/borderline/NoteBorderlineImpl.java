@@ -5,6 +5,7 @@ import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.service.AccountService;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
 import kr.lul.kobalttown.document.borderline.command.CreateNoteCmd;
+import kr.lul.kobalttown.document.borderline.command.DeleteNoteCmd;
 import kr.lul.kobalttown.document.borderline.command.ReadNoteCmd;
 import kr.lul.kobalttown.document.borderline.command.UpdateNoteCmd;
 import kr.lul.kobalttown.document.converter.NoteConverter;
@@ -12,6 +13,7 @@ import kr.lul.kobalttown.document.domain.Note;
 import kr.lul.kobalttown.document.dto.NoteDetailDto;
 import kr.lul.kobalttown.document.service.NoteService;
 import kr.lul.kobalttown.document.service.params.CreateNoteParams;
+import kr.lul.kobalttown.document.service.params.DeleteNoteParams;
 import kr.lul.kobalttown.document.service.params.ReadNoteParams;
 import kr.lul.kobalttown.document.service.params.UpdateNoteParams;
 import org.slf4j.Logger;
@@ -93,5 +95,18 @@ class NoteBorderlineImpl implements NoteBorderline {
     if (log.isTraceEnabled())
       log.trace("#update (context={}) return : {}", cmd.getContext(), dto);
     return dto;
+  }
+
+  @Override
+  public void delete(final DeleteNoteCmd cmd) {
+    if (log.isTraceEnabled())
+      log.trace("#delete args : cmd={}", cmd);
+    notNull(cmd, "cmd");
+
+    final Account user = this.accountService.read(new ReadAccountParams(cmd, cmd.getUser(), cmd.getTimestamp()));
+    if (null == user)
+      throw new ValidationException("user", cmd.getUser(), "user does not exist : " + cmd.getUser());
+
+    this.service.delete(new DeleteNoteParams(cmd, user, cmd.getNote(), cmd.getTimestamp()));
   }
 }

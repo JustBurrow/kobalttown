@@ -19,27 +19,87 @@ import javax.validation.Valid;
  */
 @RequestMapping
 public interface NoteController {
+  /**
+   * 새 노트 작성 페이지.
+   *
+   * @param user  현재 유저.
+   * @param model 모델.
+   *
+   * @return 뷰 템플릿 이름.
+   */
   @GetMapping(C.CREATE_FORM)
   @PreAuthorize("hasAnyRole('USER')")
   String createForm(@AuthenticationPrincipal User user, Model model);
 
+  /**
+   * 새 노트 작성.
+   *
+   * @param user    현재 유저.
+   * @param req     새 노트 정보.
+   * @param binding 바인딩 결과.
+   * @param model   모델.
+   *
+   * @return 뷰 템플릿 이름.
+   */
   @PostMapping(C.CREATE)
   @PreAuthorize("hasAnyRole('USER')")
   String create(@AuthenticationPrincipal User user,
       @ModelAttribute(M.CREATE_REQ) CreateNoteReq req, BindingResult binding,
       Model model);
 
+  /**
+   * 노트 상세 정보 페이지.
+   *
+   * @param user  현재 유저.
+   * @param id    노트 ID.
+   * @param model 모델.
+   *
+   * @return 뷰 템플릿 이름.
+   */
   @GetMapping(C.DETAIL)
   @PreAuthorize("hasAnyRole('USER')")
   String detail(@AuthenticationPrincipal User user, @PathVariable(M.ID) long id, Model model);
 
+  /**
+   * 노트 편집 페이지.
+   *
+   * @param user  현재 유저.
+   * @param id    노트 ID.
+   * @param model 모델.
+   *
+   * @return 뷰 템플릿 이름.
+   */
   @GetMapping(C.UPDATE_FORM)
   @PreAuthorize("hasAnyRole('USER')")
   String updateForm(@AuthenticationPrincipal User user, @PathVariable(M.ID) long id, Model model);
 
+  /**
+   * 노트 정보 수정.
+   *
+   * @param user    현재 유저.
+   * @param id      노트 ID.
+   * @param req     노트의 새 정보.
+   * @param binding 바인딩 결과.
+   * @param model   모델.
+   *
+   * @return 뷰 템플릿 이름.
+   */
   @PatchMapping(C.UPDATE)
   @PreAuthorize("hasAnyRole('USER')")
   String update(@AuthenticationPrincipal User user, @PathVariable(M.ID) long id,
       @ModelAttribute(M.UPDATE_REQ) @Valid UpdateNoteReq req, BindingResult binding,
       Model model);
+
+  /**
+   * 노트 삭제하기.
+   *
+   * @param user  현재 유저.
+   * @param id    노트 ID.
+   * @param model 모델.
+   *
+   * @return 뷰 템플릿 이름.
+   */
+  @DeleteMapping(C.DELETE)
+  @PreAuthorize("hasAnyRole('USER')")
+  String delete(@AuthenticationPrincipal User user, @PathVariable(M.ID) long id, Model model);
 }

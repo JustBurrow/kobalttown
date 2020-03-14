@@ -2,6 +2,7 @@ package kr.lul.kobalttown.document.service;
 
 import kr.lul.kobalttown.document.domain.Note;
 import kr.lul.kobalttown.document.service.params.CreateNoteParams;
+import kr.lul.kobalttown.document.service.params.DeleteNoteParams;
 import kr.lul.kobalttown.document.service.params.ReadNoteParams;
 import kr.lul.kobalttown.document.service.params.UpdateNoteParams;
 
@@ -15,4 +16,6 @@ public interface NoteService {
   Note read(ReadNoteParams params);
 
   Note update(UpdateNoteParams params);
+
+  void delete(DeleteNoteParams params);
 }

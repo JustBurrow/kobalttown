@@ -58,4 +58,15 @@ public class NoteDaoImpl implements NoteDao {
       log.trace("#read (context={}) return : {}", context, note);
     return note;
   }
+
+  @Override
+  public void delete(final Context context, final Note note) {
+    if (log.isTraceEnabled())
+      log.trace("#delete args : context={}, note={}", context, note);
+    notNull(context, "context");
+    notNull(note, "note");
+    typeOf(note, NoteEntity.class, "note");
+
+    ((NoteEntity) note).delete();
+  }
 }

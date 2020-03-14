@@ -2,6 +2,7 @@ package kr.lul.kobalttown.document.borderline;
 
 import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.document.borderline.command.CreateNoteCmd;
+import kr.lul.kobalttown.document.borderline.command.DeleteNoteCmd;
 import kr.lul.kobalttown.document.borderline.command.ReadNoteCmd;
 import kr.lul.kobalttown.document.borderline.command.UpdateNoteCmd;
 import kr.lul.kobalttown.document.dto.NoteDetailDto;
@@ -39,4 +40,11 @@ public interface NoteBorderline {
    * @throws ValidationException 수정할 노트가 없거나 수정에 실패했을 때.
    */
   NoteDetailDto update(UpdateNoteCmd cmd) throws ValidationException;
+
+  /**
+   * 노트 삭제.
+   *
+   * @param cmd 삭제할 노트 정보.
+   */
+  void delete(DeleteNoteCmd cmd);
 }

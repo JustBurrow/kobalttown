@@ -1,10 +1,12 @@
 package kr.lul.kobalttown.document.service;
 
+import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.document.data.dao.NoteDao;
 import kr.lul.kobalttown.document.data.factory.NoteFactory;
 import kr.lul.kobalttown.document.domain.Note;
 import kr.lul.kobalttown.document.domain.NoteUpdater;
 import kr.lul.kobalttown.document.service.params.CreateNoteParams;
+import kr.lul.kobalttown.document.service.params.DeleteNoteParams;
 import kr.lul.kobalttown.document.service.params.ReadNoteParams;
 import kr.lul.kobalttown.document.service.params.UpdateNoteParams;
 import org.slf4j.Logger;
@@ -82,5 +84,21 @@ class NoteServiceImpl implements NoteService {
     if (log.isTraceEnabled())
       log.trace("#update (context={}) return : {}", params.getContext(), note);
     return note;
+  }
+
+  @Override
+  public void delete(final DeleteNoteParams params) {
+    if (log.isTraceEnabled())
+      log.trace("#delete args : params={}", params);
+    notNull(params, "params");
+    notNull(params.getUser(), "params.user");
+    positive(params.getNote(), "params.note");
+    notNull(params.getTimestamp(), "params.timestamp");
+
+    final Note note = this.dao.read(params.getContext(), params.getNote());
+    if (null == note)
+      throw new ValidationException("note", params.getNote(), "note does not exist : note.id=" + params.getNote());
+    else
+      this.dao.delete(params.getContext(), note);
   }
 }

@@ -27,4 +27,12 @@ public interface NoteDao {
    * @return 노트. 없으면 {@code null}.
    */
   Note read(Context context, long id);
+
+  /**
+   * 노트를 삭제한다.
+   *
+   * @param context 컨텍스트
+   * @param note    삭제할 노트.
+   */
+  void delete(Context context, Note note);
 }

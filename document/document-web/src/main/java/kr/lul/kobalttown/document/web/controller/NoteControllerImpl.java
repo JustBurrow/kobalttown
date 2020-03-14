@@ -6,6 +6,7 @@ import kr.lul.common.util.ValidationException;
 import kr.lul.common.web.http.status.exception.client.NotFound;
 import kr.lul.kobalttown.document.borderline.NoteBorderline;
 import kr.lul.kobalttown.document.borderline.command.CreateNoteCmd;
+import kr.lul.kobalttown.document.borderline.command.DeleteNoteCmd;
 import kr.lul.kobalttown.document.borderline.command.ReadNoteCmd;
 import kr.lul.kobalttown.document.borderline.command.UpdateNoteCmd;
 import kr.lul.kobalttown.document.dto.NoteDetailDto;
@@ -141,7 +142,7 @@ class NoteControllerImpl implements NoteController {
     final String template = doCreateForm(context, user, null, model);
 
     if (log.isTraceEnabled())
-      log.trace("#createForm (context={}) result : template={}, template={}", context, template, template);
+      log.trace("#createForm (context={}) result : template='{}', template={}", context, template, template);
     return template;
   }
 
@@ -164,7 +165,7 @@ class NoteControllerImpl implements NoteController {
       template = doCreate(context, user, req, binding, model);
 
     if (log.isTraceEnabled())
-      log.trace("#create (context={}) result : template={}, model={}", context, template, model);
+      log.trace("#create (context={}) result : template='{}', model={}", context, template, model);
     return template;
   }
 
@@ -189,7 +190,7 @@ class NoteControllerImpl implements NoteController {
     }
 
     if (log.isTraceEnabled())
-      log.trace("#detail (context={}) result : template={}, model={}", context, template, model);
+      log.trace("#detail (context={}) result : template='{}', model={}", context, template, model);
     return template;
   }
 
@@ -207,7 +208,7 @@ class NoteControllerImpl implements NoteController {
     final String template = doUpdateForm(context, user, id, null, model);
 
     if (log.isTraceEnabled())
-      log.trace("#updateForm (context={}) result : template={}, model={}", context, template, model);
+      log.trace("#updateForm (context={}) result : template='{}', model={}", context, template, model);
     return template;
   }
 
@@ -229,7 +230,26 @@ class NoteControllerImpl implements NoteController {
     final String template = doUpdate(context, user, id, req, binding, model);
 
     if (log.isTraceEnabled())
-      log.trace("#update (context={}) result : template={}, model={}", context, template, model);
+      log.trace("#update (context={}) result : template='{}', model={}", context, template, model);
+    return template;
+  }
+
+  @Override
+  public String delete(@AuthenticationPrincipal final User user, @PathVariable(M.ID) final long id, final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#delete args : user={}, id={}, model={}", user, id, model);
+    notNull(user, "user");
+    notNull(model, "model");
+    if (0L >= id)
+      throw new NotFound("note does not exist : note.id=" + id);
+
+    final Context context = this.contextService.get();
+    final DeleteNoteCmd cmd = new DeleteNoteCmd(context, user.getId(), id, this.timeProvider.now());
+    this.borderline.delete(cmd);
+
+    final String template = format("redirect:%s", C.LIST);
+    if (log.isTraceEnabled())
+      log.trace("#delete (context={}) result : template='{}', model={}", context, template, model);
     return template;
   }
 }

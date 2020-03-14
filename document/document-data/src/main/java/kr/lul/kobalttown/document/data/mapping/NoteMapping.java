@@ -16,11 +16,15 @@ public abstract class NoteMapping {
   public static final String COL_VERSION = "version";
   public static final String COL_AUTHOR = "author";
   public static final String COL_BODY = "body";
+  public static final String COL_DELETE = "delete_flg";
   public static final String COL_CREATED_AT = SavableEntity.COL_CREATED_AT;
   public static final String COL_UPDATED_AT = SavableEntity.COL_UPDATED_AT;
 
   public static final String FK_NOTE_PK_ACCOUNT = "fk_note_pk_account";
   public static final String FK_NOTE_PK_ACCOUNT_COLUMNS = COL_AUTHOR + " ASC";
+
+  public static final String IDX_NOTE_DELETE = "idx_note_delete";
+  public static final String IDX_NOTE_DELETE_COLUMNS = COL_DELETE + " ASC";
 
   protected NoteMapping() {
     throw new UnsupportedOperationException();
