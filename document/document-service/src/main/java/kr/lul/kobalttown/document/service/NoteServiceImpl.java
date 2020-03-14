@@ -3,12 +3,15 @@ package kr.lul.kobalttown.document.service;
 import kr.lul.kobalttown.document.data.dao.NoteDao;
 import kr.lul.kobalttown.document.data.factory.NoteFactory;
 import kr.lul.kobalttown.document.domain.Note;
+import kr.lul.kobalttown.document.domain.NoteUpdater;
 import kr.lul.kobalttown.document.service.params.CreateNoteParams;
 import kr.lul.kobalttown.document.service.params.ReadNoteParams;
+import kr.lul.kobalttown.document.service.params.UpdateNoteParams;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static java.lang.String.format;
 import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Arguments.positive;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -58,6 +61,26 @@ class NoteServiceImpl implements NoteService {
 
     if (log.isTraceEnabled())
       log.trace("#read (context={}) return : {}", params.getContext(), note);
+    return note;
+  }
+
+  @Override
+  public Note update(final UpdateNoteParams params) {
+    if (log.isTraceEnabled())
+      log.trace("#update args : params={}", params);
+    notNull(params, "params");
+
+    final Note note = this.dao.read(params.getContext(), params.getNote());
+    if (!note.getAuthor().equals(params.getUser())) {
+      throw new IllegalArgumentException(format("user has no update permission : user=%s, note.id=%d",
+          params.getUser().toSimpleString(), params.getNote()));
+    }
+
+    final NoteUpdater updater = note.updater(params.getTimestamp());
+    updater.setBody(params.getBody());
+
+    if (log.isTraceEnabled())
+      log.trace("#update (context={}) return : {}", params.getContext(), note);
     return note;
   }
 }

@@ -7,12 +7,14 @@ import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.test.AccountTestTool;
 import kr.lul.kobalttown.document.data.entity.NoteSnapshotEntity;
+import kr.lul.kobalttown.document.data.repository.NoteSnapshotRepository;
 import kr.lul.kobalttown.document.domain.Document;
 import kr.lul.kobalttown.document.domain.History;
 import kr.lul.kobalttown.document.domain.Note;
 import kr.lul.kobalttown.document.domain.NoteSnapshot;
 import kr.lul.kobalttown.document.service.params.CreateNoteParams;
 import kr.lul.kobalttown.document.service.params.ReadNoteParams;
+import kr.lul.kobalttown.document.service.params.UpdateNoteParams;
 import kr.lul.kobalttown.document.test.NoteTestTool;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +30,7 @@ import java.time.Instant;
 import java.util.List;
 
 import static kr.lul.kobalttown.document.domain.NoteUtil.body;
+import static org.apache.commons.lang3.RandomStringUtils.random;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -47,6 +50,8 @@ public class NoteServiceTest {
 
   @Autowired
   private NoteTestTool tool;
+  @Autowired
+  private NoteSnapshotRepository snapshotRepository;
   @Autowired
   private AccountTestTool accountTestTool;
   @Autowired
@@ -98,6 +103,15 @@ public class NoteServiceTest {
         .isEqualTo(timestamp)
         .isEqualTo(note.getUpdatedAt())
         .isAfterOrEqualTo(this.instant);
+
+    final List<NoteSnapshotEntity> history = this.snapshotRepository.findAllByNote(note);
+    assertThat(history)
+        .hasSize(1);
+    assertThat(history.get(0))
+        .isNotNull()
+        .extracting(NoteSnapshotEntity::getId, NoteSnapshotEntity::getNote, NoteSnapshotEntity::getBody,
+            NoteSnapshotEntity::getCreatedAt)
+        .containsSequence(new NoteSnapshotEntity.NoteSnapshotId(note.getId(), 0), note, body, timestamp);
   }
 
   @Test
@@ -192,5 +206,48 @@ public class NoteServiceTest {
         .isNotNull()
         .extracting(NoteSnapshot::getId, NoteSnapshot::getNote, NoteSnapshot::getBody, NoteSnapshot::getCreatedAt)
         .containsSequence(new NoteSnapshotEntity.NoteSnapshotId(note.getId(), 0), actual, body, createdAt);
+  }
+
+  @Test
+  public void test_update_with_null() throws Exception {
+    assertThatThrownBy(() -> this.service.update(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("params is null.");
+  }
+
+  @Test
+  public void test_update() throws Exception {
+    // GIVEN
+    final Note note = this.tool.note();
+    log.info("GIVEN - note={}", note);
+    final Account author = note.getAuthor();
+    final String body = note.getBody();
+    final Instant createdAt = note.getCreatedAt();
+
+    final String newBody = random(body.length() + 1);
+    log.info("GIVEN - newBody={}", newBody);
+
+    final Instant timestamp = this.timeProvider.now();
+    final UpdateNoteParams params = new UpdateNoteParams(new Context(), author, note.getId(), newBody, timestamp);
+    log.info("GIVEN - params={}", params);
+
+    // WHEN
+    final Note updated = this.service.update(params);
+    log.info("WHEN - updated={}", updated);
+
+    // THEN
+    assertThat(updated)
+        .isNotNull()
+        .extracting(Document::getVersion, Note::getBody, Creatable::getCreatedAt, Updatable::getUpdatedAt)
+        .containsSequence(1, newBody, createdAt, timestamp);
+
+    final History<NoteSnapshot> history = updated.history(Integer.MAX_VALUE, 0);
+    final List<NoteSnapshotEntity> snapshots = this.snapshotRepository.findAllByNote(note);
+
+    assertThat(history)
+        .isNotNull();
+    assertThat(history.content())
+        .hasSize(2)
+        .containsOnly(snapshots.toArray(new NoteSnapshot[2]));
   }
 }

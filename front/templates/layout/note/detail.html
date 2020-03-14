@@ -13,7 +13,7 @@
     <h1>Note Detail</h1>
     <!--/*@thymesVar id="note" type="kr.lul.kobalttown.document.dto.NoteDetailDto"*/-->
     <div th:object="${note}">
-        <p th:text="*{body}">body</p>
+        <textarea readonly="readonly" th:text="*{body}"></textarea>
         <dl>
             <dt>ID</dt>
             <dd>

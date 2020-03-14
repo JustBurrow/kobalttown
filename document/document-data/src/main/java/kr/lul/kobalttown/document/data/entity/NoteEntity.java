@@ -92,10 +92,58 @@ public class NoteEntity extends SavableEntity implements Note {
     return this.body;
   }
 
+  private abstract class Updater implements NoteUpdater {
+    @Override
+    public long getId() {
+      return NoteEntity.this.id;
+    }
+
+    @Override
+    public int getVersion() {
+      return NoteEntity.this.version;
+    }
+
+    @Override
+    public Account getAuthor() {
+      return NoteEntity.this.author;
+    }
+
+    @Override
+    public String getBody() {
+      return NoteEntity.this.body;
+    }
+
+    @Override
+    public Instant getCreatedAt() {
+      return NoteEntity.this.createdAt;
+    }
+
+    @Override
+    public Instant getUpdatedAt() {
+      return NoteEntity.this.updatedAt;
+    }
+
+  }
+
   @Override
   public NoteUpdater updater(final Instant updatedAt) {
     notNull(updatedAt, "updatedAt");
-    return null;
+
+    this.version++;
+    this.updatedAt = updatedAt;
+
+    final NoteSnapshotEntity snapshot = new NoteSnapshotEntity(this, updatedAt);
+    this.history.add(snapshot);
+
+    return new Updater() {
+      @Override
+      public void setBody(final String body) {
+        BODY_VALIDATOR.validate(body);
+
+        snapshot.setBody(body);
+        NoteEntity.this.body = body;
+      }
+    };
   }
 
   @Override

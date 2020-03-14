@@ -6,12 +6,14 @@ import kr.lul.kobalttown.account.service.AccountService;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
 import kr.lul.kobalttown.document.borderline.command.CreateNoteCmd;
 import kr.lul.kobalttown.document.borderline.command.ReadNoteCmd;
+import kr.lul.kobalttown.document.borderline.command.UpdateNoteCmd;
 import kr.lul.kobalttown.document.converter.NoteConverter;
 import kr.lul.kobalttown.document.domain.Note;
 import kr.lul.kobalttown.document.dto.NoteDetailDto;
 import kr.lul.kobalttown.document.service.NoteService;
 import kr.lul.kobalttown.document.service.params.CreateNoteParams;
 import kr.lul.kobalttown.document.service.params.ReadNoteParams;
+import kr.lul.kobalttown.document.service.params.UpdateNoteParams;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,6 +73,25 @@ class NoteBorderlineImpl implements NoteBorderline {
 
     if (log.isTraceEnabled())
       log.trace("#read (context={}) return : {}", cmd.getContext(), dto);
+    return dto;
+  }
+
+  @Override
+  public NoteDetailDto update(final UpdateNoteCmd cmd) throws ValidationException {
+    if (log.isTraceEnabled())
+      log.trace("#update args : cmd={}", cmd);
+    notNull(cmd, "cmd");
+
+    final Account user = this.accountService.read(new ReadAccountParams(cmd, cmd.getUser(), cmd.getTimestamp()));
+    if (null == user)
+      throw new ValidationException("user", cmd.getUser(), "user does not exist : " + cmd.getUser());
+
+    final UpdateNoteParams params = new UpdateNoteParams(cmd, user, cmd.getNote(), cmd.getBody(), cmd.getTimestamp());
+    final Note note = this.service.update(params);
+    final NoteDetailDto dto = this.converter.detail(note);
+
+    if (log.isTraceEnabled())
+      log.trace("#update (context={}) return : {}", cmd.getContext(), dto);
     return dto;
   }
 }

@@ -7,10 +7,11 @@ import kr.lul.common.web.http.status.exception.client.NotFound;
 import kr.lul.kobalttown.document.borderline.NoteBorderline;
 import kr.lul.kobalttown.document.borderline.command.CreateNoteCmd;
 import kr.lul.kobalttown.document.borderline.command.ReadNoteCmd;
+import kr.lul.kobalttown.document.borderline.command.UpdateNoteCmd;
 import kr.lul.kobalttown.document.dto.NoteDetailDto;
 import kr.lul.kobalttown.document.web.controller.request.CreateNoteReq;
 import kr.lul.kobalttown.document.web.controller.request.UpdateNoteReq;
-import kr.lul.kobalttown.page.note.NoteMvc;
+import kr.lul.kobalttown.page.note.NoteMvc.C;
 import kr.lul.kobalttown.page.note.NoteMvc.M;
 import kr.lul.kobalttown.page.note.NoteMvc.V;
 import kr.lul.support.spring.security.userdetails.User;
@@ -21,6 +22,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -68,7 +70,7 @@ class NoteControllerImpl implements NoteController {
     try {
       final CreateNoteCmd cmd = new CreateNoteCmd(context, user.getId(), req.getBody(), this.timeProvider.now());
       final NoteDetailDto note = this.borderline.create(cmd);
-      template = format("redirect:%s/%d", NoteMvc.C.GROUP, note.getId());
+      template = format("redirect:%s/%d", C.GROUP, note.getId());
     } catch (final ValidationException e) {
       template = doCreateForm(context, user, req, model);
     }
@@ -93,10 +95,10 @@ class NoteControllerImpl implements NoteController {
 
     final ReadNoteCmd cmd = new ReadNoteCmd(context, user.getId(), id, this.timeProvider.now());
     final NoteDetailDto note = this.borderline.read(cmd);
-    final UpdateNoteReq updateReq = new UpdateNoteReq(note.getBody());
-
     model.addAttribute(M.NOTE, note);
-    model.addAttribute(M.UPDATE_REQ, updateReq);
+
+    if (null == req)
+      model.addAttribute(M.UPDATE_REQ, new UpdateNoteReq(note.getBody()));
 
     if (log.isTraceEnabled())
       log.trace("#doUpdateForm (context={}) result : model={}", context, model);
@@ -109,7 +111,20 @@ class NoteControllerImpl implements NoteController {
     if (log.isTraceEnabled())
       log.trace("#doUpdate args : context={}, user={}, id={}, req={}, binding={}, model={}",
           context, user, id, req, binding, model);
-    return null;
+
+    final UpdateNoteCmd cmd = new UpdateNoteCmd(context, user.getId(), id, req.getBody(), this.timeProvider.now());
+    String template;
+    try {
+      final NoteDetailDto note = this.borderline.update(cmd);
+      template = format("redirect:%s/%d", C.GROUP, note.getId());
+    } catch (final ValidationException e) {
+      log.warn(format("fail to update note : user.id=%d, note.id=%d, req=%s", user.getId(), id, req), e);
+      binding.addError(new FieldError(M.UPDATE_REQ, e.getTargetName(), e.getTarget(),
+          false, null, null, "fail to update note : id=" + id));
+      template = doUpdateForm(context, user, id, req, model);
+    }
+
+    return template;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
