@@ -1,5 +1,6 @@
 package kr.lul.kobalttown.document.web.controller;
 
+import kr.lul.kobalttown.document.web.controller.request.CreateNoteCommentReq;
 import kr.lul.kobalttown.document.web.controller.request.CreateNoteReq;
 import kr.lul.kobalttown.document.web.controller.request.ListNoteReq;
 import kr.lul.kobalttown.document.web.controller.request.UpdateNoteReq;
@@ -116,4 +117,21 @@ public interface NoteController {
   @DeleteMapping(C.DELETE)
   @PreAuthorize("hasAnyRole('USER')")
   String delete(@AuthenticationPrincipal User user, @PathVariable(M.ID) long id, Model model);
+
+  /**
+   * 노트에 코멘트 작성하기.
+   *
+   * @param user       현재 유저.
+   * @param id         노트 ID.
+   * @param commentReq 코멘트 정보.
+   * @param binding    바인딩 결과.
+   * @param model      모델.
+   *
+   * @return 뷰 템플릿 이름.
+   */
+  @PostMapping(C.CREATE_COMMENT)
+  @PreAuthorize("hasAnyRole('USER')")
+  String comment(@AuthenticationPrincipal User user, @PathVariable(M.ID) long id,
+      @ModelAttribute(M.CREATE_COMMENT_REQ) @Valid CreateNoteCommentReq commentReq, BindingResult binding,
+      Model model);
 }

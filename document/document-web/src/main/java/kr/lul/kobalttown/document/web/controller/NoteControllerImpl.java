@@ -9,6 +9,7 @@ import kr.lul.kobalttown.document.borderline.NoteBorderline;
 import kr.lul.kobalttown.document.borderline.command.*;
 import kr.lul.kobalttown.document.dto.NoteDetailDto;
 import kr.lul.kobalttown.document.dto.NoteSimpleDto;
+import kr.lul.kobalttown.document.web.controller.request.CreateNoteCommentReq;
 import kr.lul.kobalttown.document.web.controller.request.CreateNoteReq;
 import kr.lul.kobalttown.document.web.controller.request.ListNoteReq;
 import kr.lul.kobalttown.document.web.controller.request.UpdateNoteReq;
@@ -212,6 +213,8 @@ class NoteControllerImpl implements NoteController {
       throw new NotFound("note does not exist : id=" + id);
     }
 
+    model.addAttribute(M.CREATE_COMMENT_REQ, new CreateNoteCommentReq());
+
     if (log.isTraceEnabled())
       log.trace("#detail (context={}) result : template='{}', model={}", context, template, model);
     return template;
@@ -273,6 +276,30 @@ class NoteControllerImpl implements NoteController {
     final String template = format("redirect:%s", C.INDEX);
     if (log.isTraceEnabled())
       log.trace("#delete (context={}) result : template='{}', model={}", context, template, model);
+    return template;
+  }
+
+  @Override
+  public String comment(@AuthenticationPrincipal final User user, @PathVariable(M.ID) final long id,
+      @ModelAttribute(M.CREATE_COMMENT_REQ) @Valid final CreateNoteCommentReq commentReq, final BindingResult binding,
+      final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#comment args : user={}, id={}, commentReq={}, binding={}, model={}", user, id, commentReq, binding, model);
+    notNull(user, "user");
+    notNull(commentReq, "commentReq");
+    notNull(binding, "binding");
+    notNull(model, "model");
+
+    if (0L >= id)
+      throw new NotFound("note does not exist : note.id=" + id);
+
+    final Context context = this.contextService.get();
+
+    // TODO
+
+    final String template = format("redirect:%s/%d", C.GROUP, id);
+    if (log.isTraceEnabled())
+      log.trace("#comment (context={}) result : template={}, model={}", context, template, model);
     return template;
   }
 }

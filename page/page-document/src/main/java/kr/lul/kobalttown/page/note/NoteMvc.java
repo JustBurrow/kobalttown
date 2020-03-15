@@ -11,6 +11,7 @@ public abstract class NoteMvc {
     public static final String NOTES = "notes";
     public static final String CREATE_REQ = "createReq";
     public static final String UPDATE_REQ = "updateReq";
+    public static final String CREATE_COMMENT_REQ = "commentReq";
 
     protected M() {
       throw new UnsupportedOperationException();
@@ -43,6 +44,8 @@ public abstract class NoteMvc {
     public static final String UPDATE = GROUP + "/{id:[1-9]\\d*}";
 
     public static final String DELETE = GROUP + "/{id:[1-9]\\d*}";
+
+    public static final String CREATE_COMMENT = GROUP + "/{id:[1-9]\\d*}/comments";
 
     protected C() {
       throw new UnsupportedOperationException();
