@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.document.borderline;
 
-import kr.lul.common.data.Page;
+import kr.lul.common.data.Pagination;
 import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.document.borderline.command.*;
 import kr.lul.kobalttown.document.dto.NoteDetailDto;
@@ -36,7 +36,7 @@ public interface NoteBorderline {
    *
    * @return 노트 목록.
    */
-  Page<NoteSimpleDto> list(ListNoteCmd cmd);
+  Pagination<NoteSimpleDto> list(ListNoteCmd cmd);
 
   /**
    * 노트 수정.

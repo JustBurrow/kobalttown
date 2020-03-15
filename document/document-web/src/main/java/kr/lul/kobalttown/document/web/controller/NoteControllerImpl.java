@@ -1,7 +1,7 @@
 package kr.lul.kobalttown.document.web.controller;
 
 import kr.lul.common.data.Context;
-import kr.lul.common.data.Page;
+import kr.lul.common.data.Pagination;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.common.util.ValidationException;
 import kr.lul.common.web.http.status.exception.client.NotFound;
@@ -144,7 +144,7 @@ class NoteControllerImpl implements NoteController {
 
     final Context context = this.contextService.get();
     final ListNoteCmd cmd = new ListNoteCmd(context, user.getId(), req.getPage(), req.getLimit(), this.timeProvider.now());
-    final Page<NoteSimpleDto> notes = this.borderline.list(cmd);
+    final Pagination<NoteSimpleDto> notes = this.borderline.list(cmd);
 
     model.addAttribute(M.NOTES, notes);
 

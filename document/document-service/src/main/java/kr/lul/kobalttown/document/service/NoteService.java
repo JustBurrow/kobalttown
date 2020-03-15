@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.document.service;
 
-import kr.lul.common.data.Page;
+import kr.lul.common.data.Pagination;
 import kr.lul.kobalttown.document.domain.Note;
 import kr.lul.kobalttown.document.service.params.*;
 
@@ -13,7 +13,7 @@ public interface NoteService {
 
   Note read(ReadNoteParams params);
 
-  Page<Note> list(ListNoteParams params);
+  Pagination<Note> list(ListNoteParams params);
 
   Note update(UpdateNoteParams params);
 

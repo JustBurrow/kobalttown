@@ -12,21 +12,20 @@
   <h1>Pagination</h1>
   <div th:fragment="render(page)"
        th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()},
-         blockStartPage=${T(java.lang.Math).max(0, page.page -10)},
-         blockEndPage=${T(java.lang.Math).min(page.totalPage -1, page.page +10)}">
-    <!--/*@thymesVar id="page" type="kr.lul.common.data.Page"*/-->
+        blockSize=10">
+    <!--/*@thymesVar id="page" type="kr.lul.common.data.Pagination"*/-->
     <!--/* Go to 1st page */-->
     <span th:if="${page.isFirst()}">&lt;&lt;</span>
     <a href="#"
        th:unless="${page.isFirst()}"
-       th:href="@{__${urlBuilder.replaceQueryParam('page', '').toUriString()}__}">&lt;&lt;</a>
+       th:href="@{__${urlBuilder.replaceQueryParam('page', page.first).toUriString()}__}">&lt;&lt;</a>
     <!--/* Go to previous block */-->
     <a href="#"
-       th:if="${page.hasBefore()}"
-       th:href="@{__${urlBuilder.replaceQueryParam('page', blockStartPage -1).toUriString()}__}">&lt;</a>
-    <span th:unless="${page.hasBefore()}">&lt;</span>
+       th:if="${page.hasPreBlock(blockSize)}"
+       th:href="@{__${urlBuilder.replaceQueryParam('page', page.getPreBlockPage(blockSize)).toUriString()}__}">&lt;</a>
+    <span th:unless="${page.hasPreBlock(blockSize)}">&lt;</span>
     <!--/* Go to page */-->
-    <span th:each="p : ${#numbers.sequence(blockStartPage, blockEndPage)}"
+    <span th:each="p : ${#numbers.sequence(page.getBlockStartPage(blockSize), page.getBlockEndPage(blockSize))}"
           th:remove="tag">
           <span th:if="${p == page.page}" th:text="${p}">page</span>
           <a href="#"
@@ -36,13 +35,13 @@
       </span>
     <!--/* Go to next block */-->
     <a href="#"
-       th:if="${page.hasNext()}"
-       th:href="@{__${urlBuilder.replaceQueryParam('page', blockEndPage +1).toUriString()}__}">&gt;</a>
-    <span th:unless="${page.hasNext()}">&gt;</span>
+       th:if="${page.hasNextBlock(blockSize)}"
+       th:href="@{__${urlBuilder.replaceQueryParam('page', page.getNextBlockPage(blockSize)).toUriString()}__}">&gt;</a>
+    <span th:unless="${page.hasNextBlock(blockSize)}">&gt;</span>
     <!--/* Go to last page */-->
     <span th:if="${page.isLast()}">&gt;&gt;</span>
     <a href="#" th:unless="${page.isLast()}"
-       th:href="@{__${urlBuilder.replaceQueryParam('page', page.getTotalPage() -1).toUriString()}__}">&gt;&gt;</a>
+       th:href="@{__${urlBuilder.replaceQueryParam('page', page.last).toUriString()}__}">&gt;&gt;</a>
   </div>
 </main>
 </body>

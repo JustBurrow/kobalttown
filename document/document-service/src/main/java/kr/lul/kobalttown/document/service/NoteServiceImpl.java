@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.document.service;
 
-import kr.lul.common.data.Page;
+import kr.lul.common.data.Pagination;
 import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.document.data.dao.NoteDao;
 import kr.lul.kobalttown.document.data.factory.NoteFactory;
@@ -65,12 +65,12 @@ class NoteServiceImpl implements NoteService {
   }
 
   @Override
-  public Page<Note> list(final ListNoteParams params) {
+  public Pagination<Note> list(final ListNoteParams params) {
     if (log.isTraceEnabled())
       log.trace("#limit args : params={}", params);
     notNull(params, "params");
 
-    final Page<Note> notes = this.dao.list(params.getContext(), params.getPage(), params.getLimit());
+    final Pagination<Note> notes = this.dao.list(params.getContext(), params.getPage(), params.getLimit());
 
     if (log.isTraceEnabled())
       log.trace("#list (context={}) return : {}", params.getContext(), notes);

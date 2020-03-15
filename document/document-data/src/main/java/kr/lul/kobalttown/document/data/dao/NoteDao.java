@@ -1,7 +1,7 @@
 package kr.lul.kobalttown.document.data.dao;
 
 import kr.lul.common.data.Context;
-import kr.lul.common.data.Page;
+import kr.lul.common.data.Pagination;
 import kr.lul.kobalttown.document.domain.Note;
 
 /**
@@ -38,5 +38,5 @@ public interface NoteDao {
    *
    * @return 노트 목록.
    */
-  Page<Note> list(Context context, int page, int limit);
+  Pagination<Note> list(Context context, int page, int limit);
 }

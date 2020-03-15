@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.document.borderline;
 
-import kr.lul.common.data.Page;
+import kr.lul.common.data.Pagination;
 import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.service.AccountService;
@@ -75,7 +75,7 @@ class NoteBorderlineImpl implements NoteBorderline {
   }
 
   @Override
-  public Page<NoteSimpleDto> list(final ListNoteCmd cmd) {
+  public Pagination<NoteSimpleDto> list(final ListNoteCmd cmd) {
     if (log.isTraceEnabled())
       log.trace("#list args : cmd={}", cmd);
     notNull(cmd, "cmd");
@@ -85,8 +85,8 @@ class NoteBorderlineImpl implements NoteBorderline {
       throw new ValidationException("user", cmd.getUser(), "user does not exist : " + cmd.getUser());
 
     final ListNoteParams params = new ListNoteParams(cmd, user, cmd.getPage(), cmd.getLimit(), cmd.getTimestamp());
-    final Page<Note> notes = this.service.list(params);
-    final Page<NoteSimpleDto> list = notes.map(note -> this.converter.simple(note));
+    final Pagination<Note> notes = this.service.list(params);
+    final Pagination<NoteSimpleDto> list = notes.map(note -> this.converter.simple(note));
 
     if (log.isTraceEnabled())
       log.trace("#list (context={}) return : {}", cmd.getContext(), list);
