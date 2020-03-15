@@ -2,53 +2,48 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:lang="${#locale}">
 <head>
-    <meta name="author" content="justburrow" th:remove="all"/>
-    <meta name="since" content="2020/03/14 23:46" th:remove="all"/>
-    <meta charset="UTF-8"/>
-    <title>Pagination</title>
+  <meta name="author" content="justburrow" th:remove="all"/>
+  <meta name="since" content="2020/03/14 23:46" th:remove="all"/>
+  <meta charset="UTF-8"/>
+  <title>Pagination</title>
 </head>
 <body>
 <main>
-    <h1>Pagination</h1>
-    <div th:fragment="render(url, page)"
-         th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
-         th:remove="tag">
-        <div th:object="${page}">
-            <!--/*@thymesVar id="page" type="kr.lul.common.data.Page"*/-->
-            <div>
-                <span th:remove="tag">
-                    <span th:if="*{isFirst()}">&lt;&lt;</span>
-                    <a href="#"
-                       th:unless="*{isFirst()}"
-                       th:href="@{__${urlBuilder.replaceQueryParam('page', '').toUriString()}__}">&lt;&lt;</a>
-                </span>
-                <span th:remove="tag">
-                    <a href="#"
-                       th:if="*{hasBefore()}"
-                       th:href="@{__${urlBuilder.replaceQueryParam('page', page.page -1).toUriString()}__}">&lt;</a>
-                    <span th:unless="*{hasBefore()}">&lt;</span>
-                </span>
-                <span th:each="p : *{#numbers.sequence(T(java.lang.Math).max(0, page -10), T(java.lang.Math).min(totalPage -1, page +10))}">
-                    <span th:if="*{__${p}__ == page}" th:text="${p}">page</span>
-                    <a href="#"
-                       th:unless="*{__${p}__ == page}"
-                       th:href="@{__${urlBuilder.replaceQueryParam('page', p).toUriString()}__}"
-                       th:text="${p}">page</a>
-                </span>
-                <span th:remove="tag">
-                    <a href="#"
-                       th:if="*{hasNext()}"
-                       th:href="@{__${urlBuilder.replaceQueryParam('page', page.page +1).toUriString()}__}">&gt;</a>
-                    <span th:unless="*{hasNext()}">&gt;</span>
-                </span>
-                <span th:remove="tag">
-                    <span th:if="*{isLast()}">&gt;&gt;</span>
-                    <a href="#" th:unless="*{isLast()}"
-                       th:href="@{__${urlBuilder.replaceQueryParam('page', page.getTotalPage() -1).toUriString()}__}">&gt;&gt;</a>
-                </span>
-            </div>
-        </div>
-    </div>
+  <h1>Pagination</h1>
+  <div th:fragment="render(page)"
+       th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()},
+         blockStartPage=${T(java.lang.Math).max(0, page.page -10)},
+         blockEndPage=${T(java.lang.Math).min(page.totalPage -1, page.page +10)}">
+    <!--/*@thymesVar id="page" type="kr.lul.common.data.Page"*/-->
+    <!--/* Go to 1st page */-->
+    <span th:if="${page.isFirst()}">&lt;&lt;</span>
+    <a href="#"
+       th:unless="${page.isFirst()}"
+       th:href="@{__${urlBuilder.replaceQueryParam('page', '').toUriString()}__}">&lt;&lt;</a>
+    <!--/* Go to previous block */-->
+    <a href="#"
+       th:if="${page.hasBefore()}"
+       th:href="@{__${urlBuilder.replaceQueryParam('page', blockStartPage -1).toUriString()}__}">&lt;</a>
+    <span th:unless="${page.hasBefore()}">&lt;</span>
+    <!--/* Go to page */-->
+    <span th:each="p : ${#numbers.sequence(blockStartPage, blockEndPage)}"
+          th:remove="tag">
+          <span th:if="${p == page.page}" th:text="${p}">page</span>
+          <a href="#"
+             th:unless="${p == page.page}"
+             th:href="@{__${urlBuilder.replaceQueryParam('page', p).toUriString()}__}"
+             th:text="${p}">page</a>
+      </span>
+    <!--/* Go to next block */-->
+    <a href="#"
+       th:if="${page.hasNext()}"
+       th:href="@{__${urlBuilder.replaceQueryParam('page', blockEndPage +1).toUriString()}__}">&gt;</a>
+    <span th:unless="${page.hasNext()}">&gt;</span>
+    <!--/* Go to last page */-->
+    <span th:if="${page.isLast()}">&gt;&gt;</span>
+    <a href="#" th:unless="${page.isLast()}"
+       th:href="@{__${urlBuilder.replaceQueryParam('page', page.getTotalPage() -1).toUriString()}__}">&gt;&gt;</a>
+  </div>
 </main>
 </body>
 </html>
