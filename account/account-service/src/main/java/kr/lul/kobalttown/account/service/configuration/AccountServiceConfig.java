@@ -9,21 +9,21 @@ import static kr.lul.common.util.Arguments.notNull;
  * @author justburrow
  * @since 2019/12/18
  */
-public class AccountServiceConfiguration {
-  private WelcomeConfiguration welcome;
-  private EnableCodeConfiguration validationCode;
+public class AccountServiceConfig {
+  private WelcomeConfig welcome;
+  private EnableCodeConfig validationCode;
 
-  public AccountServiceConfiguration(final AccountServiceProperties properties) {
+  public AccountServiceConfig(final AccountServiceProperties properties) {
     notNull(properties, "properties");
-    this.welcome = new WelcomeConfiguration(properties.getWelcome());
-    this.validationCode = new EnableCodeConfiguration(properties.getValidationCode());
+    this.welcome = new WelcomeConfig(properties.getWelcome());
+    this.validationCode = new EnableCodeConfig(properties.getValidationCode());
   }
 
-  public WelcomeConfiguration getWelcome() {
+  public WelcomeConfig getWelcome() {
     return this.welcome;
   }
 
-  public EnableCodeConfiguration getValidationCode() {
+  public EnableCodeConfig getValidationCode() {
     return this.validationCode;
   }
 

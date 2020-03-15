@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2020/03/11 23:53" th:remove="all"/>
+    <meta charset="UTF-8"/>
+    <title>Note Detail</title>
+</head>
+<body>
+<header th:replace="component/navbar/index :: navbar"></header>
+<main>
+    <h1>Note Detail</h1>
+    <!--/*@thymesVar id="note" type="kr.lul.kobalttown.document.dto.NoteDetailDto"*/-->
+    <div th:object="${note}">
+        <textarea readonly="readonly" th:text="*{body}"></textarea>
+        <dl>
+            <dt>ID</dt>
+            <dd>
+                <span th:text="*{id}">id</span>
+            </dd>
+            <dt>Version</dt>
+            <dd>
+                <span th:text="*{version}">version</span>
+            </dd>
+            <dt>Author</dt>
+            <dd>
+                <address
+                        th:replace="*{#strings.concat('dto/', author.class.name, '/index')} :: render(*{author})">
+                    <a href="../account/profile.html" rel="author">author</a></address>
+            </dd>
+            <dt>Created at</dt>
+            <dd>
+                <time th:replace="component/tag/time :: time(*{createdAt})">created at</time>
+            </dd>
+            <dt>Updated at</dt>
+            <dd>
+                <time th:replace="component/tag/time :: time(*{updatedAt})">updated at</time>
+            </dd>
+        </dl>
+        <div>
+            <form id="form-delete-note-0" action="index.html" method="post"
+                  th:id="${#strings.concat('form-delete-note-' , note.id)}"
+                  th:action="@{/notes/__${note.id}__}" th:method="delete"></form>
+            <a href="update.html" th:href="@{/notes/__*{id}__/update}">EDIT</a>
+            <button form="form-delete-note-0" th:form="${'form-delete-note-'+note.id}">DELETE</button>
+            <a href="index.html" th:href="@{/notes}">LIST</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

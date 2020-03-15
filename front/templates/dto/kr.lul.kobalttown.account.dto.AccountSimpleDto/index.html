@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+    <meta name="author" content="justburrow" th:remove="all"/>
+    <meta name="since" content="2020/03/15 11:43" th:remove="all"/>
+    <meta charset="UTF-8"/>
+    <title>Account Simple DTO</title>
+</head>
+<body>
+<main>
+    <h1>Account Simple DTO</h1>
+    <section>
+        <h2>Default</h2>
+        <!--/*@thymesVar id="account" type="kr.lul.kobalttown.account.dto.AbstractAccountDto"*/-->
+        <address th:fragment="render(account)"><a href="../../layout/account/profile.html" rel="author"
+                                                  th:href="@{/accounts/__${account.id}__}"
+                                                  th:text="${account.nickname}">author</a></address>
+    </section>
+</main>
+</body>
+</html>

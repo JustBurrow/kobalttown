@@ -6,6 +6,7 @@ import kr.lul.kobalttown.configuration.data.jpa.JpaConfiguration;
 import kr.lul.kobalttown.configuration.mail.MailConfigurer;
 import kr.lul.kobalttown.configuration.security.WebSecurityConfiguration;
 import kr.lul.kobalttown.configuration.web.WebMvcConfiguration;
+import kr.lul.kobalttown.document.web.DocumentWebAnchor;
 import org.slf4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,7 +20,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author justburrow
  * @since 2019/11/24
  */
-@SpringBootApplication(scanBasePackageClasses = {AccountWebAnchor.class})
+@SpringBootApplication(scanBasePackageClasses = {AccountWebAnchor.class, DocumentWebAnchor.class})
 @Import({BeanConfiguration.class,
     MailConfigurer.class,
     JpaConfiguration.class,

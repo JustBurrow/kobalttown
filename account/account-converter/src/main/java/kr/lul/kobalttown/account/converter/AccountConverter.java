@@ -3,6 +3,7 @@ package kr.lul.kobalttown.account.converter;
 import kr.lul.common.util.Converter;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
+import kr.lul.kobalttown.account.dto.AccountSimpleDto;
 
 import java.util.Set;
 
@@ -15,7 +16,11 @@ public interface AccountConverter extends Converter<Account> {
    * 사용 가능한 반환 타입.
    */
   @SuppressWarnings("rawtypes")
-  Set<Class> SUPPORT_TARGET_TYPES = Set.of(AccountDetailDto.class);
+  Set<Class> SUPPORT_TARGET_TYPES = Set.of(AccountSimpleDto.class, AccountDetailDto.class);
+
+  AccountSimpleDto simple(Account account);
+
+  AccountDetailDto detail(Account account);
 
   /**
    * @return 변환을 지원하는 타입.

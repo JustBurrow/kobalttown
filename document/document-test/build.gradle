@@ -1,0 +1,8 @@
+dependencies {
+  api project(":document-data")
+  api project(":account-test")
+  api project(":configuration-bean")
+  api project(":configuration-data-jpa")
+
+  testRuntimeOnly "mysql:mysql-connector-java"
+}

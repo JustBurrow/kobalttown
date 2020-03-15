@@ -1,0 +1,5 @@
+dependencies {
+  api project(":account-domain")
+
+  implementation "org.apache.commons:commons-lang3"
+}

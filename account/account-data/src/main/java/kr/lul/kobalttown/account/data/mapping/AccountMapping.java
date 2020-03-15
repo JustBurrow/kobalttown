@@ -11,7 +11,7 @@ import java.util.List;
  */
 public abstract class AccountMapping {
   public static final String ENTITY = "Account";
-  public static final Class ENTITY_TYPE = Account.class;
+  public static final Class<?> ENTITY_TYPE = Account.class;
   public static final String TABLE = "user_account";
 
   public static final String COL_ID = "id";

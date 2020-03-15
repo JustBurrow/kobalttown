@@ -9,6 +9,7 @@
 - [`configuration`](./configuration) : 재사용 가능한 설정 모듈 모음.
 - [`db`](./db) : ERD, DDL 등.
 - [`docs`](./docs) : 개발 문서.
+- [`document`](./document) : 코발트타운 컨텐츠 기본 자료형.
 - [`front`](./front) : Web UI 템플릿, 리소스, 문서.
 - [`global`](./global) : 특정 기능에 묶이지 않고, 서비스 전체에서 사용하는 모듈.
 - `gradle` : Gradle wrapper

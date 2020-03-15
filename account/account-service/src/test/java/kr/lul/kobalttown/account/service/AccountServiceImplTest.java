@@ -10,7 +10,7 @@ import kr.lul.kobalttown.account.data.repository.EnableCodeRepository;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.domain.EnableCode;
-import kr.lul.kobalttown.account.service.configuration.EnableCodeConfiguration;
+import kr.lul.kobalttown.account.service.configuration.EnableCodeConfig;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
 import org.junit.Before;
@@ -47,7 +47,7 @@ public class AccountServiceImplTest {
   private static final Logger log = getLogger(AccountServiceImplTest.class);
 
   @Autowired
-  private EnableCodeConfiguration enableCode;
+  private EnableCodeConfig enableCode;
 
   @Autowired
   private AccountService service;

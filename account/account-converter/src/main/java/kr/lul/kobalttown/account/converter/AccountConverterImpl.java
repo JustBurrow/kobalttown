@@ -3,6 +3,7 @@ package kr.lul.kobalttown.account.converter;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
+import kr.lul.kobalttown.account.dto.AccountSimpleDto;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,23 @@ class AccountConverterImpl implements AccountConverter {
   @Autowired
   private TimeProvider timeProvider;
 
+  @Override
+  public AccountSimpleDto simple(final Account account) {
+    if (log.isTraceEnabled())
+      log.trace("#simple args : account={}", account);
+
+    final AccountSimpleDto dto;
+    if (null == account)
+      dto = null;
+    else
+      dto = new AccountSimpleDto(account.getId(), account.getNickname());
+
+    if (log.isTraceEnabled())
+      log.trace("#simple return : {}", dto);
+    return dto;
+  }
+
+  @Override
   public AccountDetailDto detail(final Account account) {
     return null == account
                ? null
@@ -40,6 +58,8 @@ class AccountConverterImpl implements AccountConverter {
     final T dto;
     if (null == account) {
       dto = null;
+    } else if (AccountSimpleDto.class == targetType) {
+      dto = (T) simple(account);
     } else if (AccountDetailDto.class == targetType) {
       dto = (T) detail(account);
     } else {

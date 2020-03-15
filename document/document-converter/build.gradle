@@ -1,0 +1,9 @@
+dependencies {
+  implementation project(":account-converter")
+  
+  api project(":document-domain")
+  api project(":document-dto")
+
+  testImplementation project(":document-test")
+  testImplementation project(":configuration-bean")
+}

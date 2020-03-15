@@ -49,9 +49,9 @@ public interface Account extends Savable<Instant>, SimpleString {
 
       for (final char c : NICKNAME_ILLEGAL_CHARACTERS) {
         if (0 <= nickname.indexOf(c)) {
-          final int i = c;
           throw new ValidationException(ATTR_NICKNAME, nickname,
-              format("nickname contains illegal character : nickname=%s, illegalCharacter=\\u%04x", singleQuote(nickname), i));
+              format("nickname contains illegal character : nickname=%s, illegalCharacter=\\u%04x",
+                  singleQuote(nickname), (int) c));
         }
       }
 

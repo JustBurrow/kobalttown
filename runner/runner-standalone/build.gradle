@@ -1,5 +1,6 @@
 dependencies {
   implementation project(":account-web")
+  implementation project(":document-web")
   implementation project(":configuration-dependencies")
 }
 

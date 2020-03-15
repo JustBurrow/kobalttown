@@ -56,7 +56,6 @@ public class AccountControllerMvcTest {
 
   @Autowired
   private MockMvc mock;
-
   @MockBean
   private AccountBorderline borderline;
 
@@ -220,7 +219,7 @@ public class AccountControllerMvcTest {
   }
 
   @Test
-  public void test_VALIDATE_ISSUE_FORM_with_authenticated() throws Exception {
+  public void test_validate_issue_form_with_authenticated() throws Exception {
     // WHEN
     this.mock.perform(get(C.ISSUE_ENABLE_CODE_FORM)
                           .with(user("nickname #" + current().nextInt(Integer.MAX_VALUE))))
