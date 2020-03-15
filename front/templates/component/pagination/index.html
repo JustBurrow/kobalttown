@@ -10,26 +10,44 @@
 <body>
 <main>
     <h1>Pagination</h1>
-    <div th:fragment="render(page)">
-        <!--/*@thymesVar id="page" type="kr.lul.common.data.Page"*/-->
-        <dl th:object="${page}">
-            <dt>Page</dt>
-            <dd th:text="*{page}">page</dd>
-            <dt>Limit</dt>
-            <dd th:text="*{limit}">limit</dd>
-            <dt>Total Page</dt>
-            <dd th:text="*{totalPage}">totalPage</dd>
-            <dt>Total Count</dt>
-            <dd th:text="*{totalCount}">total count</dd>
-            <dt>First</dt>
-            <dd th:text="*{first}">first</dd>
-            <dt>Last</dt>
-            <dd th:text="*{last}">last</dd>
-            <dt>Before</dt>
-            <dd th:text="*{hasBefore()}">before</dd>
-            <dt>Next</dt>
-            <dd th:text="*{hasNext()}">next</dd>
-        </dl>
+    <div th:fragment="render(url, page)"
+         th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
+         th:remove="tag">
+        <div th:object="${page}">
+            <!--/*@thymesVar id="page" type="kr.lul.common.data.Page"*/-->
+            <div>
+                <span th:remove="tag">
+                    <span th:if="*{isFirst()}">&lt;&lt;</span>
+                    <a href="#"
+                       th:unless="*{isFirst()}"
+                       th:href="@{__${urlBuilder.replaceQueryParam('page', '').toUriString()}__}">&lt;&lt;</a>
+                </span>
+                <span th:remove="tag">
+                    <a href="#"
+                       th:if="*{hasBefore()}"
+                       th:href="@{__${urlBuilder.replaceQueryParam('page', page.page -1).toUriString()}__}">&lt;</a>
+                    <span th:unless="*{hasBefore()}">&lt;</span>
+                </span>
+                <span th:each="p : *{#numbers.sequence(T(java.lang.Math).max(0, page -10), T(java.lang.Math).min(totalPage -1, page +10))}">
+                    <span th:if="*{__${p}__ == page}" th:text="${p}">page</span>
+                    <a href="#"
+                       th:unless="*{__${p}__ == page}"
+                       th:href="@{__${urlBuilder.replaceQueryParam('page', p).toUriString()}__}"
+                       th:text="${p}">page</a>
+                </span>
+                <span th:remove="tag">
+                    <a href="#"
+                       th:if="*{hasNext()}"
+                       th:href="@{__${urlBuilder.replaceQueryParam('page', page.page +1).toUriString()}__}">&gt;</a>
+                    <span th:unless="*{hasNext()}">&gt;</span>
+                </span>
+                <span th:remove="tag">
+                    <span th:if="*{isLast()}">&gt;&gt;</span>
+                    <a href="#" th:unless="*{isLast()}"
+                       th:href="@{__${urlBuilder.replaceQueryParam('page', page.getTotalPage() -1).toUriString()}__}">&gt;&gt;</a>
+                </span>
+            </div>
+        </div>
     </div>
 </main>
 </body>

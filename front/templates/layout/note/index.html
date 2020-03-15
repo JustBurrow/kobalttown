@@ -16,12 +16,15 @@
         <ol>
             <li th:each="note : ${notes.content}">
                 <!--/*@thymesVar id="note" type="kr.lul.kobalttown.document.dto.NoteSimpleDto"*/-->
-                <p th:text="${note}">note</p>
+                <div th:replace="${#strings.concat('dto/', note.class.name, '/index')} :: render(${note})"></div>
             </li>
         </ol>
-        <div th:replace="component/pagination/index :: render(${notes})">
-
+        <div th:replace="component/pagination/index :: render('/notes', ${notes})">
+            pagination
         </div>
+    </div>
+    <div>
+        <a href="create.html" th:href="@{/notes/create}">create</a>
     </div>
 </main>
 </body>

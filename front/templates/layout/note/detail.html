@@ -25,8 +25,9 @@
             </dd>
             <dt>Author</dt>
             <dd>
-                <address th:replace="dto/account/index :: author(*{author})"><a href="../account/profile.html"
-                                                                                rel="author">author</a></address>
+                <address
+                        th:replace="*{#strings.concat('dto/', author.class.name, '/index')} :: render(*{author})">
+                    <a href="../account/profile.html" rel="author">author</a></address>
             </dd>
             <dt>Created at</dt>
             <dd>
@@ -38,11 +39,12 @@
             </dd>
         </dl>
         <div>
-            <a href="update.html" th:href="@{/notes/__*{id}__/update}">EDIT</a>
             <form id="form-delete-note-0" action="index.html" method="post"
-                  th:id="${'form-delete-note-' + note.id}"
+                  th:id="${#strings.concat('form-delete-note-' , note.id)}"
                   th:action="@{/notes/__${note.id}__}" th:method="delete"></form>
+            <a href="update.html" th:href="@{/notes/__*{id}__/update}">EDIT</a>
             <button form="form-delete-note-0" th:form="${'form-delete-note-'+note.id}">DELETE</button>
+            <a href="index.html" th:href="@{/notes}">LIST</a>
         </div>
     </div>
 </main>
