@@ -183,6 +183,11 @@ public class NoteEntity extends SavableEntity implements Note {
       this.deletedAt = deletedAt;
   }
 
+  @Override
+  public NoteSnapshot now() {
+    return this.history.get(this.history.size() - 1);
+  }
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // java.lang.Object
 

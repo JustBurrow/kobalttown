@@ -83,10 +83,7 @@ public class NoteSnapshotEntity implements NoteSnapshot {
   @Column(name = COL_CREATED_AT, nullable = false, updatable = false)
   private Instant createdAt;
 
-  /**
-   * JPA only
-   */
-  public NoteSnapshotEntity() {
+  public NoteSnapshotEntity() { // JPA only
   }
 
   /**

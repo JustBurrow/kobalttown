@@ -1,13 +1,16 @@
 package kr.lul.kobalttown.document.domain;
 
+import kr.lul.common.data.Creatable;
 import kr.lul.common.util.SimpleString;
 import kr.lul.common.util.UniqueIdentity;
 import kr.lul.kobalttown.account.domain.Account;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 
 import static java.lang.String.format;
+import static kr.lul.common.util.Texts.head;
 import static kr.lul.kobalttown.document.domain.CommentDiscriminater.COMMENT;
 import static kr.lul.kobalttown.document.domain.Document.URI_HOST;
 import static kr.lul.kobalttown.document.domain.Document.URI_SCHEME;
@@ -18,7 +21,7 @@ import static kr.lul.kobalttown.document.domain.Document.URI_SCHEME;
  * @author justburrow
  * @since 2020/01/28
  */
-public interface Comment extends SimpleString, UniqueIdentity {
+public interface Comment extends Creatable<Instant>, SimpleString, UniqueIdentity {
   Class<? extends Comment> type();
 
   default CommentDiscriminater discriminater() {
@@ -37,6 +40,9 @@ public interface Comment extends SimpleString, UniqueIdentity {
    */
   Snapshot getSnapshot();
 
+  /**
+   * @return 댓글 작성자.
+   */
   Account getAuthor();
 
   /**
@@ -49,7 +55,7 @@ public interface Comment extends SimpleString, UniqueIdentity {
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
   default String toSimpleString() {
-    return getBody();
+    return format("(%d, %s)", getId(), head(getBody(), 50));
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
