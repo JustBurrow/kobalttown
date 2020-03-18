@@ -20,7 +20,7 @@ public class HistoryImpl<S extends Snapshot> implements History<S> {
     notNegative(page, "page");
     notNegative(totalSize, "totalSize");
     notNull(content, "content");
-    lt(content.size(), maxSize, "content.size");
+    le(content.size(), maxSize, "content.size");
 
     this.maxSize = maxSize;
     this.page = page;
