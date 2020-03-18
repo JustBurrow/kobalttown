@@ -16,22 +16,21 @@ import java.util.Objects;
 
 import static javax.persistence.ConstraintMode.NO_CONSTRAINT;
 import static kr.lul.common.util.Arguments.*;
+import static kr.lul.kobalttown.document.data.mapping.AbstractNoteCommentMapping.*;
 import static kr.lul.kobalttown.document.data.mapping.NoteMapping.FK_NOTE_PK_ACCOUNT;
 import static kr.lul.kobalttown.document.data.mapping.NoteMapping.FK_NOTE_PK_ACCOUNT_COLUMNS;
-import static kr.lul.kobalttown.document.data.mapping.SharedNoteCommentMapping.*;
 
 /**
  * @author justburrow
  * @since 2020/03/16
  */
-//@Entity(name = ENTITY)
-@MappedSuperclass
+@Entity(name = ENTITY)
 @Table(name = TABLE,
     indexes = {@Index(name = FK_NOTE_PK_ACCOUNT, columnList = FK_NOTE_PK_ACCOUNT_COLUMNS),
         @Index(name = FK_NOTE_COMMENT_PK_NOTE_SNAPSHOT, columnList = FK_NOTE_COMMENT_PK_NOTE_SNAPSHOT_COLUMNS),
         @Index(name = IDX_NOTE_COMMENT_RECENT, columnList = IDX_NOTE_COMMENT_RECENT_COLUMNS)})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(discriminatorType = DiscriminatorType.INTEGER, name = COL_DISCRIMINATOR)
+@DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = COL_DISCRIMINATOR)
 public abstract class AbstractNoteCommentEntity extends CreatableEntity implements NoteComment {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,7 +63,8 @@ public abstract class AbstractNoteCommentEntity extends CreatableEntity implemen
     this(author, note.now(), body, createdAt);
   }
 
-  public AbstractNoteCommentEntity(final Account author, final NoteSnapshot snapshot, final String body, final Instant createdAt) {
+  public AbstractNoteCommentEntity(final Account author, final NoteSnapshot snapshot, final String body,
+      final Instant createdAt) {
     super(createdAt);
     notNull(author, "author");
     positive(author.getId(), "author.id");
@@ -84,11 +84,6 @@ public abstract class AbstractNoteCommentEntity extends CreatableEntity implemen
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.kobalttown.document.domain.NoteComment
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  @Override
-  public long getId() {
-    return this.id;
-  }
-
   @Override
   public Account getAuthor() {
     return this.author;

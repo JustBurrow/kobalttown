@@ -31,6 +31,11 @@ public class NoteCommentEntity extends AbstractNoteCommentEntity {
   }
 
   @Override
+  public long getId() {
+    return this.id;
+  }
+
+  @Override
   public String toString() {
     return new StringBuilder(getClass().getSimpleName())
                .append("{id=").append(this.id)

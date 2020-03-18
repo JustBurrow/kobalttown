@@ -42,6 +42,11 @@ public class NoteRecommentEntity extends AbstractNoteCommentEntity implements No
   // kr.lul.kobalttown.document.domain.NoteRecomment
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
+  public long getId() {
+    return this.id;
+  }
+
+  @Override
   public NoteComment getComment() {
     return this.comment;
   }
