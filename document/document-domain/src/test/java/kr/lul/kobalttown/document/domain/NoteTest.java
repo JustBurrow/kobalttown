@@ -34,6 +34,16 @@ public class NoteTest {
     }
 
     @Override
+    public NoteSnapshot now() {
+      return null;
+    }
+
+    @Override
+    public Instant getDeletedAt() {
+      return null;
+    }
+
+    @Override
     public void delete(final Instant deletedAt) throws IllegalStateException {
 
     }

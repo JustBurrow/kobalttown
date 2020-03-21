@@ -173,6 +173,11 @@ public class NoteEntity extends SavableEntity implements Note {
   }
 
   @Override
+  public Instant getDeletedAt() {
+    return this.deletedAt;
+  }
+
+  @Override
   public void delete(final Instant deletedAt) {
     notNull(deletedAt, "deletedAt");
     ae(deletedAt, this.updatedAt, "deletedAt");

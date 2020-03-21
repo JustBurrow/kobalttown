@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 
 import java.net.URI;
+import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -39,6 +40,11 @@ public class NoteCommentTest {
 
     @Override
     public String getBody() {
+      return null;
+    }
+
+    @Override
+    public Instant getCreatedAt() {
       return null;
     }
   }

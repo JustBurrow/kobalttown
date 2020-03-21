@@ -14,7 +14,7 @@ import static kr.lul.common.util.Texts.head;
  * @author justburrow
  * @since 2020/01/28
  */
-public interface Note extends Document {
+public interface Note extends DeletableDocument {
   String ATTR_AUTHOR = "author";
   String ATTR_BODY = "body";
 
@@ -48,15 +48,6 @@ public interface Note extends Document {
    * @return 업데이터 오브젝트.
    */
   NoteUpdater updater(Instant updatedAt);
-
-  /**
-   * 노트 삭제하기.
-   *
-   * @param deletedAt 삭제 시각.
-   *
-   * @throws IllegalStateException 이미 삭제된 노트일 때.
-   */
-  void delete(Instant deletedAt) throws IllegalStateException;
 
   /**
    * @return 최신 버전의 스냅샷.
