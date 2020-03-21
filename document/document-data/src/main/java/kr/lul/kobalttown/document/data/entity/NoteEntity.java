@@ -181,11 +181,13 @@ public class NoteEntity extends SavableEntity implements Note {
   public void delete(final Instant deletedAt) {
     notNull(deletedAt, "deletedAt");
     ae(deletedAt, this.updatedAt, "deletedAt");
-
     if (null != this.deletedAt)
       throw new IllegalStateException(format("already deleted note : id=%s, deletedAt=%s", this.id, this.deletedAt));
-    else
-      this.deletedAt = deletedAt;
+
+    this.deletedAt = deletedAt;
+    for (final NoteSnapshot snapshot : this.history) {
+      snapshot.delete(deletedAt);
+    }
   }
 
   @Override

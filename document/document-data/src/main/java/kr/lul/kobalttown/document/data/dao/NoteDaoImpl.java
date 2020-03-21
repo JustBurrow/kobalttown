@@ -63,7 +63,7 @@ public class NoteDaoImpl implements NoteDao {
       note = this.repository.findById(id)
                  .orElse(null);
 
-    if (((NoteEntity) note).isDelete())
+    if (null != note && ((NoteEntity) note).isDelete())
       note = null;
 
     if (log.isTraceEnabled())

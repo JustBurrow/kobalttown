@@ -59,10 +59,13 @@ public class NoteServiceTest {
   @Autowired
   private TimeProvider timeProvider;
 
+  private Account account;
   private Instant instant;
 
   @Before
   public void setUp() throws Exception {
+    this.account = this.accountTestTool.account();
+    log.info("SETUP - account={}", this.account);
     this.instant = this.timeProvider.now();
     log.info("SETUP - instant={}", this.instant);
   }
@@ -77,14 +80,12 @@ public class NoteServiceTest {
   @Test
   public void test_create() throws Exception {
     // GIVEN
-    final Account author = this.accountTestTool.account();
-    log.info("GIVEN - author={}", author);
     final String body = body();
     log.info("GIVEN - body={}", body);
     final Instant timestamp = this.timeProvider.now();
     log.info("GIVEN - timestamp={}", timestamp);
 
-    final CreateNoteParams params = new CreateNoteParams(new Context(), author, body, timestamp);
+    final CreateNoteParams params = new CreateNoteParams(new Context(), this.account, body, timestamp);
     log.info("GIVEN - params={}", params);
 
     // WHEN
@@ -95,7 +96,7 @@ public class NoteServiceTest {
     assertThat(note)
         .isNotNull()
         .extracting(Note::getVersion, Note::getOwner, Note::getAuthor, Note::getBody)
-        .containsSequence(0, author, author, body);
+        .containsSequence(0, this.account, this.account, body);
     assertThat(note.getId())
         .isPositive();
     assertThat(note.getCreatedAt())
@@ -124,9 +125,7 @@ public class NoteServiceTest {
   @Test
   public void test_read_with_negative1_id() throws Exception {
     // GIVEN
-    final Account user = this.accountTestTool.account();
-    log.info("GIVEN - user={}", user);
-    final ReadNoteParams params = new ReadNoteParams(new Context(), user, -1L, this.timeProvider.now());
+    final ReadNoteParams params = new ReadNoteParams(new Context(), this.account, -1L, this.timeProvider.now());
     log.info("GIVEN - params={}", params);
 
     // WHEN & THEN
@@ -137,9 +136,7 @@ public class NoteServiceTest {
   @Test
   public void test_read_with_0_id() throws Exception {
     // GIVEN
-    final Account user = this.accountTestTool.account();
-    log.info("GIVEN - user={}", user);
-    final ReadNoteParams params = new ReadNoteParams(new Context(), user, 0L, this.timeProvider.now());
+    final ReadNoteParams params = new ReadNoteParams(new Context(), this.account, 0L, this.timeProvider.now());
     log.info("GIVEN - params={}", params);
 
     // WHEN & THEN
@@ -150,9 +147,7 @@ public class NoteServiceTest {
   @Test
   public void test_read_with_not_exist_id() throws Exception {
     // GIVEN
-    final Account user = this.accountTestTool.account();
-    log.info("GIVEN - user={}", user);
-    final ReadNoteParams params = new ReadNoteParams(new Context(), user, Long.MAX_VALUE, this.timeProvider.now());
+    final ReadNoteParams params = new ReadNoteParams(new Context(), this.account, Long.MAX_VALUE, this.timeProvider.now());
     log.info("GIVEN - params={}", params);
 
     // WHEN & THEN
@@ -173,9 +168,7 @@ public class NoteServiceTest {
 
     this.entityManager.clear();
 
-    final Account user = this.accountTestTool.account();
-    log.info("GIVEN - user={}", user);
-    final ReadNoteParams params = new ReadNoteParams(new Context(), user, id, this.timeProvider.now());
+    final ReadNoteParams params = new ReadNoteParams(new Context(), this.account, id, this.timeProvider.now());
     log.info("GIVEN - params={}", params);
 
     // WHEN
@@ -249,5 +242,21 @@ public class NoteServiceTest {
     assertThat(history.content())
         .hasSize(2)
         .containsOnly(snapshots.toArray(new NoteSnapshot[2]));
+  }
+
+  @Test
+  public void test_update_with_non_author() throws Exception {
+    // GIVEN
+    final Note note = this.tool.note();
+    log.info("GIVEN - note={}", note);
+
+    final UpdateNoteParams params = new UpdateNoteParams(new Context(), this.account, note.getId(),
+        note.getBody() + "_update_test", this.timeProvider.now());
+    log.info("GIVEN - params={}", params);
+
+    // WHEN & THEN
+    assertThatThrownBy(() -> this.service.update(params))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageStartingWith("user has no update permission");
   }
 }
