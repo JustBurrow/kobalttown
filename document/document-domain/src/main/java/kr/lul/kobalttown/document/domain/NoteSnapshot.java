@@ -4,7 +4,7 @@ package kr.lul.kobalttown.document.domain;
  * @author justburrow
  * @since 2020/01/28
  */
-public interface NoteSnapshot extends Snapshot {
+public interface NoteSnapshot extends DeletableSnapshot {
   interface Id extends Snapshot.Id {
   }
 

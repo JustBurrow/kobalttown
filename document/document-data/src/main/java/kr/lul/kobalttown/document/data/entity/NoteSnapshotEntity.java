@@ -9,8 +9,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 import static java.lang.String.format;
-import static kr.lul.common.util.Arguments.notNegative;
-import static kr.lul.common.util.Arguments.notNull;
+import static kr.lul.common.util.Arguments.*;
 import static kr.lul.kobalttown.document.data.mapping.NoteSnapshotMapping.*;
 
 /**
@@ -82,6 +81,8 @@ public class NoteSnapshotEntity implements NoteSnapshot {
   private String body;
   @Column(name = COL_CREATED_AT, nullable = false, updatable = false)
   private Instant createdAt;
+  @Column(name = COL_DELETED_AT, insertable = false)
+  private Instant deletedAt;
 
   public NoteSnapshotEntity() { // JPA only
   }
@@ -134,6 +135,22 @@ public class NoteSnapshotEntity implements NoteSnapshot {
   @Override
   public Instant getCreatedAt() {
     return this.createdAt;
+  }
+
+  @Override
+  public Instant getDeleted() {
+    return this.deletedAt;
+  }
+
+  @Override
+  public void delete(final Instant deletedAt) throws IllegalStateException {
+    notNull(deletedAt, "deletedAt");
+    ae(deletedAt, this.deletedAt, "deletedAt");
+
+    if (null != this.deletedAt)
+      throw new IllegalStateException(format("already deleted note snapshot : id=%s, deletedAt=%s", this.id, this.deletedAt));
+    else
+      this.deletedAt = deletedAt;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
