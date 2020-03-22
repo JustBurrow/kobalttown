@@ -33,6 +33,7 @@ import javax.validation.Valid;
 import static java.lang.String.format;
 import static kr.lul.common.util.Arguments.notNull;
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.web.util.UriComponentsBuilder.newInstance;
 
 /**
  * @author justburrow
@@ -72,7 +73,10 @@ class NoteControllerImpl implements NoteController {
     try {
       final CreateNoteCmd cmd = new CreateNoteCmd(context, user.getId(), req.getBody(), this.timeProvider.now());
       final NoteDetailDto note = this.borderline.create(cmd);
-      template = format("redirect:%s/%d", C.GROUP, note.getId());
+      template = format("redirect:%s",
+          newInstance().path(C.DETAIL)
+              .buildAndExpand(note.getId())
+              .getPath());
     } catch (final ValidationException e) {
       template = doCreateForm(context, user, req, model);
     }
@@ -121,7 +125,11 @@ class NoteControllerImpl implements NoteController {
     String template;
     try {
       final NoteDetailDto note = this.borderline.update(cmd);
-      template = format("redirect:%s/%d", C.GROUP, note.getId());
+      template = format("redirect:%s",
+          newInstance()
+              .path(C.DETAIL)
+              .buildAndExpand(id)
+              .getPath());
     } catch (final ValidationException e) {
       log.warn(format("fail to update note : user.id=%d, note.id=%d, req=%s", user.getId(), id, req), e);
       binding.addError(new FieldError(M.UPDATE_REQ, e.getTargetName(), e.getTarget(),
@@ -297,7 +305,12 @@ class NoteControllerImpl implements NoteController {
 
     // TODO
 
-    final String template = format("redirect:%s/%d", C.GROUP, id);
+    final String template = format("redirect:%s",
+        newInstance()
+            .path(C.DELETE)
+            .buildAndExpand(id)
+            .getPath());
+
     if (log.isTraceEnabled())
       log.trace("#comment (context={}) result : template={}, model={}", context, template, model);
     return template;

@@ -66,12 +66,10 @@ public abstract class AbstractNoteCommentEntity extends CreatableEntity implemen
   public AbstractNoteCommentEntity(final Account author, final NoteSnapshot snapshot, final String body,
       final Instant createdAt) {
     super(createdAt);
-    notNull(author, "author");
-    positive(author.getId(), "author.id");
+    AUTHOR_VALIDATOR.validate(author);
     typeOf(author, AccountEntity.class, "author");
     notNull(snapshot, "snapshot");
     typeOf(snapshot, NoteSnapshotEntity.class, "snapshot");
-    notEmpty(body, "body");
     ae(createdAt, snapshot.getCreatedAt(), "createdAt");
 
     this.author = author;

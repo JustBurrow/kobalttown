@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
-import static kr.lul.common.util.Arguments.notNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -27,8 +26,6 @@ class NoteFactoryImpl implements NoteFactory {
   public Note create(final Context context, final Account author, final String body, final Instant createdAt) {
     if (log.isTraceEnabled())
       log.trace("#create args : context={}, author={}, body={}, createdAt={}", context, author, body, createdAt);
-    notNull(author, "author");
-    notNull(createdAt, "createdAt");
 
     final NoteEntity note = new NoteEntity(author, body, createdAt);
 

@@ -54,9 +54,8 @@ public class NoteEntity extends SavableEntity implements Note {
 
   public NoteEntity(final Account author, final String body, final Instant createdAt) {
     super(createdAt);
-    notNull(author, "author");
-    positive(author.getId(), "author.id");
-    notNull(body, "body");
+    AUTHOR_VALIDATOR.validate(author);
+    BODY_VALIDATOR.validate(body);
 
     if (author.getCreatedAt().isAfter(createdAt))
       throw new IllegalArgumentException(format("author.createdAt is after than createdAt : author.createdAt=%s, createdAt=%s",
