@@ -14,5 +14,7 @@ SELECT * FROM kobalttown.log_enable_code;
 -- Note ---------------------------------------------------------------------------------------------------------------
 SELECT * FROM kobalttown.user_note;
 SELECT * FROM kobalttown.user_note_snapshot;
+SELECT * FROM kobalttown.user_note_comment;
 
 SELECT * FROM kobalttown.view_note;
+SELECT * FROM kobalttown.view_note_comment;
