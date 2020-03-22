@@ -3,6 +3,7 @@ package kr.lul.kobalttown.document.borderline;
 import kr.lul.common.data.Pagination;
 import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.document.borderline.command.*;
+import kr.lul.kobalttown.document.dto.NoteCommentDetailDto;
 import kr.lul.kobalttown.document.dto.NoteDetailDto;
 import kr.lul.kobalttown.document.dto.NoteSimpleDto;
 
@@ -55,4 +56,13 @@ public interface NoteBorderline {
    * @param cmd 삭제할 노트 정보.
    */
   void delete(DeleteNoteCmd cmd);
+
+  /**
+   * 노트에 댓글을 작성한다.
+   *
+   * @param cmd 댓글 정보.
+   *
+   * @return 작성한 댓글.
+   */
+  NoteCommentDetailDto comment(CreateNoteCommentCmd cmd);
 }

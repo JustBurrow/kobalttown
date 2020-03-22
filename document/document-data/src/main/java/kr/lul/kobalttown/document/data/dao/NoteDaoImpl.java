@@ -3,9 +3,12 @@ package kr.lul.kobalttown.document.data.dao;
 import kr.lul.common.data.Context;
 import kr.lul.common.data.Pagination;
 import kr.lul.common.data.PaginationImpl;
+import kr.lul.kobalttown.document.data.entity.NoteCommentEntity;
 import kr.lul.kobalttown.document.data.entity.NoteEntity;
+import kr.lul.kobalttown.document.data.repository.NoteCommentRepository;
 import kr.lul.kobalttown.document.data.repository.NoteRepository;
 import kr.lul.kobalttown.document.domain.Note;
+import kr.lul.kobalttown.document.domain.NoteComment;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +33,8 @@ public class NoteDaoImpl implements NoteDao {
 
   @Autowired
   private NoteRepository repository;
+  @Autowired
+  private NoteCommentRepository commentRepository;
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.kobalttown.document.data.dao.NoteDao
@@ -87,5 +92,21 @@ public class NoteDaoImpl implements NoteDao {
     if (log.isTraceEnabled())
       log.trace("#list (context={}) return : {}", context, list);
     return list;
+  }
+
+  @Override
+  public NoteComment create(final Context context, NoteComment comment) {
+    if (log.isTraceEnabled())
+      log.trace("#create args : context={}, comment={}", context, comment);
+    notNull(context, "context");
+    notNull(comment, "comment");
+    notPositive(comment.getId(), "comment.id");
+    typeOf(comment, NoteCommentEntity.class, "comment");
+
+    comment = this.commentRepository.save((NoteCommentEntity) comment);
+
+    if (log.isTraceEnabled())
+      log.trace("#create (context={}) return : {}", context, comment);
+    return comment;
   }
 }

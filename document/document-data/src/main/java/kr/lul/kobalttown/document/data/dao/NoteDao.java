@@ -3,6 +3,7 @@ package kr.lul.kobalttown.document.data.dao;
 import kr.lul.common.data.Context;
 import kr.lul.common.data.Pagination;
 import kr.lul.kobalttown.document.domain.Note;
+import kr.lul.kobalttown.document.domain.NoteComment;
 
 /**
  * @author justburrow
@@ -39,4 +40,6 @@ public interface NoteDao {
    * @return 노트 목록.
    */
   Pagination<Note> list(Context context, int page, int limit);
+
+  NoteComment create(Context context, NoteComment comment);
 }

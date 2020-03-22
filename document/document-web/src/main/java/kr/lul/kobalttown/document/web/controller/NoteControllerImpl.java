@@ -4,9 +4,11 @@ import kr.lul.common.data.Context;
 import kr.lul.common.data.Pagination;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.common.util.ValidationException;
+import kr.lul.common.web.http.status.exception.client.BadRequest;
 import kr.lul.common.web.http.status.exception.client.NotFound;
 import kr.lul.kobalttown.document.borderline.NoteBorderline;
 import kr.lul.kobalttown.document.borderline.command.*;
+import kr.lul.kobalttown.document.dto.NoteCommentDetailDto;
 import kr.lul.kobalttown.document.dto.NoteDetailDto;
 import kr.lul.kobalttown.document.dto.NoteSimpleDto;
 import kr.lul.kobalttown.document.web.controller.request.CreateNoteCommentReq;
@@ -137,6 +139,35 @@ class NoteControllerImpl implements NoteController {
       template = doUpdateForm(context, user, id, req, model);
     }
 
+    return template;
+  }
+
+  private String doComment(final Context context, final User user, final long id, final CreateNoteCommentReq req,
+      final BindingResult binding, final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#doComment args : context={}, user={}, id={}, req={}, binding={}, model={}",
+          context, user, id, req, binding, model);
+    notNull(context, "context");
+
+    final String template;
+    try {
+      final CreateNoteCommentCmd cmd = new CreateNoteCommentCmd(context, user.getId(), id, req.getBody(),
+          this.timeProvider.now());
+
+      final NoteCommentDetailDto comment = this.borderline.comment(cmd);
+
+      template = format("redirect:%s",
+          newInstance()
+              .path(C.DELETE)
+              .buildAndExpand(id)
+              .getPath());
+    } catch (final Exception e) {
+      log.warn(format("#doComment e=" + e.getMessage(), e));
+      throw new BadRequest(e);
+    }
+
+    if (log.isTraceEnabled())
+      log.trace("#doComment (context={}) result : template={}, model={}", context, template, model);
     return template;
   }
 
@@ -298,18 +329,20 @@ class NoteControllerImpl implements NoteController {
     notNull(binding, "binding");
     notNull(model, "model");
 
-    if (0L >= id)
-      throw new NotFound("note does not exist : note.id=" + id);
-
     final Context context = this.contextService.get();
 
-    // TODO
+    if (0L >= id) {
+      log.warn("#comment (context={}) illegal note id : user={}, note.id={}", context, user, id);
+      throw new NotFound("note does not exist : note.id=" + id);
+    }
 
-    final String template = format("redirect:%s",
-        newInstance()
-            .path(C.DELETE)
-            .buildAndExpand(id)
-            .getPath());
+    if (binding.hasErrors()) {
+      log.warn("#comment (context={}) error : user={}, id={}, commentReq={}, binding={}, model={}",
+          context, user, id, commentReq, binding, model);
+      throw new BadRequest(format("req=%s, errors=%s", commentReq, binding));
+    }
+
+    final String template = doComment(context, user, id, commentReq, binding, model);
 
     if (log.isTraceEnabled())
       log.trace("#comment (context={}) result : template={}, model={}", context, template, model);

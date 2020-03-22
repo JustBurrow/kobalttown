@@ -3,8 +3,10 @@ package kr.lul.kobalttown.document.service;
 import kr.lul.common.data.Pagination;
 import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.document.data.dao.NoteDao;
+import kr.lul.kobalttown.document.data.factory.NoteCommentFactory;
 import kr.lul.kobalttown.document.data.factory.NoteFactory;
 import kr.lul.kobalttown.document.domain.Note;
+import kr.lul.kobalttown.document.domain.NoteComment;
 import kr.lul.kobalttown.document.domain.NoteUpdater;
 import kr.lul.kobalttown.document.service.params.*;
 import org.slf4j.Logger;
@@ -28,6 +30,8 @@ class NoteServiceImpl implements NoteService {
   private NoteDao dao;
   @Autowired
   private NoteFactory factory;
+  @Autowired
+  private NoteCommentFactory commentFactory;
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.kobalttown.document.service.NoteService
@@ -114,5 +118,20 @@ class NoteServiceImpl implements NoteService {
 
     if (log.isTraceEnabled())
       log.trace("#delete (context={}) result : note={}", params.getContext(), note);
+  }
+
+  @Override
+  public NoteComment comment(final CreateNoteCommentParams params) {
+    if (log.isTraceEnabled())
+      log.trace("#comment args : params={}", params);
+    notNull(params, "params");
+
+    NoteComment comment = this.commentFactory.create(params.getContext(), params.getUser(), params.getNote(), params.getBody(),
+        params.getTimestamp());
+    comment = this.dao.create(params.getContext(), comment);
+
+    if (log.isTraceEnabled())
+      log.trace("#comment (context={}) return : {}", params.getContext(), comment);
+    return comment;
   }
 }
