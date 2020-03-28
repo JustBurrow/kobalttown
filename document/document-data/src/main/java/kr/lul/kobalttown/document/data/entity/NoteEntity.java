@@ -3,6 +3,7 @@ package kr.lul.kobalttown.document.data.entity;
 import kr.lul.kobalttown.account.data.entity.AccountEntity;
 import kr.lul.kobalttown.account.data.mapping.AccountMapping;
 import kr.lul.kobalttown.account.domain.Account;
+import kr.lul.kobalttown.document.data.mapping.NoteCommentMapping;
 import kr.lul.kobalttown.document.data.mapping.NoteSnapshotMapping;
 import kr.lul.kobalttown.document.domain.*;
 import kr.lul.support.spring.data.jpa.entiy.SavableEntity;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static java.lang.String.format;
+import static java.util.Collections.unmodifiableList;
 import static kr.lul.common.util.Arguments.*;
 import static kr.lul.common.util.Texts.head;
 import static kr.lul.common.util.Texts.singleQuote;
@@ -46,6 +48,9 @@ public class NoteEntity extends SavableEntity implements Note {
   @OneToMany(targetEntity = NoteSnapshotEntity.class, mappedBy = NoteSnapshotMapping.COL_NOTE, cascade = CascadeType.PERSIST)
   @OrderBy(NoteSnapshotMapping.COL_VERSION + " ASC")
   private List<NoteSnapshot> history = new ArrayList<>();
+  @OneToMany(targetEntity = NoteCommentEntity.class, mappedBy = NoteCommentMapping.COL_NOTE)
+  @OrderBy(NoteCommentMapping.COL_CREATED_AT + " DESC")
+  private List<NoteComment> comments = new ArrayList<>();
   @Column(name = COL_DELETED_AT, nullable = false)
   private Instant deletedAt;
 
@@ -130,8 +135,6 @@ public class NoteEntity extends SavableEntity implements Note {
     public Instant getUpdatedAt() {
       return NoteEntity.this.updatedAt;
     }
-
-
   }
 
   @Override
@@ -169,6 +172,11 @@ public class NoteEntity extends SavableEntity implements Note {
       content = this.history.subList(from, to);
     }
     return new HistoryImpl<>(size, page, this.history.size(), content);
+  }
+
+  @Override
+  public List<NoteComment> getComments() {
+    return unmodifiableList(this.comments);
   }
 
   @Override

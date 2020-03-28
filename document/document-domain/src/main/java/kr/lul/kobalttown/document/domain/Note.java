@@ -5,6 +5,7 @@ import kr.lul.common.util.Validator;
 import kr.lul.kobalttown.account.domain.Account;
 
 import java.time.Instant;
+import java.util.List;
 
 import static kr.lul.common.util.Texts.head;
 
@@ -48,6 +49,8 @@ public interface Note extends DeletableDocument {
    * @return 업데이터 오브젝트.
    */
   NoteUpdater updater(Instant updatedAt);
+
+  List<NoteComment> getComments();
 
   /**
    * @return 최신 버전의 스냅샷.

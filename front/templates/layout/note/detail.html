@@ -48,9 +48,22 @@
     </div>
   </div>
   <div>
-    <ol>
-      <!-- TODO comments -->
-    </ol>
+    <div>
+      <ol>
+        <li th:each="comment : ${note.comments}">
+          <p th:text="${comment.body}">comment</p>
+          <div>
+            <form id="form-comment-0-delete" method="post"
+                  action="detail.html"
+                  th:id="${#strings.concat('form-comment-', comment.id, '-delete')}" th:method="delete"
+                  th:action="@{/notes/__${note.id}__/comments/__${comment.id}__}"></form>
+            <button form="form-comment-0-delete" th:form="${#strings.concat('form-comment-', comment.id, '-delete')}">
+              X
+            </button>
+          </div>
+        </li>
+      </ol>
+    </div>
     <!--/*@thymesVar id="commentReq" type="kr.lul.kobalttown.document.web.controller.request.CreateNoteCommentReq"*/-->
     <div th:object="${commentReq}" th:with="formId=${#strings.concat('form-note-', note.id, '-comment')}">
       <form id="form-note-0-comment" action="detail.html" method="post"
