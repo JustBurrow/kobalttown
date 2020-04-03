@@ -114,7 +114,8 @@ public class NoteControllerMvcTest {
     final long id = 123L;
 
     when(this.noteBorderline.create(any()))
-        .thenReturn(new NoteDetailDto(id, 0, new AccountSimpleDto(1L, "nickname"), "test body", this.before, this.before));
+        .thenReturn(new NoteDetailDto(id, 0, new AccountSimpleDto(1L, "nickname"), "test body",
+            List.of(), this.before, this.before));
 
     // WHEN
     this.mock.perform(
@@ -135,7 +136,8 @@ public class NoteControllerMvcTest {
     final long id = 123L;
 
     when(this.noteBorderline.create(any()))
-        .thenReturn(new NoteDetailDto(id, 0, new AccountSimpleDto(1L, "nickname"), "test body", this.before, this.before));
+        .thenReturn(new NoteDetailDto(id, 0, new AccountSimpleDto(1L, "nickname"), "test body",
+            List.of(), this.before, this.before));
 
     // WHEN
     this.mock.perform(
