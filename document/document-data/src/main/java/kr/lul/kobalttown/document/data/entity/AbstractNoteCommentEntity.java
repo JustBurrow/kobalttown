@@ -17,8 +17,6 @@ import java.util.Objects;
 import static javax.persistence.ConstraintMode.NO_CONSTRAINT;
 import static kr.lul.common.util.Arguments.*;
 import static kr.lul.kobalttown.document.data.mapping.AbstractNoteCommentMapping.*;
-import static kr.lul.kobalttown.document.data.mapping.NoteMapping.FK_NOTE_PK_ACCOUNT;
-import static kr.lul.kobalttown.document.data.mapping.NoteMapping.FK_NOTE_PK_ACCOUNT_COLUMNS;
 
 /**
  * @author justburrow
@@ -26,9 +24,11 @@ import static kr.lul.kobalttown.document.data.mapping.NoteMapping.FK_NOTE_PK_ACC
  */
 @Entity(name = ENTITY)
 @Table(name = TABLE,
-    indexes = {@Index(name = FK_NOTE_PK_ACCOUNT, columnList = FK_NOTE_PK_ACCOUNT_COLUMNS),
+    indexes = {@Index(name = FK_NOTE_COMMENT_PK_ACCOUNT, columnList = FK_NOTE_COMMENT_PK_ACCOUNT_COLUMNS),
         @Index(name = FK_NOTE_COMMENT_PK_NOTE_SNAPSHOT, columnList = FK_NOTE_COMMENT_PK_NOTE_SNAPSHOT_COLUMNS),
-        @Index(name = IDX_NOTE_COMMENT_RECENT, columnList = IDX_NOTE_COMMENT_RECENT_COLUMNS)})
+        @Index(name = FK_NOTE_COMMENT_RECOMMENT, columnList = FK_NOTE_COMMENT_RECOMMENT_COLUMNS),
+        @Index(name = IDX_NOTE_COMMENT_RECENT, columnList = IDX_NOTE_COMMENT_RECENT_COLUMNS),
+        @Index(name = IDX_NOTE_COMMENT_DELETED, columnList = IDX_NOTE_COMMENT_DELETED_COLUMNS)})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = COL_DISCRIMINATOR)
 public abstract class AbstractNoteCommentEntity extends CreatableEntity implements NoteComment {
@@ -38,7 +38,7 @@ public abstract class AbstractNoteCommentEntity extends CreatableEntity implemen
   protected long id;
   @ManyToOne(targetEntity = AccountEntity.class)
   @JoinColumn(name = COL_AUTHOR, nullable = false, updatable = false,
-      foreignKey = @ForeignKey(name = FK_NOTE_PK_ACCOUNT), referencedColumnName = AccountMapping.COL_ID)
+      foreignKey = @ForeignKey(name = FK_NOTE_COMMENT_PK_ACCOUNT), referencedColumnName = AccountMapping.COL_ID)
   protected Account author;
   @ManyToOne(targetEntity = NoteEntity.class)
   @JoinColumn(name = COL_NOTE, nullable = false, insertable = false, updatable = false,
@@ -55,6 +55,8 @@ public abstract class AbstractNoteCommentEntity extends CreatableEntity implemen
   protected NoteSnapshot snapshot;
   @Column(name = COL_BODY, nullable = false, updatable = false)
   protected String body;
+  @Column(name = COL_DELETED_AT, insertable = false)
+  protected Instant deletedAt;
 
   public AbstractNoteCommentEntity() { // JPA only
   }
@@ -77,6 +79,7 @@ public abstract class AbstractNoteCommentEntity extends CreatableEntity implemen
     this.version = snapshot.getVersion();
     this.snapshot = snapshot;
     this.body = body;
+    this.deletedAt = null;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,6 +103,19 @@ public abstract class AbstractNoteCommentEntity extends CreatableEntity implemen
   @Override
   public String getBody() {
     return this.body;
+  }
+
+  @Override
+  public void delete(final Instant deletedAt) {
+    notNull(deletedAt, "deletedAt");
+    ae(deletedAt, this.createdAt, "deletedAt");
+
+    this.deletedAt = deletedAt;
+  }
+
+  @Override
+  public Instant getDeletedAt() {
+    return this.deletedAt;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

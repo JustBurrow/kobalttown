@@ -17,7 +17,8 @@ import static kr.lul.kobalttown.document.data.mapping.NoteSnapshotMapping.*;
  * @since 2020/03/04
  */
 @Entity(name = ENTITY)
-@Table(name = TABLE)
+@Table(name = TABLE,
+    indexes = {@Index(name = IDX_NOTE_SNAPSHOT_DELETED, columnList = IDX_NOTE_SNAPSHOT_DELETED_COLUMNS)})
 public class NoteSnapshotEntity implements NoteSnapshot {
   @Embeddable
   public static class NoteSnapshotId implements NoteSnapshot.Id {

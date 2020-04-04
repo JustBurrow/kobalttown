@@ -21,4 +21,6 @@ public interface NoteService {
   void delete(DeleteNoteParams params);
 
   NoteComment comment(CreateNoteCommentParams params);
+
+  void delete(DeleteNoteCommentParams params);
 }

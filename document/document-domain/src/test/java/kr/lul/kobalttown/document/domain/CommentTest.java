@@ -49,6 +49,16 @@ public class CommentTest {
     }
 
     @Override
+    public void delete(final Instant deleteAt) {
+
+    }
+
+    @Override
+    public Instant getDeletedAt() {
+      return null;
+    }
+
+    @Override
     public Instant getCreatedAt() {
       return null;
     }

@@ -7,6 +7,7 @@ import kr.lul.kobalttown.document.data.mapping.NoteCommentMapping;
 import kr.lul.kobalttown.document.data.mapping.NoteSnapshotMapping;
 import kr.lul.kobalttown.document.domain.*;
 import kr.lul.support.spring.data.jpa.entiy.SavableEntity;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -49,6 +50,7 @@ public class NoteEntity extends SavableEntity implements Note {
   @OrderBy(NoteSnapshotMapping.COL_VERSION + " ASC")
   private List<NoteSnapshot> history = new ArrayList<>();
   @OneToMany(targetEntity = NoteCommentEntity.class, mappedBy = NoteCommentMapping.COL_NOTE)
+  @Where(clause = NoteCommentMapping.COL_DELETED_AT + " = NULL")
   @OrderBy(NoteCommentMapping.COL_CREATED_AT + " DESC")
   private List<NoteComment> comments = new ArrayList<>();
   @Column(name = COL_DELETED_AT, nullable = false)

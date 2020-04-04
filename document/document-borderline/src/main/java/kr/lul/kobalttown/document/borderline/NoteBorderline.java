@@ -65,4 +65,11 @@ public interface NoteBorderline {
    * @return 작성한 댓글.
    */
   NoteCommentDetailDto comment(CreateNoteCommentCmd cmd);
+
+  /**
+   * 노트에 댈릿 댓글을 삭제한다.
+   *
+   * @param cmd 댓글 정보.
+   */
+  void delete(DeleteNoteCommentCmd cmd);
 }

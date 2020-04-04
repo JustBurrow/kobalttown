@@ -267,7 +267,7 @@ public class NoteServiceTest {
 
   @Test
   public void test_delete_with_null() throws Exception {
-    assertThatThrownBy(() -> this.service.delete(null))
+    assertThatThrownBy(() -> this.service.delete((DeleteNoteParams) null))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("params is null.");
   }

@@ -348,4 +348,35 @@ class NoteControllerImpl implements NoteController {
       log.trace("#comment (context={}) result : template={}, model={}", context, template, model);
     return template;
   }
+
+  @Override
+  public String deleteComment(@AuthenticationPrincipal final User user,
+      @PathVariable(M.NOTE) final long note, @PathVariable(M.COMMENT) final long comment,
+      final Model model) {
+    if (log.isTraceEnabled())
+      log.trace("#deleteComment args : user={}, note={}, comment={}, model={}", user, note, comment, model);
+    notNull(user, "user");
+    notNull(model, "model");
+    if (0L >= note)
+      throw new NotFound("illegal note id : note=" + note);
+    if (0L >= comment)
+      throw new NotFound("illegal comment id : comment=" + comment);
+
+    final Context context = this.contextService.get();
+    final DeleteNoteCommentCmd cmd = new DeleteNoteCommentCmd(context, user.getId(), note, comment, this.timeProvider.now());
+
+    final String template;
+    try {
+      this.borderline.delete(cmd);
+      template = "redirect:" + newInstance().path(C.DETAIL).buildAndExpand(note);
+    } catch (final ValidationException e) {
+      final String msg = format("fail to delete note comment : comment=%d, note=%d", comment, note);
+      log.warn(msg, e);
+      throw new BadRequest(msg);
+    }
+
+    if (log.isTraceEnabled())
+      log.trace("#deleteComment (context={}) result : template={}, model={}", context, template, model);
+    return template;
+  }
 }

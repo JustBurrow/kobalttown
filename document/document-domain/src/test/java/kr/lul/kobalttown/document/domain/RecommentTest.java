@@ -55,6 +55,15 @@ public class RecommentTest {
         public String getBody() {
           return null;
         }
+
+        @Override
+        public void delete(final Instant deleteAt) {
+        }
+
+        @Override
+        public Instant getDeletedAt() {
+          return null;
+        }
       };
     }
 
@@ -85,6 +94,16 @@ public class RecommentTest {
 
     @Override
     public String getBody() {
+      return null;
+    }
+
+    @Override
+    public void delete(final Instant deleteAt) {
+
+    }
+
+    @Override
+    public Instant getDeletedAt() {
       return null;
     }
 

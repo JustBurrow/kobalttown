@@ -134,4 +134,20 @@ public interface NoteController {
   String comment(@AuthenticationPrincipal User user, @PathVariable(M.ID) long id,
       @ModelAttribute(M.CREATE_COMMENT_REQ) @Valid CreateNoteCommentReq commentReq, BindingResult binding,
       Model model);
+
+  /**
+   * 노트의 댓글 삭제하기.
+   *
+   * @param user    현재 유저.
+   * @param note    노트 ID.
+   * @param comment 댓글 ID.
+   * @param model   모델.
+   *
+   * @return 뷰 템플릿 이름.
+   */
+  @DeleteMapping(C.DELETE_COMMENT)
+  @PreAuthorize("hasAnyRole('USER')")
+  String deleteComment(@AuthenticationPrincipal User user,
+      @PathVariable(M.NOTE) long note, @PathVariable(M.COMMENT) long comment,
+      Model model);
 }

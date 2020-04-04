@@ -18,6 +18,7 @@ public abstract class AbstractNoteCommentMapping {
   public static final String COL_COMMENT = "comment";
   public static final String COL_BODY = "body";
   public static final String COL_CREATED_AT = CreatableEntity.COL_CREATED_AT;
+  public static final String COL_DELETED_AT = "deleted_at";
 
   public static final String FK_NOTE_COMMENT_PK_ACCOUNT = "fk_note_comment_pk_account";
   public static final String FK_NOTE_COMMENT_PK_ACCOUNT_COLUMNS = COL_AUTHOR + " ASC";
@@ -30,6 +31,9 @@ public abstract class AbstractNoteCommentMapping {
 
   public static final String IDX_NOTE_COMMENT_RECENT = "idx_note_comment_recent";
   public static final String IDX_NOTE_COMMENT_RECENT_COLUMNS = COL_NOTE + " ASC, " + COL_CREATED_AT + " DESC";
+
+  public static final String IDX_NOTE_COMMENT_DELETED = "idx_note_comment_deleted";
+  public static final String IDX_NOTE_COMMENT_DELETED_COLUMNS = COL_DELETED_AT + " ASC, " + COL_NOTE + " ASC";
 
   protected AbstractNoteCommentMapping() {
     throw new UnsupportedOperationException();

@@ -109,4 +109,21 @@ public class NoteDaoImpl implements NoteDao {
       log.trace("#create (context={}) return : {}", context, comment);
     return comment;
   }
+
+  @Override
+  public NoteComment readComment(final Context context, final long id) {
+    if (log.isTraceEnabled())
+      log.trace("#readComment args : context={}, id={}", context, id);
+    notNull(context, "context");
+
+    final NoteCommentEntity comment;
+    if (0L >= id)
+      comment = null;
+    else
+      comment = this.commentRepository.findById(id).orElse(null);
+
+    if (log.isTraceEnabled())
+      log.trace("#readComment (context={}) return : {}", context, comment);
+    return comment;
+  }
 }

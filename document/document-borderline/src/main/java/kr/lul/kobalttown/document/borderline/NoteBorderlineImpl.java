@@ -150,4 +150,25 @@ class NoteBorderlineImpl implements NoteBorderline {
       log.trace("#comment (context={}) return : {}", cmd.getContext(), dto);
     return dto;
   }
+
+  @Override
+  public void delete(final DeleteNoteCommentCmd cmd) {
+    if (log.isTraceEnabled())
+      log.trace("#delete args : cmd={}", cmd);
+    notNull(cmd, "cmd");
+
+    final Account user = this.accountService.read(new ReadAccountParams(cmd, cmd.getUser(), cmd.getTimestamp()));
+    if (null == user)
+      throw new ValidationException("user", cmd.getUser(), "user does not exist : user=" + cmd.getUser());
+
+    final Note note = this.service.read(new ReadNoteParams(cmd, user, cmd.getNote(), cmd.getTimestamp()));
+    if (null == note)
+      throw new ValidationException("note", cmd.getNote(), "note does not exist : note=" + cmd.getNote());
+
+    final DeleteNoteCommentParams params = new DeleteNoteCommentParams(cmd, user, note, cmd.getComment(), cmd.getTimestamp());
+    this.service.delete(params);
+
+    if (log.isTraceEnabled())
+      log.trace("#delete (context={}) complete.", cmd.getContext());
+  }
 }

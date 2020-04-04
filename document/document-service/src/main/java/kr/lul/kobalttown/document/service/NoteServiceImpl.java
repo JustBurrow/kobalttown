@@ -134,4 +134,22 @@ class NoteServiceImpl implements NoteService {
       log.trace("#comment (context={}) return : {}", params.getContext(), comment);
     return comment;
   }
+
+  @Override
+  public void delete(final DeleteNoteCommentParams params) {
+    if (log.isTraceEnabled())
+      log.trace("#delete args : params={}", params);
+    notNull(params, "params");
+    notNull(params.getUser(), "params.user");
+    notNull(params.getNote(), "params.note");
+
+    final NoteComment comment = this.dao.readComment(params.getContext(), params.getComment());
+    if (null == comment)
+      throw new ValidationException("comment", params.getComment());
+
+    comment.delete(params.getTimestamp());
+
+    if (log.isTraceEnabled())
+      log.trace("#delete (context={}) complete.", params.getContext());
+  }
 }

@@ -43,6 +43,7 @@ public class NoteCommentEntity extends AbstractNoteCommentEntity {
                .append(", snapshot=").append(this.snapshot)
                .append(", body=").append(singleQuote(head(this.body, 50)))
                .append(", createdAt=").append(this.createdAt)
+               .append(", deletedAt=").append(this.deletedAt)
                .append('}').toString();
   }
 }
