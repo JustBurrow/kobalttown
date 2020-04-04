@@ -7,7 +7,6 @@ import kr.lul.kobalttown.document.data.mapping.NoteCommentMapping;
 import kr.lul.kobalttown.document.data.mapping.NoteSnapshotMapping;
 import kr.lul.kobalttown.document.domain.*;
 import kr.lul.support.spring.data.jpa.entiy.SavableEntity;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -17,6 +16,7 @@ import java.util.Objects;
 
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
+import static javax.persistence.CascadeType.PERSIST;
 import static kr.lul.common.util.Arguments.*;
 import static kr.lul.common.util.Texts.head;
 import static kr.lul.common.util.Texts.singleQuote;
@@ -46,11 +46,13 @@ public class NoteEntity extends SavableEntity implements Note {
   private Account author;
   @Column(name = COL_BODY, nullable = false)
   private String body;
-  @OneToMany(targetEntity = NoteSnapshotEntity.class, mappedBy = NoteSnapshotMapping.COL_NOTE, cascade = CascadeType.PERSIST)
+  @OneToMany(targetEntity = NoteSnapshotEntity.class, mappedBy = NoteSnapshotMapping.COL_NOTE, cascade = PERSIST)
   @OrderBy(NoteSnapshotMapping.COL_VERSION + " ASC")
   private List<NoteSnapshot> history = new ArrayList<>();
-  @OneToMany(targetEntity = NoteCommentEntity.class, mappedBy = NoteCommentMapping.COL_NOTE)
-  @Where(clause = NoteCommentMapping.COL_DELETED_AT + " = NULL")
+  @OneToMany(targetEntity = NoteCommentEntity.class,
+      cascade = PERSIST,
+      mappedBy = NoteCommentMapping.COL_NOTE,
+      orphanRemoval = true)
   @OrderBy(NoteCommentMapping.COL_CREATED_AT + " DESC")
   private List<NoteComment> comments = new ArrayList<>();
   @Column(name = COL_DELETED_AT, nullable = false)
@@ -204,9 +206,16 @@ public class NoteEntity extends SavableEntity implements Note {
     return this.history.get(this.history.size() - 1);
   }
 
+  @Override
+  public void deleteComment(final Account author, final long id) {
+    notNull(author, "author");
+    positive(id, "id");
+
+    this.comments.remove(this.comments.stream().filter(c -> id == c.getId()).findFirst().get());
+  }
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // java.lang.Object
-
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
   public boolean equals(final Object o) {

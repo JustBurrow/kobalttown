@@ -50,25 +50,6 @@ public interface Comment extends Creatable<Instant>, SimpleString, UniqueIdentit
    */
   String getBody();
 
-  /**
-   * 댓글 삭제.
-   *
-   * @param deleteAt 삭제 시각.
-   */
-  void delete(Instant deleteAt);
-
-  /**
-   * @return 삭제된 시각. 삭제되지 않았으면 {@code null}.
-   */
-  Instant getDeletedAt();
-
-  /**
-   * @return 삭제되었으면 {@code true}.
-   */
-  default boolean isDeleted() {
-    return null != getDeletedAt();
-  }
-
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.common.util.SimpleString
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

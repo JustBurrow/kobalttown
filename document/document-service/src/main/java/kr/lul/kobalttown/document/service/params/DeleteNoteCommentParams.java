@@ -3,7 +3,6 @@ package kr.lul.kobalttown.document.service.params;
 import kr.lul.common.data.Context;
 import kr.lul.common.data.ContextContainer;
 import kr.lul.kobalttown.account.domain.Account;
-import kr.lul.kobalttown.document.domain.Note;
 
 import java.time.Instant;
 
@@ -13,11 +12,12 @@ import java.time.Instant;
  */
 public class DeleteNoteCommentParams extends ContextContainer {
   private Account user;
-  private Note note;
+  private long note;
   private long comment;
   private Instant timestamp;
 
-  public DeleteNoteCommentParams(final Context context, final Account user, final Note note, final long comment, final Instant timestamp) {
+  public DeleteNoteCommentParams(final Context context, final Account user, final long note, final long comment,
+      final Instant timestamp) {
     super(context);
     this.user = user;
     this.note = note;
@@ -26,7 +26,7 @@ public class DeleteNoteCommentParams extends ContextContainer {
   }
 
   public DeleteNoteCommentParams(
-      final ContextContainer container, final Account user, final Note note, final long comment, final Instant timestamp) {
+      final ContextContainer container, final Account user, final long note, final long comment, final Instant timestamp) {
     this(container.getContext(), user, note, comment, timestamp);
   }
 
@@ -34,7 +34,7 @@ public class DeleteNoteCommentParams extends ContextContainer {
     return this.user;
   }
 
-  public Note getNote() {
+  public long getNote() {
     return this.note;
   }
 

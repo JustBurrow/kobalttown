@@ -161,11 +161,8 @@ class NoteBorderlineImpl implements NoteBorderline {
     if (null == user)
       throw new ValidationException("user", cmd.getUser(), "user does not exist : user=" + cmd.getUser());
 
-    final Note note = this.service.read(new ReadNoteParams(cmd, user, cmd.getNote(), cmd.getTimestamp()));
-    if (null == note)
-      throw new ValidationException("note", cmd.getNote(), "note does not exist : note=" + cmd.getNote());
-
-    final DeleteNoteCommentParams params = new DeleteNoteCommentParams(cmd, user, note, cmd.getComment(), cmd.getTimestamp());
+    final DeleteNoteCommentParams params = new DeleteNoteCommentParams(cmd, user, cmd.getNote(), cmd.getComment(),
+        cmd.getTimestamp());
     this.service.delete(params);
 
     if (log.isTraceEnabled())

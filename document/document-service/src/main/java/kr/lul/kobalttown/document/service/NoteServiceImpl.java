@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 import static java.lang.String.format;
 import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Arguments.positive;
@@ -141,15 +143,18 @@ class NoteServiceImpl implements NoteService {
       log.trace("#delete args : params={}", params);
     notNull(params, "params");
     notNull(params.getUser(), "params.user");
-    notNull(params.getNote(), "params.note");
 
-    final NoteComment comment = this.dao.readComment(params.getContext(), params.getComment());
-    if (null == comment)
-      throw new ValidationException("comment", params.getComment());
+    final Note note = this.dao.read(params.getContext(), params.getNote());
+    if (null == note)
+      throw new ValidationException("note", params.getNote(), "note does not exist : note=" + params.getNote());
 
-    comment.delete(params.getTimestamp());
+    try {
+      note.deleteComment(params.getUser(), params.getComment());
+    } catch (final NoSuchElementException e) {
+      throw new ValidationException("comment", params.getComment(), e);
+    }
 
     if (log.isTraceEnabled())
-      log.trace("#delete (context={}) complete.", params.getContext());
+      log.trace("#delete (context={}) result : note={}", params.getContext(), note);
   }
 }

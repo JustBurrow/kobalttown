@@ -40,6 +40,11 @@ public class NoteTest {
     }
 
     @Override
+    public void deleteComment(Account author, long comment) {
+
+    }
+
+    @Override
     public NoteSnapshot now() {
       return null;
     }

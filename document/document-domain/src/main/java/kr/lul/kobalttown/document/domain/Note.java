@@ -37,6 +37,11 @@ public interface Note extends DeletableDocument {
   Account getAuthor();
 
   /**
+   * @return 최신 버전의 스냅샷.
+   */
+  NoteSnapshot now();
+
+  /**
    * @return 내용.
    */
   String getBody();
@@ -50,12 +55,18 @@ public interface Note extends DeletableDocument {
    */
   NoteUpdater updater(Instant updatedAt);
 
+  /**
+   * @return 댓글 목록.
+   */
   List<NoteComment> getComments();
 
   /**
-   * @return 최신 버전의 스냅샷.
+   * 댓글 삭제.
+   *
+   * @param author  댓글 작성자.
+   * @param comment 댓글 ID.
    */
-  NoteSnapshot now();
+  void deleteComment(Account author, long comment);
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.kobalttown.document.domain.Document

@@ -27,8 +27,7 @@ import static kr.lul.kobalttown.document.data.mapping.AbstractNoteCommentMapping
     indexes = {@Index(name = FK_NOTE_COMMENT_PK_ACCOUNT, columnList = FK_NOTE_COMMENT_PK_ACCOUNT_COLUMNS),
         @Index(name = FK_NOTE_COMMENT_PK_NOTE_SNAPSHOT, columnList = FK_NOTE_COMMENT_PK_NOTE_SNAPSHOT_COLUMNS),
         @Index(name = FK_NOTE_COMMENT_RECOMMENT, columnList = FK_NOTE_COMMENT_RECOMMENT_COLUMNS),
-        @Index(name = IDX_NOTE_COMMENT_RECENT, columnList = IDX_NOTE_COMMENT_RECENT_COLUMNS),
-        @Index(name = IDX_NOTE_COMMENT_DELETED, columnList = IDX_NOTE_COMMENT_DELETED_COLUMNS)})
+        @Index(name = IDX_NOTE_COMMENT_RECENT, columnList = IDX_NOTE_COMMENT_RECENT_COLUMNS)})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = COL_DISCRIMINATOR)
 public abstract class AbstractNoteCommentEntity extends CreatableEntity implements NoteComment {
@@ -55,8 +54,6 @@ public abstract class AbstractNoteCommentEntity extends CreatableEntity implemen
   protected NoteSnapshot snapshot;
   @Column(name = COL_BODY, nullable = false, updatable = false)
   protected String body;
-  @Column(name = COL_DELETED_AT, insertable = false)
-  protected Instant deletedAt;
 
   public AbstractNoteCommentEntity() { // JPA only
   }
@@ -79,7 +76,6 @@ public abstract class AbstractNoteCommentEntity extends CreatableEntity implemen
     this.version = snapshot.getVersion();
     this.snapshot = snapshot;
     this.body = body;
-    this.deletedAt = null;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -103,19 +99,6 @@ public abstract class AbstractNoteCommentEntity extends CreatableEntity implemen
   @Override
   public String getBody() {
     return this.body;
-  }
-
-  @Override
-  public void delete(final Instant deletedAt) {
-    notNull(deletedAt, "deletedAt");
-    ae(deletedAt, this.createdAt, "deletedAt");
-
-    this.deletedAt = deletedAt;
-  }
-
-  @Override
-  public Instant getDeletedAt() {
-    return this.deletedAt;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
