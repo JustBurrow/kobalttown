@@ -6,6 +6,7 @@ import kr.lul.kobalttown.account.domain.Account;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static kr.lul.common.util.Texts.head;
 
@@ -63,10 +64,12 @@ public interface Note extends DeletableDocument {
   /**
    * 댓글 삭제.
    *
-   * @param author  댓글 작성자.
-   * @param comment 댓글 ID.
+   * @param author 댓글 작성자.
+   * @param id     댓글 ID.
+   *
+   * @throws NoSuchElementException 댓글이 없을 때.
    */
-  void deleteComment(Account author, long comment);
+  void deleteComment(Account author, long id) throws NoSuchElementException;
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.kobalttown.document.domain.Document

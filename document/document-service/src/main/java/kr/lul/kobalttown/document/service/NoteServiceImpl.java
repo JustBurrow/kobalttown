@@ -152,6 +152,12 @@ class NoteServiceImpl implements NoteService {
       note.deleteComment(params.getUser(), params.getComment());
     } catch (final NoSuchElementException e) {
       throw new ValidationException("comment", params.getComment(), e);
+    } catch (final ValidationException e) {
+      log.warn("#delete fail to delete note comment : params=" + params, e);
+      if ("account".equals(e.getTargetName()))
+        throw new ValidationException("user", params.getUser(), "no delete comment permission : comment=" + params.getComment());
+      else
+        throw e;
     }
 
     if (log.isTraceEnabled())

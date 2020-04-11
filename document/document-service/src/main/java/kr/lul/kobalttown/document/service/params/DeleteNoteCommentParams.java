@@ -50,7 +50,7 @@ public class DeleteNoteCommentParams extends ContextContainer {
   public String toString() {
     return new StringBuilder()
                .append("{context=").append(this.context)
-               .append(", user=").append(this.user)
+               .append(", user=").append(this.user.toSimpleString())
                .append(", note=").append(this.note)
                .append(", comment=").append(this.comment)
                .append(", timestamp=").append(this.timestamp)

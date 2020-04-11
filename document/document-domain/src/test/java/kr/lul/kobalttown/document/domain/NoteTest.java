@@ -40,7 +40,7 @@ public class NoteTest {
     }
 
     @Override
-    public void deleteComment(Account author, long comment) {
+    public void deleteComment(final Account author, final long id) {
 
     }
 

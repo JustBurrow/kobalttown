@@ -1,5 +1,6 @@
 package kr.lul.kobalttown.document.data.entity;
 
+import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.account.data.entity.AccountEntity;
 import kr.lul.kobalttown.account.data.mapping.AccountMapping;
 import kr.lul.kobalttown.account.domain.Account;
@@ -12,6 +13,7 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import static java.lang.String.format;
@@ -207,11 +209,18 @@ public class NoteEntity extends SavableEntity implements Note {
   }
 
   @Override
-  public void deleteComment(final Account author, final long id) {
-    notNull(author, "author");
+  public void deleteComment(final Account account, final long id) throws NoSuchElementException {
+    notNull(account, "account");
     positive(id, "id");
 
-    this.comments.remove(this.comments.stream().filter(c -> id == c.getId()).findFirst().get());
+    // TODO 댓글 찾기 로직 개선. 대량의 댓글이 있을 경우의 속도 및 DB 부하 문제.
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent") final NoteComment comment =
+        this.comments.stream().filter(c -> id == c.getId()).findFirst().get();
+    if (!this.author.equals(account) || !comment.getAuthor().equals(account))
+      throw new ValidationException("account", account, "no delete comment permission : account=" + account.toSimpleString());
+
+    this.comments.remove(comment);
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

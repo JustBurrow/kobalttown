@@ -48,7 +48,7 @@ public class ListNoteParams extends ContextContainer {
   @Override
   public String toString() {
     return new StringBuilder("{context=").append(this.context)
-               .append(", user=").append(this.user)
+               .append(", user=").append(this.user.toSimpleString())
                .append(", page=").append(this.page)
                .append(", limit=").append(this.limit)
                .append(", timestamp=").append(this.timestamp)
