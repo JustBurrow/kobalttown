@@ -68,13 +68,13 @@
             <div>
               <form id="form-comment-0-delete" method="post"
                     action="detail.html"
-                    th:if="${#authentication.principal.id == comment.author.id}"
+                    th:if="${#authentication.principal.id == note.author.id || #authentication.principal.id == comment.author.id}"
                     th:id="${#strings.concat('form-comment-', comment.id, '-delete')}" th:method="delete"
                     th:action="@{/notes/__${note.id}__/comments/__${comment.id}__}"></form>
               <button form="form-comment-0-delete"
                       th:form="${#strings.concat('form-comment-', comment.id, '-delete')}"
-                      th:disabled="${#authentication.principal.id != comment.author.id}"
-                      th:title="${#authentication.principal.id == comment.author.id ? 'DELETE' : 'No delete permission'}">
+                      th:disabled="${#authentication.principal.id != note.author.id && #authentication.principal.id != comment.author.id}"
+                      th:title="${#authentication.principal.id == note.author.id || #authentication.principal.id == comment.author.id ? 'DELETE' : 'No delete permission'}">
                 X
               </button>
             </div>
