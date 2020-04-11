@@ -2,24 +2,27 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:lang="${#locale}">
 <head>
-    <meta name="author" content="justburrow" th:remove="all"/>
-    <meta name="since" content="2019/12/17 23:54" th:remove="all"/>
-    <meta charset="UTF-8"/>
-    <title>Navbar : Authenticated</title>
+  <meta name="author" content="justburrow" th:remove="all"/>
+  <meta name="since" content="2019/12/17 23:54" th:remove="all"/>
+  <meta charset="UTF-8"/>
+  <title>Navbar : Authenticated</title>
 </head>
 <body>
 <header>
-    <div th:fragment="navbar">
-        <div>
-            <a href="../../layout/account/setting.html"
-               th:href="@{/accounts/setting}">계정 관리</a>
-            <form id="form-logout" action="anonymous.html" method="post" th:action="@{/logout}"></form>
-            <button form="form-logout" th:text="#{global.navbar.sign-out}">log-out</button>
-        </div>
+  <div th:fragment="navbar">
+    <div>
+      <a href="../../layout/note/index.html" th:href="@{/notes}">Note</a>
     </div>
+    <div>
+      <a href="../../layout/account/setting.html"
+         th:href="@{/accounts/setting}">계정 관리</a>
+      <form id="form-logout" action="anonymous.html" method="post" th:action="@{/logout}"></form>
+      <button form="form-logout" th:text="#{global.navbar.sign-out}">log-out</button>
+    </div>
+  </div>
 </header>
 <main>
-    <h1>Navbar : Authenticated</h1>
+  <h1>Navbar : Authenticated</h1>
 </main>
 </body>
 </html>

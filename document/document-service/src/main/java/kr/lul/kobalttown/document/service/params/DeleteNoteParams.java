@@ -42,10 +42,10 @@ public class DeleteNoteParams extends ContextContainer {
   @Override
   public String toString() {
     return new StringBuilder()
-               .append("{user=").append(this.user)
+               .append("{context=").append(this.context)
+               .append(", user=").append(this.user.toSimpleString())
                .append(", note=").append(this.note)
                .append(", timestamp=").append(this.timestamp)
-               .append(", context=").append(this.context)
                .append('}').toString();
   }
 }

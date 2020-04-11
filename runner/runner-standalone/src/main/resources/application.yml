@@ -37,6 +37,11 @@ spring:
     prefix: file:./templates/
   messages:
     basename: i18n/messages,i18n/errors,i18n/mails
+  devtools:
+    restart:
+      enabled: false
+    livereload:
+      enabled: false
 
 server:
   servlet:

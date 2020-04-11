@@ -2,42 +2,43 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:lang="${#locale}">
 <head>
-    <meta name="author" content="justburrow" th:remove="all"/>
-    <meta name="since" content="2020/03/14 7:56" th:remove="all"/>
-    <meta charset="UTF-8"/>
-    <title>Update Note</title>
+  <meta name="author" content="justburrow" th:remove="all"/>
+  <meta name="since" content="2020/03/14 7:56" th:remove="all"/>
+  <meta charset="UTF-8"/>
+  <title>Update Note</title>
 </head>
 <body>
 <header th:replace="component/navbar/index :: navbar"></header>
 <main>
-    <h1>Update Note</h1>
-    <!--/*@thymesVar id="note" type="kr.lul.kobalttown.document.dto.NoteDetailDto"*/-->
-    <!--/*@thymesVar id="updateReq" type="kr.lul.kobalttown.document.web.controller.request.UpdateNoteReq"*/-->
-    <div>
-        <form id="form-note" action="detail.html" method="post"
-              th:action="@{/notes/__${note.id}__}" th:method="patch"></form>
-        <div th:object="${updateReq}">
-            <label for="body">Body</label>
-            <div>
-                <textarea id="body"
-                          form="form-note" name="body"
-                          th:field="*{body}"></textarea>
-            </div>
-        </div>
-        <div>
-            <button form="form-note">UPDATE</button>
-            <button type="reset" form="form-note">RESET</button>
-            <a href="detail.html" th:href="@{/notes/__${note.id}__}">CANCEL</a>
-        </div>
+  <h1>Update Note</h1>
+  <!--/*@thymesVar id="note" type="kr.lul.kobalttown.document.dto.NoteDetailDto"*/-->
+  <!--/*@thymesVar id="updateReq" type="kr.lul.kobalttown.document.web.controller.request.UpdateNoteReq"*/-->
+  <div>
+    <form id="form-note" action="detail.html" method="post"
+          th:if="${#authentication.principal.id == note.author.id}"
+          th:action="@{/notes/__${note.id}__}" th:method="patch"></form>
+    <div th:object="${updateReq}">
+      <label for="body">Body</label>
+      <div>
+          <textarea id="body"
+                    form="form-note" name="body"
+                    th:field="*{body}"></textarea>
+      </div>
     </div>
-    <dl th:object="${note}">
-        <dt>Version</dt>
-        <dd><span th:text="*{version}">version</span></dd>
-        <dt>Update</dt>
-        <dd>
-            <time th:replace="component/tag/time :: time(*{updatedAt})">update</time>
-        </dd>
-    </dl>
+    <div>
+      <button form="form-note">UPDATE</button>
+      <button type="reset" form="form-note">RESET</button>
+      <a href="detail.html" th:href="@{/notes/__${note.id}__}">CANCEL</a>
+    </div>
+  </div>
+  <dl th:object="${note}">
+    <dt>Version</dt>
+    <dd><span th:text="*{version}">version</span></dd>
+    <dt>Update</dt>
+    <dd>
+      <time th:replace="component/tag/time :: time(*{updatedAt})">update</time>
+    </dd>
+  </dl>
 </main>
 </body>
 </html>

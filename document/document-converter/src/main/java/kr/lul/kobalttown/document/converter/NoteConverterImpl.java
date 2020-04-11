@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
 import static kr.lul.common.util.Arguments.notNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -22,6 +23,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Service
 class NoteConverterImpl implements NoteConverter {
   protected static final Logger log = getLogger(NoteConverterImpl.class);
+
+  @Autowired
+  private NoteCommentConverter commentConverter;
 
   @Autowired
   private AccountConverter accountConverter;
@@ -74,6 +78,7 @@ class NoteConverterImpl implements NoteConverter {
       dto = new NoteDetailDto(note.getId(), note.getVersion(),
           this.accountConverter.convert(note.getAuthor(), AccountSimpleDto.class),
           note.getBody(),
+          note.getComments().stream().map(comment -> this.commentConverter.detail(comment)).collect(toList()),
           this.timeProvider.zonedDateTime(note.getCreatedAt()),
           this.timeProvider.zonedDateTime(note.getUpdatedAt()));
 

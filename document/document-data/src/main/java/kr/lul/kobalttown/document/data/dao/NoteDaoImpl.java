@@ -3,9 +3,12 @@ package kr.lul.kobalttown.document.data.dao;
 import kr.lul.common.data.Context;
 import kr.lul.common.data.Pagination;
 import kr.lul.common.data.PaginationImpl;
+import kr.lul.kobalttown.document.data.entity.NoteCommentEntity;
 import kr.lul.kobalttown.document.data.entity.NoteEntity;
+import kr.lul.kobalttown.document.data.repository.NoteCommentRepository;
 import kr.lul.kobalttown.document.data.repository.NoteRepository;
 import kr.lul.kobalttown.document.domain.Note;
+import kr.lul.kobalttown.document.domain.NoteComment;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +33,8 @@ public class NoteDaoImpl implements NoteDao {
 
   @Autowired
   private NoteRepository repository;
+  @Autowired
+  private NoteCommentRepository commentRepository;
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.kobalttown.document.data.dao.NoteDao
@@ -63,7 +68,7 @@ public class NoteDaoImpl implements NoteDao {
       note = this.repository.findById(id)
                  .orElse(null);
 
-    if (((NoteEntity) note).isDelete())
+    if (null != note && ((NoteEntity) note).isDelete())
       note = null;
 
     if (log.isTraceEnabled())
@@ -87,5 +92,38 @@ public class NoteDaoImpl implements NoteDao {
     if (log.isTraceEnabled())
       log.trace("#list (context={}) return : {}", context, list);
     return list;
+  }
+
+  @Override
+  public NoteComment create(final Context context, NoteComment comment) {
+    if (log.isTraceEnabled())
+      log.trace("#create args : context={}, comment={}", context, comment);
+    notNull(context, "context");
+    notNull(comment, "comment");
+    notPositive(comment.getId(), "comment.id");
+    typeOf(comment, NoteCommentEntity.class, "comment");
+
+    comment = this.commentRepository.save((NoteCommentEntity) comment);
+
+    if (log.isTraceEnabled())
+      log.trace("#create (context={}) return : {}", context, comment);
+    return comment;
+  }
+
+  @Override
+  public NoteComment readComment(final Context context, final long id) {
+    if (log.isTraceEnabled())
+      log.trace("#readComment args : context={}, id={}", context, id);
+    notNull(context, "context");
+
+    final NoteCommentEntity comment;
+    if (0L >= id)
+      comment = null;
+    else
+      comment = this.commentRepository.findById(id).orElse(null);
+
+    if (log.isTraceEnabled())
+      log.trace("#readComment (context={}) return : {}", context, comment);
+    return comment;
   }
 }

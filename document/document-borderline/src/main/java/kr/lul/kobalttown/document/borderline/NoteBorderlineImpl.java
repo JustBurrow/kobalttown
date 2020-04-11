@@ -6,8 +6,11 @@ import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.service.AccountService;
 import kr.lul.kobalttown.account.service.params.ReadAccountParams;
 import kr.lul.kobalttown.document.borderline.command.*;
+import kr.lul.kobalttown.document.converter.NoteCommentConverter;
 import kr.lul.kobalttown.document.converter.NoteConverter;
 import kr.lul.kobalttown.document.domain.Note;
+import kr.lul.kobalttown.document.domain.NoteComment;
+import kr.lul.kobalttown.document.dto.NoteCommentDetailDto;
 import kr.lul.kobalttown.document.dto.NoteDetailDto;
 import kr.lul.kobalttown.document.dto.NoteSimpleDto;
 import kr.lul.kobalttown.document.service.NoteService;
@@ -33,6 +36,8 @@ class NoteBorderlineImpl implements NoteBorderline {
   private NoteService service;
   @Autowired
   private NoteConverter converter;
+  @Autowired
+  private NoteCommentConverter commentConverter;
   @Autowired
   private AccountService accountService;
 
@@ -123,5 +128,44 @@ class NoteBorderlineImpl implements NoteBorderline {
       throw new ValidationException("user", cmd.getUser(), "user does not exist : " + cmd.getUser());
 
     this.service.delete(new DeleteNoteParams(cmd, user, cmd.getNote(), cmd.getTimestamp()));
+  }
+
+  @Override
+  public NoteCommentDetailDto comment(final CreateNoteCommentCmd cmd) {
+    if (log.isTraceEnabled())
+      log.trace("#comment args : cmd={}", cmd);
+    notNull(cmd, "cmd");
+
+    final Account user = this.accountService.read(new ReadAccountParams(cmd, cmd.getUser(), cmd.getTimestamp()));
+    if (null == user)
+      throw new ValidationException("user", cmd.getUser(), "user does not exist : " + cmd.getUser());
+
+    final Note note = this.service.read(new ReadNoteParams(cmd, user, cmd.getNote(), cmd.getTimestamp()));
+
+    final CreateNoteCommentParams params = new CreateNoteCommentParams(cmd, user, note, cmd.getBody(), cmd.getTimestamp());
+    final NoteComment comment = this.service.comment(params);
+    final NoteCommentDetailDto dto = this.commentConverter.detail(comment);
+
+    if (log.isTraceEnabled())
+      log.trace("#comment (context={}) return : {}", cmd.getContext(), dto);
+    return dto;
+  }
+
+  @Override
+  public void delete(final DeleteNoteCommentCmd cmd) {
+    if (log.isTraceEnabled())
+      log.trace("#delete args : cmd={}", cmd);
+    notNull(cmd, "cmd");
+
+    final Account user = this.accountService.read(new ReadAccountParams(cmd, cmd.getUser(), cmd.getTimestamp()));
+    if (null == user)
+      throw new ValidationException("user", cmd.getUser(), "user does not exist : user=" + cmd.getUser());
+
+    final DeleteNoteCommentParams params = new DeleteNoteCommentParams(cmd, user, cmd.getNote(), cmd.getComment(),
+        cmd.getTimestamp());
+    this.service.delete(params);
+
+    if (log.isTraceEnabled())
+      log.trace("#delete (context={}) complete.", cmd.getContext());
   }
 }

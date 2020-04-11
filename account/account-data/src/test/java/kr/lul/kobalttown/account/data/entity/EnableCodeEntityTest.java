@@ -173,9 +173,10 @@ public class EnableCodeEntityTest {
     assertThatThrownBy(
         () -> new EnableCodeEntity(this.accountFactory.create(1L, nickname(), false, this.before),
             email(), token(), this.before.plus(ttl()), null))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("createdAt is null.")
-        .hasNoCause();
+        .isInstanceOf(ValidationException.class)
+        .hasNoCause()
+        .extracting("targetName", "target", "message")
+        .containsSequence("createdAt", null, "createdAt is null.");
   }
 
   @Test

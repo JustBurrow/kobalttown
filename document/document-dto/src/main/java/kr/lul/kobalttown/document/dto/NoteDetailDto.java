@@ -3,6 +3,7 @@ package kr.lul.kobalttown.document.dto;
 import kr.lul.kobalttown.account.dto.AccountSimpleDto;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 import static java.lang.String.format;
 import static kr.lul.common.util.Texts.singleQuote;
@@ -13,6 +14,7 @@ import static kr.lul.common.util.Texts.singleQuote;
  */
 public class NoteDetailDto extends AbstractNoteDto<AccountSimpleDto> {
   private int version;
+  private List<NoteCommentDetailDto> comments;
   private ZonedDateTime createdAt;
   private ZonedDateTime updatedAt;
 
@@ -20,9 +22,10 @@ public class NoteDetailDto extends AbstractNoteDto<AccountSimpleDto> {
   }
 
   public NoteDetailDto(final long id, final int version, final AccountSimpleDto author, final String body,
-      final ZonedDateTime createdAt, final ZonedDateTime updatedAt) {
+      final List<NoteCommentDetailDto> comments, final ZonedDateTime createdAt, final ZonedDateTime updatedAt) {
     super(id, author, body);
     setVersion(version);
+    setComments(comments);
     setCreatedAt(createdAt);
     setUpdatedAt(updatedAt);
   }
@@ -33,6 +36,14 @@ public class NoteDetailDto extends AbstractNoteDto<AccountSimpleDto> {
 
   public void setVersion(final int version) {
     this.version = version;
+  }
+
+  public List<NoteCommentDetailDto> getComments() {
+    return this.comments;
+  }
+
+  public void setComments(final List<NoteCommentDetailDto> comments) {
+    this.comments = comments;
   }
 
   public ZonedDateTime getCreatedAt() {
@@ -53,7 +64,7 @@ public class NoteDetailDto extends AbstractNoteDto<AccountSimpleDto> {
 
   @Override
   public String toString() {
-    return format("{id=%d, version=%d, author=%s, body=%s, createdAt=%s, updatedAt=%s}",
-        this.id, this.version, this.author, singleQuote(this.body), this.createdAt, this.updatedAt);
+    return format("{id=%d, version=%d, author=%s, body=%s, comments=%s createdAt=%s, updatedAt=%s}",
+        this.id, this.version, this.author, singleQuote(this.body), this.comments, this.createdAt, this.updatedAt);
   }
 }

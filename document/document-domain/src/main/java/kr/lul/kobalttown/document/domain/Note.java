@@ -5,6 +5,8 @@ import kr.lul.common.util.Validator;
 import kr.lul.kobalttown.account.domain.Account;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 import static kr.lul.common.util.Texts.head;
 
@@ -14,7 +16,7 @@ import static kr.lul.common.util.Texts.head;
  * @author justburrow
  * @since 2020/01/28
  */
-public interface Note extends Document {
+public interface Note extends DeletableDocument {
   String ATTR_AUTHOR = "author";
   String ATTR_BODY = "body";
 
@@ -36,6 +38,11 @@ public interface Note extends Document {
   Account getAuthor();
 
   /**
+   * @return 최신 버전의 스냅샷.
+   */
+  NoteSnapshot now();
+
+  /**
    * @return 내용.
    */
   String getBody();
@@ -50,13 +57,19 @@ public interface Note extends Document {
   NoteUpdater updater(Instant updatedAt);
 
   /**
-   * 노트 삭제하기.
-   *
-   * @param deletedAt 삭제 시각.
-   *
-   * @throws IllegalStateException 이미 삭제된 노트일 때.
+   * @return 댓글 목록.
    */
-  void delete(Instant deletedAt) throws IllegalStateException;
+  List<NoteComment> getComments();
+
+  /**
+   * 댓글 삭제.
+   *
+   * @param author 댓글 작성자.
+   * @param id     댓글 ID.
+   *
+   * @throws NoSuchElementException 댓글이 없을 때.
+   */
+  void deleteComment(Account author, long id) throws NoSuchElementException;
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.kobalttown.document.domain.Document

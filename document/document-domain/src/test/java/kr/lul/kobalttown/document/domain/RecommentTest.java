@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 
 import java.net.URI;
+import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -20,6 +21,11 @@ public class RecommentTest {
     @Override
     public Comment getComment() {
       return new Comment() {
+        @Override
+        public Instant getCreatedAt() {
+          return null;
+        }
+
         @Override
         public Class<Comment> type() {
           return Comment.class;
@@ -79,6 +85,11 @@ public class RecommentTest {
 
     @Override
     public String getBody() {
+      return null;
+    }
+
+    @Override
+    public Instant getCreatedAt() {
       return null;
     }
   }

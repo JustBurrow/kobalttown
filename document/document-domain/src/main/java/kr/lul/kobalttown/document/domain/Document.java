@@ -39,6 +39,11 @@ public interface Document extends Savable<Instant>, SimpleString, UniqueIdentity
     }
   };
 
+  Validator<Instant> CREATED_AT_VALIDATOR = createdAt -> {
+    if (null == createdAt)
+      throw new ValidationException(ATTR_CREATED_AT, null, "createdAt is null.");
+  };
+
   /**
    * @return 도큐먼트 종류.
    */

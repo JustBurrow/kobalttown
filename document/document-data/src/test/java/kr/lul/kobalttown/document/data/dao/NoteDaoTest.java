@@ -70,7 +70,7 @@ public class NoteDaoTest {
 
   @Test
   public void test_create_with_null_note() throws Exception {
-    assertThatThrownBy(() -> this.dao.create(new Context(), null))
+    assertThatThrownBy(() -> this.dao.create(new Context(), (Note) null))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("note is null.");
   }

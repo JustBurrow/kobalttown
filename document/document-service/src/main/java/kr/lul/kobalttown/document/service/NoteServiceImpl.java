@@ -3,13 +3,17 @@ package kr.lul.kobalttown.document.service;
 import kr.lul.common.data.Pagination;
 import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.document.data.dao.NoteDao;
+import kr.lul.kobalttown.document.data.factory.NoteCommentFactory;
 import kr.lul.kobalttown.document.data.factory.NoteFactory;
 import kr.lul.kobalttown.document.domain.Note;
+import kr.lul.kobalttown.document.domain.NoteComment;
 import kr.lul.kobalttown.document.domain.NoteUpdater;
 import kr.lul.kobalttown.document.service.params.*;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
 
 import static java.lang.String.format;
 import static kr.lul.common.util.Arguments.notNull;
@@ -28,6 +32,8 @@ class NoteServiceImpl implements NoteService {
   private NoteDao dao;
   @Autowired
   private NoteFactory factory;
+  @Autowired
+  private NoteCommentFactory commentFactory;
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // kr.lul.kobalttown.document.service.NoteService
@@ -111,6 +117,48 @@ class NoteServiceImpl implements NoteService {
       throw new ValidationException("note", params.getNote(), "note does not exist : note.id=" + params.getNote());
     else
       note.delete(params.getTimestamp());
+
+    if (log.isTraceEnabled())
+      log.trace("#delete (context={}) result : note={}", params.getContext(), note);
+  }
+
+  @Override
+  public NoteComment comment(final CreateNoteCommentParams params) {
+    if (log.isTraceEnabled())
+      log.trace("#comment args : params={}", params);
+    notNull(params, "params");
+
+    NoteComment comment = this.commentFactory.create(params.getContext(), params.getUser(), params.getNote(), params.getBody(),
+        params.getTimestamp());
+    comment = this.dao.create(params.getContext(), comment);
+
+    if (log.isTraceEnabled())
+      log.trace("#comment (context={}) return : {}", params.getContext(), comment);
+    return comment;
+  }
+
+  @Override
+  public void delete(final DeleteNoteCommentParams params) {
+    if (log.isTraceEnabled())
+      log.trace("#delete args : params={}", params);
+    notNull(params, "params");
+    notNull(params.getUser(), "params.user");
+
+    final Note note = this.dao.read(params.getContext(), params.getNote());
+    if (null == note)
+      throw new ValidationException("note", params.getNote(), "note does not exist : note=" + params.getNote());
+
+    try {
+      note.deleteComment(params.getUser(), params.getComment());
+    } catch (final NoSuchElementException e) {
+      throw new ValidationException("comment", params.getComment(), e);
+    } catch (final ValidationException e) {
+      log.warn("#delete fail to delete note comment : params=" + params, e);
+      if ("account".equals(e.getTargetName()))
+        throw new ValidationException("user", params.getUser(), "no delete comment permission : comment=" + params.getComment());
+      else
+        throw e;
+    }
 
     if (log.isTraceEnabled())
       log.trace("#delete (context={}) result : note={}", params.getContext(), note);

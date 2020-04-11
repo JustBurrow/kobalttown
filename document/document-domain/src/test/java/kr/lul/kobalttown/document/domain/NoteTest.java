@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 
 import java.net.URI;
 import java.time.Instant;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -30,6 +31,26 @@ public class NoteTest {
 
     @Override
     public NoteUpdater updater(final Instant updatedAt) {
+      return null;
+    }
+
+    @Override
+    public List<NoteComment> getComments() {
+      return null;
+    }
+
+    @Override
+    public void deleteComment(final Account author, final long id) {
+
+    }
+
+    @Override
+    public NoteSnapshot now() {
+      return null;
+    }
+
+    @Override
+    public Instant getDeletedAt() {
       return null;
     }
 

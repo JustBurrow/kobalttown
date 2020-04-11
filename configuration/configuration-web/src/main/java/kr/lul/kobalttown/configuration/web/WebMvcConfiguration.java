@@ -1,5 +1,6 @@
 package kr.lul.kobalttown.configuration.web;
 
+import com.github.bufferings.thymeleaf.extras.nl2br.dialect.Nl2brDialect;
 import kr.lul.common.web.http.status.exception.client.NotFound;
 import kr.lul.kobalttown.page.root.GlobalMvc.V;
 import kr.lul.kobalttown.page.root.RootMvc;
@@ -54,6 +55,11 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
   @Bean
   public SpringWebExceptionHandler springWebExceptionHandler() {
     return new SpringWebExceptionHandler();
+  }
+
+  @Bean
+  public Nl2brDialect dialect() {
+    return new Nl2brDialect();
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

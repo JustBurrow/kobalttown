@@ -2,6 +2,7 @@ package kr.lul.kobalttown.document.service;
 
 import kr.lul.common.data.Pagination;
 import kr.lul.kobalttown.document.domain.Note;
+import kr.lul.kobalttown.document.domain.NoteComment;
 import kr.lul.kobalttown.document.service.params.*;
 
 /**
@@ -18,4 +19,8 @@ public interface NoteService {
   Note update(UpdateNoteParams params);
 
   void delete(DeleteNoteParams params);
+
+  NoteComment comment(CreateNoteCommentParams params);
+
+  void delete(DeleteNoteCommentParams params);
 }

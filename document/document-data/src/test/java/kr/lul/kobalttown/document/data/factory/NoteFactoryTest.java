@@ -4,6 +4,7 @@ import kr.lul.common.data.Context;
 import kr.lul.common.data.Creatable;
 import kr.lul.common.data.Updatable;
 import kr.lul.common.util.TimeProvider;
+import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.test.AccountTestTool;
 import kr.lul.kobalttown.document.data.DocumentDataTestConfiguration;
@@ -24,8 +25,7 @@ import java.util.List;
 
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.apache.commons.lang3.RandomStringUtils.random;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -45,10 +45,13 @@ public class NoteFactoryTest {
   @Autowired
   private TimeProvider timeProvider;
 
+  private Account account;
   private Instant instant;
 
   @Before
   public void setUp() throws Exception {
+    this.account = this.accountTestTool.account();
+    log.info("SETUP - account={}", this.account);
     this.instant = this.timeProvider.now();
     log.info("SETUP - instant={}", this.instant);
   }
@@ -56,60 +59,62 @@ public class NoteFactoryTest {
   @Test
   public void test_create_with_null_account() throws Exception {
     assertThatThrownBy(() -> this.factory.create(new Context(), null, "body", this.instant))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("author is null.");
+        .isInstanceOf(ValidationException.class)
+        .hasNoCause()
+        .extracting(new String[]{"targetName", "target", "message"})
+        .containsSequence("owner", null, "owner is null.");
   }
 
   @Test
   public void test_create_with_future_account() throws Exception {
-    // GIVEN
-    final Account author = this.accountTestTool.account();
-    log.info("GIVEN - author={}", author);
-
-    // WHEN & THEN
-    assertThatThrownBy(() -> this.factory.create(new Context(), author, "body", author.getCreatedAt().minusMillis(1L)))
+    assertThatThrownBy(
+        () -> this.factory.create(new Context(), this.account, "body", this.account.getCreatedAt().minusMillis(1L)))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessageStartingWith("");
   }
 
   @Test
   public void test_create_with_null_body() throws Exception {
-    // GIVEN
-    final Account account = this.accountTestTool.account();
-    log.info("GIVEN - account={}", account);
+    // WHEN
+    final ValidationException exception = catchThrowableOfType(
+        () -> this.factory.create(new Context(), this.account, null, this.instant), ValidationException.class);
+    log.info("WHEN - exception=" + exception);
 
-    // WHEN & THEN
-    assertThatThrownBy(() -> this.factory.create(new Context(), account, null, this.instant))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("body is null.");
+    // THEN
+    assertThat(exception)
+        .isNotNull()
+        .extracting("targetName", "target", "message")
+        .containsSequence("body", null, "body is null.");
   }
 
   @Test
-  public void test_create_with_null_instant() throws Exception {
+  public void test_create_with_null_createdAt() throws Exception {
     // GIVEN
-    final Account account = this.accountTestTool.account();
-    log.info("GIVEN - account={}", account);
     final String body = random(current().nextInt(10, 100));
     log.info("GIVEN - body={}", body);
 
-    // WHEN & THEN
-    assertThatThrownBy(() -> this.factory.create(new Context(), account, body, null))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("createdAt is null.");
+    // WHEN
+    final ValidationException ex = catchThrowableOfType(() -> this.factory.create(new Context(), this.account, body, null),
+        ValidationException.class);
+    log.info("WHEN - ex=" + ex);
+
+    // THEN
+    assertThat(ex)
+        .isNotNull()
+        .extracting("targetName", "target", "message")
+        .containsSequence("createdAt", null, "createdAt is null.");
   }
 
   @Test
   public void test_create() throws Exception {
     // GIVEN
-    final Account account = this.accountTestTool.account();
-    log.info("GIVEN - account={}", account);
     final String body = random(current().nextInt(100));
     log.info("GIVEN - body={}", body);
     final Instant createdAt = this.timeProvider.now();
     log.info("GIVEN - createdAt={}", createdAt);
 
     // WHEN
-    final Note note = this.factory.create(new Context(), account, body, createdAt);
+    final Note note = this.factory.create(new Context(), this.account, body, createdAt);
     log.info("WHEN - note={}", note);
 
     // THEN
@@ -117,7 +122,7 @@ public class NoteFactoryTest {
         .isNotNull()
         .extracting(Document::getId, Document::getVersion, Note::getAuthor, Note::getBody,
             Creatable::getCreatedAt, Updatable::getUpdatedAt)
-        .containsSequence(0L, 0, account, body, createdAt, createdAt);
+        .containsSequence(0L, 0, this.account, body, createdAt, createdAt);
 
     final History<NoteSnapshot> history = note.history(Integer.MAX_VALUE, 0);
     assertThat(history)

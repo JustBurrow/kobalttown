@@ -342,9 +342,10 @@ public class EnableCodeFactoryImplTest {
         () -> this.factory.create(new Context(),
             this.accountFactory.create(1L, nickname(), false, this.before),
             email(), token(), this.before.plus(TTL_DEFAULT), null))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("createdAt is null.")
-        .hasNoCause();
+        .isInstanceOf(ValidationException.class)
+        .hasNoCause()
+        .extracting("targetName", "target", "message")
+        .containsSequence("createdAt", null, "createdAt is null.");
   }
 
   @Test
@@ -435,9 +436,10 @@ public class EnableCodeFactoryImplTest {
   @Test
   public void test_create_for_test_with_too_early_expireAt() throws Exception {
     // WHEN
-    final ValidationException ex = catchThrowableOfType(() -> this.factory.create(1L,
-        this.accountFactory.create(1L, nickname(), false, this.before),
-        email(), token(), this.before.plus(TTL_MIN).minusNanos(1L), null, null, this.before),
+    final ValidationException ex = catchThrowableOfType(
+        () -> this.factory.create(1L,
+            this.accountFactory.create(1L, nickname(), false, this.before),
+            email(), token(), this.before.plus(TTL_MIN).minusNanos(1L), null, null, this.before),
         ValidationException.class);
     log.info("WHEN - ex=" + ex, ex);
 
@@ -453,8 +455,10 @@ public class EnableCodeFactoryImplTest {
         () -> this.factory.create(1L,
             this.accountFactory.create(1L, nickname(), false, this.before),
             email(), null, this.before.plus(TTL_DEFAULT), null, null, null))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("createdAt is null.");
+        .isInstanceOf(ValidationException.class)
+        .hasNoCause()
+        .extracting("targetName", "target", "message")
+        .containsSequence("createdAt", null, "createdAt is null.");
   }
 
   @Test

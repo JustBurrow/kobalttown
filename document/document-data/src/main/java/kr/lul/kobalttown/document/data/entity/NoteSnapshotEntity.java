@@ -9,8 +9,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 import static java.lang.String.format;
-import static kr.lul.common.util.Arguments.notNegative;
-import static kr.lul.common.util.Arguments.notNull;
+import static kr.lul.common.util.Arguments.*;
 import static kr.lul.kobalttown.document.data.mapping.NoteSnapshotMapping.*;
 
 /**
@@ -18,7 +17,8 @@ import static kr.lul.kobalttown.document.data.mapping.NoteSnapshotMapping.*;
  * @since 2020/03/04
  */
 @Entity(name = ENTITY)
-@Table(name = TABLE)
+@Table(name = TABLE,
+    indexes = {@Index(name = IDX_NOTE_SNAPSHOT_DELETED, columnList = IDX_NOTE_SNAPSHOT_DELETED_COLUMNS)})
 public class NoteSnapshotEntity implements NoteSnapshot {
   @Embeddable
   public static class NoteSnapshotId implements NoteSnapshot.Id {
@@ -82,11 +82,10 @@ public class NoteSnapshotEntity implements NoteSnapshot {
   private String body;
   @Column(name = COL_CREATED_AT, nullable = false, updatable = false)
   private Instant createdAt;
+  @Column(name = COL_DELETED_AT, insertable = false)
+  private Instant deletedAt;
 
-  /**
-   * JPA only
-   */
-  public NoteSnapshotEntity() {
+  public NoteSnapshotEntity() { // JPA only
   }
 
   /**
@@ -137,6 +136,22 @@ public class NoteSnapshotEntity implements NoteSnapshot {
   @Override
   public Instant getCreatedAt() {
     return this.createdAt;
+  }
+
+  @Override
+  public Instant getDeleted() {
+    return this.deletedAt;
+  }
+
+  @Override
+  public void delete(final Instant deletedAt) throws IllegalStateException {
+    notNull(deletedAt, "deletedAt");
+    ae(deletedAt, this.deletedAt, "deletedAt");
+
+    if (null != this.deletedAt)
+      throw new IllegalStateException(format("already deleted note snapshot : id=%s, deletedAt=%s", this.id, this.deletedAt));
+    else
+      this.deletedAt = deletedAt;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

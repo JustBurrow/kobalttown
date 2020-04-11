@@ -1,8 +1,10 @@
 package kr.lul.kobalttown.document.data.entity;
 
+import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.account.data.entity.AccountEntity;
 import kr.lul.kobalttown.account.data.mapping.AccountMapping;
 import kr.lul.kobalttown.account.domain.Account;
+import kr.lul.kobalttown.document.data.mapping.NoteCommentMapping;
 import kr.lul.kobalttown.document.data.mapping.NoteSnapshotMapping;
 import kr.lul.kobalttown.document.domain.*;
 import kr.lul.support.spring.data.jpa.entiy.SavableEntity;
@@ -11,9 +13,12 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import static java.lang.String.format;
+import static java.util.Collections.unmodifiableList;
+import static javax.persistence.CascadeType.PERSIST;
 import static kr.lul.common.util.Arguments.*;
 import static kr.lul.common.util.Texts.head;
 import static kr.lul.common.util.Texts.singleQuote;
@@ -43,9 +48,15 @@ public class NoteEntity extends SavableEntity implements Note {
   private Account author;
   @Column(name = COL_BODY, nullable = false)
   private String body;
-  @OneToMany(targetEntity = NoteSnapshotEntity.class, mappedBy = NoteSnapshotMapping.COL_NOTE, cascade = CascadeType.PERSIST)
+  @OneToMany(targetEntity = NoteSnapshotEntity.class, mappedBy = NoteSnapshotMapping.COL_NOTE, cascade = PERSIST)
   @OrderBy(NoteSnapshotMapping.COL_VERSION + " ASC")
   private List<NoteSnapshot> history = new ArrayList<>();
+  @OneToMany(targetEntity = NoteCommentEntity.class,
+      cascade = PERSIST,
+      mappedBy = NoteCommentMapping.COL_NOTE,
+      orphanRemoval = true)
+  @OrderBy(NoteCommentMapping.COL_CREATED_AT + " DESC")
+  private List<NoteComment> comments = new ArrayList<>();
   @Column(name = COL_DELETED_AT, nullable = false)
   private Instant deletedAt;
 
@@ -54,9 +65,8 @@ public class NoteEntity extends SavableEntity implements Note {
 
   public NoteEntity(final Account author, final String body, final Instant createdAt) {
     super(createdAt);
-    notNull(author, "author");
-    positive(author.getId(), "author.id");
-    notNull(body, "body");
+    AUTHOR_VALIDATOR.validate(author);
+    BODY_VALIDATOR.validate(body);
 
     if (author.getCreatedAt().isAfter(createdAt))
       throw new IllegalArgumentException(format("author.createdAt is after than createdAt : author.createdAt=%s, createdAt=%s",
@@ -131,8 +141,6 @@ public class NoteEntity extends SavableEntity implements Note {
     public Instant getUpdatedAt() {
       return NoteEntity.this.updatedAt;
     }
-
-
   }
 
   @Override
@@ -173,19 +181,50 @@ public class NoteEntity extends SavableEntity implements Note {
   }
 
   @Override
+  public List<NoteComment> getComments() {
+    return unmodifiableList(this.comments);
+  }
+
+  @Override
+  public Instant getDeletedAt() {
+    return this.deletedAt;
+  }
+
+  @Override
   public void delete(final Instant deletedAt) {
     notNull(deletedAt, "deletedAt");
     ae(deletedAt, this.updatedAt, "deletedAt");
-
     if (null != this.deletedAt)
       throw new IllegalStateException(format("already deleted note : id=%s, deletedAt=%s", this.id, this.deletedAt));
-    else
-      this.deletedAt = deletedAt;
+
+    this.deletedAt = deletedAt;
+    for (final NoteSnapshot snapshot : this.history) {
+      snapshot.delete(deletedAt);
+    }
+  }
+
+  @Override
+  public NoteSnapshot now() {
+    return this.history.get(this.history.size() - 1);
+  }
+
+  @Override
+  public void deleteComment(final Account account, final long id) throws NoSuchElementException {
+    notNull(account, "account");
+    positive(id, "id");
+
+    // TODO 댓글 찾기 로직 개선. 대량의 댓글이 있을 경우의 속도 및 DB 부하 문제.
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent") final NoteComment comment =
+        this.comments.stream().filter(c -> id == c.getId()).findFirst().get();
+    if (!this.author.equals(account) || !comment.getAuthor().equals(account))
+      throw new ValidationException("account", account, "no delete comment permission : account=" + account.toSimpleString());
+
+    this.comments.remove(comment);
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // java.lang.Object
-
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
   public boolean equals(final Object o) {

@@ -40,6 +40,11 @@ spring:
     prefix: file:<path to front module>/templates/
   messages:
     cache-duration: 0
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
 
 server:
   servlet:
