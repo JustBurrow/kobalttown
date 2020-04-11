@@ -5,6 +5,5 @@ dependencies {
   api "kr.lul.support.spring:support-spring-security:$SUPPORT_SPRING_VERSION"
 
   compileOnly "kr.lul.support.spring:support-spring-web:$SUPPORT_SPRING_VERSION"
-
-  implementation "org.springframework.boot:spring-boot-starter-web"
+  compileOnly "org.springframework.boot:spring-boot-starter-web"
 }
