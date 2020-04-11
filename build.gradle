@@ -19,10 +19,6 @@ group "kr.lul.kobalttown"
 version "0.0.6.SNAPSHOT"
 
 allprojects {
-  ext {
-    COMMON_VERSION = "0.0.1.SNAPSHOT"
-    SUPPORT_SPRING_VERSION = "0.0.1.SNAPSHOT"
-  }
   repositories {
     jcenter()
     mavenCentral()
@@ -54,12 +50,14 @@ subprojects {
     }
 
     dependencies {
-      dependency "kr.lul.common:common-util:$COMMON_VERSION"
-      dependency "kr.lul.common:common-data:$COMMON_VERSION"
-      dependency "kr.lul.common:common-web:$COMMON_VERSION"
+      dependency "kr.lul.common:common-util:0.0.1.SNAPSHOT"
+      dependency "kr.lul.common:common-data:0.0.1.SNAPSHOT"
+      dependency "kr.lul.common:common-web:0.0.1.SNAPSHOT"
 
-      dependency "kr.lul.support.spring:support-spring-data-jpa:$SUPPORT_SPRING_VERSION"
-      dependency "kr.lul.support.spring:support-spring-security:$SUPPORT_SPRING_VERSION"
+      dependency "kr.lul.support.spring:support-spring-data-jpa:0.0.1.SNAPSHOT"
+      dependency "kr.lul.support.spring:support-spring-mail:0.0.1.SNAPSHOT"
+      dependency "kr.lul.support.spring:support-spring-security:0.0.1.SNAPSHOT"
+      dependency "kr.lul.support.spring:support-spring-web:0.0.1.SNAPSHOT"
 
       dependency "org.assertj:assertj-core:3.14.0"
       dependency "org.apache.commons:commons-lang3:3.9"
