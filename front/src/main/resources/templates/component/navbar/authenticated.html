@@ -6,20 +6,45 @@
   <meta name="since" content="2019/12/17 23:54" th:remove="all"/>
   <meta charset="UTF-8"/>
   <title>Navbar : Authenticated</title>
+  <link rel="stylesheet" href="../../../assets/bootstrap/css/bootstrap.css"/>
+  <link rel="stylesheet" href="../../../assets/css/kobalttown.css"/>
+  <script src="../../../assets/jquery/jquery.js"></script>
+  <script src="../../../assets/popper/popper.js"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.js"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.bundle.js"></script>
+  <script src="../../../assets/js/kobalttown.js"></script>
 </head>
 <body>
-<header>
-  <div th:fragment="navbar">
-    <div>
-      <a href="../../layout/note/index.html" th:href="@{/notes}">Note</a>
+<header class="fixed-top">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light"
+       th:fragment="render">
+    <a class="navbar-brand" href="#"
+       th:href="@{/}">Kobalttown</a>
+    <button class="navbar-toggler" type="button"
+            data-toggle="collapse" data-target="#gnv-content"
+            aria-controls="gnv-content" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="gnv-content" class="collapse navbar-collapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item"><a class="nav-link" href="../../layout/note/index.html" th:href="@{/notes}">Note</a></li>
+      </ul>
+      <div class="dropdown">
+        <button type="button" id="gnv-account-dropdown" class="btn btn-block dropdown-toggle"
+                href="#"
+                role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Account
+        </button>
+        <div class="dropdown-menu" aria-labelledby="gnv-account-dropdown">
+          <a class="dropdown-item" href="../../layout/account/setting.html"
+             th:href="@{/accounts/setting}">계정 관리</a>
+          <form id="form-logout" class="hide" action="anonymous.html" method="post" th:action="@{/logout}"></form>
+          <button class="dropdown-item" form="form-logout" th:text="#{global.navbar.sign-out}">log-out</button>
+        </div>
+      </div>
     </div>
-    <div>
-      <a href="../../layout/account/setting.html"
-         th:href="@{/accounts/setting}">계정 관리</a>
-      <form id="form-logout" action="anonymous.html" method="post" th:action="@{/logout}"></form>
-      <button form="form-logout" th:text="#{global.navbar.sign-out}">log-out</button>
-    </div>
-  </div>
+  </nav>
 </header>
 <main>
   <h1>Navbar : Authenticated</h1>

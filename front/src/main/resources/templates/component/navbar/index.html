@@ -7,16 +7,23 @@
   <meta name="since" content="2019/12/17 23:40" th:remove="all"/>
   <meta charset="UTF-8"/>
   <title>Navbar</title>
+  <link rel="stylesheet" href="../../../assets/bootstrap/css/bootstrap.css"/>
+  <link rel="stylesheet" href="../../../assets/css/kobalttown.css"/>
+  <script src="../../../assets/jquery/jquery.js"></script>
+  <script src="../../../assets/popper/popper.js"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.js"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.bundle.js"></script>
+  <script src="../../../assets/js/kobalttown.js"></script>
 </head>
 <body>
-<header class="fixed-top" th:fragment="navbar">
-  <nav sec:authorize="isAnonymous()" th:remove="tag">
-    <div th:replace="component/navbar/anonymous :: navbar">
+<header class="fixed-top" th:fragment="render">
+  <nav sec:authorize="isAnonymous()">
+    <div th:replace="component/navbar/anonymous :: render">
       anonymous
     </div>
   </nav>
-  <nav sec:authorize="isAuthenticated()" th:remove="tag">
-    <div th:replace="component/navbar/authenticated :: navbar">
+  <nav sec:authorize="isAuthenticated()">
+    <div th:replace="component/navbar/authenticated :: render">
       authenticated
     </div>
   </nav>
