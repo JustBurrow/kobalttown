@@ -42,10 +42,6 @@ spring:
     prefix: file:./templates/
   messages:
     basename: i18n/messages,i18n/errors,i18n/mails
-  mvc:
-    static-path-pattern: /assets/**
-  resources:
-    static-locations: '<front resource path>/assets'
   devtools:
     restart:
       enabled: false

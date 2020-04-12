@@ -45,8 +45,6 @@ spring:
     prefix: file:<path to front module>/templates/
   messages:
     cache-duration: 0
-  resources:
-    static-locations: '<front resource path>'
   devtools:
     restart:
       enabled: true
