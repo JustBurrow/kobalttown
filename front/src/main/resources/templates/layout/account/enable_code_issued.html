@@ -6,15 +6,23 @@
   <meta name="since" content="2020/01/18 23:28" th:remove="all"/>
   <meta charset="UTF-8"/>
   <title>Enable Code Issued</title>
+  <meta th:replace="component/tag/meta/index :: render"/>
+  <link rel="stylesheet" href="../../../assets/bootstrap/css/bootstrap.css" th:remove="all"/>
+  <link rel="stylesheet" href="../../../assets/css/kobalttown.css" th:remove="all"/>
+  <script src="../../../assets/jquery/jquery.js" th:remove="all"></script>
+  <script src="../../../assets/popper/popper.js" th:remove="all"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.js" th:remove="all"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.bundle.js" th:remove="all"></script>
+  <script src="../../../assets/js/kobalttown.js" th:remove="all"></script>
 </head>
 <body>
-<header th:replace="component/navbar/index :: navbar">
+<header class="fixed-top" th:replace="component/navbar/index :: render">
   navigation bar
 </header>
-<main>
-  <h1>Enable Code Issued</h1>
+<main class="container">
+  <h1 class="h1">Enable Code Issued</h1>
   <!--/*@thymesVar id="enableCode" type="kr.lul.kobalttown.account.dto.EnableCodeSummaryDto"*/-->
-  <dl th:object="${enableCode}">
+  <dl class="my-3" th:object="${enableCode}">
     <dt>email</dt>
     <dd>
       <address th:text="*{email}">email</address>
@@ -24,6 +32,10 @@
       <time th:replace="/component/tag/time :: time(*{expireAt})">expire at</time>
     </dd>
   </dl>
+  <div class="my-3">
+    <a class="btn btn-lg btn-primary" href="../root/login.html"
+       th:href="@{/login}">LOG-IN</a>
+  </div>
 </main>
 </body>
 </html>
