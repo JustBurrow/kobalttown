@@ -9,7 +9,7 @@
   <title>Navbar</title>
 </head>
 <body>
-<header th:fragment="navbar">
+<header class="fixed-top" th:fragment="navbar">
   <nav sec:authorize="isAnonymous()" th:remove="tag">
     <div th:replace="component/navbar/anonymous :: navbar">
       anonymous

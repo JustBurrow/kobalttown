@@ -6,59 +6,133 @@
   <meta name="since" content="2019/11/24 14:00" th:remove="all"/>
   <meta charset="UTF-8"/>
   <title th:text="#{account.create.head.title(#{global.head.title.postfix})}">Account create</title>
+  <link rel="stylesheet" href="../../../assets/bootstrap/css/bootstrap.css"/>
+  <link rel="stylesheet" href="../../../assets/css/kobalttown.css"/>
+  <script src="../../../assets/jquery/jquery.js"></script>
+  <script src="../../../assets/popper/popper.js"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.js"></script>
+  <script src="../../../assets/js/kobalttown.js"></script>
 </head>
 <body>
 <header th:replace="component/navbar/index :: navbar">
   navigation bar
 </header>
-<main>
+<main class="container">
   <h1 th:text="#{account.create.title}">Account create</h1>
-  <form id="form-create" action="#" method="post"
+  <form id="form-create" class="hide" action="#" method="post"
         th:action="@{/accounts}"></form>
   <!--/*@thymesVar id="createReq" type="kr.lul.kobalttown.account.web.controller.request.CreateAccountReq"*/-->
   <div th:object="${createReq}">
-    <div>
-      <label for="input-nickname" th:text="#{account.create.form.nickname.label}">Nickname</label>
-      <input id="input-nickname"
-             form="form-create" name="nickname"
-             required="required"
-             th:field="*{nickname}"
-             th:placeholder="#{account.create.form.nickname.placeholder}"/>
+    <div class="py-3" th:if="${#fields.hasGlobalErrors()}">
+      <ul class="list-unstyled alert alert-danger">
+        <li th:each="err : ${#fields.globalErrors()}">
+          <p th:text="${err}">error</p>
+        </li>
+      </ul>
     </div>
-    <div>
-      <label for="input-email" th:text="#{account.create.form.email.label}">E-Mail</label>
-      <input type="email" id="input-email"
-             form="form-create" name="email"
-             required="required"
-             th:field="*{email}"
-             th:placeholder="#{account.create.form.email.placeholder}"/>
+    <div class="row form-group">
+      <label class="col-2 col-form-label" for="input-nickname"
+             th:text="#{account.create.form.nickname.label}">Nickname</label>
+      <div class="col-10">
+        <input id="input-nickname" class="form-control"
+               form="form-create" name="nickname"
+               required="required"
+               th:field="*{nickname}"
+               th:errorclass="is-invalid"
+               th:placeholder="#{account.create.form.nickname.placeholder}"/>
+        <div class="py-3" th:if="*{#fields.hasErrors('nickname')}">
+          <ul class="list-unstyled alert alert-danger">
+            <li th:each="err : *{#fields.errors('nickname')}">
+              <p th:text="${err}">error</p>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <div>
-      <label for="input-user-key" th:text="#{account.create.form.user-key.label}">User Key</label>
-      <input id="input-user-key"
-             form="form-create" name="userKey"
-             required="required"
-             th:field="*{userKey}"
-             th:placeholder="#{account.create.form.user-key.placeholder}"/>
+    <div class="row form-group">
+      <label class="col-2 col-form-label" for="input-email"
+             th:text="#{account.create.form.email.label}">E-Mail</label>
+      <div class="col-10">
+        <input type="email" id="input-email" class="form-control"
+               form="form-create" name="email"
+               required="required"
+               th:field="*{email}"
+               th:errorclass="is-invalid"
+               th:placeholder="#{account.create.form.email.placeholder}"/>
+        <div class="py-3"
+             th:if="*{#fields.hasErrors('email')}">
+          <ul class="list-unstyled alert alert-danger">
+            <li th:each="err : *{#fields.errors('email')}">
+              <p th:text="${err}">err</p>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <div>
-      <label for="input-password" th:text="#{account.create.form.password.label}">Password</label>
-      <input type="password" id="input-password"
-             form="form-create" name="password"
-             required="required"
-             th:field="*{password}"
-             th:placeholder="#{account.create.form.password.placeholder}"/>
+    <div class="row form-group">
+      <label class="col-2 col-form-label" for="input-user-key"
+             th:text="#{account.create.form.user-key.label}">User
+        Key</label>
+      <div class="col-10">
+        <input id="input-user-key" class="form-control"
+               form="form-create" name="userKey"
+               required="required"
+               th:field="*{userKey}"
+               th:errorclass="is-invalid"
+               th:placeholder="#{account.create.form.user-key.placeholder}"/>
+        <div class="py-3"
+             th:if="*{#fields.hasErrors('userKey')}">
+          <ul class="list-unstyled alert alert-danger">
+            <li th:each="err : *{#fields.errors('userKey')}">
+              <p th:text="${err}">err</p>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <div>
-      <label for="input-confirm" th:text="#{account.create.form.confirm.label}">PW Confirm</label>
-      <input type="password" id="input-confirm"
-             form="form-create" name="confirm"
-             required="required"
-             th:field="*{confirm}"
-             th:placeholder="#{account.create.form.confirm.placeholder}"/>
+    <div class="row form-group">
+      <label class="col-2 col-form-label" for="input-password"
+             th:text="#{account.create.form.password.label}">Password</label>
+      <div class="col-10">
+        <input type="password" id="input-password" class="form-control"
+               form="form-create" name="password"
+               required="required"
+               th:field="*{password}"
+               th:errorclass="is-invalid"
+               th:placeholder="#{account.create.form.password.placeholder}"/>
+        <div class="py-3"
+             th:if="*{#fields.hasErrors('password')}">
+          <ul class="list-unstyled alert alert-danger">
+            <li th:each="err : *{#fields.errors('password')}">
+              <p th:text="${err}">err</p>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <div>
-      <button form="form-create">SUBMIT</button>
+    <div class="row form-group">
+      <label class="col-2 col-form-label" for="input-confirm"
+             th:text="#{account.create.form.confirm.label}">PW
+        Confirm</label>
+      <div class="col-10">
+        <input type="password" id="input-confirm" class="form-control"
+               form="form-create" name="confirm"
+               required="required"
+               th:field="*{confirm}"
+               th:errorclass="is-invalid"
+               th:placeholder="#{account.create.form.confirm.placeholder}"/>
+        <div class="py-3"
+             th:if="*{#fields.hasErrors('confirm')}">
+          <ul class="list-unstyled alert alert-danger">
+            <li th:each="err : *{#fields.errors('confirm')}">
+              <p th:text="${err}">err</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="form-group float-right">
+      <button class="btn btn-lg btn-primary" form="form-create">SUBMIT</button>
     </div>
   </div>
 </main>
