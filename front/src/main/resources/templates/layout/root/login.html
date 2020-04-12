@@ -6,6 +6,7 @@
   <meta name="since" content="2019/11/25 23:15" th:remove="all"/>
   <meta charset="UTF-8"/>
   <title>Log-in</title>
+  <meta th:replace="component/tag/meta/index :: render"/>
   <link rel="stylesheet" href="../../../assets/bootstrap/css/bootstrap.css" th:remove="all"/>
   <link rel="stylesheet" href="../../../assets/css/kobalttown.css" th:remove="all"/>
   <script src="../../../assets/jquery/jquery.js" th:remove="all"></script>
@@ -18,24 +19,25 @@
 <header th:replace="component/navbar/index :: render">
   navigation bar
 </header>
-<main>
-  <h1>Log-in</h1>
-  <form id="form-login" action="index.html" method="post" th:action="@{/login}"></form>
+<main class="container">
+  <h1 class="h1">Log-in</h1>
+  <form id="form-login" class="hide" action="index.html" method="post" th:action="@{/login}"></form>
   <div>
-    <div>
-      <label for="username">Username</label>
-      <div>
-        <input id="username" form="form-login" name="username" required="required"/>
+    <div class="row form-group">
+      <label class="col-2 col-form-label" for="username">Username</label>
+      <div class="col-10">
+        <input id="username" class="form-control" form="form-login" name="username" required="required"/>
       </div>
     </div>
-    <div>
-      <label for="password">Password</label>
-      <div>
-        <input type="password" id="password" form="form-login" name="password" required="required"/>
+    <div class="row form-group">
+      <label class="col-2 col-form-label" for="password">Password</label>
+      <div class="col-10">
+        <input type="password" id="password" class="form-control" form="form-login" name="password"
+               required="required"/>
       </div>
     </div>
-    <div>
-      <button form="form-login">LOG-IN</button>
+    <div class="form-group">
+      <button class="btn btn-primary" form="form-login">LOG-IN</button>
     </div>
   </div>
 </main>
