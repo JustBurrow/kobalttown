@@ -2,28 +2,28 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:lang="${#locale}">
 <head>
-    <meta name="author" content="justburrow" th:remove="all"/>
-    <meta name="since" content="2020/01/18 23:28" th:remove="all"/>
-    <meta charset="UTF-8"/>
-    <title>Enable Code Issued</title>
+  <meta name="author" content="justburrow" th:remove="all"/>
+  <meta name="since" content="2020/01/18 23:28" th:remove="all"/>
+  <meta charset="UTF-8"/>
+  <title>Enable Code Issued</title>
 </head>
 <body>
 <header th:replace="component/navbar/index :: navbar">
-    navigation bar
+  navigation bar
 </header>
 <main>
-    <h1>Enable Code Issued</h1>
-    <!--/*@thymesVar id="enableCode" type="kr.lul.kobalttown.account.dto.EnableCodeSummaryDto"*/-->
-    <dl th:object="${enableCode}">
-        <dt>email</dt>
-        <dd>
-            <address th:text="*{email}">email</address>
-        </dd>
-        <dt>expire at</dt>
-        <dd>
-            <time th:replace="/component/tag/time :: time(*{expireAt})">expire at</time>
-        </dd>
-    </dl>
+  <h1>Enable Code Issued</h1>
+  <!--/*@thymesVar id="enableCode" type="kr.lul.kobalttown.account.dto.EnableCodeSummaryDto"*/-->
+  <dl th:object="${enableCode}">
+    <dt>email</dt>
+    <dd>
+      <address th:text="*{email}">email</address>
+    </dd>
+    <dt>expire at</dt>
+    <dd>
+      <time th:replace="/component/tag/time :: time(*{expireAt})">expire at</time>
+    </dd>
+  </dl>
 </main>
 </body>
 </html>
