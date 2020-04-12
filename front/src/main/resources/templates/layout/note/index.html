@@ -16,23 +16,23 @@
   <script src="../../../assets/js/kobalttown.js" th:remove="all"></script>
 </head>
 <body>
-<header th:replace="component/navbar/index :: navbar"></header>
-<main>
-  <h1>Note Index</h1>
-  <div>
+<header class="fixed-top" th:replace="component/navbar/index :: render"></header>
+<main class="container">
+  <h1 class="h1">Note Index</h1>
+  <div class="container py-3">
     <!--/*@thymesVar id="notes" type="kr.lul.common.data.Page<kr.lul.kobalttown.document.dto.NoteSimpleDto>">*/-->
-    <ol>
+    <ol class="list-unstyled">
       <li th:each="note : ${notes.content}">
         <!--/*@thymesVar id="note" type="kr.lul.kobalttown.document.dto.NoteSimpleDto"*/-->
-        <div th:replace="${#strings.concat('dto/', note.class.name, '/index')} :: render(${note})"></div>
+        <article th:replace="${#strings.concat('dto/', note.class.name, '/index')} :: render(${note})"></article>
       </li>
     </ol>
     <div th:replace="component/pagination/index :: render(${notes})">
       pagination
     </div>
   </div>
-  <div>
-    <a href="create.html" th:href="@{/notes/create}">create</a>
+  <div class="container">
+    <a class="btn btn-lg btn-link" href="create.html" th:href="@{/notes/create}">create</a>
   </div>
 </main>
 </body>

@@ -13,14 +13,18 @@
   <!--/*@thymesVar id="note" type="kr.lul.kobalttown.document.dto.NoteSimpleDto"*/-->
   <section>
     <h2>Default</h2>
-    <div th:fragment="render(note)" th:object="${note}">
-      <a href="../../layout/note/detail.html" th:href="@{/notes/__*{id}__}" th:text="*{id}"></a>
-      <p th:text="*{body}">body</p>
-      <address
-         th:replace="*{#strings.concat('dto/', author.class.name, '/index')} :: render(*{author})">
-        author
-      </address>
-    </div>
+    <article class="row" th:fragment="render(note)" th:object="${note}">
+      <div class="col-1">
+        <a class="h3" href="../../layout/note/detail.html" th:href="@{/notes/__*{id}__}" th:text="*{id}"></a>
+      </div>
+      <div class="col-11">
+        <p class="lead text-truncate" th:text="*{body}">body</p>
+        <address class="small "
+                 th:replace="*{#strings.concat('dto/', author.class.name, '/index')} :: render(*{author})">
+          author
+        </address>
+      </div>
+    </article>
   </section>
 </main>
 </body>
