@@ -2,44 +2,44 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:lang="${#locale}">
 <head>
-    <meta name="author" content="justburrow" th:remove="all"/>
-    <meta name="since" content="2019/11/24 14:00" th:remove="all"/>
-    <meta charset="UTF-8"/>
-    <title>Account detail</title>
+  <meta name="author" content="justburrow" th:remove="all"/>
+  <meta name="since" content="2019/11/24 14:00" th:remove="all"/>
+  <meta charset="UTF-8"/>
+  <title>Account detail</title>
 </head>
 <body>
 <header th:replace="component/navbar/index :: navbar">
-    navigation bar
+  navigation bar
 </header>
 <main>
-    <h1>Account detail</h1>
-    <!--/*@thymesVar id="account" type="kr.lul.kobalttown.account.dto.AccountDetailDto"*/-->
-    <dl th:object="${account}">
-        <dt>ID</dt>
-        <dd>
-            <span th:text="*{id}">id</span>
-        </dd>
-        <dt>NICKNAME</dt>
-        <dd>
-            <span th:text="*{nickname}">nickname</span>
-        </dd>
-        <dt>ENABLED</dt>
-        <dd>
-            <span th:text="*{enabled}">true</span>
-        </dd>
-        <dt>CREATED AT</dt>
-        <dd>
-            <time th:datetime="*{createdAt}"
-                  th:text="*{#temporals.format(createdAt, 'YYYY-MM-DD HH:mm')}">crated at
-            </time>
-        </dd>
-        <dt>UPDATED AT</dt>
-        <dd>
-            <time th:datetime="*{updatedAt}"
-                  th:text="*{#temporals.format(updatedAt, 'YYYY-MM-DD HH:mm')}">updated at
-            </time>
-        </dd>
-    </dl>
+  <h1>Account detail</h1>
+  <!--/*@thymesVar id="account" type="kr.lul.kobalttown.account.dto.AccountDetailDto"*/-->
+  <dl th:object="${account}">
+    <dt>ID</dt>
+    <dd>
+      <span th:text="*{id}">id</span>
+    </dd>
+    <dt>NICKNAME</dt>
+    <dd>
+      <span th:text="*{nickname}">nickname</span>
+    </dd>
+    <dt>ENABLED</dt>
+    <dd>
+      <span th:text="*{enabled}">true</span>
+    </dd>
+    <dt>CREATED AT</dt>
+    <dd>
+      <time th:datetime="*{createdAt}"
+            th:text="*{#temporals.format(createdAt, 'YYYY-MM-DD HH:mm')}">crated at
+      </time>
+    </dd>
+    <dt>UPDATED AT</dt>
+    <dd>
+      <time th:datetime="*{updatedAt}"
+            th:text="*{#temporals.format(updatedAt, 'YYYY-MM-DD HH:mm')}">updated at
+      </time>
+    </dd>
+  </dl>
 </main>
 </body>
 </html>
