@@ -69,7 +69,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         .logoutSuccessUrl(RootMvc.C.INDEX);
 
     http.authorizeRequests()
-        .antMatchers(RootMvc.C.INDEX).permitAll()
+        .antMatchers(RootMvc.C.INDEX, RootMvc.C.ASSETS + "/**").permitAll()
         .antMatchers(RootMvc.C.LOG_IN).anonymous()
         .antMatchers(RootMvc.C.LOG_OUT).authenticated();
   }

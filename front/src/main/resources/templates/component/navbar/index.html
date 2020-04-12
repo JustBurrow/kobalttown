@@ -3,26 +3,26 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       th:lang="${#locale}">
 <head>
-    <meta name="author" content="justburrow" th:remove="all"/>
-    <meta name="since" content="2019/12/17 23:40" th:remove="all"/>
-    <meta charset="UTF-8"/>
-    <title>Navbar</title>
+  <meta name="author" content="justburrow" th:remove="all"/>
+  <meta name="since" content="2019/12/17 23:40" th:remove="all"/>
+  <meta charset="UTF-8"/>
+  <title>Navbar</title>
 </head>
 <body>
 <header th:fragment="navbar">
-    <div sec:authorize="isAnonymous()" th:remove="tag">
-        <div th:replace="component/navbar/anonymous :: navbar">
-            anonymous
-        </div>
+  <nav sec:authorize="isAnonymous()" th:remove="tag">
+    <div th:replace="component/navbar/anonymous :: navbar">
+      anonymous
     </div>
-    <div sec:authorize="isAuthenticated()" th:remove="tag">
-        <div th:replace="component/navbar/authenticated :: navbar">
-            authenticated
-        </div>
+  </nav>
+  <nav sec:authorize="isAuthenticated()" th:remove="tag">
+    <div th:replace="component/navbar/authenticated :: navbar">
+      authenticated
     </div>
+  </nav>
 </header>
 <main>
-    <h1>Navbar</h1>
+  <h1>Navbar</h1>
 </main>
 </body>
 </html>
