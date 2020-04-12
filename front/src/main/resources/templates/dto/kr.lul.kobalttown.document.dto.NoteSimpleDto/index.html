@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+  <meta name="author" content="justburrow" th:remove="all"/>
+  <meta name="since" content="2020/03/15 11:34" th:remove="all"/>
+  <meta charset="UTF-8"/>
+  <title>kr.lul.kobalttown.document.dto.NoteSimpleDto</title>
+</head>
+<body>
+<main>
+  <h1>kr.lul.kobalttown.document.dto.NoteSimpleDto</h1>
+  <!--/*@thymesVar id="note" type="kr.lul.kobalttown.document.dto.NoteSimpleDto"*/-->
+  <section>
+    <h2>Default</h2>
+    <article class="row" th:fragment="render(note)" th:object="${note}">
+      <div class="col-1">
+        <a class="h3" href="../../layout/note/detail.html" th:href="@{/notes/__*{id}__}" th:text="*{id}"></a>
+      </div>
+      <div class="col-11">
+        <p class="lead text-truncate" th:text="*{body}">body</p>
+        <address class="small "
+                 th:replace="*{#strings.concat('dto/', author.class.name, '/index')} :: render(*{author})">
+          author
+        </address>
+      </div>
+    </article>
+  </section>
+</main>
+</body>
+</html>

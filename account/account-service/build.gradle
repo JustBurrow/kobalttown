@@ -1,7 +1,7 @@
 dependencies {
   implementation project(":account-data")
-  implementation "kr.lul.support.spring:support-spring-mail:$SUPPORT_SPRING_VERSION"
-  implementation "kr.lul.support.spring:support-spring-security:$SUPPORT_SPRING_VERSION"
+  implementation "kr.lul.support.spring:support-spring-mail"
+  implementation "kr.lul.support.spring:support-spring-security"
   implementation "org.thymeleaf:thymeleaf"
 
   api project(":account-domain")

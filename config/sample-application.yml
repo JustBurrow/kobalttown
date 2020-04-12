@@ -16,6 +16,11 @@ kr.lul.kobalttown:
           from: 'Kobalttown Dev<dev@lul.kr>'
           title: 'Verify Your Kobalttown Account'
           template: 'mail/account/enable_code'
+  front.web:
+    resources:
+      - path: /assets/**
+        location: file:/<front resource path>/assets
+        cache: false
 
 spring:
   datasource:

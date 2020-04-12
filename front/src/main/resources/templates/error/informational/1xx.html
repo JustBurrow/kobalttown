@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+  <meta name="author" content="justburrow" th:remove="all"/>
+  <meta name="since" content="2020/01/15 23:51" th:remove="all"/>
+  <meta charset="UTF-8"/>
+  <title>1XX Informational response</title>
+  <meta th:replace="component/tag/meta/index :: render"/>
+  <link rel="stylesheet" href="../../../assets/bootstrap/css/bootstrap.css" th:remove="all"/>
+  <link rel="stylesheet" href="../../../assets/css/kobalttown.css" th:remove="all"/>
+  <script src="../../../assets/jquery/jquery.js" th:remove="all"></script>
+  <script src="../../../assets/popper/popper.js" th:remove="all"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.js" th:remove="all"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.bundle.js" th:remove="all"></script>
+  <script src="../../../assets/js/kobalttown.js" th:remove="all"></script>
+</head>
+<body>
+<header class="fixed-top" th:replace="component/navbar/index :: render">
+  navigation bar
+</header>
+<main class="container">
+  <h1 class="h1">1XX Informational response</h1>
+</main>
+</body>
+</html>

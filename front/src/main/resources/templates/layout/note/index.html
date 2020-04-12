@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+  <meta name="author" content="justburrow" th:remove="all"/>
+  <meta name="since" content="2020/03/14 18:05" th:remove="all"/>
+  <meta charset="UTF-8"/>
+  <title>Note Index</title>
+  <meta th:replace="component/tag/meta/index :: render"/>
+  <link rel="stylesheet" href="../../../assets/bootstrap/css/bootstrap.css" th:remove="all"/>
+  <link rel="stylesheet" href="../../../assets/css/kobalttown.css" th:remove="all"/>
+  <script src="../../../assets/jquery/jquery.js" th:remove="all"></script>
+  <script src="../../../assets/popper/popper.js" th:remove="all"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.js" th:remove="all"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.bundle.js" th:remove="all"></script>
+  <script src="../../../assets/js/kobalttown.js" th:remove="all"></script>
+</head>
+<body>
+<header class="fixed-top" th:replace="component/navbar/index :: render"></header>
+<main class="container">
+  <h1 class="h1">Note Index</h1>
+  <div class="container py-3">
+    <!--/*@thymesVar id="notes" type="kr.lul.common.data.Page<kr.lul.kobalttown.document.dto.NoteSimpleDto>">*/-->
+    <ol class="list-unstyled">
+      <li th:each="note : ${notes.content}">
+        <!--/*@thymesVar id="note" type="kr.lul.kobalttown.document.dto.NoteSimpleDto"*/-->
+        <article th:replace="${#strings.concat('dto/', note.class.name, '/index')} :: render(${note})"></article>
+      </li>
+    </ol>
+    <div th:replace="component/pagination/index :: render(${notes})">
+      pagination
+    </div>
+  </div>
+  <div class="container">
+    <a class="btn btn-lg btn-link" href="create.html" th:href="@{/notes/create}">create</a>
+  </div>
+</main>
+</body>
+</html>

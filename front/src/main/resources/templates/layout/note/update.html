@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+  <meta name="author" content="justburrow" th:remove="all"/>
+  <meta name="since" content="2020/03/14 7:56" th:remove="all"/>
+  <meta charset="UTF-8"/>
+  <title>Update Note</title>
+  <meta th:replace="component/tag/meta/index :: render"/>
+  <link rel="stylesheet" href="../../../assets/bootstrap/css/bootstrap.css" th:remove="all"/>
+  <link rel="stylesheet" href="../../../assets/css/kobalttown.css" th:remove="all"/>
+  <script src="../../../assets/jquery/jquery.js" th:remove="all"></script>
+  <script src="../../../assets/popper/popper.js" th:remove="all"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.js" th:remove="all"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.bundle.js" th:remove="all"></script>
+  <script src="../../../assets/js/kobalttown.js" th:remove="all"></script>
+</head>
+<body>
+<header class="fixed-top" th:replace="component/navbar/index :: render"></header>
+<main class="container">
+  <h1 class="h1">Update Note</h1>
+  <!--/*@thymesVar id="note" type="kr.lul.kobalttown.document.dto.NoteDetailDto"*/-->
+  <!--/*@thymesVar id="updateReq" type="kr.lul.kobalttown.document.web.controller.request.UpdateNoteReq"*/-->
+  <div class="container">
+    <div th:object="${updateReq}">
+      <form id="form-note" class="hide" action="detail.html" method="post"
+            th:if="${#authentication.principal.id == note.author.id}"
+            th:action="@{/notes/__${note.id}__}" th:method="patch"></form>
+      <div class="row form-group">
+        <label class="col-2 col-form-label" for="body">Body</label>
+        <div class="col-10">
+          <textarea id="body" class="form-control"
+                    form="form-note" name="body"
+                    rows="5"
+                    th:field="*{body}"></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <dl class="row" th:object="${note}">
+          <dt class="col-2">Version</dt>
+          <dd class="col-4"><span th:text="*{version}">version</span></dd>
+          <dt class="col-2">Update</dt>
+          <dd class="col-4">
+            <time th:replace="component/tag/time :: time(*{updatedAt})">update</time>
+          </dd>
+        </dl>
+      </div>
+      <div class="form-group">
+        <div class="btn-group btn-group-lg">
+          <button class="btn btn-primary" form="form-note">UPDATE</button>
+          <button class="btn btn-primary" type="reset" form="form-note">RESET</button>
+          <a class="btn btn-primary" href="detail.html" th:href="@{/notes/__${note.id}__}">CANCEL</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

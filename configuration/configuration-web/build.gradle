@@ -3,7 +3,7 @@ dependencies {
   implementation project(":global-security")
 
   api project(":configuration-security")
-  api "kr.lul.support.spring:support-spring-web:$SUPPORT_SPRING_VERSION"
+  api "kr.lul.support.spring:support-spring-web"
   api "org.springframework.security:spring-security-core"
   api "org.thymeleaf.extras:thymeleaf-extras-springsecurity5"
 }

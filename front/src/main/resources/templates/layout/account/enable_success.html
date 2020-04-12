@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+  <meta name="author" content="justburrow" th:remove="all"/>
+  <meta name="since" content="2020/01/05 22:41" th:remove="all"/>
+  <meta charset="UTF-8"/>
+  <title>Enabled</title>
+  <link rel="stylesheet" href="../../../assets/bootstrap/css/bootstrap.css" th:remove="all"/>
+  <link rel="stylesheet" href="../../../assets/css/kobalttown.css" th:remove="all"/>
+  <script src="../../../assets/jquery/jquery.js" th:remove="all"></script>
+  <script src="../../../assets/popper/popper.js" th:remove="all"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.js" th:remove="all"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.bundle.js" th:remove="all"></script>
+  <script src="../../../assets/js/kobalttown.js" th:remove="all"></script>
+</head>
+<body>
+<header class="fixed-top" th:replace="component/navbar/index :: render">
+  navigation bar
+</header>
+<main class="container">
+  <h1 class="h1">Enabled</h1>
+  <!--/*@thymesVar id="account" type="kr.lul.kobalttown.account.dto.AccountDetailDto"*/-->
+  <div class="alert alert-success">
+    <p>계정이 활성화되었습니다.</p>
+    <dl class="row" th:object="${account}">
+      <dt class="col-4">NICKNAME</dt>
+      <dd class="col-8" th:text="*{nickname}">nickname</dd>
+      <dt class="col-4">VALIDATED TIME</dt>
+      <dd class="col-8"><!--/*@thymesVar id="enabledAt" type="java.time.ZonedDateTime"*/-->
+        <time th:datetime="${enabledAt}" th:text="${#temporals.format(enabledAt, 'yyyy/MM/dd HH:mm')}">
+          2020/01/01 22:41
+        </time>
+      </dd>
+    </dl>
+  </div>
+  <hr/>
+  <div>
+    <a class="btn btn-link" href="../root/login.html"
+       th:href="@{/login}" th:text="#{global.navbar.sign-in}">log-in</a>
+  </div>
+</main>
+</body>
+</html>

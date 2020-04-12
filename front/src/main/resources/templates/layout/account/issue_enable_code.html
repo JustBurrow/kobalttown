@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+  <meta name="author" content="justburrow" th:remove="all"/>
+  <meta name="since" content="2020/01/18 23:28" th:remove="all"/>
+  <meta charset="UTF-8"/>
+  <title>Issue Enable Code</title>
+  <meta th:replace="component/tag/meta/index :: render"/>
+  <link rel="stylesheet" href="../../../assets/bootstrap/css/bootstrap.css" th:remove="all"/>
+  <link rel="stylesheet" href="../../../assets/css/kobalttown.css" th:remove="all"/>
+  <script src="../../../assets/jquery/jquery.js" th:remove="all"></script>
+  <script src="../../../assets/popper/popper.js" th:remove="all"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.js" th:remove="all"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.bundle.js" th:remove="all"></script>
+  <script src="../../../assets/js/kobalttown.js" th:remove="all"></script>
+</head>
+<body>
+<header class="fixed-top" th:replace="component/navbar/index :: render">
+  navigation bar
+</header>
+<main class="container">
+  <h1 class="h1">Issue Enable Code</h1>
+  <form id="form-issue" class="hide" action="enable_code_issued.html" method="post"
+        th:action="@{/accounts/enable}"></form>
+  <!--/*@thymesVar id="issueEnableCode" type="kr.lul.kobalttown.account.web.controller.request.IssueEnableCodeReq"*/-->
+  <div class="py-3" th:object="${issueEnableCode}">
+    <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}">
+      <ul class="list-unstyled">
+        <li th:each="err : ${#fields.globalErrors()}">
+          <span th:text="${err}">global error</span>
+        </li>
+      </ul>
+    </div>
+    <div class="row form-group">
+      <label class="col-2 col-form-label col-form-label-lg" for="email">E-Mail</label>
+      <div class="col-10">
+        <div class="input-group">
+          <input type="email" id="email" class="form-control form-control-lg"
+                 form="form-issue" name="email"
+                 required="required"
+                 placeholder="E-Mail 주소를 입력하세요."
+                 th:field="*{email}"/>
+          <button class="input-group-append btn btn-lg btn-primary" form="form-issue">submit</button>
+        </div>
+        <div class="alert alert-danger py-3" th:if="${#fields.hasErrors('email')}">
+          <ul>
+            <li th:each="err : ${#fields.errors('email')}">
+              <p th:text="${err}">error</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

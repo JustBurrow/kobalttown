@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+  <meta name="author" content="justburrow" th:remove="all"/>
+  <meta name="since" content="2020/03/09 18:55" th:remove="all"/>
+  <meta charset="UTF-8"/>
+  <title th:text="#{note.create.head.title(#{global.head.title.postfix})}">Account create</title>
+  <meta th:replace="component/tag/meta/index :: render"/>
+  <link rel="stylesheet" href="../../../assets/bootstrap/css/bootstrap.css" th:remove="all"/>
+  <link rel="stylesheet" href="../../../assets/css/kobalttown.css" th:remove="all"/>
+  <script src="../../../assets/jquery/jquery.js" th:remove="all"></script>
+  <script src="../../../assets/popper/popper.js" th:remove="all"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.js" th:remove="all"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.bundle.js" th:remove="all"></script>
+  <script src="../../../assets/js/kobalttown.js" th:remove="all"></script>
+</head>
+<body>
+<header class="fixed-top" th:replace="component/navbar/index :: render">
+  navigation bar
+</header>
+<main class="container">
+  <h1 class="h1">Note create</h1>
+  <!--/*@thymesVar id="createReq" type="kr.lul.kobalttown.document.web.controller.request.CreateNoteReq"*/-->
+  <div th:object="${createReq}">
+    <form id="form-create" action="detail.html" method="post"
+          th:action="@{/notes}"></form>
+    <div class="row form-group">
+      <label class="col-2 col-form-label" for="body">BODY</label>
+      <div class="col-10">
+            <textarea id="body" class="form-control"
+                      form="form-create" name="body"
+                      rows="5"
+                      placeholder="Input note."
+                      required="required"
+                      th:field="*{body}"></textarea>
+      </div>
+    </div>
+    <div class="form-group">
+      <button class="btn btn-lg btn-primary" form="form-create">SUBMIT</button>
+    </div>
+  </div>
+</main>
+</body>
+</html>

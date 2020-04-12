@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale}">
+<head>
+  <meta name="author" content="justburrow" th:remove="all"/>
+  <meta name="since" content="2020/03/14 23:46" th:remove="all"/>
+  <meta charset="UTF-8"/>
+  <title>Pagination</title>
+</head>
+<body>
+<main>
+  <h1>Pagination</h1>
+  <div class="btn-group" th:fragment="render(page)"
+       th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()},
+        blockSize=10">
+    <!--/*@thymesVar id="page" type="kr.lul.common.data.Pagination"*/-->
+    <!--/* Go to 1st page */-->
+    <span class="btn btn-outline-secondary disabled" th:if="${page.isFirst()}">&lt;&lt;</span>
+    <a class="btn btn-outline-secondary" href="#"
+       th:unless="${page.isFirst()}"
+       th:href="@{__${urlBuilder.replaceQueryParam('page', page.first).toUriString()}__}">&lt;&lt;</a>
+    <!--/* Go to previous block */-->
+    <a class="btn btn-outline-secondary" href="#"
+       th:if="${page.hasPreBlock(blockSize)}"
+       th:href="@{__${urlBuilder.replaceQueryParam('page', page.getPreBlockPage(blockSize)).toUriString()}__}">&lt;</a>
+    <span class="btn btn-outline-secondary disabled" th:unless="${page.hasPreBlock(blockSize)}">&lt;</span>
+    <!--/* Go to page */-->
+    <span th:each="p : ${#numbers.sequence(page.getBlockStartPage(blockSize), page.getBlockEndPage(blockSize))}"
+          th:remove="tag">
+          <span class="btn btn-outline-secondary disabled" th:if="${p == page.page}" th:text="${p}">page</span>
+          <a class="btn btn-outline-secondary" href="#"
+             th:unless="${p == page.page}"
+             th:href="@{__${urlBuilder.replaceQueryParam('page', p).toUriString()}__}"
+             th:text="${p}">page</a>
+      </span>
+    <!--/* Go to next block */-->
+    <a class="btn btn-outline-secondary" href="#"
+       th:if="${page.hasNextBlock(blockSize)}"
+       th:href="@{__${urlBuilder.replaceQueryParam('page', page.getNextBlockPage(blockSize)).toUriString()}__}">&gt;</a>
+    <span class="btn btn-outline-secondary disabled" th:unless="${page.hasNextBlock(blockSize)}">&gt;</span>
+    <!--/* Go to last page */-->
+    <span class="btn btn-outline-secondary disabled" th:if="${page.isLast()}">&gt;&gt;</span>
+    <a class="btn btn-outline-secondary" href="#" th:unless="${page.isLast()}"
+       th:href="@{__${urlBuilder.replaceQueryParam('page', page.last).toUriString()}__}">&gt;&gt;</a>
+  </div>
+</main>
+</body>
+</html>
