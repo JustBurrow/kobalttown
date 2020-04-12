@@ -2,26 +2,26 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:lang="${#locale}">
 <head>
-    <meta name="author" content="justburrow" th:remove="all"/>
-    <meta name="since" content="2020/03/15 11:34" th:remove="all"/>
-    <meta charset="UTF-8"/>
-    <title>kr.lul.kobalttown.document.dto.NoteSimpleDto</title>
+  <meta name="author" content="justburrow" th:remove="all"/>
+  <meta name="since" content="2020/03/15 11:34" th:remove="all"/>
+  <meta charset="UTF-8"/>
+  <title>kr.lul.kobalttown.document.dto.NoteSimpleDto</title>
 </head>
 <body>
 <main>
-    <h1>kr.lul.kobalttown.document.dto.NoteSimpleDto</h1>
-    <!--/*@thymesVar id="note" type="kr.lul.kobalttown.document.dto.NoteSimpleDto"*/-->
-    <section>
-        <h2>Default</h2>
-        <div th:fragment="render(note)" th:object="${note}">
-            <a href="../../layout/note/detail.html" th:href="@{/notes/__*{id}__}" th:text="*{id}"></a>
-            <p th:text="*{body}">body</p>
-            <address
-                    th:replace="*{#strings.concat('dto/', author.class.name, '/index')} :: render(*{author})">
-                author
-            </address>
-        </div>
-    </section>
+  <h1>kr.lul.kobalttown.document.dto.NoteSimpleDto</h1>
+  <!--/*@thymesVar id="note" type="kr.lul.kobalttown.document.dto.NoteSimpleDto"*/-->
+  <section>
+    <h2>Default</h2>
+    <div th:fragment="render(note)" th:object="${note}">
+      <a href="../../layout/note/detail.html" th:href="@{/notes/__*{id}__}" th:text="*{id}"></a>
+      <p th:text="*{body}">body</p>
+      <address
+         th:replace="*{#strings.concat('dto/', author.class.name, '/index')} :: render(*{author})">
+        author
+      </address>
+    </div>
+  </section>
 </main>
 </body>
 </html>
