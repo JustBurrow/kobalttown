@@ -16,6 +16,9 @@ kr.lul.kobalttown:
           from: 'Kobalttown Dev<dev@lul.kr>'
           title: 'Verify Your Kobalttown Account'
           template: 'mail/account/validation-code'
+  front:
+    resource:
+      root: '<front resource path>'
 
 spring:
   pid:
@@ -51,6 +54,5 @@ server:
 
 logging:
   level:
-    root: warn
+    root: info
     org.hibernate.SQL: debug
-    kr.lul.kobalttown:  info

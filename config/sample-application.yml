@@ -16,6 +16,9 @@ kr.lul.kobalttown:
           from: 'Kobalttown Dev<dev@lul.kr>'
           title: 'Verify Your Kobalttown Account'
           template: 'mail/account/enable_code'
+  front:
+    resource:
+      root: '<front resource path>'
 
 spring:
   datasource:
