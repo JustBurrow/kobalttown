@@ -16,7 +16,7 @@ apply plugin: "idea"
 apply plugin: "eclipse"
 
 group "kr.lul.kobalttown"
-version "0.0.6.SNAPSHOT"
+version "0.0.7.SNAPSHOT"
 
 allprojects {
   repositories {
