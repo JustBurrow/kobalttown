@@ -7,71 +7,92 @@
   <meta name="since" content="2020/03/11 23:53" th:remove="all"/>
   <meta charset="UTF-8"/>
   <title>Note Detail</title>
+  <meta th:replace="component/tag/meta/index :: render"/>
+  <link rel="stylesheet" href="../../../assets/bootstrap/css/bootstrap.css" th:remove="all"/>
+  <link rel="stylesheet" href="../../../assets/css/kobalttown.css" th:remove="all"/>
+  <script src="../../../assets/jquery/jquery.js" th:remove="all"></script>
+  <script src="../../../assets/popper/popper.js" th:remove="all"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.js" th:remove="all"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.bundle.js" th:remove="all"></script>
+  <script src="../../../assets/js/kobalttown.js" th:remove="all"></script>
 </head>
 <body>
-<header th:replace="component/navbar/index :: navbar"></header>
-<main>
+<header class="fixed-top" th:replace="component/navbar/index :: render"></header>
+<main class="container">
   <!--/*@thymesVar id="note" type="kr.lul.kobalttown.document.dto.NoteDetailDto"*/-->
   <article>
-    <h1>Note Detail</h1>
+    <h1 class="h1">Note Detail</h1>
     <div th:object="${note}">
-      <p nl2br:text="*{body}"></p>
-      <dl>
-        <dt>ID</dt>
-        <dd>
+      <div class="my-3">
+        <p nl2br:text="*{body}"></p>
+      </div>
+      <dl class="row small">
+        <dt class="col-2">ID</dt>
+        <dd class="col-2">
           <span th:text="*{id}">id</span>
         </dd>
-        <dt>Version</dt>
-        <dd>
+        <dt class="col-2">Version</dt>
+        <dd class="col-2">
           <span th:text="*{version}">version</span>
         </dd>
-        <dt>Author</dt>
-        <dd>
+        <dt class="col-2">Author</dt>
+        <dd class="col-2">
           <address
              th:replace="*{#strings.concat('dto/', author.class.name, '/index')} :: render(*{author})">
             <a href="../account/profile.html" rel="author">author</a></address>
         </dd>
-        <dt>Created at</dt>
-        <dd>
+        <dt class="col-2">Created at</dt>
+        <dd class="col-4">
           <time th:replace="component/tag/time :: time(*{createdAt})">created at</time>
         </dd>
-        <dt>Updated at</dt>
-        <dd>
+        <dt class="col-2">Updated at</dt>
+        <dd class="col-4">
           <time th:replace="component/tag/time :: time(*{updatedAt})">updated at</time>
         </dd>
       </dl>
-      <div th:if="${#authentication.principal.id == note.author.id}">
-        <form id="form-delete-note-0" action="index.html" method="post"
+      <div class="container" th:if="${#authentication.principal.id == note.author.id}">
+        <form id="form-delete-note-0" class="hide" action="index.html" method="post"
               th:id="${#strings.concat('form-delete-note-' , note.id)}"
               th:action="@{/notes/__${note.id}__}" th:method="delete"></form>
-        <a href="update.html" title="Edit" th:href="@{/notes/__*{id}__/update}">EDIT</a>
-        <button form="form-delete-note-0" title="Delete" th:form="${'form-delete-note-'+note.id}">DELETE</button>
-        <a href="index.html" th:href="@{/notes}">LIST</a>
+        <div class="btn-group btn-group-lg">
+          <a class="btn btn-outline-primary" href="update.html" title="Edit"
+             th:href="@{/notes/__*{id}__/update}">EDIT</a>
+          <button class="btn btn-outline-primary" form="form-delete-note-0" title="Delete"
+                  th:form="${'form-delete-note-'+note.id}">DELETE
+          </button>
+          <a class="btn btn-outline-primary" href="index.html" th:href="@{/notes}">LIST</a>
+        </div>
       </div>
-      <div th:unless="${#authentication.principal.id == note.author.id}">
-        <span title="No edit permission">EDIT</span>
-        <span title="No delete permission">DELETE</span>
-        <a href="index.html" th:href="@{/notes}">LIST</a>
+      <div class="container" th:unless="${#authentication.principal.id == note.author.id}">
+        <div class="btn-group btn-group-lg">
+          <span class="btn btn-primary disabled" title="No edit permission">EDIT</span>
+          <span class="btn btn-primary disabled" title="No delete permission">DELETE</span>
+          <a class="btn btn-primary" href="index.html" th:href="@{/notes}">LIST</a>
+        </div>
       </div>
     </div>
   </article>
-  <div>
-    <section>
-      <h2>Comments</h2>
-      <ol>
+  <div class="container">
+    <section class="my-3">
+      <h2 class="sr-only">Comments</h2>
+      <ol class="list-group list-unstyled">
         <li th:each="comment : ${note.comments}">
-          <article>
-            <p th:text="${comment.body}">comment</p>
-            <address
-               th:replace="${#strings.concat('dto/', comment.author.class.name, '/index')} :: render(${comment.author})">
-              <a href="../account/profile.html" rel="author">author</a></address>
-            <div>
+          <article class="row">
+            <div class="col-11">
+              <p th:text="${comment.body}">comment</p>
+              <address
+                 th:replace="${#strings.concat('dto/', comment.author.class.name, '/index')} :: render(${comment.author})">
+                <a href="../account/profile.html" rel="author">author</a></address>
+            </div>
+            <div class="col-1">
               <form id="form-comment-0-delete" method="post"
                     action="detail.html"
                     th:if="${#authentication.principal.id == note.author.id || #authentication.principal.id == comment.author.id}"
                     th:id="${#strings.concat('form-comment-', comment.id, '-delete')}" th:method="delete"
                     th:action="@{/notes/__${note.id}__/comments/__${comment.id}__}"></form>
-              <button form="form-comment-0-delete"
+              <button class="btn btn-outline-danger"
+                      form="form-comment-0-delete"
+                      th:class="${#authentication.principal.id == note.author.id || #authentication.principal.id == comment.author.id ? 'btn btn-outline-danger' : 'btn btn-outline-danger disabled'}"
                       th:form="${#strings.concat('form-comment-', comment.id, '-delete')}"
                       th:disabled="${#authentication.principal.id != note.author.id && #authentication.principal.id != comment.author.id}"
                       th:title="${#authentication.principal.id == note.author.id || #authentication.principal.id == comment.author.id ? 'DELETE' : 'No delete permission'}">
@@ -84,19 +105,21 @@
     </section>
     <!--/*@thymesVar id="commentReq" type="kr.lul.kobalttown.document.web.controller.request.CreateNoteCommentReq"*/-->
     <div th:object="${commentReq}" th:with="formId=${#strings.concat('form-note-', note.id, '-comment')}">
-      <form id="form-note-0-comment" action="detail.html" method="post"
+      <form id="form-note-0-comment" class="hide" action="detail.html" method="post"
             th:id="${formId}"
             th:action="@{/notes/__${note.id}__/comments}"></form>
-      <div>
-        <label for="note-0-comment-body">Comment</label>
-        <textarea id="note-0-comment-body"
+      <div class="input-group">
+        <label class="sr-only" for="note-0-comment-body">Comment</label>
+        <textarea id="note-0-comment-body" class="form-control"
                   form="form-note-0-comment" name="body"
                   required="required"
+                  placeholder="댓글을 입력하세요."
                   th:id="${#strings.concat('note-', note.id, '-comment-body')}"
                   th:form="${formId}"
                   th:field="*{body}"></textarea>
+        <button class="input-group-append btn btn-primary" form="form-note-0-comment" th:form="${formId}">SUBMIT
+        </button>
       </div>
-      <button form="form-note-0-comment" th:form="${formId}">SUBMIT</button>
     </div>
   </div>
 </main>
