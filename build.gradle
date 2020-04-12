@@ -8,7 +8,6 @@ buildscript {
   dependencies {
     classpath "org.springframework.boot:spring-boot-gradle-plugin:2.2.0.RELEASE"
     classpath "io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE"
-    classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+"
   }
 }
 
@@ -37,9 +36,6 @@ subprojects {
   apply plugin: "java-library"
   apply plugin: "org.springframework.boot"
   apply plugin: "io.spring.dependency-management"
-
-  apply plugin: "maven-publish"
-  apply plugin: "com.jfrog.bintray"
 
   sourceCompatibility = 11
   targetCompatibility = 11
@@ -97,61 +93,4 @@ subprojects {
 
   jar.enabled = true
   bootJar.enabled = false
-
-  task sourcesJar(type: Jar, dependsOn: classes) {
-    archiveClassifier = 'sources'
-    from sourceSets.main.allSource
-  }
-
-  task javadocJar(type: Jar, dependsOn: javadoc) {
-    archiveClassifier = 'javadoc'
-    from javadoc.destinationDir
-  }
-
-  artifacts {
-    archives sourcesJar, javadocJar
-  }
-
-  publishing {
-    publications {
-      mavenPublication(MavenPublication) {
-        from components.java
-
-        artifact sourcesJar
-        artifact javadocJar
-
-        groupId projectGroup
-        artifactId projectName
-        version projectVersion
-      }
-    }
-  }
-  bintray {
-    user = BINTRAY_USER
-    key = BINTRAY_API_KEY
-
-    pkg {
-      repo = isRelease ? "release" : "snapshot"
-      name = projectName
-      desc = project.description
-
-      websiteUrl = "https://blog.lul.kr"
-      issueTrackerUrl = "https://github.com/JustBurrow/kobalttown/issues"
-      vcsUrl = "https://github.com/JustBurrow/kobalttown.git"
-      licenses = ["Apache-2.0"]
-
-      publicDownloadNumbers = true
-      publish = true
-      override = project.version.toString().endsWith("SNAPSHOT")
-      publications = ["mavenPublication"]
-
-      githubRepo = "JustBurrow/kobalttown"
-      githubReleaseNotesFile = "README.md"
-
-      version {
-        name = projectVersion
-        desc = project.description
-      }
-    }
-  }
 }
