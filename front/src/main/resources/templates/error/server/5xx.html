@@ -2,17 +2,25 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:lang="${#locale}">
 <head>
-    <meta name="author" content="justburrow" th:remove="all"/>
-    <meta name="since" content="2020/01/15 23:53" th:remove="all"/>
-    <meta charset="UTF-8"/>
-    <title>5XX Server error</title>
+  <meta name="author" content="justburrow" th:remove="all"/>
+  <meta name="since" content="2020/01/15 23:53" th:remove="all"/>
+  <meta charset="UTF-8"/>
+  <title>5XX Server error</title>
+  <meta th:replace="component/tag/meta/index :: render"/>
+  <link rel="stylesheet" href="../../../assets/bootstrap/css/bootstrap.css" th:remove="all"/>
+  <link rel="stylesheet" href="../../../assets/css/kobalttown.css" th:remove="all"/>
+  <script src="../../../assets/jquery/jquery.js" th:remove="all"></script>
+  <script src="../../../assets/popper/popper.js" th:remove="all"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.js" th:remove="all"></script>
+  <script src="../../../assets/bootstrap/js/bootstrap.bundle.js" th:remove="all"></script>
+  <script src="../../../assets/js/kobalttown.js" th:remove="all"></script>
 </head>
 <body>
-<header th:replace="component/navbar/index :: navbar">
-    navigation bar
+<header class="fixed-top" th:replace="component/navbar/index :: render">
+  navigation bar
 </header>
-<main>
-    <h1>5XX Server error</h1>
+<main class="container">
+  <h1 class="h1">5XX Server error</h1>
 </main>
 </body>
 </html>
