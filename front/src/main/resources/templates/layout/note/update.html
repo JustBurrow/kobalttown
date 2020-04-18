@@ -18,7 +18,7 @@
 <body>
 <header class="fixed-top" th:replace="component/navbar/index :: render"></header>
 <main class="container">
-  <h1 class="h1">Update Note</h1>
+  <h1 class="sr-only">Update Note</h1>
   <!--/*@thymesVar id="note" type="kr.lul.kobalttown.document.dto.NoteDetailDto"*/-->
   <!--/*@thymesVar id="updateReq" type="kr.lul.kobalttown.document.web.controller.request.UpdateNoteReq"*/-->
   <div class="container">
@@ -26,9 +26,9 @@
       <form id="form-note" class="hide" action="detail.html" method="post"
             th:if="${#authentication.principal.id == note.author.id}"
             th:action="@{/notes/__${note.id}__}" th:method="patch"></form>
-      <div class="row form-group">
-        <label class="col-2 col-form-label" for="body">Body</label>
-        <div class="col-10">
+      <div class="form-group">
+        <label class="sr-only" for="body">Body</label>
+        <div>
           <textarea id="body" class="form-control"
                     form="form-note" name="body"
                     rows="5"
@@ -46,11 +46,9 @@
         </dl>
       </div>
       <div class="form-group">
-        <div class="btn-group btn-group-lg">
-          <button class="btn btn-primary" form="form-note">UPDATE</button>
-          <button class="btn btn-primary" type="reset" form="form-note">RESET</button>
-          <a class="btn btn-primary" href="detail.html" th:href="@{/notes/__${note.id}__}">CANCEL</a>
-        </div>
+        <button class="btn btn-primary" form="form-note">UPDATE</button>
+        <button class="btn btn-link" type="reset" form="form-note">RESET</button>
+        <a class="btn btn-link" href="detail.html" th:href="@{/notes/__${note.id}__}">CANCEL</a>
       </div>
     </div>
   </div>
