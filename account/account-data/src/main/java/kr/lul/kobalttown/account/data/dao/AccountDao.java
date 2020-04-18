@@ -27,4 +27,14 @@ public interface AccountDao {
    * @return 계정. 없으면 {@code null}.
    */
   Account read(Context context, long id);
+
+  /**
+   * 사용중인 별명인지 확인한다.
+   *
+   * @param context  컨텍스트.
+   * @param nickname 별명.
+   *
+   * @return 사용중이면 {@code true}.
+   */
+  boolean existsNickname(Context context, String nickname);
 }

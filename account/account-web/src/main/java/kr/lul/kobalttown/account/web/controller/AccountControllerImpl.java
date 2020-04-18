@@ -14,7 +14,6 @@ import kr.lul.kobalttown.account.dto.EnableCodeSummaryDto;
 import kr.lul.kobalttown.account.web.controller.request.CreateAccountReq;
 import kr.lul.kobalttown.account.web.controller.request.IssueEnableCodeReq;
 import kr.lul.kobalttown.account.web.controller.request.UpdatePasswordReq;
-import kr.lul.kobalttown.page.account.AccountError;
 import kr.lul.kobalttown.page.account.AccountMvc.M;
 import kr.lul.kobalttown.page.account.AccountMvc.V;
 import kr.lul.support.spring.security.userdetails.User;
@@ -26,6 +25,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -37,8 +37,8 @@ import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Arguments.positive;
-import static kr.lul.kobalttown.page.account.AccountError.UPDATE_CONFIRM_NOT_MATCH;
-import static kr.lul.kobalttown.page.account.AccountError.UPDATE_PASSWORD_NOT_UPDATED;
+import static kr.lul.kobalttown.account.domain.Account.ATTR_NICKNAME;
+import static kr.lul.kobalttown.page.account.AccountError.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -73,7 +73,7 @@ class AccountControllerImpl implements AccountController {
   private void validate(final CreateAccountReq req, final BindingResult binding) {
     if (null != req.getPassword() && !req.getPassword().equals(req.getConfirm())) {
       binding.addError(new FieldError(M.CREATE_REQ, "confirm", null, false,
-          new String[]{AccountError.CREATE_CONFIRM_NOT_MATCH}, null, "비밀번호가 일치하지 않습니다."));
+          new String[]{CREATE_CONFIRM_NOT_MATCH}, null, "비밀번호가 일치하지 않습니다."));
     }
   }
 
@@ -88,8 +88,22 @@ class AccountControllerImpl implements AccountController {
       if (log.isDebugEnabled())
         log.debug("#doCreate account={}", account);
       template = "redirect:/";
-    } catch (final Exception e) {
-      // TODO add error
+    } catch (final ValidationException e) {
+      if (log.isTraceEnabled())
+        log.trace("#doCreate (context=" + context + ") e=" + e, e);
+      else if (log.isDebugEnabled())
+        log.debug("#doCreate (context=" + context + ") fail to create : e=" + e);
+      final ObjectError error;
+      switch (e.getTargetName()) {
+        case ATTR_NICKNAME:
+          error = new FieldError(M.CREATE_REQ, ATTR_NICKNAME, cmd.getNickname(), false, new String[]{CREATE_USED_NICKNAME}, null,
+              e.getMessage());
+          break;
+        default:
+          error = new ObjectError(M.CREATE_REQ, new String[]{CREATE_UNKNOWN}, null, "알 수 없는 오류입니다..");
+          break;
+      }
+      result.addError(error);
       template = doCreateForm(model);
     }
 
@@ -158,10 +172,13 @@ class AccountControllerImpl implements AccountController {
       model.addAttribute(M.ENABLE_CODE, dto);
       template = V.ENABLE_CODE_ISSUED;
     } catch (final ValidationException e) {
-      log.warn(format("#doIssueEnableCode (context=%s) cmd=%s, e=%s", context, cmd, e), e);
+      if (log.isTraceEnabled())
+        log.trace(format("#doIssueEnableCode (context=%s) cmd=%s, e=%s", context, cmd, e), e);
+      else
+        log.warn(format("#doIssueEnableCode (context=%s) cmd=%s, e=%s", context, cmd, e));
 
       binding.addError(new FieldError(M.ISSUE_ENABLE_CODE, e.getTargetName(), e.getTarget(), false,
-          new String[]{AccountError.ISSUE_VALIDATE_CODE_FAIL}, null, "Fail to issue account enable code."));
+          new String[]{ISSUE_ENABLE_CODE_FAIL}, null, "계정 활송화 코드를 발급하지 못했습니다."));
 
       template = doIssueEnableCodeForm(context, req, binding, model);
     }

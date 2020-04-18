@@ -200,6 +200,10 @@ class AccountServiceImpl implements AccountService {
       log.trace("#create args : params={}", params);
     notNull(params, "params");
 
+    if (this.dao.existsNickname(params.getContext(), params.getNickname()))
+      throw new ValidationException(Account.ATTR_NICKNAME, params.getNickname(),
+          "이미 사용중인 별명입니다 : " + params.getNickname());
+
     // 계정 정보 등록.
     Account account = this.factory.create(
         params.getContext(), params.getNickname(), !this.enableCode.isEnable(), params.getTimestamp());
@@ -315,7 +319,7 @@ class AccountServiceImpl implements AccountService {
     // update password.
     credentials.stream()
         .map(credential -> {
-          Credential newCredential =
+          final Credential newCredential =
               this.credentialFactory.create(params.getContext(), params.getUser(), credential.getPublicKey(),
                   this.securityEncoder.encode(params.getPassword()), params.getTimestamp());
           log.info("#update newCredential={}", newCredential);
