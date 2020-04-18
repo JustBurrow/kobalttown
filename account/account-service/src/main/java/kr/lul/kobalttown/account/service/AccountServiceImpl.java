@@ -292,9 +292,10 @@ class AccountServiceImpl implements AccountService {
 
     final List<EnableCode> codes = this.enableCodeDao.list(params.getContext(), params.getEmail());
     if (codes.isEmpty())
-      throw new ValidationException(EnableCode.ATTR_EMAIL, params.getEmail(), "no data : email=" + params.getEmail());
+      throw new ValidationException(EnableCode.ATTR_EMAIL, params.getEmail(), "발급된 계정 활성화 코드가 없습니다 : email=" + params.getEmail());
 
-    codes.forEach(vc -> vc.inactive(params.getTimestamp()));
+    codes.stream().filter(EnableCode::isValid)
+        .forEach(vc -> vc.inactive(params.getTimestamp()));
     final EnableCode code = createEnableCode(params.getContext(), codes.get(0).getAccount(), params.getEmail(),
         params.getTimestamp());
     sendEnableCode(params.getContext(), code);

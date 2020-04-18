@@ -20,5 +20,7 @@ public interface EnableCodeRepository extends JpaRepository<EnableCodeEntity, Lo
 
   List<EnableCode> findAllByAccount(AccountEntity account);
 
+  List<EnableCodeEntity> findAllByEmail(String email);
+
   List<EnableCodeEntity> findAllByEmailAndStatusIn(String email, List<EnableCode.Status> statuses);
 }
