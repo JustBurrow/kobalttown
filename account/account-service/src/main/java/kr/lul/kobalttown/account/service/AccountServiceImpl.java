@@ -264,7 +264,10 @@ class AccountServiceImpl implements AccountService {
     if (log.isDebugEnabled())
       log.debug("#enable (context={}) code={}", params.getContext(), code);
 
-    code.use(params.getTimestamp());
+    if (null == code)
+      throw new ValidationException(EnableCode.ATTR_TOKEN, params.getToken(), "존재하지 않는 토큰입니다 : " + params.getToken());
+    else
+      code.use(params.getTimestamp());
 
     final Account account = code.getAccount();
     if (log.isTraceEnabled())

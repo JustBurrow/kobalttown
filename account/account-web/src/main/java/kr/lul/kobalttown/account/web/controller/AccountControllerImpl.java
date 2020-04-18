@@ -299,7 +299,10 @@ class AccountControllerImpl implements AccountController {
       EnableCode.TOKEN_VALIDATOR.validate(token);
       template = doEnable(new EnableAccountCmd(context, token, this.timeProvider.now()), model);
     } catch (final ValidationException e) {
-      log.warn("#enable (context={}) e=" + e, context, e);
+      if (log.isTraceEnabled())
+        log.trace("#enable (context={}) e=" + e, context, e);
+      else
+        log.warn("#enable (context=" + context + ") e=" + e);
       template = V.ENABLE_FAIL;
     }
 
