@@ -38,7 +38,8 @@ import static java.lang.String.format;
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 import static kr.lul.common.util.Arguments.notNull;
-import static kr.lul.kobalttown.account.domain.Credential.ATTR_ACCOUNT;
+import static kr.lul.kobalttown.account.domain.Account.ATTR_NICKNAME;
+import static kr.lul.kobalttown.account.domain.Credential.*;
 import static kr.lul.kobalttown.account.domain.EnableCodeUtil.token;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -201,10 +202,12 @@ class AccountServiceImpl implements AccountService {
     notNull(params, "params");
 
     if (this.dao.existsNickname(params.getContext(), params.getNickname()))
-      throw new ValidationException(Account.ATTR_NICKNAME, params.getNickname(),
+      throw new ValidationException(ATTR_NICKNAME, params.getNickname(),
           "이미 사용중인 별명입니다 : " + params.getNickname());
     if (this.credentialDao.existsPublicKey(params.getContext(), params.getEmail()))
-      throw new ValidationException(Credential.ATTR_EMAIL, params.getEmail(), "이미 사용중인 이메일입니다 : " + params.getEmail());
+      throw new ValidationException(ATTR_EMAIL, params.getEmail(), "이미 사용중인 이메일입니다 : " + params.getEmail());
+    if (this.credentialDao.existsPublicKey(params.getContext(), params.getUserKey()))
+      throw new ValidationException(ATTR_USER_KEY, params.getUserKey(), "이미 사용중인 유져키입니다 : " + params.getUserKey());
 
     // 계정 정보 등록.
     Account account = this.factory.create(

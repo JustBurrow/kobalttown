@@ -39,6 +39,7 @@ import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Arguments.positive;
 import static kr.lul.kobalttown.account.domain.Account.ATTR_NICKNAME;
 import static kr.lul.kobalttown.account.domain.Credential.ATTR_EMAIL;
+import static kr.lul.kobalttown.account.domain.Credential.ATTR_USER_KEY;
 import static kr.lul.kobalttown.page.account.AccountError.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -102,6 +103,10 @@ class AccountControllerImpl implements AccountController {
           break;
         case ATTR_EMAIL:
           error = new FieldError(M.CREATE_REQ, ATTR_EMAIL, cmd.getEmail(), false, new String[]{CREATE_USED_EMAIL}, null,
+              e.getMessage());
+          break;
+        case ATTR_USER_KEY:
+          error = new FieldError(M.CREATE_REQ, ATTR_USER_KEY, cmd.getUserKey(), false, new String[]{CREATE_USED_USER_KEY}, null,
               e.getMessage());
           break;
         default:
