@@ -27,17 +27,36 @@ public interface Credential extends Creatable<Instant>, SimpleString {
    * </ul>
    */
   String ATTR_PUBLIC_KEY = "publicKey";
+  /**
+   * 암호화한 비밀번호.
+   */
   String ATTR_SECRET_HASH = "secretHash";
+  /**
+   * 인증 정보 생성 시각.
+   */
   String ATTR_CREATED_AT = "createdAt";
 
   /**
+   * 공개키의 한 종류.
+   *
+   * @see #ATTR_PUBLIC_KEY
+   */
+  String ATTR_EMAIL = "email";
+  /**
    * 사용자가 지정하는 {@link Credential#getPublicKey()}의 한 종류.
+   *
+   * @see #ATTR_PUBLIC_KEY
    */
   String ATTR_USER_KEY = "userKey";
+
   /**
    * 비밀번호.
    */
   String ATTR_SECRET = "secret";
+  /**
+   * {@link #ATTR_SECRET}의 별명.
+   */
+  String ATTR_PASSWORD = "password";
 
   Validator<Account> ACCOUNT_VALIDATOR = account -> {
     if (null == account) {

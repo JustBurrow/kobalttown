@@ -16,4 +16,6 @@ public interface CredentialRepository extends JpaRepository<CredentialEntity, Lo
   CredentialEntity findByPublicKey(String publicKey);
 
   List<CredentialEntity> findAllByAccount(Account account);
+
+  boolean existsByPublicKey(String publicKey);
 }

@@ -203,6 +203,8 @@ class AccountServiceImpl implements AccountService {
     if (this.dao.existsNickname(params.getContext(), params.getNickname()))
       throw new ValidationException(Account.ATTR_NICKNAME, params.getNickname(),
           "이미 사용중인 별명입니다 : " + params.getNickname());
+    if (this.credentialDao.existsPublicKey(params.getContext(), params.getEmail()))
+      throw new ValidationException(Credential.ATTR_EMAIL, params.getEmail(), "이미 사용중인 이메일입니다 : " + params.getEmail());
 
     // 계정 정보 등록.
     Account account = this.factory.create(
