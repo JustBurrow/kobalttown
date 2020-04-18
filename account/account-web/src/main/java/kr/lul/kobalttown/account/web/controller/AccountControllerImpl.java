@@ -4,7 +4,6 @@ import kr.lul.common.data.Context;
 import kr.lul.common.util.DisabledPropertyException;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.common.util.ValidationException;
-import kr.lul.common.web.http.status.exception.client.NotFound;
 import kr.lul.kobalttown.account.borderline.AccountBorderline;
 import kr.lul.kobalttown.account.borderline.command.*;
 import kr.lul.kobalttown.account.domain.EnableCode;
@@ -139,10 +138,7 @@ class AccountControllerImpl implements AccountController {
       model.addAttribute(M.ENABLED_AT, cmd.getTimestamp());
 
       template = V.ENABLE_SUCCESS;
-    } catch (final DisabledPropertyException e) {
-      log.warn(format("#doEnable (context=%s) e=%s", cmd.getContext(), e), e);
-      throw new NotFound(e);
-    } catch (final EnableCodeStatusException e) {
+    } catch (final DisabledPropertyException | EnableCodeStatusException e) {
       log.warn(format("#doEnable (context=%s) e=%s", cmd.getContext(), e), e);
       template = V.ENABLE_FAIL;
     }
@@ -297,14 +293,14 @@ class AccountControllerImpl implements AccountController {
       log.trace("#enable args : token={}, model={}", token, model);
 
     final Context context = this.contextService.get();
-    final String template;
 
+    String template;
     try {
       EnableCode.TOKEN_VALIDATOR.validate(token);
       template = doEnable(new EnableAccountCmd(context, token, this.timeProvider.now()), model);
     } catch (final ValidationException e) {
       log.warn("#enable (context={}) e=" + e, context, e);
-      throw new NotFound(e);
+      template = V.ENABLE_FAIL;
     }
 
     if (log.isTraceEnabled())
