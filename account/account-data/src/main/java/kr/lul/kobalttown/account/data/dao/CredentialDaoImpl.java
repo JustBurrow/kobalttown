@@ -78,4 +78,18 @@ class CredentialDaoImpl implements CredentialDao {
     if (log.isTraceEnabled())
       log.trace("#delete (context={}) result : void", context);
   }
+
+  @Override
+  public boolean existsPublicKey(final Context context, final String publicKey) {
+    if (log.isTraceEnabled())
+      log.trace("#existsPublicKey args : context={}, publicKey={}", context, publicKey);
+    notNull(context, "context");
+    notEmpty(publicKey, "publicKey");
+
+    final boolean exists = this.repository.existsByPublicKey(publicKey);
+
+    if (log.isTraceEnabled())
+      log.trace("#existsPublicKey (context={}) return : {}", context, exists);
+    return exists;
+  }
 }

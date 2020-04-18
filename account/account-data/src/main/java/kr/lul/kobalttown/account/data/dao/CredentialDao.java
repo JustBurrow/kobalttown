@@ -40,4 +40,14 @@ public interface CredentialDao {
   List<Credential> read(Context context, Account account);
 
   void delete(Context context, Credential credential);
+
+  /**
+   * 사용중이 공개키인지 확인한다.
+   *
+   * @param context   컨텍스트.
+   * @param publicKey 공개키.
+   *
+   * @return 사용중이면 {@code true}.
+   */
+  boolean existsPublicKey(Context context, String publicKey);
 }

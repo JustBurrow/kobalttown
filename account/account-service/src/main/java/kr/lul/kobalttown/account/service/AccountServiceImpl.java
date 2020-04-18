@@ -38,7 +38,8 @@ import static java.lang.String.format;
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 import static kr.lul.common.util.Arguments.notNull;
-import static kr.lul.kobalttown.account.domain.Credential.ATTR_ACCOUNT;
+import static kr.lul.kobalttown.account.domain.Account.ATTR_NICKNAME;
+import static kr.lul.kobalttown.account.domain.Credential.*;
 import static kr.lul.kobalttown.account.domain.EnableCodeUtil.token;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -200,6 +201,14 @@ class AccountServiceImpl implements AccountService {
       log.trace("#create args : params={}", params);
     notNull(params, "params");
 
+    if (this.dao.existsNickname(params.getContext(), params.getNickname()))
+      throw new ValidationException(ATTR_NICKNAME, params.getNickname(),
+          "이미 사용중인 별명입니다 : " + params.getNickname());
+    if (this.credentialDao.existsPublicKey(params.getContext(), params.getEmail()))
+      throw new ValidationException(ATTR_EMAIL, params.getEmail(), "이미 사용중인 이메일입니다 : " + params.getEmail());
+    if (this.credentialDao.existsPublicKey(params.getContext(), params.getUserKey()))
+      throw new ValidationException(ATTR_USER_KEY, params.getUserKey(), "이미 사용중인 유져키입니다 : " + params.getUserKey());
+
     // 계정 정보 등록.
     Account account = this.factory.create(
         params.getContext(), params.getNickname(), !this.enableCode.isEnable(), params.getTimestamp());
@@ -255,7 +264,10 @@ class AccountServiceImpl implements AccountService {
     if (log.isDebugEnabled())
       log.debug("#enable (context={}) code={}", params.getContext(), code);
 
-    code.use(params.getTimestamp());
+    if (null == code)
+      throw new ValidationException(EnableCode.ATTR_TOKEN, params.getToken(), "존재하지 않는 토큰입니다 : " + params.getToken());
+    else
+      code.use(params.getTimestamp());
 
     final Account account = code.getAccount();
     if (log.isTraceEnabled())
@@ -283,9 +295,10 @@ class AccountServiceImpl implements AccountService {
 
     final List<EnableCode> codes = this.enableCodeDao.list(params.getContext(), params.getEmail());
     if (codes.isEmpty())
-      throw new ValidationException(EnableCode.ATTR_EMAIL, params.getEmail(), "no data : email=" + params.getEmail());
+      throw new ValidationException(EnableCode.ATTR_EMAIL, params.getEmail(), "발급된 계정 활성화 코드가 없습니다 : email=" + params.getEmail());
 
-    codes.forEach(vc -> vc.inactive(params.getTimestamp()));
+    codes.stream().filter(EnableCode::isValid)
+        .forEach(vc -> vc.inactive(params.getTimestamp()));
     final EnableCode code = createEnableCode(params.getContext(), codes.get(0).getAccount(), params.getEmail(),
         params.getTimestamp());
     sendEnableCode(params.getContext(), code);
@@ -315,7 +328,7 @@ class AccountServiceImpl implements AccountService {
     // update password.
     credentials.stream()
         .map(credential -> {
-          Credential newCredential =
+          final Credential newCredential =
               this.credentialFactory.create(params.getContext(), params.getUser(), credential.getPublicKey(),
                   this.securityEncoder.encode(params.getPassword()), params.getTimestamp());
           log.info("#update newCredential={}", newCredential);

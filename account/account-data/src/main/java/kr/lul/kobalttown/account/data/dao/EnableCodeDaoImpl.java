@@ -8,11 +8,10 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Collections.unmodifiableList;
 import static kr.lul.common.util.Arguments.*;
-import static kr.lul.kobalttown.account.domain.EnableCode.Status.ISSUED;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -77,7 +76,7 @@ class EnableCodeDaoImpl implements EnableCodeDao {
       log.trace("#list args : context={}, email={}", context, email);
     notEmpty(email, "email");
 
-    final List<EnableCode> codes = unmodifiableList(this.repository.findAllByEmailAndStatusIn(email, List.of(ISSUED)));
+    final List<EnableCode> codes = new ArrayList<>(this.repository.findAllByEmail(email));
 
     if (log.isTraceEnabled())
       log.trace("#list (context={}) return : {}", context, codes);

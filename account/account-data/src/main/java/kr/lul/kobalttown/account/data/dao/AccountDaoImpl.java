@@ -7,11 +7,13 @@ import kr.lul.kobalttown.account.domain.Account;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 
 import static java.util.Objects.requireNonNull;
+import static kr.lul.common.util.Arguments.notEmpty;
 import static kr.lul.common.util.Arguments.notNull;
 
 /**
@@ -31,13 +33,16 @@ class AccountDaoImpl implements AccountDao {
   }
 
   @Override
-  public Account create(Context context, Account account) {
+  public Account create(final Context context, final Account account) {
     if (log.isTraceEnabled())
       log.trace("#create args : context={}, account={}", context, account);
     notNull(context, "context");
     notNull(account, "account");
 
-    AccountEntity saved = this.repository.saveAndFlush((AccountEntity) account);
+    final AccountEntity saved = this.repository.saveAndFlush((AccountEntity) account);
+    try {
+    } catch (final DataIntegrityViolationException e) {
+    }
 
     if (log.isTraceEnabled())
       log.trace("#create return : {}", saved);
@@ -45,15 +50,29 @@ class AccountDaoImpl implements AccountDao {
   }
 
   @Override
-  public Account read(Context context, long id) {
+  public Account read(final Context context, final long id) {
     if (log.isTraceEnabled())
       log.trace("#read args : context={}, id={}", context, id);
 
-    AccountEntity account = this.repository.findById(id)
-        .orElse(null);
+    final AccountEntity account = this.repository.findById(id)
+                                      .orElse(null);
 
     if (log.isTraceEnabled())
       log.trace("#read return : {}", account);
     return account;
+  }
+
+  @Override
+  public boolean existsNickname(final Context context, final String nickname) {
+    if (log.isTraceEnabled())
+      log.trace("#existsNickname args : context={}, nickname={}", context, nickname);
+    notNull(context, "context");
+    notEmpty(nickname, "nickname");
+
+    final boolean exists = this.repository.existsByNickname(nickname);
+
+    if (log.isTraceEnabled())
+      log.trace("#existsNickname (context={}) return : {}", context, exists);
+    return exists;
   }
 }
