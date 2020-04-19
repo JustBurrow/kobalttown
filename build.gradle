@@ -50,6 +50,7 @@ subprojects {
       dependency "kr.lul.common:common-data:0.0.1.SNAPSHOT"
       dependency "kr.lul.common:common-web:0.0.1.SNAPSHOT"
 
+      dependency "kr.lul.support.spring:support-spring-common:0.0.1.SNAPSHOT"
       dependency "kr.lul.support.spring:support-spring-data-jpa:0.0.1.SNAPSHOT"
       dependency "kr.lul.support.spring:support-spring-mail:0.0.1.SNAPSHOT"
       dependency "kr.lul.support.spring:support-spring-security:0.0.1.SNAPSHOT"

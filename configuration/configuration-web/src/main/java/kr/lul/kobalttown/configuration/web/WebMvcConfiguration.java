@@ -5,8 +5,6 @@ import kr.lul.common.web.http.status.exception.client.NotFound;
 import kr.lul.kobalttown.configuration.web.properties.WebProperties;
 import kr.lul.kobalttown.page.root.GlobalMvc.V;
 import kr.lul.kobalttown.page.root.RootMvc;
-import kr.lul.support.spring.web.context.ContextService;
-import kr.lul.support.spring.web.context.DefaultContextService;
 import kr.lul.support.spring.web.controller.CommonWebHttpExceptionHandler;
 import kr.lul.support.spring.web.controller.SpringWebExceptionHandler;
 import kr.lul.support.spring.web.interceptor.LoggingInterceptor;
@@ -39,11 +37,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
   @Bean
   public LoggingInterceptor loggingInterceptor() {
     return new LoggingInterceptor();
-  }
-
-  @Bean
-  public ContextService contextService() {
-    return new DefaultContextService();
   }
 
   @Bean

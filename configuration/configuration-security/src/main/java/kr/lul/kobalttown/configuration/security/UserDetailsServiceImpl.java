@@ -5,8 +5,8 @@ import kr.lul.common.util.Texts;
 import kr.lul.kobalttown.account.data.dao.CredentialDao;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.domain.Credential;
+import kr.lul.support.spring.common.context.ContextService;
 import kr.lul.support.spring.security.userdetails.User;
-import kr.lul.support.spring.web.context.ContextService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -38,29 +38,29 @@ class UserDetailsServiceImpl implements UserDetailsService {
   }
 
   @Override
-  public User loadUserByUsername(String username) throws UsernameNotFoundException {
+  public User loadUserByUsername(final String username) throws UsernameNotFoundException {
     if (log.isTraceEnabled())
       log.trace("#loadUserByUsername args : username={}", username);
 
     if (null == username || username.isEmpty())
       throw new UsernameNotFoundException("username is null or empty.");
 
-    Context context = this.contextService.get();
+    final Context context = this.contextService.get();
     if (null == context && log.isInfoEnabled())
       log.info("#loadUserByUsername context={}", context);
 
-    Credential credential = this.credentialDao.read(context, username);
+    final Credential credential = this.credentialDao.read(context, username);
     if (log.isDebugEnabled())
       log.debug("#loadUserByUsername credential={}", credential);
 
     if (null == credential)
       throw new UsernameNotFoundException(format("no account for %s.", Texts.singleQuote(username)));
 
-    Account account = credential.getAccount();
+    final Account account = credential.getAccount();
     if (log.isDebugEnabled())
       log.debug("#loadUserByUsername account={}", account);
 
-    User user = new User(account.getId(), account.getNickname(), credential.getSecretHash(), account.isEnabled(),
+    final User user = new User(account.getId(), account.getNickname(), credential.getSecretHash(), account.isEnabled(),
         true, true, true, List.of(new SimpleGrantedAuthority("ROLE_USER")));
 
     if (log.isTraceEnabled())

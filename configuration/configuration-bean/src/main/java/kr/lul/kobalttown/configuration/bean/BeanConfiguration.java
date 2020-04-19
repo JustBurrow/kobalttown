@@ -2,6 +2,8 @@ package kr.lul.kobalttown.configuration.bean;
 
 import kr.lul.common.util.SystemMillisTimeProvider;
 import kr.lul.common.util.TimeProvider;
+import kr.lul.support.spring.common.context.ContextService;
+import kr.lul.support.spring.common.context.DefaultContextService;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +34,11 @@ public class BeanConfiguration {
   }
 
   @Bean
+  public ContextService contextService() {
+    return new DefaultContextService();
+  }
+
+  @Bean
   public TaskDecorator taskDecorator() {
     class MdcDecorator implements TaskDecorator {
       private final Logger log = getLogger(MdcDecorator.class);
@@ -48,11 +55,13 @@ public class BeanConfiguration {
           try {
             if (null == contextMap) {
               if (this.log.isTraceEnabled())
-                this.log.trace("#decorate clear MDC context.");
+                this.log.trace("#run clear MDC context.");
               MDC.clear();
             } else {
+              if (!contextMap.containsKey(MDC_PROP_CONTEXT))
+                this.log.info("#run MDC context has no {}.", MDC_PROP_CONTEXT);
               if (this.log.isTraceEnabled())
-                this.log.trace("#decorate set MDC context map : {}", contextMap);
+                this.log.trace("#run set MDC context map : {}", contextMap);
               MDC.setContextMap(contextMap);
             }
           } finally {
