@@ -1,4 +1,4 @@
-package kr.lul.kobalttown.common.transfer;
+package kr.lul.kobalttown.transfer.common;
 
 import kr.lul.common.data.TimestampedContext;
 
@@ -9,21 +9,21 @@ import static java.time.Instant.now;
 import static java.util.UUID.randomUUID;
 
 /**
- * 익명 유저가 실행 하는 {@code *.service} 레이어용.
+ * 시스템이 실행하는 로직의 {@code *.service} 레이어용.
  *
  * @author justburrow
  * @since 2020/04/26
  */
-public class AnonymousParams extends TimestampedContext {
-  public AnonymousParams() {
+public class SystemParams extends TimestampedContext {
+  public SystemParams() {
     this(randomUUID(), now());
   }
 
-  public AnonymousParams(final UUID id, final Instant timestamp) {
+  public SystemParams(final UUID id, final Instant timestamp) {
     super(id, timestamp);
   }
 
-  public AnonymousParams(final TimestampedContext context) {
+  public SystemParams(final TimestampedContext context) {
     this(context.getId(), context.getTimestamp());
   }
 }

@@ -1,38 +1,35 @@
 package kr.lul.kobalttown.account.borderline.command;
 
 import kr.lul.common.data.Context;
-import kr.lul.common.data.ContextContainer;
+import kr.lul.common.data.TimestampedContext;
+import kr.lul.kobalttown.transfer.account.AnonymousCmd;
 
 import java.time.Instant;
 import java.util.Objects;
 
 import static java.lang.String.format;
-import static kr.lul.common.util.Arguments.notNull;
-import static kr.lul.common.util.Texts.singleQuote;
+import static kr.lul.common.util.Arguments.notEmpty;
 
 /**
  * @author justburrow
  * @since 2020/01/19
  */
-public class IssueEnableCodeCmd extends ContextContainer {
+public class IssueEnableCodeCmd extends AnonymousCmd {
   private String email;
-  private Instant timestamp;
+
+  public IssueEnableCodeCmd(final TimestampedContext context, final String email) {
+    this(context, email, context.getTimestamp());
+  }
 
   public IssueEnableCodeCmd(final Context context, final String email, final Instant timestamp) {
-    super(context);
-    notNull(email, "email");
-    notNull(timestamp, "timestamp");
+    super(context, timestamp);
+    notEmpty(email, "email");
 
     this.email = email;
-    this.timestamp = timestamp;
   }
 
   public String getEmail() {
     return this.email;
-  }
-
-  public Instant getTimestamp() {
-    return this.timestamp;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,19 +40,17 @@ public class IssueEnableCodeCmd extends ContextContainer {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    final IssueEnableCodeCmd that = (IssueEnableCodeCmd) o;
-    return this.email.equals(that.email) &&
-               this.timestamp.equals(that.timestamp);
+
+    return this.email.equals(((IssueEnableCodeCmd) o).email);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.context, this.email, this.timestamp);
+    return Objects.hash(super.hashCode(), this.email);
   }
 
   @Override
   public String toString() {
-    return format("%s{context=%s, email=%s, timestamp=%s}", IssueEnableCodeCmd.class.getSimpleName(), this.context,
-        singleQuote(this.email), this.timestamp);
+    return format("{id=%s, email='%s', timestamp=%s}", this.id, this.email, this.timestamp);
   }
 }

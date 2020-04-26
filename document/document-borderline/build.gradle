@@ -4,6 +4,7 @@ dependencies {
   implementation project(":account-service")
 
   api project(":document-domain")
+  api project(":transfer-account")
   api project(":document-dto")
 
   compileOnly "org.springframework:spring-tx"

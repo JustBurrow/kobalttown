@@ -34,7 +34,7 @@ public interface AccountService {
    *
    * @return 계정. 없으면 {@code null}.
    */
-  Account read(ReadAccountParams params);
+  Account read(ReadAccountSystemParams params);
 
   /**
    * 계정 정보 인증 코드를 신규 발급한다.

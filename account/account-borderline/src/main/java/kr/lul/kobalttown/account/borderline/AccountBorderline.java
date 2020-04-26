@@ -34,7 +34,7 @@ public interface AccountBorderline {
    *
    * @return 계정 정보. 없으면 {@code null}.
    */
-  AccountDetailDto read(ReadAccountCmd cmd);
+  AccountDetailDto read(ReadAccountUserCmd cmd);
 
   /**
    * 신규 계정의 인증 코드를 재발급한다.

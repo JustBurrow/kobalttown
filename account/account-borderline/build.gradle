@@ -3,6 +3,7 @@ dependencies {
   implementation project(":account-converter")
 
   api project(":account-domain")
+  api project(":transfer-account")
   api project(":account-dto")
 
   compileOnly "org.springframework:spring-tx"

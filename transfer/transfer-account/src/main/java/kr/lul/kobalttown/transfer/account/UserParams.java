@@ -1,5 +1,6 @@
-package kr.lul.kobalttown.common.transfer;
+package kr.lul.kobalttown.transfer.account;
 
+import kr.lul.common.data.Context;
 import kr.lul.common.data.TimestampedContext;
 import kr.lul.kobalttown.account.domain.Account;
 
@@ -27,16 +28,20 @@ public class UserParams extends TimestampedContext {
     this(randomUUID(), user, now());
   }
 
+  public UserParams(final Context context, final Account user, final Instant timestamp) {
+    this(context.getId(), user, timestamp);
+  }
+
+  public UserParams(final TimestampedContext context, final Account user) {
+    this(context.getId(), user, context.getTimestamp());
+  }
+
   public UserParams(final UUID id, final Account user, final Instant timestamp) {
     super(id, timestamp);
     notNull(user, "user");
     positive(user.getId(), "user.id");
 
     this.user = user;
-  }
-
-  public UserParams(final TimestampedContext context, final Account user) {
-    this(context.getId(), user, context.getTimestamp());
   }
 
   public Account getUser() {

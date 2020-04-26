@@ -12,7 +12,7 @@ import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.domain.EnableCode;
 import kr.lul.kobalttown.account.service.configuration.EnableCodeConfig;
 import kr.lul.kobalttown.account.service.params.CreateAccountParams;
-import kr.lul.kobalttown.account.service.params.ReadAccountParams;
+import kr.lul.kobalttown.account.service.params.ReadAccountSystemParams;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +27,7 @@ import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.util.List;
 
+import static java.util.UUID.randomUUID;
 import static kr.lul.kobalttown.account.domain.AccountUtil.nickname;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.email;
 import static kr.lul.kobalttown.account.domain.CredentialUtil.userKey;
@@ -73,7 +74,7 @@ public class AccountServiceImplTest {
   @Test
   public void test_read_with_not_exist_id() throws Exception {
     // GIVEN
-    final ReadAccountParams params = new ReadAccountParams(new Context(), Long.MAX_VALUE, this.before);
+    final ReadAccountSystemParams params = new ReadAccountSystemParams(new Context(), Long.MAX_VALUE, this.before);
     log.info("GIVEN - params={}", params);
 
     // WHEN
@@ -91,8 +92,8 @@ public class AccountServiceImplTest {
     final String nickname = nickname();
     final String email = email();
     final String userKey = userKey();
-    final Account expected = this.service.create(new CreateAccountParams(
-        new Context(), nickname, email, userKey, "password", this.before));
+    final Account expected = this.service.create(
+        new CreateAccountParams(randomUUID(), nickname, email, userKey, "password", this.before));
     log.info("GIVEN - expected={}", expected);
 
     this.entityManager.flush();
@@ -102,7 +103,7 @@ public class AccountServiceImplTest {
     final Instant timestamp = this.timeProvider.now();
 
     // WHEN
-    final Account actual = this.service.read(new ReadAccountParams(context, expected.getId(), timestamp));
+    final Account actual = this.service.read(new ReadAccountSystemParams(context, expected.getId(), timestamp));
     log.info("WHEN - actual={}", actual);
 
     // THEN
@@ -126,7 +127,7 @@ public class AccountServiceImplTest {
     final String nickname = nickname();
     final String email = email();
     final String userKey = userKey();
-    final CreateAccountParams params = new CreateAccountParams(new Context(), nickname, email, userKey, "password", this.before);
+    final CreateAccountParams params = new CreateAccountParams(randomUUID(), nickname, email, userKey, "password", this.before);
     log.info("GIVEN - params={}", params);
 
     // WHEN
@@ -196,7 +197,7 @@ public class AccountServiceImplTest {
     final String nickname = nickname();
     final String email = email();
     final String userKey = userKey();
-    final CreateAccountParams params = new CreateAccountParams(new Context(), nickname, email, userKey, "password", this.before);
+    final CreateAccountParams params = new CreateAccountParams(randomUUID(), nickname, email, userKey, "password", this.before);
     log.info("GIVEN - params={}", params);
 
     // WHEN

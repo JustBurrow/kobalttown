@@ -1,5 +1,6 @@
 package kr.lul.kobalttown.account.service;
 
+import kr.lul.kobalttown.account.test.AccountTestAnchor;
 import kr.lul.kobalttown.configuration.bean.BeanConfiguration;
 import kr.lul.kobalttown.configuration.data.jpa.JpaConfiguration;
 import kr.lul.kobalttown.configuration.mail.MailConfigurer;
@@ -14,7 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  * @author justburrow
  * @since 2019/11/24
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackageClasses = {AccountServiceAnchor.class, AccountTestAnchor.class})
 @Import({BeanConfiguration.class, MailConfigurer.class, JpaConfiguration.class})
 public class AccountServiceTestConfiguration {
   @Bean

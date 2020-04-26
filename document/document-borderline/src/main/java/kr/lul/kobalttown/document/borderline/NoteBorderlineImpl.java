@@ -4,7 +4,7 @@ import kr.lul.common.data.Pagination;
 import kr.lul.common.util.ValidationException;
 import kr.lul.kobalttown.account.domain.Account;
 import kr.lul.kobalttown.account.service.AccountService;
-import kr.lul.kobalttown.account.service.params.ReadAccountParams;
+import kr.lul.kobalttown.account.service.params.ReadAccountSystemParams;
 import kr.lul.kobalttown.document.borderline.command.*;
 import kr.lul.kobalttown.document.converter.NoteCommentConverter;
 import kr.lul.kobalttown.document.converter.NoteConverter;
@@ -47,16 +47,16 @@ class NoteBorderlineImpl implements NoteBorderline {
       log.trace("#create args : cmd={}", cmd);
     notNull(cmd, "cmd");
 
-    final Account user = this.accountService.read(new ReadAccountParams(cmd, cmd.getUser(), cmd.getTimestamp()));
+    final Account user = this.accountService.read(new ReadAccountSystemParams(cmd, cmd.getUser(), cmd.getTimestamp()));
     if (null == user)
       throw new ValidationException("user", cmd.getUser(), "user does not exist : " + cmd.getUser());
 
-    final CreateNoteParams params = new CreateNoteParams(cmd, user, cmd.getBody(), cmd.getTimestamp());
+    final CreateNoteParams params = new CreateNoteParams(cmd, user, cmd.getBody());
     final Note note = this.service.create(params);
     final NoteDetailDto dto = this.converter.detail(note);
 
     if (log.isTraceEnabled())
-      log.trace("#create (context={}) return : {}", cmd.getContext(), dto);
+      log.trace("#create (context={}) return : {}", cmd.getId(), dto);
     return dto;
   }
 
@@ -66,7 +66,7 @@ class NoteBorderlineImpl implements NoteBorderline {
       log.trace("#read args : cmd={}", cmd);
     notNull(cmd, "cmd");
 
-    final Account user = this.accountService.read(new ReadAccountParams(cmd, cmd.getUser(), cmd.getTimestamp()));
+    final Account user = this.accountService.read(new ReadAccountSystemParams(cmd, cmd.getUser(), cmd.getTimestamp()));
     if (null == user)
       throw new ValidationException("user", cmd.getUser(), "user does not exist : " + cmd.getUser());
 
@@ -75,7 +75,7 @@ class NoteBorderlineImpl implements NoteBorderline {
     final NoteDetailDto dto = this.converter.detail(note);
 
     if (log.isTraceEnabled())
-      log.trace("#read (context={}) return : {}", cmd.getContext(), dto);
+      log.trace("#read (context={}) return : {}", cmd.getId(), dto);
     return dto;
   }
 
@@ -85,7 +85,7 @@ class NoteBorderlineImpl implements NoteBorderline {
       log.trace("#list args : cmd={}", cmd);
     notNull(cmd, "cmd");
 
-    final Account user = this.accountService.read(new ReadAccountParams(cmd, cmd.getUser(), cmd.getTimestamp()));
+    final Account user = this.accountService.read(new ReadAccountSystemParams(cmd, cmd.getUser(), cmd.getTimestamp()));
     if (null == user)
       throw new ValidationException("user", cmd.getUser(), "user does not exist : " + cmd.getUser());
 
@@ -94,7 +94,7 @@ class NoteBorderlineImpl implements NoteBorderline {
     final Pagination<NoteSimpleDto> list = notes.map(note -> this.converter.simple(note));
 
     if (log.isTraceEnabled())
-      log.trace("#list (context={}) return : {}", cmd.getContext(), list);
+      log.trace("#list (context={}) return : {}", cmd.getId(), list);
     return list;
   }
 
@@ -104,7 +104,7 @@ class NoteBorderlineImpl implements NoteBorderline {
       log.trace("#update args : cmd={}", cmd);
     notNull(cmd, "cmd");
 
-    final Account user = this.accountService.read(new ReadAccountParams(cmd, cmd.getUser(), cmd.getTimestamp()));
+    final Account user = this.accountService.read(new ReadAccountSystemParams(cmd, cmd.getUser(), cmd.getTimestamp()));
     if (null == user)
       throw new ValidationException("user", cmd.getUser(), "user does not exist : " + cmd.getUser());
 
@@ -113,7 +113,7 @@ class NoteBorderlineImpl implements NoteBorderline {
     final NoteDetailDto dto = this.converter.detail(note);
 
     if (log.isTraceEnabled())
-      log.trace("#update (context={}) return : {}", cmd.getContext(), dto);
+      log.trace("#update (context={}) return : {}", cmd.getId(), dto);
     return dto;
   }
 
@@ -123,7 +123,7 @@ class NoteBorderlineImpl implements NoteBorderline {
       log.trace("#delete args : cmd={}", cmd);
     notNull(cmd, "cmd");
 
-    final Account user = this.accountService.read(new ReadAccountParams(cmd, cmd.getUser(), cmd.getTimestamp()));
+    final Account user = this.accountService.read(new ReadAccountSystemParams(cmd, cmd.getUser(), cmd.getTimestamp()));
     if (null == user)
       throw new ValidationException("user", cmd.getUser(), "user does not exist : " + cmd.getUser());
 
@@ -136,7 +136,7 @@ class NoteBorderlineImpl implements NoteBorderline {
       log.trace("#comment args : cmd={}", cmd);
     notNull(cmd, "cmd");
 
-    final Account user = this.accountService.read(new ReadAccountParams(cmd, cmd.getUser(), cmd.getTimestamp()));
+    final Account user = this.accountService.read(new ReadAccountSystemParams(cmd, cmd.getUser(), cmd.getTimestamp()));
     if (null == user)
       throw new ValidationException("user", cmd.getUser(), "user does not exist : " + cmd.getUser());
 
@@ -147,7 +147,7 @@ class NoteBorderlineImpl implements NoteBorderline {
     final NoteCommentDetailDto dto = this.commentConverter.detail(comment);
 
     if (log.isTraceEnabled())
-      log.trace("#comment (context={}) return : {}", cmd.getContext(), dto);
+      log.trace("#comment (context={}) return : {}", cmd.getId(), dto);
     return dto;
   }
 
@@ -157,7 +157,7 @@ class NoteBorderlineImpl implements NoteBorderline {
       log.trace("#delete args : cmd={}", cmd);
     notNull(cmd, "cmd");
 
-    final Account user = this.accountService.read(new ReadAccountParams(cmd, cmd.getUser(), cmd.getTimestamp()));
+    final Account user = this.accountService.read(new ReadAccountSystemParams(cmd, cmd.getUser(), cmd.getTimestamp()));
     if (null == user)
       throw new ValidationException("user", cmd.getUser(), "user does not exist : user=" + cmd.getUser());
 
@@ -166,6 +166,6 @@ class NoteBorderlineImpl implements NoteBorderline {
     this.service.delete(params);
 
     if (log.isTraceEnabled())
-      log.trace("#delete (context={}) complete.", cmd.getContext());
+      log.trace("#delete (context={}) complete.", cmd.getId());
   }
 }
