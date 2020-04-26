@@ -11,7 +11,7 @@ import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.domain.EnableCode;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.service.configuration.EnableCodeConfig;
-import kr.lul.support.spring.web.context.ContextService;
+import kr.lul.support.spring.common.context.ContextService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
