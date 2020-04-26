@@ -1,0 +1,5 @@
+dependencies {
+  implementation project(":account-domain")
+
+  api "kr.lul.common:common-data"
+}
