@@ -31,6 +31,8 @@ public abstract class RootMvc {
     public static final String LOG_OUT = "/logout";
     public static final String ASSETS = "/assets";
 
+    public static final String ERROR = "/error";
+
     public C() {
       throw new UnsupportedOperationException();
     }

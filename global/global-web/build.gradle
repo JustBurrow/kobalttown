@@ -1,0 +1,12 @@
+dependencies {
+  implementation project(":page-root")
+
+  compileOnly project(":configuration-web")
+  compileOnly project(":configuration-mail")
+  compileOnly project(":configuration-security")
+
+  testImplementation project(":configuration-dependencies")
+  testImplementation project(":page-root")
+
+  testImplementation "org.springframework.security:spring-security-test"
+}
