@@ -6,6 +6,7 @@ import kr.lul.support.spring.common.context.ContextService;
 import kr.lul.support.spring.common.context.DefaultContextService;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskDecorator;
@@ -21,6 +22,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @since 2019/12/14
  */
 @Configuration
+@EnableConfigurationProperties
 public class BeanConfiguration {
   private static final Logger log = getLogger(BeanConfiguration.class);
 

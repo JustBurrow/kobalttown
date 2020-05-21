@@ -7,6 +7,7 @@ import kr.lul.kobalttown.configuration.mail.MailConfigurer;
 import kr.lul.support.spring.security.crypto.PasswordEncoderSecurityEncoder;
 import kr.lul.support.spring.security.crypto.SecurityEncoder;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Import({BeanConfiguration.class, MailConfigurer.class, JpaConfiguration.class})
 public class AccountServiceTestConfiguration {
   @Bean
+  @ConditionalOnMissingBean
   public SecurityEncoder securityEncoder() {
     return new PasswordEncoderSecurityEncoder(new BCryptPasswordEncoder());
   }

@@ -4,9 +4,9 @@ import kr.lul.common.data.Context;
 import kr.lul.common.util.DisabledPropertyException;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.common.util.ValidationException;
+import kr.lul.common.web.http.status.exception.client.NotFound;
 import kr.lul.kobalttown.account.borderline.AccountBorderline;
 import kr.lul.kobalttown.account.borderline.command.*;
-import kr.lul.kobalttown.account.domain.EnableCode;
 import kr.lul.kobalttown.account.domain.EnableCodeStatusException;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.dto.EnableCodeSummaryDto;
@@ -35,9 +35,11 @@ import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Arguments.positive;
+import static kr.lul.common.util.ExceptionTranslator.translate;
 import static kr.lul.kobalttown.account.domain.Account.ATTR_NICKNAME;
 import static kr.lul.kobalttown.account.domain.Credential.ATTR_EMAIL;
 import static kr.lul.kobalttown.account.domain.Credential.ATTR_USER_KEY;
+import static kr.lul.kobalttown.account.domain.EnableCode.TOKEN_VALIDATOR;
 import static kr.lul.kobalttown.page.account.AccountError.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -290,12 +292,12 @@ class AccountControllerImpl implements AccountController {
   public String enable(@PathVariable(M.TOKEN) final String token, final Model model) {
     if (log.isTraceEnabled())
       log.trace("#enable args : token={}, model={}", token, model);
+    translate(() -> TOKEN_VALIDATOR.validate(token), NotFound::new);
 
     final Context context = this.contextService.get();
 
     String template;
     try {
-      EnableCode.TOKEN_VALIDATOR.validate(token);
       template = doEnable(new EnableAccountCmd(context, token, this.timeProvider.now()), model);
     } catch (final ValidationException e) {
       if (log.isTraceEnabled())
