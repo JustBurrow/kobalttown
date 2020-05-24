@@ -1,45 +1,47 @@
 package kr.lul.kobalttown.account.service.params;
 
-import kr.lul.common.data.Context;
-import kr.lul.common.data.ContextContainer;
+import kr.lul.common.data.TimestampedContext;
+import kr.lul.kobalttown.transfer.account.AnonymousParams;
 
-import java.time.Instant;
+import java.util.Objects;
 
+import static java.lang.String.format;
 import static kr.lul.common.util.Arguments.notEmpty;
-import static kr.lul.common.util.Arguments.notNull;
-import static kr.lul.common.util.Texts.singleQuote;
 
 /**
  * @author justburrow
  * @since 2020/01/05
  */
-public class EnableAccountParams extends ContextContainer {
+public class EnableAccountParams extends AnonymousParams {
   private String token;
-  private Instant timestamp;
 
-  public EnableAccountParams(final Context context, final String token, final Instant timestamp) {
+  public EnableAccountParams(final TimestampedContext context, final String token) {
     super(context);
     notEmpty(token, "validationCode");
-    notNull(timestamp, "timestamp");
 
     this.token = token;
-    this.timestamp = timestamp;
   }
 
   public String getToken() {
     return this.token;
   }
 
-  public Instant getTimestamp() {
-    return this.timestamp;
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+
+    return this.token.equals(((EnableAccountParams) o).token);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), this.token);
   }
 
   @Override
   public String toString() {
-    return new StringBuilder(EnableAccountParams.class.getSimpleName())
-               .append("{context=").append(this.context)
-               .append(", token=").append(singleQuote(this.token))
-               .append(", timestamp=").append(this.timestamp)
-               .append('}').toString();
+    return format("{id=%s, token='%s', timestamp=%s}", this.id, this.token, this.timestamp);
   }
 }

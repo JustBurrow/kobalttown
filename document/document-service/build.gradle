@@ -1,5 +1,6 @@
 dependencies {
   api project(":document-domain")
+  api project(":transfer-account")
 
   implementation project(":document-data")
 

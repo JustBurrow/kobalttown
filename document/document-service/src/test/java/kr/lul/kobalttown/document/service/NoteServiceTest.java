@@ -32,6 +32,7 @@ import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.util.List;
 
+import static java.util.UUID.randomUUID;
 import static kr.lul.kobalttown.document.domain.NoteUtil.body;
 import static org.apache.commons.lang3.RandomStringUtils.random;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -90,7 +91,7 @@ public class NoteServiceTest {
     final Instant timestamp = this.timeProvider.now();
     log.info("GIVEN - timestamp={}", timestamp);
 
-    final CreateNoteParams params = new CreateNoteParams(new Context(), this.account, body, timestamp);
+    final CreateNoteParams params = new CreateNoteParams(randomUUID(), this.account, body, timestamp);
     log.info("GIVEN - params={}", params);
 
     // WHEN

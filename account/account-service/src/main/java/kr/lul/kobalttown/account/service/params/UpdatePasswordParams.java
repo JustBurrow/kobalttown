@@ -1,48 +1,30 @@
 package kr.lul.kobalttown.account.service.params;
 
-import kr.lul.common.data.ContextContainer;
+import kr.lul.common.data.TimestampedContext;
 import kr.lul.kobalttown.account.domain.Account;
+import kr.lul.kobalttown.transfer.account.UserParams;
 
-import java.time.Instant;
 import java.util.Arrays;
-import java.util.Objects;
 
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static kr.lul.common.util.Arguments.notEmpty;
-import static kr.lul.common.util.Arguments.notNull;
 
 /**
  * @author justburrow
  * @since 2020/02/05
  */
-public class UpdatePasswordParams extends ContextContainer {
-  private Account user;
+public class UpdatePasswordParams extends UserParams {
   private byte[] current;
   private byte[] password;
-  private Instant timestamp;
 
-  public UpdatePasswordParams(final ContextContainer container, final Account user, final String current, final String password,
-      final Instant timestamp) {
-    this(container, user, current.getBytes(UTF_8), password.getBytes(UTF_8), timestamp);
-  }
-
-  public UpdatePasswordParams(final ContextContainer container, final Account user, final byte[] current, final byte[] password,
-      final Instant timestamp) {
-    super(container);
-    notNull(user, "user");
+  public UpdatePasswordParams(final TimestampedContext context, final Account user, final String current, final String password) {
+    super(context, user);
     notEmpty(current, "current");
     notEmpty(password, "password");
-    notNull(timestamp, "timestamp");
 
-    this.user = user;
-    this.current = current;
-    this.password = password;
-    this.timestamp = timestamp;
-  }
-
-  public Account getUser() {
-    return this.user;
+    this.current = current.getBytes(UTF_8);
+    this.password = password.getBytes(UTF_8);
   }
 
   public String getCurrent() {
@@ -51,10 +33,6 @@ public class UpdatePasswordParams extends ContextContainer {
 
   public String getPassword() {
     return new String(this.password, UTF_8);
-  }
-
-  public Instant getTimestamp() {
-    return this.timestamp;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,16 +44,13 @@ public class UpdatePasswordParams extends ContextContainer {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     final UpdatePasswordParams that = (UpdatePasswordParams) o;
-    return this.user.equals(that.user) &&
-               this.context.equals(that.context) &&
-               Arrays.equals(this.current, that.current) &&
-               Arrays.equals(this.password, that.password) &&
-               this.timestamp.equals(this.timestamp);
+    return Arrays.equals(this.current, that.current) &&
+               Arrays.equals(this.password, that.password);
   }
 
   @Override
   public int hashCode() {
-    int result = Objects.hash(this.context, this.user, this.timestamp);
+    int result = super.hashCode();
     result = 31 * result + Arrays.hashCode(this.current);
     result = 31 * result + Arrays.hashCode(this.password);
     return result;
@@ -83,7 +58,7 @@ public class UpdatePasswordParams extends ContextContainer {
 
   @Override
   public String toString() {
-    return format("{context=%s, user=%s, current=[ PROTECTED ], password=[ PROTECTED ], timestamp=%s}",
-        this.context, this.user.toSimpleString(), this.timestamp);
+    return format("{id=%s, user=%s, current=[ PROTECTED ], password=[ PROTECTED ], timestamp=%s}",
+        this.id, this.user.toSimpleString(), this.timestamp);
   }
 }

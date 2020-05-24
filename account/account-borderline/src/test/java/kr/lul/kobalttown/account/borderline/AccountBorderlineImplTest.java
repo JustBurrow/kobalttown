@@ -3,7 +3,7 @@ package kr.lul.kobalttown.account.borderline;
 import kr.lul.common.data.Context;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.borderline.command.CreateAccountCmd;
-import kr.lul.kobalttown.account.borderline.command.ReadAccountCmd;
+import kr.lul.kobalttown.account.borderline.command.ReadAccountUserCmd;
 import kr.lul.kobalttown.account.data.dao.EnableCodeDao;
 import kr.lul.kobalttown.account.data.repository.CredentialRepository;
 import kr.lul.kobalttown.account.domain.Account;
@@ -11,7 +11,7 @@ import kr.lul.kobalttown.account.domain.Credential;
 import kr.lul.kobalttown.account.domain.EnableCode;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.service.configuration.EnableCodeConfig;
-import kr.lul.support.spring.web.context.ContextService;
+import kr.lul.support.spring.common.context.ContextService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,9 +81,9 @@ public class AccountBorderlineImplTest {
   @Test
   public void test_read_with_not_exist_id() throws Exception {
     // GIVEN
-    final long id = Long.MAX_VALUE;
-    log.info("GIVEN - id={}", id);
-    final ReadAccountCmd cmd = new ReadAccountCmd(new Context(), id, this.timeProvider.now());
+    final long user = Long.MAX_VALUE;
+    log.info("GIVEN - user={}", user);
+    final ReadAccountUserCmd cmd = new ReadAccountUserCmd(new Context(), user, user, this.timeProvider.now());
     log.info("GIVEN - cmd={}", cmd);
 
     // WHEN
@@ -108,7 +108,8 @@ public class AccountBorderlineImplTest {
         new CreateAccountCmd(this.context, nickname, email, userKey, "password", createdAt));
     log.info("GIVEN - expected={}", expected);
 
-    final ReadAccountCmd cmd = new ReadAccountCmd(this.context, expected.getId(), this.timeProvider.now());
+    final ReadAccountUserCmd cmd = new ReadAccountUserCmd(this.context, expected.getId(), expected.getId(),
+        this.timeProvider.now());
     log.info("GIVEN - cmd={}", cmd);
 
     // WHEN

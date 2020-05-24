@@ -52,15 +52,15 @@ class AccountBorderlineImpl implements AccountBorderline {
       log.trace("#create args : cmd={}", cmd);
     notNull(cmd, "cmd");
 
-    final CreateAccountParams params = new CreateAccountParams(cmd.getContext(), cmd.getNickname(),
-        cmd.getEmail(), cmd.getUserKey(), cmd.getPassword(), cmd.getTimestamp());
+    final CreateAccountParams params = new CreateAccountParams(cmd, cmd.getNickname(), cmd.getEmail(), cmd.getUserKey(),
+        cmd.getPassword());
     final Account account = this.service.create(params);
     final AccountDetailDto dto = this.converter.convert(account, AccountDetailDto.class);
     if (log.isDebugEnabled())
       log.debug("#read cmd={}, params={}, account={}, dto={}", cmd, params, account, dto);
 
     if (log.isTraceEnabled())
-      log.trace("#create (context={} return : {}", cmd.getContext(), dto);
+      log.trace("#create (context={} return : {}", cmd.getId(), dto);
     return dto;
   }
 
@@ -71,31 +71,30 @@ class AccountBorderlineImpl implements AccountBorderline {
       log.trace("#enable args : cmd={}", cmd);
     notNull(cmd, "cmd");
 
-    final EnableAccountParams params = new EnableAccountParams(cmd.getContext(), cmd.getValidationCode(), cmd.getTimestamp());
+    final EnableAccountParams params = new EnableAccountParams(cmd, cmd.getToken());
     if (log.isDebugEnabled())
       log.debug("#enable params={}", params);
     final Account account = this.service.enable(params);
     final AccountDetailDto dto = this.converter.convert(account, AccountDetailDto.class);
 
     if (log.isTraceEnabled())
-      log.trace("#enable (context={}) return : {}", cmd.getContext(), dto);
+      log.trace("#enable (context={}) return : {}", cmd.getId(), dto);
     return dto;
   }
 
   @Override
-  public AccountDetailDto read(final ReadAccountCmd cmd) {
+  public AccountDetailDto read(final ReadAccountUserCmd cmd) {
     if (log.isTraceEnabled())
       log.trace("#read args : cmd={}", cmd);
     notNull(cmd, "cmd");
 
-    final Account account = this.service.read(
-        new ReadAccountParams(cmd.getContext(), cmd.getId(), cmd.getTimestamp()));
+    final Account account = this.service.read(new ReadAccountSystemParams(cmd, cmd.getAccount()));
     final AccountDetailDto dto = this.converter.convert(account, AccountDetailDto.class);
     if (log.isDebugEnabled())
       log.debug("#read cmd={}, account={}, dto={}", cmd, account, dto);
 
     if (log.isTraceEnabled())
-      log.trace("#read (context={}) return : {}", cmd.getContext(), dto);
+      log.trace("#read (context={}) return : {}", cmd.getId(), dto);
     return dto;
   }
 
@@ -104,12 +103,12 @@ class AccountBorderlineImpl implements AccountBorderline {
     if (log.isTraceEnabled())
       log.trace("#issue args : cmd={}", cmd);
 
-    final IssueEnableCodeParams params = new IssueEnableCodeParams(cmd, cmd.getEmail(), cmd.getTimestamp());
+    final IssueEnableCodeParams params = new IssueEnableCodeParams(cmd, cmd.getEmail());
     final EnableCode enableCode = this.service.issue(params);
     final EnableCodeSummaryDto dto = this.enableCodeConverter.convert(enableCode, EnableCodeSummaryDto.class);
 
     if (log.isTraceEnabled())
-      log.trace("#issue (context={}) return : {}", cmd.getContext(), dto);
+      log.trace("#issue (context={}) return : {}", cmd.getId(), dto);
     return dto;
   }
 
@@ -119,8 +118,8 @@ class AccountBorderlineImpl implements AccountBorderline {
       log.trace("#update args : cmd={}", cmd);
     notNull(cmd, "cmd");
 
-    final Account user = this.service.read(new ReadAccountParams(cmd, cmd.getUser(), cmd.getTimestamp()));
-    final UpdatePasswordParams params = new UpdatePasswordParams(cmd, user, cmd.getCurrent(), cmd.getPassword(), cmd.getTimestamp());
+    final Account user = this.service.read(new ReadAccountSystemParams(cmd, cmd.getUser()));
+    final UpdatePasswordParams params = new UpdatePasswordParams(cmd, user, cmd.getCurrent(), cmd.getPassword());
     this.service.update(params);
   }
 }

@@ -4,9 +4,9 @@ import kr.lul.common.data.Context;
 import kr.lul.common.util.DisabledPropertyException;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.common.util.ValidationException;
+import kr.lul.common.web.http.status.exception.client.NotFound;
 import kr.lul.kobalttown.account.borderline.AccountBorderline;
 import kr.lul.kobalttown.account.borderline.command.*;
-import kr.lul.kobalttown.account.domain.EnableCode;
 import kr.lul.kobalttown.account.domain.EnableCodeStatusException;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.dto.EnableCodeSummaryDto;
@@ -15,8 +15,8 @@ import kr.lul.kobalttown.account.web.controller.request.IssueEnableCodeReq;
 import kr.lul.kobalttown.account.web.controller.request.UpdatePasswordReq;
 import kr.lul.kobalttown.page.account.AccountMvc.M;
 import kr.lul.kobalttown.page.account.AccountMvc.V;
+import kr.lul.support.spring.common.context.ContextService;
 import kr.lul.support.spring.security.userdetails.User;
-import kr.lul.support.spring.web.context.ContextService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,15 +30,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
-import java.time.Instant;
 
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static kr.lul.common.util.Arguments.notNull;
 import static kr.lul.common.util.Arguments.positive;
+import static kr.lul.common.util.ExceptionTranslator.translate;
 import static kr.lul.kobalttown.account.domain.Account.ATTR_NICKNAME;
 import static kr.lul.kobalttown.account.domain.Credential.ATTR_EMAIL;
 import static kr.lul.kobalttown.account.domain.Credential.ATTR_USER_KEY;
+import static kr.lul.kobalttown.account.domain.EnableCode.TOKEN_VALIDATOR;
 import static kr.lul.kobalttown.page.account.AccountError.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -126,25 +127,25 @@ class AccountControllerImpl implements AccountController {
       log.trace("#doEnable args :cmd={}, model={}", cmd, model);
 
     if (log.isDebugEnabled())
-      log.debug("#doEnable (context={}) cmd={}", cmd.getContext(), cmd);
+      log.debug("#doEnable (context={}) cmd={}", cmd.getId(), cmd);
 
     String template;
     try {
       final AccountDetailDto account = this.borderline.enable(cmd);
       if (log.isDebugEnabled())
-        log.debug("#doEnable (context={}) account={}", cmd.getContext(), account);
+        log.debug("#doEnable (context={}) account={}", cmd.getId(), account);
 
       model.addAttribute(M.ACCOUNT, account);
       model.addAttribute(M.ENABLED_AT, cmd.getTimestamp());
 
       template = V.ENABLE_SUCCESS;
     } catch (final DisabledPropertyException | EnableCodeStatusException e) {
-      log.warn(format("#doEnable (context=%s) e=%s", cmd.getContext(), e), e);
+      log.warn(format("#doEnable (context=%s) e=%s", cmd.getId(), e), e);
       template = V.ENABLE_FAIL;
     }
 
     if (log.isTraceEnabled())
-      log.trace("#doEnable (context={}) result : template={}, model={}", cmd.getContext(), template, model);
+      log.trace("#doEnable (context={}) result : template={}, model={}", cmd.getId(), template, model);
     return template;
   }
 
@@ -198,7 +199,7 @@ class AccountControllerImpl implements AccountController {
     if (log.isTraceEnabled())
       log.trace("#doPasswordForm args : context={}, user={}, req={}, model={}", context, user, req, model);
 
-    final ReadAccountCmd cmd = new ReadAccountCmd(context, user.getId(), this.timeProvider.now());
+    final ReadAccountUserCmd cmd = new ReadAccountUserCmd(context, user.getId(), user.getId(), this.timeProvider.now());
     final AccountDetailDto account = this.borderline.read(cmd);
     log.info("#doPasswordForm (context={}) account={}", context, account);
 
@@ -232,7 +233,7 @@ class AccountControllerImpl implements AccountController {
     notNull(binding, "binding");
     notNull(model, "model");
 
-    final UpdatePasswordCmd cmd = new UpdatePasswordCmd(context, user.getId(), req.getCurrent(), req.getPassword(),
+    final UpdatePasswordCmd cmd = new UpdatePasswordCmd(context.getId(), user.getId(), req.getCurrent(), req.getPassword(),
         this.timeProvider.now());
     String template;
     try {
@@ -240,7 +241,7 @@ class AccountControllerImpl implements AccountController {
       template = V.PASSWORD_UPDATED;
     } catch (final ValidationException e) {
       binding.addError(new FieldError(M.UPDATE_PASSWORD_REQ, e.getTargetName(), null, false, new String[]{}, null, "UNKNOWN"));
-      template = doPasswordForm(cmd.getContext(), user, req, model);
+      template = doPasswordForm(cmd, user, req, model);
     }
 
     return template;
@@ -291,12 +292,12 @@ class AccountControllerImpl implements AccountController {
   public String enable(@PathVariable(M.TOKEN) final String token, final Model model) {
     if (log.isTraceEnabled())
       log.trace("#enable args : token={}, model={}", token, model);
+    translate(() -> TOKEN_VALIDATOR.validate(token), NotFound::new);
 
     final Context context = this.contextService.get();
 
     String template;
     try {
-      EnableCode.TOKEN_VALIDATOR.validate(token);
       template = doEnable(new EnableAccountCmd(context, token, this.timeProvider.now()), model);
     } catch (final ValidationException e) {
       if (log.isTraceEnabled())
@@ -353,7 +354,7 @@ class AccountControllerImpl implements AccountController {
     positive(id, M.ID);
     notNull(model, "model");
 
-    final ReadAccountCmd cmd = new ReadAccountCmd(this.contextService.get(), id, this.timeProvider.now());
+    final ReadAccountUserCmd cmd = new ReadAccountUserCmd(this.contextService.get(), user.getId(), id, this.timeProvider.now());
     final AccountDetailDto account = this.borderline.read(cmd);
     if (log.isDebugEnabled())
       log.debug("#profile account={}", account);
@@ -415,7 +416,6 @@ class AccountControllerImpl implements AccountController {
       validate(req, binding);
 
     final Context context = this.contextService.get();
-    final Instant timestamp = this.timeProvider.now();
 
     final String template;
     if (binding.hasErrors()) {

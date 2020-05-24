@@ -1,4 +1,4 @@
-package kr.lul.kobalttown.page.root;
+package kr.lul.kobalttown.page.global;
 
 /**
  * @author justburrow
@@ -13,6 +13,7 @@ public abstract class GlobalMvc {
 
   public static abstract class V {
     public static final String GROUP = "error";
+    public static final String ERROR_400 = GROUP + "/client/400";
     public static final String ERROR_404 = GROUP + "/client/404";
 
     protected V() {
@@ -21,6 +22,8 @@ public abstract class GlobalMvc {
   }
 
   public static abstract class C {
+    public static final String ERROR = "/error";
+
     protected C() {
       throw new UnsupportedOperationException();
     }

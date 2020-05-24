@@ -1,8 +1,8 @@
 dependencies {
   implementation project(":account-domain")
   implementation project(":account-borderline")
-  implementation project(":page-account")
 
+  api project(":page-account")
   api project(":account-dto")
 
   compileOnly project(":configuration-web")
@@ -12,6 +12,7 @@ dependencies {
   testImplementation project(":account-data")
   testImplementation project(":configuration-dependencies")
   testImplementation project(":page-root")
+  testImplementation project(":global-web")
 
   testImplementation "org.springframework.security:spring-security-test"
 }

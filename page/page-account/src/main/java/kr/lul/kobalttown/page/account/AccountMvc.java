@@ -51,7 +51,10 @@ public abstract class AccountMvc {
     public static final String PASSWORD_FORM = SETTING + "/password";
     public static final String PASSWORD = SETTING + "/password";
 
-    public static final String ENABLE = GROUP + "/enable/{" + M.TOKEN + "}";
+    /**
+     * See {@code kr.lul.kobalttown.account.domain.EnableCode#TOKEN_LENGTH}.
+     */
+    public static final String ENABLE = GROUP + "/enable/{" + M.TOKEN + ":[a-zA-Z\\d]{64}}";
     public static final String ISSUE_ENABLE_CODE_FORM = GROUP + "/enable/issue";
     public static final String ISSUE_ENABLE_CODE = GROUP + "/enable";
 

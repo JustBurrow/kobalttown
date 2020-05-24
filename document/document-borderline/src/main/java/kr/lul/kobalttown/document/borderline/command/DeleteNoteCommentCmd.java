@@ -1,36 +1,28 @@
 package kr.lul.kobalttown.document.borderline.command;
 
 import kr.lul.common.data.Context;
-import kr.lul.common.data.ContextContainer;
+import kr.lul.kobalttown.transfer.account.UserCmd;
 
 import java.time.Instant;
+
+import static kr.lul.common.util.Arguments.positive;
 
 /**
  * @author justburrow
  * @since 2020/04/03
  */
-public class DeleteNoteCommentCmd extends ContextContainer {
-  private long user;
+public class DeleteNoteCommentCmd extends UserCmd {
   private long note;
   private long comment;
-  private Instant timestamp;
 
   public DeleteNoteCommentCmd(final Context context, final long user, final long note, final long comment,
       final Instant timestamp) {
-    super(context);
-    this.user = user;
+    super(context, user, timestamp);
+    positive(note, "note");
+    positive(comment, "comment");
+
     this.note = note;
     this.comment = comment;
-    this.timestamp = timestamp;
-  }
-
-  public DeleteNoteCommentCmd(final ContextContainer container,
-      final long user, final long note, final long comment, final Instant timestamp) {
-    this(container.getContext(), user, note, comment, timestamp);
-  }
-
-  public long getUser() {
-    return this.user;
   }
 
   public long getNote() {
@@ -41,14 +33,10 @@ public class DeleteNoteCommentCmd extends ContextContainer {
     return this.comment;
   }
 
-  public Instant getTimestamp() {
-    return this.timestamp;
-  }
-
   @Override
   public String toString() {
     return new StringBuilder()
-               .append("{context=").append(this.context)
+               .append("{id=").append(this.id)
                .append(", user=").append(this.user)
                .append(", note=").append(this.note)
                .append(", comment=").append(this.comment)

@@ -41,6 +41,7 @@
                required="required"
                th:field="*{nickname}"
                th:errorclass="is-invalid"
+               th:title="#{account.create.form.nickname.placeholder}"
                th:placeholder="#{account.create.form.nickname.placeholder}"/>
         <div class="py-3" th:if="*{#fields.hasErrors('nickname')}">
           <ul class="list-unstyled alert alert-danger">
@@ -60,6 +61,7 @@
                required="required"
                th:field="*{email}"
                th:errorclass="is-invalid"
+               th:title="#{account.create.form.email.placeholder}"
                th:placeholder="#{account.create.form.email.placeholder}"/>
         <div class="py-3"
              th:if="*{#fields.hasErrors('email')}">
@@ -81,6 +83,7 @@
                required="required"
                th:field="*{userKey}"
                th:errorclass="is-invalid"
+               th:title="#{account.create.form.user-key.placeholder}"
                th:placeholder="#{account.create.form.user-key.placeholder}"/>
         <div class="py-3"
              th:if="*{#fields.hasErrors('userKey')}">
@@ -101,6 +104,7 @@
                required="required"
                th:field="*{password}"
                th:errorclass="is-invalid"
+               th:title="#{account.create.form.password.placeholder}"
                th:placeholder="#{account.create.form.password.placeholder}"/>
         <div class="py-3"
              th:if="*{#fields.hasErrors('password')}">
@@ -122,6 +126,7 @@
                required="required"
                th:field="*{confirm}"
                th:errorclass="is-invalid"
+               th:title="#{account.create.form.confirm.placeholder}"
                th:placeholder="#{account.create.form.confirm.placeholder}"/>
         <div class="py-3"
              th:if="*{#fields.hasErrors('confirm')}">

@@ -1,10 +1,11 @@
 package kr.lul.kobalttown.document.service.params;
 
-import kr.lul.common.data.Context;
-import kr.lul.common.data.ContextContainer;
+import kr.lul.common.data.TimestampedContext;
 import kr.lul.kobalttown.account.domain.Account;
+import kr.lul.kobalttown.transfer.account.UserParams;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import static java.lang.String.format;
 import static kr.lul.common.util.Arguments.notNull;
@@ -15,36 +16,27 @@ import static kr.lul.common.util.Texts.singleQuote;
  * @author justburrow
  * @since 2020/02/11
  */
-public class CreateNoteParams extends ContextContainer {
-  private Account user;
+public class CreateNoteParams extends UserParams {
   private String body;
-  private Instant timestamp;
 
-  public CreateNoteParams(final ContextContainer container, final Account user, final String body, final Instant timestamp) {
-    this(container.getContext(), user, body, timestamp);
+  public CreateNoteParams(final TimestampedContext context, final Account user, final String body) {
+    this(context.getId(), user, body, context.getTimestamp());
   }
 
-  public CreateNoteParams(final Context context, final Account user, final String body, final Instant timestamp) {
-    super(context);
-    notNull(user, "user");
+//  public CreateNoteParams(final Context context, final Account user, final String body, final Instant timestamp) {
+//    this(context.getId(), user, body, timestamp);
+//  }
+
+  public CreateNoteParams(final UUID context, final Account user, final String body, final Instant timestamp) {
+    super(context, user, timestamp);
     notNull(body, "body");
     notNull(timestamp, "timestamp");
 
-    this.user = user;
     this.body = body;
-    this.timestamp = timestamp;
-  }
-
-  public Account getUser() {
-    return this.user;
   }
 
   public String getBody() {
     return this.body;
-  }
-
-  public Instant getTimestamp() {
-    return this.timestamp;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +44,7 @@ public class CreateNoteParams extends ContextContainer {
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
   public String toString() {
-    return format("{context=%s, author=%s, body=%s, timestamp=%s}",
-        this.context, this.user.toSimpleString(), singleQuote(head(this.body, 20)), this.timestamp);
+    return format("{id=%s, user=%s, body=%s, timestamp=%s}",
+        this.id, this.user.toSimpleString(), singleQuote(head(this.body, 20)), this.timestamp);
   }
 }

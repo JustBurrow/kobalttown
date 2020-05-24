@@ -1,54 +1,39 @@
 package kr.lul.kobalttown.document.service.params;
 
 import kr.lul.common.data.Context;
-import kr.lul.common.data.ContextContainer;
 import kr.lul.kobalttown.account.domain.Account;
+import kr.lul.kobalttown.transfer.account.UserParams;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import static java.lang.String.format;
-import static kr.lul.common.util.Arguments.notNull;
 
 /**
  * @author justburrow
  * @since 2020/02/11
  */
-public class ReadNoteParams extends ContextContainer {
-  /**
-   * 노트를 요청한 유저.
-   */
-  private Account user;
+public class ReadNoteParams extends UserParams {
   /**
    * 요청한 노트 ID.
    */
-  private long id;
-  /**
-   * 요청 시각.
-   */
-  private Instant timestamp;
+  private long note;
 
-  public ReadNoteParams(final ContextContainer container, final Account user, final long id, final Instant timestamp) {
-    this(container.getContext(), user, id, timestamp);
+  public ReadNoteParams(final Context context, final Account user, final long note, final Instant timestamp) {
+    this(context.getId(), user, note, timestamp);
   }
 
-  public ReadNoteParams(final Context context, final Account user, final long id, final Instant timestamp) {
-    super(context);
-    notNull(user, "user");
-    notNull(timestamp, "timestamp");
+  public ReadNoteParams(final UUID context, final Account user, final long note, final Instant timestamp) {
+    super(context, user, timestamp);
 
-    this.user = user;
-    this.id = id;
-    this.timestamp = timestamp;
+    this.note = note;
   }
 
-  public Account getUser() {
-    return this.user;
+  public long getNote() {
+    return this.note;
   }
 
-  public long getId() {
-    return this.id;
-  }
-
+  @Override
   public Instant getTimestamp() {
     return this.timestamp;
   }
@@ -58,7 +43,7 @@ public class ReadNoteParams extends ContextContainer {
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override
   public String toString() {
-    return format("{context=%s, user=%s, id=%d, timestamp=%s}}",
-        this.context, this.user.toSimpleString(), this.id, this.timestamp);
+    return format("{id=%s, user=%s, note=%d, timestamp=%s}}",
+        this.id, this.user.toSimpleString(), this.note, this.timestamp);
   }
 }

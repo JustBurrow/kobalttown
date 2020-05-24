@@ -5,9 +5,11 @@ dependencies {
   implementation "org.thymeleaf:thymeleaf"
 
   api project(":account-domain")
+  api project(":transfer-account")
 
   compileOnly project(":configuration-bean")
 
+  testImplementation project(":account-test")
   testImplementation project(":configuration-bean")
   testImplementation project(":configuration-mail")
   testImplementation project(":configuration-data-jpa")

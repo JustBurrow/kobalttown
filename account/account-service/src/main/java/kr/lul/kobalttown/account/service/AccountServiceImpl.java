@@ -201,39 +201,38 @@ class AccountServiceImpl implements AccountService {
       log.trace("#create args : params={}", params);
     notNull(params, "params");
 
-    if (this.dao.existsNickname(params.getContext(), params.getNickname()))
+    if (this.dao.existsNickname(params, params.getNickname()))
       throw new ValidationException(ATTR_NICKNAME, params.getNickname(),
           "이미 사용중인 별명입니다 : " + params.getNickname());
-    if (this.credentialDao.existsPublicKey(params.getContext(), params.getEmail()))
+    if (this.credentialDao.existsPublicKey(params, params.getEmail()))
       throw new ValidationException(ATTR_EMAIL, params.getEmail(), "이미 사용중인 이메일입니다 : " + params.getEmail());
-    if (this.credentialDao.existsPublicKey(params.getContext(), params.getUserKey()))
+    if (this.credentialDao.existsPublicKey(params, params.getUserKey()))
       throw new ValidationException(ATTR_USER_KEY, params.getUserKey(), "이미 사용중인 유져키입니다 : " + params.getUserKey());
 
     // 계정 정보 등록.
-    Account account = this.factory.create(
-        params.getContext(), params.getNickname(), !this.enableCode.isEnable(), params.getTimestamp());
-    account = this.dao.create(params.getContext(), account);
+    Account account = this.factory.create(params, params.getNickname(), !this.enableCode.isEnable(), params.getTimestamp());
+    account = this.dao.create(params, account);
     if (log.isDebugEnabled())
-      log.debug("#create (context={}) account={}", params.getContext(), account);
+      log.debug("#create (context={}) account={}", params.getId(), account);
 
     // 인증 정보 등록.
     final List<Credential> credentials = List.of(
-        createCredential(params.getContext(), account, params.getUserKey(), params.getPassword(), params.getTimestamp()),
-        createCredential(params.getContext(), account, params.getEmail(), params.getPassword(), params.getTimestamp()));
+        createCredential(params, account, params.getUserKey(), params.getPassword(), params.getTimestamp()),
+        createCredential(params, account, params.getEmail(), params.getPassword(), params.getTimestamp()));
     if (log.isDebugEnabled())
-      log.debug("#create (context={}) credentials={}", params.getContext(), credentials);
+      log.debug("#create (context={}) credentials={}", params.getId(), credentials);
 
     final List<Future<MailResult>> tasks = new ArrayList<>();
     // 신규 계정 정보 알림.
     if (this.welcome.isEnable())
-      tasks.add(sendWelcome(params.getContext(), account, params.getEmail(), params.getUserKey()));
+      tasks.add(sendWelcome(params, account, params.getEmail(), params.getUserKey()));
 
     // 계정 활성화 코드 발행 및 전송.
     if (this.enableCode.isEnable()) {
-      final EnableCode code = createEnableCode(params.getContext(), account, params.getEmail(), params.getTimestamp());
+      final EnableCode code = createEnableCode(params, account, params.getEmail(), params.getTimestamp());
       if (log.isDebugEnabled())
-        log.debug("#create (context={}) code={}", params.getContext(), code);
-      tasks.add(sendEnableCode(params.getContext(), code));
+        log.debug("#create (context={}) code={}", params.getId(), code);
+      tasks.add(sendEnableCode(params, code));
     }
 
     // 비동기 작업 결과 처리.
@@ -241,14 +240,14 @@ class AccountServiceImpl implements AccountService {
       try {
         final MailResult result = task.get();
         if (log.isInfoEnabled())
-          log.info("#create (context={}) result={}", params.getContext(), result);
+          log.info("#create (context={}) result={}", params.getId(), result);
       } catch (final InterruptedException | ExecutionException e) {
         log.warn(format("#create (context={}) fail to complete async task : task" + task, e));
       }
     });
 
     if (log.isTraceEnabled())
-      log.trace("#create (context={}) return : {}", params.getContext(), account);
+      log.trace("#create (context={}) return : {}", params.getId(), account);
     return account;
   }
 
@@ -260,9 +259,9 @@ class AccountServiceImpl implements AccountService {
     if (!this.enableCode.isEnable())
       throw new DisabledPropertyException("validationCode.enabled");
 
-    final EnableCode code = this.enableCodeDao.read(params.getContext(), params.getToken());
+    final EnableCode code = this.enableCodeDao.read(params, params.getToken());
     if (log.isDebugEnabled())
-      log.debug("#enable (context={}) code={}", params.getContext(), code);
+      log.debug("#enable (context={}) code={}", params.getId(), code);
 
     if (null == code)
       throw new ValidationException(EnableCode.ATTR_TOKEN, params.getToken(), "존재하지 않는 토큰입니다 : " + params.getToken());
@@ -271,20 +270,20 @@ class AccountServiceImpl implements AccountService {
 
     final Account account = code.getAccount();
     if (log.isTraceEnabled())
-      log.trace("#enable (context={}) return : {}", params.getContext(), account);
+      log.trace("#enable (context={}) return : {}", params.getId(), account);
     return account;
   }
 
   @Override
-  public Account read(final ReadAccountParams params) {
+  public Account read(final ReadAccountSystemParams params) {
     if (log.isTraceEnabled())
       log.trace("#read args : params={}", params);
     notNull(params, "params");
 
-    final Account account = this.dao.read(params.getContext(), params.getId());
+    final Account account = this.dao.read(params, params.getAccount());
 
     if (log.isTraceEnabled())
-      log.trace("#read (context={}) return : {}", params.getContext(), account);
+      log.trace("#read (context={}) return : {}", params.getId(), account);
     return account;
   }
 
@@ -293,18 +292,18 @@ class AccountServiceImpl implements AccountService {
     if (log.isTraceEnabled())
       log.trace("#issue args : params={}", params);
 
-    final List<EnableCode> codes = this.enableCodeDao.list(params.getContext(), params.getEmail());
+    final List<EnableCode> codes = this.enableCodeDao.list(params, params.getEmail());
     if (codes.isEmpty())
       throw new ValidationException(EnableCode.ATTR_EMAIL, params.getEmail(), "발급된 계정 활성화 코드가 없습니다 : email=" + params.getEmail());
 
     codes.stream().filter(EnableCode::isValid)
         .forEach(vc -> vc.inactive(params.getTimestamp()));
-    final EnableCode code = createEnableCode(params.getContext(), codes.get(0).getAccount(), params.getEmail(),
+    final EnableCode code = createEnableCode(params, codes.get(0).getAccount(), params.getEmail(),
         params.getTimestamp());
-    sendEnableCode(params.getContext(), code);
+    sendEnableCode(params, code);
 
     if (log.isTraceEnabled())
-      log.trace("#issue (context={}) return : {}", params.getContext(), code);
+      log.trace("#issue (context={}) return : {}", params.getId(), code);
     return code;
   }
 
@@ -314,7 +313,7 @@ class AccountServiceImpl implements AccountService {
       log.trace("#update args : params={}", params);
     notNull(params, "params");
 
-    final List<Credential> credentials = this.credentialDao.read(params.getContext(), params.getUser());
+    final List<Credential> credentials = this.credentialDao.read(params, params.getUser());
     if (credentials.isEmpty())
       throw new ValidationException(ATTR_ACCOUNT, params.getUser(), "has no credential.");
 
@@ -329,12 +328,12 @@ class AccountServiceImpl implements AccountService {
     credentials.stream()
         .map(credential -> {
           final Credential newCredential =
-              this.credentialFactory.create(params.getContext(), params.getUser(), credential.getPublicKey(),
+              this.credentialFactory.create(params, params.getUser(), credential.getPublicKey(),
                   this.securityEncoder.encode(params.getPassword()), params.getTimestamp());
           log.info("#update newCredential={}", newCredential);
-          this.credentialDao.delete(params.getContext(), credential);
+          this.credentialDao.delete(params, credential);
           return newCredential;
         })
-        .forEach(credential -> this.credentialDao.create(params.getContext(), credential));
+        .forEach(credential -> this.credentialDao.create(params, credential));
   }
 }

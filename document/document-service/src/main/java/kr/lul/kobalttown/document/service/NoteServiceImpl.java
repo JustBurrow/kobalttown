@@ -17,7 +17,6 @@ import java.util.NoSuchElementException;
 
 import static java.lang.String.format;
 import static kr.lul.common.util.Arguments.notNull;
-import static kr.lul.common.util.Arguments.positive;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -43,13 +42,12 @@ class NoteServiceImpl implements NoteService {
     if (log.isTraceEnabled())
       log.trace("#create args : params={}", params);
     notNull(params, "params");
-    positive(params.getUser().getId(), "params.author.id");
 
-    Note note = this.factory.create(params.getContext(), params.getUser(), params.getBody(), params.getTimestamp());
-    note = this.dao.create(params.getContext(), note);
+    Note note = this.factory.create(params, params.getUser(), params.getBody(), params.getTimestamp());
+    note = this.dao.create(params, note);
 
     if (log.isTraceEnabled())
-      log.trace("#create (context={}) return : {}", params.getContext(), note);
+      log.trace("#create (context={}) return : {}", params.getId(), note);
     return note;
   }
 
@@ -60,13 +58,13 @@ class NoteServiceImpl implements NoteService {
     notNull(params, "params");
 
     final Note note;
-    if (0L >= params.getId())
+    if (0L >= params.getNote())
       note = null;
     else
-      note = this.dao.read(params.getContext(), params.getId());
+      note = this.dao.read(params, params.getNote());
 
     if (log.isTraceEnabled())
-      log.trace("#read (context={}) return : {}", params.getContext(), note);
+      log.trace("#read (context={}) return : {}", params.getId(), note);
     return note;
   }
 
@@ -76,10 +74,10 @@ class NoteServiceImpl implements NoteService {
       log.trace("#limit args : params={}", params);
     notNull(params, "params");
 
-    final Pagination<Note> notes = this.dao.list(params.getContext(), params.getPage(), params.getLimit());
+    final Pagination<Note> notes = this.dao.list(params, params.getPage(), params.getLimit());
 
     if (log.isTraceEnabled())
-      log.trace("#list (context={}) return : {}", params.getContext(), notes);
+      log.trace("#list (context={}) return : {}", params.getId(), notes);
     return notes;
   }
 
@@ -89,7 +87,7 @@ class NoteServiceImpl implements NoteService {
       log.trace("#update args : params={}", params);
     notNull(params, "params");
 
-    final Note note = this.dao.read(params.getContext(), params.getNote());
+    final Note note = this.dao.read(params, params.getNote());
     if (!note.getAuthor().equals(params.getUser())) {
       throw new IllegalArgumentException(format("user has no update permission : user=%s, note.id=%d",
           params.getUser().toSimpleString(), params.getNote()));
@@ -99,7 +97,7 @@ class NoteServiceImpl implements NoteService {
     updater.setBody(params.getBody());
 
     if (log.isTraceEnabled())
-      log.trace("#update (context={}) return : {}", params.getContext(), note);
+      log.trace("#update (context={}) return : {}", params.getId(), note);
     return note;
   }
 
@@ -108,18 +106,15 @@ class NoteServiceImpl implements NoteService {
     if (log.isTraceEnabled())
       log.trace("#delete args : params={}", params);
     notNull(params, "params");
-    notNull(params.getUser(), "params.user");
-    positive(params.getNote(), "params.note");
-    notNull(params.getTimestamp(), "params.timestamp");
 
-    final Note note = this.dao.read(params.getContext(), params.getNote());
+    final Note note = this.dao.read(params, params.getNote());
     if (null == note)
       throw new ValidationException("note", params.getNote(), "note does not exist : note.id=" + params.getNote());
     else
       note.delete(params.getTimestamp());
 
     if (log.isTraceEnabled())
-      log.trace("#delete (context={}) result : note={}", params.getContext(), note);
+      log.trace("#delete (context={}) result : note={}", params.getId(), note);
   }
 
   @Override
@@ -128,12 +123,12 @@ class NoteServiceImpl implements NoteService {
       log.trace("#comment args : params={}", params);
     notNull(params, "params");
 
-    NoteComment comment = this.commentFactory.create(params.getContext(), params.getUser(), params.getNote(), params.getBody(),
+    NoteComment comment = this.commentFactory.create(params, params.getUser(), params.getNote(), params.getBody(),
         params.getTimestamp());
-    comment = this.dao.create(params.getContext(), comment);
+    comment = this.dao.create(params, comment);
 
     if (log.isTraceEnabled())
-      log.trace("#comment (context={}) return : {}", params.getContext(), comment);
+      log.trace("#comment (context={}) return : {}", params.getId(), comment);
     return comment;
   }
 
@@ -144,7 +139,7 @@ class NoteServiceImpl implements NoteService {
     notNull(params, "params");
     notNull(params.getUser(), "params.user");
 
-    final Note note = this.dao.read(params.getContext(), params.getNote());
+    final Note note = this.dao.read(params, params.getNote());
     if (null == note)
       throw new ValidationException("note", params.getNote(), "note does not exist : note=" + params.getNote());
 
@@ -161,6 +156,6 @@ class NoteServiceImpl implements NoteService {
     }
 
     if (log.isTraceEnabled())
-      log.trace("#delete (context={}) result : note={}", params.getContext(), note);
+      log.trace("#delete (context={}) result : note={}", params.getId(), note);
   }
 }

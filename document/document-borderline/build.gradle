@@ -2,11 +2,11 @@ dependencies {
   implementation project(":document-service")
   implementation project(":document-converter")
   implementation project(":account-service")
+  implementation "org.springframework:spring-tx"
 
   api project(":document-domain")
+  api project(":transfer-account")
   api project(":document-dto")
-
-  compileOnly "org.springframework:spring-tx"
 
   testImplementation project(":document-test")
   testImplementation project(":configuration-dependencies")
