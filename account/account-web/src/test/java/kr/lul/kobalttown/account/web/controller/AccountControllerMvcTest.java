@@ -7,7 +7,6 @@ import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.web.AccountWebTestConfiguration;
 import kr.lul.kobalttown.configuration.security.WebSecurityConfiguration;
 import kr.lul.kobalttown.configuration.web.WebMvcConfiguration;
-import kr.lul.kobalttown.page.global.GlobalMvc;
 import kr.lul.support.spring.common.context.ContextService;
 import kr.lul.support.spring.security.userdetails.User;
 import org.junit.After;
@@ -48,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @since 2019/11/30
  */
 @RunWith(SpringRunner.class)
-@WebMvcTest(controllers = AccountControllerImpl.class)
+@WebMvcTest(controllers = {AccountControllerImpl.class})
 @ContextConfiguration(classes = AccountWebTestConfiguration.class)
 @Import({WebMvcConfiguration.class, WebSecurityConfiguration.class})
 public class AccountControllerMvcTest {
@@ -194,7 +193,6 @@ public class AccountControllerMvcTest {
 
         // THEN
         .andExpect(status().isNotFound())
-        .andExpect(view().name(GlobalMvc.V.ERROR_404))
         .andDo(print());
 
     verify(this.borderline, never()).enable(any());
@@ -212,7 +210,6 @@ public class AccountControllerMvcTest {
 
         // THEN
         .andExpect(status().isNotFound())
-        .andExpect(view().name(GlobalMvc.V.ERROR_404))
         .andDo(print());
 
     verify(this.borderline, never()).enable(any());

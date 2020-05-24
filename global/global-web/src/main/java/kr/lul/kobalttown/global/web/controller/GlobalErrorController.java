@@ -5,6 +5,7 @@ import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author justburrow
@@ -13,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping
 public interface GlobalErrorController extends ErrorController {
   @RequestMapping(GlobalMvc.C.ERROR)
-  String error(HttpServletRequest request);
+  String error(HttpServletRequest request, HttpServletResponse response);
 
   @Override
   default String getErrorPath() {
