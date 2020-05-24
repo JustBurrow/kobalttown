@@ -1,7 +1,7 @@
 package kr.lul.kobalttown.global.web.controller;
 
-import kr.lul.kobalttown.page.root.RootMvc.C;
 import org.slf4j.Logger;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,8 +14,8 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @since 2020/05/21
  */
 @Controller
-class RootControllerImpl implements RootController {
-  private static final Logger log = getLogger(RootControllerImpl.class);
+class GlobalErrorControllerImpl implements GlobalErrorController {
+  private static final Logger log = getLogger(GlobalErrorControllerImpl.class);
 
   @Override
   public String error(final HttpServletRequest request) {
@@ -25,13 +25,13 @@ class RootControllerImpl implements RootController {
     final String method = request.getMethod();
     final String url = request.getRequestURL().toString();
 
-    log.info("#error method={}, url={}", method, url);
+    if (HttpMethod.GET.name().equalsIgnoreCase(method)) {
+      log.info("#error method={}, url={}", method, url);
+    } else {
+      log.info("#error method={}, url={}, content.type={}, content.length={}",
+          method, url, request.getContentType(), request.getContentLength());
+    }
 
     return VIEW_400;
-  }
-
-  @Override
-  public String getErrorPath() {
-    return C.ERROR;
   }
 }

@@ -1,4 +1,5 @@
 dependencies {
+  implementation project(":page-global")
   implementation project(":page-root")
   implementation project(":global-security")
 

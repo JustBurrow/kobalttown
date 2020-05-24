@@ -3,6 +3,7 @@ package kr.lul.kobalttown.account.web;
 import kr.lul.kobalttown.configuration.bean.BeanConfiguration;
 import kr.lul.kobalttown.configuration.data.jpa.JpaConfiguration;
 import kr.lul.kobalttown.configuration.mail.MailConfigurer;
+import kr.lul.kobalttown.global.web.GlobalWebAnchor;
 import kr.lul.support.spring.common.context.ContextService;
 import kr.lul.support.spring.common.context.DefaultContextService;
 import kr.lul.support.spring.security.crypto.PasswordEncoderSecurityEncoder;
@@ -19,7 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  * @author justburrow
  * @since 2019/11/24
  */
-@SpringBootApplication(scanBasePackageClasses = AccountWebAnchor.class)
+@SpringBootApplication(scanBasePackageClasses = {GlobalWebAnchor.class, AccountWebAnchor.class})
 @Import({BeanConfiguration.class, MailConfigurer.class, JpaConfiguration.class})
 public class AccountWebTestConfiguration {
   @Bean

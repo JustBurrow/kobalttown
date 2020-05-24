@@ -3,6 +3,7 @@ dependencies {
   implementation project(":document-borderline")
   implementation project(":page-document")
 
+  api project(":page-document")
   api project(":document-dto")
 
   compileOnly project(":configuration-web")

@@ -1,6 +1,6 @@
 package kr.lul.kobalttown.global.web.controller;
 
-import kr.lul.kobalttown.page.root.RootMvc.C;
+import kr.lul.kobalttown.page.global.GlobalMvc;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -11,7 +11,12 @@ import javax.servlet.http.HttpServletRequest;
  * @since 2020/05/21
  */
 @RequestMapping
-public interface RootController extends ErrorController {
-  @RequestMapping(C.ERROR)
+public interface GlobalErrorController extends ErrorController {
+  @RequestMapping(GlobalMvc.C.ERROR)
   String error(HttpServletRequest request);
+
+  @Override
+  default String getErrorPath() {
+    return GlobalMvc.C.ERROR;
+  }
 }

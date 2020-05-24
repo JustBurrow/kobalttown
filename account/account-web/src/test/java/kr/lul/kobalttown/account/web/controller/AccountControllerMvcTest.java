@@ -7,7 +7,7 @@ import kr.lul.kobalttown.account.dto.AccountDetailDto;
 import kr.lul.kobalttown.account.web.AccountWebTestConfiguration;
 import kr.lul.kobalttown.configuration.security.WebSecurityConfiguration;
 import kr.lul.kobalttown.configuration.web.WebMvcConfiguration;
-import kr.lul.kobalttown.page.root.GlobalMvc;
+import kr.lul.kobalttown.page.global.GlobalMvc;
 import kr.lul.support.spring.common.context.ContextService;
 import kr.lul.support.spring.security.userdetails.User;
 import org.junit.After;

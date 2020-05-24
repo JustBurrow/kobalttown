@@ -1,5 +1,5 @@
 dependencies {
-  implementation project(":page-root")
+  api project(":page-global")
 
   compileOnly project(":configuration-web")
   compileOnly project(":configuration-mail")
