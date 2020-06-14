@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
 buildscript {
   repositories {
     jcenter()
@@ -10,9 +12,6 @@ buildscript {
     classpath "io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE"
   }
 }
-
-apply plugin: "idea"
-apply plugin: "eclipse"
 
 group "kr.lul.kobalttown"
 version "0.0.9.SNAPSHOT"
@@ -37,12 +36,15 @@ subprojects {
   apply plugin: "org.springframework.boot"
   apply plugin: "io.spring.dependency-management"
 
+  apply plugin: "idea"
+  apply plugin: "eclipse"
+
   sourceCompatibility = 11
   targetCompatibility = 11
 
   dependencyManagement {
     imports {
-      mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+      mavenBom SpringBootPlugin.BOM_COORDINATES
     }
 
     dependencies {
@@ -74,8 +76,6 @@ subprojects {
     testImplementation "org.apache.commons:commons-lang3"
   }
 
-  def projectGroup = rootProject.group
-  def projectName = project.name
   def projectVersion = "unspecified" != project.version
       ? project.version
       : rootProject.version
@@ -84,8 +84,8 @@ subprojects {
 
   println("""
       subproject ========================================
-      group : $projectGroup
-      name : $projectName
+      group : ${rootProject.group}
+      name : ${project.name}
       version : $projectVersion
       release : $isRelease
       snapshot : $isSnapshot
@@ -94,4 +94,10 @@ subprojects {
 
   jar.enabled = true
   bootJar.enabled = false
+
+  idea {
+    module {
+      resourceDirs += new File(rootDir, 'config')
+    }
+  }
 }
