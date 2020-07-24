@@ -11,9 +11,6 @@ buildscript {
   }
 }
 
-apply plugin: "idea"
-apply plugin: "eclipse"
-
 group "kr.lul.kobalttown"
 version "0.0.9.SNAPSHOT"
 
@@ -29,6 +26,9 @@ allprojects {
       url "https://dl.bintray.com/justburrow/release"
     }
   }
+
+  apply plugin: "idea"
+  apply plugin: "eclipse"
 }
 
 subprojects {

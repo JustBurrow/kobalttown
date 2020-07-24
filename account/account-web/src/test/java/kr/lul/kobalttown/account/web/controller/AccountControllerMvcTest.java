@@ -1,6 +1,5 @@
 package kr.lul.kobalttown.account.web.controller;
 
-import kr.lul.common.data.Context;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.borderline.AccountBorderline;
 import kr.lul.kobalttown.account.dto.AccountDetailDto;
@@ -11,7 +10,6 @@ import kr.lul.support.spring.common.context.ContextService;
 import kr.lul.support.spring.security.userdetails.User;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -63,14 +61,10 @@ public class AccountControllerMvcTest {
   @Autowired
   private TimeProvider timeProvider;
 
-  private Context context;
   private ZonedDateTime before;
 
   @Before
   public void setUp() throws Exception {
-    this.context = this.contextService.issue();
-    log.info("SETUP - context={}", this.context);
-
     this.before = this.timeProvider.zonedDateTime();
     log.info("SETUP - before={}", this.before);
   }
@@ -84,8 +78,7 @@ public class AccountControllerMvcTest {
   @WithAnonymousUser
   public void test_createForm() throws Exception {
     // WHEN
-    this.mock.perform(get(C.CREATE_FORM)
-                          .with(anonymous()))
+    this.mock.perform(get(C.CREATE_FORM))
 
         // THEN
         .andExpect(status().isOk())
@@ -311,8 +304,10 @@ public class AccountControllerMvcTest {
         .andDo(print());
   }
 
+  /**
+   * 현재 비밀번호를 지정하지 않고 비밀번호 변경을 시도한다.
+   */
   @Test
-  @Ignore
   public void test_password_without_current() throws Exception {
     // GIVEN
     final User user = new User(1L, nickname(), "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
@@ -320,8 +315,9 @@ public class AccountControllerMvcTest {
 
     // WHEN
     this.mock.perform(patch(C.PASSWORD)
-                          .param("password", "password2")
-                          .param("confirm", "password2")
+                          .param("password", "new_password")
+                          .param("confirm", "new_password")
+                          .with(csrf())
                           .with(user(user)))
 
         // THEN
@@ -330,8 +326,10 @@ public class AccountControllerMvcTest {
         .andDo(print());
   }
 
+  /**
+   * 새 비밀번호 없이 비밀번호 변경을 시도한다.
+   */
   @Test
-  @Ignore
   public void test_password_without_password() throws Exception {
     // GIVEN
     final User user = new User(1L, nickname(), "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
@@ -340,7 +338,8 @@ public class AccountControllerMvcTest {
     // WHEN
     this.mock.perform(patch(C.PASSWORD)
                           .param(M.UPDATE_PASSWORD_REQ + ".current", "password")
-                          .param(M.UPDATE_PASSWORD_REQ + ".confirm", "password2")
+                          .param(M.UPDATE_PASSWORD_REQ + ".confirm", "new_password")
+                          .with(csrf())
                           .with(user(user)))
 
         // THEN
@@ -349,8 +348,10 @@ public class AccountControllerMvcTest {
         .andDo(print());
   }
 
+  /**
+   * 새 비밀번호 재입력 없이 비밀번호 변경을 시도한다.
+   */
   @Test
-  @Ignore
   public void test_password_without_confirm() throws Exception {
     // GIVEN
     final User user = new User(1L, nickname(), "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
@@ -359,7 +360,8 @@ public class AccountControllerMvcTest {
     // WHEN
     this.mock.perform(patch(C.PASSWORD)
                           .param("current", "password")
-                          .param("password", "password2")
+                          .param("password", "new_password")
+                          .with(csrf())
                           .with(user(user)))
 
         // THEN
@@ -368,8 +370,10 @@ public class AccountControllerMvcTest {
         .andDo(print());
   }
 
+  /**
+   * 새 비밀번호와 새 비밀번호 재입력이 일치하지 않을 때.
+   */
   @Test
-  @Ignore
   public void test_password_without_confirm_not_match() throws Exception {
     // GIVEN
     final User user = new User(1L, nickname(), "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
@@ -378,8 +382,9 @@ public class AccountControllerMvcTest {
     // WHEN
     this.mock.perform(patch(C.PASSWORD)
                           .param("current", "password")
-                          .param("password", "password2")
-                          .param("confirm", "password3")
+                          .param("password", "new_password")
+                          .param("confirm", "new_password_confirm")
+                          .with(csrf())
                           .with(user(user)))
 
         // THEN
@@ -388,8 +393,10 @@ public class AccountControllerMvcTest {
         .andDo(print());
   }
 
+  /**
+   * 비밀번호 변경.
+   */
   @Test
-  @Ignore
   public void test_password() throws Exception {
     // GIVEN
     final User user = new User(1L, nickname(), "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
@@ -398,8 +405,9 @@ public class AccountControllerMvcTest {
     // WHEN
     this.mock.perform(patch(C.PASSWORD)
                           .param("current", "password")
-                          .param("password", "password2")
-                          .param("confirm", "password2")
+                          .param("password", "new_password")
+                          .param("confirm", "new_password")
+                          .with(csrf())
                           .with(user(user)))
 
         // THEN

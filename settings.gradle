@@ -12,10 +12,10 @@ def groups = [
 
 groups.each { feature, layers ->
   layers.each { layer ->
-    def module = "$feature-$layer"
+    def module = "${feature}-${layer}"
 
-    include ":$module"
-    findProject(":$module").projectDir = new File("$feature/$module")
+    include ":${module}"
+    findProject(":${module}").projectDir = new File("${feature}/${module}")
   }
 }
 
