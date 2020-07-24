@@ -6,6 +6,7 @@ import kr.lul.kobalttown.document.dto.NoteDetailDto;
 import kr.lul.kobalttown.document.dto.NoteSimpleDto;
 import kr.lul.kobalttown.document.dto.NoteSummaryDto;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -19,7 +20,11 @@ public interface NoteConverter extends Converter<Note> {
 
   NoteSummaryDto summary(Note note);
 
-  NoteDetailDto detail(Note note);
+  default NoteDetailDto detail(Note note) {
+    return detail(note, Map.of());
+  }
+
+  NoteDetailDto detail(Note note, Map<String, Object> context);
 
   @Override
   default Set<Class> supportTargetTypes() {

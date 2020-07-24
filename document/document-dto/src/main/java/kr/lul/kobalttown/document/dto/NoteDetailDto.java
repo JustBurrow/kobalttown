@@ -1,9 +1,9 @@
 package kr.lul.kobalttown.document.dto;
 
+import kr.lul.common.data.Pagination;
 import kr.lul.kobalttown.account.dto.AccountSimpleDto;
 
 import java.time.ZonedDateTime;
-import java.util.List;
 
 import static java.lang.String.format;
 import static kr.lul.common.util.Texts.singleQuote;
@@ -13,8 +13,13 @@ import static kr.lul.common.util.Texts.singleQuote;
  * @since 2020/03/07
  */
 public class NoteDetailDto extends AbstractNoteDto<AccountSimpleDto> {
+  public static final String PROP_COMMENTS_PAGE = "comments.page";
+  public static final String PROP_COMMENTS_SIZE = "comments.size";
+  public static final int DEFAULT_COMMENTS_PAGE = 0;
+  public static final int DEFAULT_COMMENTS_SIZE = 20;
+
   private int version;
-  private List<NoteCommentDetailDto> comments;
+  private Pagination<NoteCommentDetailDto> comments;
   private ZonedDateTime createdAt;
   private ZonedDateTime updatedAt;
 
@@ -22,7 +27,7 @@ public class NoteDetailDto extends AbstractNoteDto<AccountSimpleDto> {
   }
 
   public NoteDetailDto(final long id, final int version, final AccountSimpleDto author, final String body,
-      final List<NoteCommentDetailDto> comments, final ZonedDateTime createdAt, final ZonedDateTime updatedAt) {
+      final Pagination<NoteCommentDetailDto> comments, final ZonedDateTime createdAt, final ZonedDateTime updatedAt) {
     super(id, author, body);
     setVersion(version);
     setComments(comments);
@@ -38,11 +43,11 @@ public class NoteDetailDto extends AbstractNoteDto<AccountSimpleDto> {
     this.version = version;
   }
 
-  public List<NoteCommentDetailDto> getComments() {
+  public Pagination<NoteCommentDetailDto> getComments() {
     return this.comments;
   }
 
-  public void setComments(final List<NoteCommentDetailDto> comments) {
+  public void setComments(final Pagination<NoteCommentDetailDto> comments) {
     this.comments = comments;
   }
 

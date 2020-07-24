@@ -1,6 +1,7 @@
 package kr.lul.kobalttown.document.web.controller;
 
 import kr.lul.common.data.Context;
+import kr.lul.common.data.Pagination;
 import kr.lul.common.util.TimeProvider;
 import kr.lul.kobalttown.account.dto.AccountSimpleDto;
 import kr.lul.kobalttown.configuration.security.WebSecurityConfiguration;
@@ -29,6 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import static kr.lul.kobalttown.document.dto.NoteDetailDto.DEFAULT_COMMENTS_SIZE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -115,7 +117,7 @@ public class NoteControllerMvcTest {
 
     when(this.noteBorderline.create(any()))
         .thenReturn(new NoteDetailDto(id, 0, new AccountSimpleDto(1L, "nickname"), "test body",
-            List.of(), this.before, this.before));
+            new Pagination<>(0, DEFAULT_COMMENTS_SIZE, 0L, List.of()), this.before, this.before));
 
     // WHEN
     this.mock.perform(
@@ -137,7 +139,7 @@ public class NoteControllerMvcTest {
 
     when(this.noteBorderline.create(any()))
         .thenReturn(new NoteDetailDto(id, 0, new AccountSimpleDto(1L, "nickname"), "test body",
-            List.of(), this.before, this.before));
+            new Pagination<>(0, DEFAULT_COMMENTS_SIZE, 0L, List.of()), this.before, this.before));
 
     // WHEN
     this.mock.perform(
