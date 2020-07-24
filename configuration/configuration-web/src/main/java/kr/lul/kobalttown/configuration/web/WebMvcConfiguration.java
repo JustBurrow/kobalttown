@@ -10,13 +10,18 @@ import kr.lul.support.spring.web.controller.SpringWebExceptionHandler;
 import kr.lul.support.spring.web.interceptor.LoggingInterceptor;
 import org.slf4j.Logger;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.ui.Model;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.config.annotation.*;
 
+import java.io.File;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.CacheControl.noCache;
 
@@ -74,6 +79,22 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     final WebConfig config = new WebConfig(properties);
     log.info("#webConfig return : {}", config);
     return config;
+  }
+
+  @Bean
+  public MessageSource messageSource() {
+    MessageConfig config = webConfig().getMessage();
+    log.info("#messageSource config={}", config);
+
+    ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+    messageSource.setDefaultEncoding(UTF_8.displayName());
+    messageSource.setCacheMillis(config.getCacheDuration().toMillis());
+    for (File basename : config.getBasenames()) {
+      messageSource.addBasenames(basename.toURI().toString());
+    }
+
+    log.info("#messageSource return : {}", messageSource);
+    return messageSource;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

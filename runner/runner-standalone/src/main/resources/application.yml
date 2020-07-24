@@ -21,6 +21,13 @@ kr.lul.kobalttown:
       - path: /assets/**
         location: file:/<front resource path>/assets
         cache: true
+    message:
+      encoding: UTF-8
+      cache-duration: PT1H
+      basenames:
+        - classpath:i18n/messages
+        - classpath:i18n/errors
+        - classpath:i18n/mails
 
 spring:
   pid:
@@ -40,8 +47,6 @@ spring:
         starttls.enable: true
   thymeleaf:
     prefix: file:./templates/
-  messages:
-    basename: i18n/messages,i18n/errors,i18n/mails
   devtools:
     restart:
       enabled: false

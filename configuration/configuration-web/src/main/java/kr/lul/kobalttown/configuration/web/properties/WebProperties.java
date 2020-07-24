@@ -16,6 +16,7 @@ import static java.lang.String.format;
 @Configuration
 public class WebProperties {
   private List<ResourceProperties> resources;
+  private MessageProperties message;
 
   public List<ResourceProperties> getResources() {
     return this.resources;
@@ -25,8 +26,16 @@ public class WebProperties {
     this.resources = resources;
   }
 
+  public MessageProperties getMessage() {
+    return this.message;
+  }
+
+  public void setMessage(MessageProperties message) {
+    this.message = message;
+  }
+
   @Override
   public String toString() {
-    return format("{resources=%s}", this.resources);
+    return format("{resources=%s, message=%s}", this.resources, this.message);
   }
 }
