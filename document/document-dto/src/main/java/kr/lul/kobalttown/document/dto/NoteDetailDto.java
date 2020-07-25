@@ -13,11 +13,6 @@ import static kr.lul.common.util.Texts.singleQuote;
  * @since 2020/03/07
  */
 public class NoteDetailDto extends AbstractNoteDto<AccountSimpleDto> {
-  public static final String PROP_COMMENTS_PAGE = "comments.page";
-  public static final String PROP_COMMENTS_SIZE = "comments.size";
-  public static final int DEFAULT_COMMENTS_PAGE = 0;
-  public static final int DEFAULT_COMMENTS_SIZE = 20;
-
   private int version;
   private Pagination<NoteCommentDetailDto> comments;
   private ZonedDateTime createdAt;

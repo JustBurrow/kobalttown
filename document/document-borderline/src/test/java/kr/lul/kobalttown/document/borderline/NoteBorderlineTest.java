@@ -23,6 +23,8 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 
 import static java.util.concurrent.ThreadLocalRandom.current;
+import static kr.lul.kobalttown.document.converter.NoteConverter.DEFAULT_COMMENTS_PAGE;
+import static kr.lul.kobalttown.document.converter.NoteConverter.DEFAULT_COMMENTS_SIZE;
 import static org.apache.commons.lang3.RandomStringUtils.random;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -105,7 +107,8 @@ public class NoteBorderlineTest {
     final Instant timestamp = this.timeProvider.now();
     log.info("GIVEN - timestamp={}", timestamp);
 
-    final ReadNoteCmd cmd = new ReadNoteCmd(new Context(), user.getId(), note.getId(), timestamp);
+    final ReadNoteCmd cmd = new ReadNoteCmd(new Context(), user.getId(), note.getId(), DEFAULT_COMMENTS_PAGE,
+        DEFAULT_COMMENTS_SIZE, timestamp);
     log.info("GIVEN - cmd={}", cmd);
 
     // WHEN
@@ -118,6 +121,7 @@ public class NoteBorderlineTest {
         .extracting(AbstractNoteDto::getId, NoteDetailDto::getVersion, AbstractNoteDto::getAuthor,
             AbstractNoteDto::getBody, NoteDetailDto::getCreatedAt, NoteDetailDto::getUpdatedAt)
         .containsSequence(note.getId(), 0, new AccountSimpleDto(note.getAuthor().getId(), note.getAuthor().getNickname()),
-            note.getBody(), this.timeProvider.zonedDateTime(note.getCreatedAt()), this.timeProvider.zonedDateTime(note.getUpdatedAt()));
+            note.getBody(), this.timeProvider.zonedDateTime(note.getCreatedAt()),
+            this.timeProvider.zonedDateTime(note.getUpdatedAt()));
   }
 }

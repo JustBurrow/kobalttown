@@ -10,6 +10,7 @@ import kr.lul.kobalttown.document.dto.NoteDetailDto;
 import kr.lul.kobalttown.document.test.NoteTestTool;
 import kr.lul.kobalttown.document.web.DocumentWebTestConfiguration;
 import kr.lul.kobalttown.document.web.controller.request.CreateNoteReq;
+import kr.lul.kobalttown.document.web.controller.request.ReadNoteReq;
 import kr.lul.kobalttown.page.note.NoteMvc.C;
 import kr.lul.kobalttown.page.note.NoteMvc.M;
 import kr.lul.kobalttown.page.note.NoteMvc.V;
@@ -194,7 +195,7 @@ public class NoteControllerTest {
     final Model model = new ExtendedModelMap();
 
     // WHEN
-    final String template = this.controller.detail(user, note.getId(), model);
+    final String template = this.controller.detail(user, note.getId(), new ReadNoteReq(), model);
     log.info("WHEN - template={}", template);
 
     // THEN

@@ -17,7 +17,7 @@ import java.util.Map;
 
 import static java.lang.String.format;
 import static kr.lul.common.util.Arguments.notNull;
-import static kr.lul.kobalttown.document.dto.NoteDetailDto.*;
+import static kr.lul.common.util.ListUtils.subList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -90,8 +90,8 @@ class NoteConverterImpl implements NoteConverter {
           commentsPage,
           commentsSize,
           note.getComments().size(),
-          this.commentConverter.detail(note.getComments()
-                                           .subList(commentsPage * commentsSize, commentsPage * (commentsSize + 1)))
+          this.commentConverter.detail(
+              subList(note.getComments(), commentsPage * commentsSize, (commentsPage + 1) * commentsSize))
       );
 
       dto = new NoteDetailDto(note.getId(), note.getVersion(),

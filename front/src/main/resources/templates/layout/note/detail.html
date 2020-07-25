@@ -72,7 +72,7 @@
     <section class="my-3">
       <h2 class="sr-only">Comments</h2>
       <ol class="list-group list-unstyled">
-        <li th:each="comment : ${note.comments}">
+        <li th:each="comment : ${note.comments.content}">
           <article class="row">
             <div class="col-11">
               <p th:text="${comment.body}">comment</p>
@@ -98,6 +98,18 @@
           </article>
         </li>
       </ol>
+      <div th:object="${note.comments}">
+        <p>
+          <a href="detail.html" th:if="*{hasPre()}"
+             th:href="@{/notes/__${note.id}__(comments.page=*{page -1})}">&lt;</a>
+          <span th:unless="*{hasPre()}">&lt;</span>
+          <a href="detail.html" th:if="*{hasNext()}"
+             th:href="@{/notes/__${note.id}__(comments.page=*{page +1})}">&gt;</a>
+          <span th:unless="*{hasNext()}">&gt;</span>
+
+          <span th:text="*{page +1}">page</span> / <span th:text="*{totalPage}">total page</span>
+        </p>
+      </div>
     </section>
     <!--/*@thymesVar id="commentReq" type="kr.lul.kobalttown.document.web.controller.request.CreateNoteCommentReq"*/-->
     <div th:object="${commentReq}" th:with="formId=${#strings.concat('form-note-', note.id, '-comment')}">

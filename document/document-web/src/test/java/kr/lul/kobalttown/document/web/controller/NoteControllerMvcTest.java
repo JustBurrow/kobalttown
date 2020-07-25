@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static kr.lul.kobalttown.document.dto.NoteDetailDto.DEFAULT_COMMENTS_SIZE;
+import static kr.lul.kobalttown.document.converter.NoteConverter.DEFAULT_COMMENTS_SIZE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.slf4j.LoggerFactory.getLogger;

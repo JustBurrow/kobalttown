@@ -11,10 +11,7 @@ import kr.lul.kobalttown.document.borderline.command.*;
 import kr.lul.kobalttown.document.dto.NoteCommentDetailDto;
 import kr.lul.kobalttown.document.dto.NoteDetailDto;
 import kr.lul.kobalttown.document.dto.NoteSimpleDto;
-import kr.lul.kobalttown.document.web.controller.request.CreateNoteCommentReq;
-import kr.lul.kobalttown.document.web.controller.request.CreateNoteReq;
-import kr.lul.kobalttown.document.web.controller.request.ListNoteReq;
-import kr.lul.kobalttown.document.web.controller.request.UpdateNoteReq;
+import kr.lul.kobalttown.document.web.controller.request.*;
 import kr.lul.kobalttown.page.note.NoteMvc.C;
 import kr.lul.kobalttown.page.note.NoteMvc.M;
 import kr.lul.kobalttown.page.note.NoteMvc.V;
@@ -34,6 +31,8 @@ import javax.validation.Valid;
 
 import static java.lang.String.format;
 import static kr.lul.common.util.Arguments.notNull;
+import static kr.lul.kobalttown.document.web.controller.request.PaginationReq.DEFAULT_PAGE;
+import static kr.lul.kobalttown.document.web.controller.request.PaginationReq.DEFAULT_SIZE;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.web.util.UriComponentsBuilder.newInstance;
 
@@ -101,7 +100,7 @@ class NoteControllerImpl implements NoteController {
     if (log.isTraceEnabled())
       log.trace("#doUpdateForm args : context={}, user={}, id={}, req={}, model={}", context, user, id, req, model);
 
-    final ReadNoteCmd cmd = new ReadNoteCmd(context, user.getId(), id, this.timeProvider.now());
+    final ReadNoteCmd cmd = new ReadNoteCmd(context, user.getId(), id, DEFAULT_PAGE, DEFAULT_SIZE, this.timeProvider.now());
     final NoteDetailDto note = this.borderline.read(cmd);
     if (null == note)
       throw new NotFound("note does not exist : note.id=" + id);
@@ -233,15 +232,20 @@ class NoteControllerImpl implements NoteController {
   }
 
   @Override
-  public String detail(@AuthenticationPrincipal final User user, @PathVariable(M.ID) final long id, final Model model) {
+  public String detail(@AuthenticationPrincipal final User user,
+      @PathVariable(M.ID) final long id, ReadNoteReq req,
+      final Model model) {
     if (log.isTraceEnabled())
-      log.trace("#detail args : user={}, id={}, model={}", user, id, model);
-
+      log.trace("#detail args : user={}, id={}, req={}, model={}", user, id, req, model);
+    notNull(user, "user");
     if (0L >= id)
       throw new NotFound("note.id=" + id);
+    notNull(req, "req");
+    notNull(model, "model");
 
     final Context context = this.contextService.get();
-    final ReadNoteCmd cmd = new ReadNoteCmd(context, user.getId(), id, this.timeProvider.now());
+    final ReadNoteCmd cmd = new ReadNoteCmd(context, user.getId(), id, req.getComments().getPage(), req.getComments().getSize(),
+        this.timeProvider.now());
     final NoteDetailDto note = this.borderline.read(cmd);
 
     final String template;

@@ -20,7 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static java.util.Map.entry;
+import static java.util.Map.ofEntries;
 import static kr.lul.common.util.Arguments.notNull;
+import static kr.lul.kobalttown.document.converter.NoteConverter.PROP_COMMENTS_PAGE;
+import static kr.lul.kobalttown.document.converter.NoteConverter.PROP_COMMENTS_SIZE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -72,7 +76,10 @@ class NoteBorderlineImpl implements NoteBorderline {
 
     final ReadNoteParams params = new ReadNoteParams(cmd, user, cmd.getNote(), cmd.getTimestamp());
     final Note note = this.service.read(params);
-    final NoteDetailDto dto = this.converter.detail(note);
+    final NoteDetailDto dto = this.converter.detail(note, ofEntries(
+        entry(PROP_COMMENTS_PAGE, cmd.getCommentsPage()),
+        entry(PROP_COMMENTS_SIZE, cmd.getCommentsSize())
+    ));
 
     if (log.isTraceEnabled())
       log.trace("#read (context={}) return : {}", cmd.getId(), dto);

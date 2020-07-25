@@ -1,9 +1,6 @@
 package kr.lul.kobalttown.document.web.controller;
 
-import kr.lul.kobalttown.document.web.controller.request.CreateNoteCommentReq;
-import kr.lul.kobalttown.document.web.controller.request.CreateNoteReq;
-import kr.lul.kobalttown.document.web.controller.request.ListNoteReq;
-import kr.lul.kobalttown.document.web.controller.request.UpdateNoteReq;
+import kr.lul.kobalttown.document.web.controller.request.*;
 import kr.lul.kobalttown.page.note.NoteMvc.C;
 import kr.lul.kobalttown.page.note.NoteMvc.M;
 import kr.lul.support.spring.security.userdetails.User;
@@ -73,7 +70,9 @@ public interface NoteController {
    */
   @GetMapping(C.DETAIL)
   @PreAuthorize("hasAnyRole('USER')")
-  String detail(@AuthenticationPrincipal User user, @PathVariable(M.ID) long id, Model model);
+  String detail(@AuthenticationPrincipal User user,
+      @PathVariable(M.ID) long id, ReadNoteReq req,
+      Model model);
 
   /**
    * 노트 편집 페이지.

@@ -10,6 +10,7 @@ dependencies {
   compileOnly project(":configuration-security")
 
   testImplementation project(":document-test")
+  testImplementation project(":document-converter")
   testImplementation project(":configuration-dependencies")
   testImplementation project(":page-root")
 
