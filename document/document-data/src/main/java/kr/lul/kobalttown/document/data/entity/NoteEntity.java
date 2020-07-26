@@ -217,7 +217,7 @@ public class NoteEntity extends SavableEntity implements Note {
 
     @SuppressWarnings("OptionalGetWithoutIsPresent") final NoteComment comment =
         this.comments.stream().filter(c -> id == c.getId()).findFirst().get();
-    if (!this.author.equals(account) || !comment.getAuthor().equals(account))
+    if (!this.author.equals(account) && !comment.getAuthor().equals(account))
       throw new ValidationException("account", account, "no delete comment permission : account=" + account.toSimpleString());
 
     this.comments.remove(comment);
