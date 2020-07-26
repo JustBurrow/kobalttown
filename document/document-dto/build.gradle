@@ -1,3 +1,6 @@
 dependencies {
   api project(":account-dto")
 }
+
+jacocoTestReport.enabled false
+jacocoTestCoverageVerification.enabled false

@@ -37,6 +37,8 @@ subprojects {
   apply plugin: "org.springframework.boot"
   apply plugin: "io.spring.dependency-management"
 
+  apply plugin: "jacoco"
+
   sourceCompatibility = 11
   targetCompatibility = 11
 
@@ -94,4 +96,65 @@ subprojects {
 
   jar.enabled = true
   bootJar.enabled = false
+
+  test {
+    useJUnitPlatform()
+  }
+
+  jacoco {
+    toolVersion = '0.8.5'
+  }
+
+  jacocoTestReport {
+    reports {
+      html {
+        enabled true
+        destination file("$rootDir/jacoco")
+      }
+      xml.enabled false
+      csv.enabled false
+    }
+
+    afterEvaluate {
+      classDirectories.setFrom(files(classDirectories.files.collect {
+        fileTree(dir: it,
+            excludes: ["**Anchor",
+                       "**Cmd",
+                       "**Dto",
+                       "**Params",
+                       "**Req",
+                       "**/service/params/**",
+                       "**/borderline/command/**",
+                       "**/controller/request/**"])
+      }))
+    }
+  }
+
+  jacocoTestCoverageVerification {
+    afterEvaluate {
+      classDirectories.setFrom(files(classDirectories.files.collect {
+        fileTree(dir: it,
+            excludes: ["**Anchor",
+                       "**Cmd",
+                       "**Dto",
+                       "**Params",
+                       "**Req",
+                       "**/service/params/**",
+                       "**/borderline/command/**",
+                       "**/controller/request/**"])
+      }))
+    }
+
+    violationRules {
+      rule {
+        element = 'CLASS'
+
+        limit {
+          counter = 'BRANCH'
+          value = 'COVEREDRATIO'
+          minimum = 0.01
+        }
+      }
+    }
+  }
 }

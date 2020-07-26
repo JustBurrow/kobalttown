@@ -280,3 +280,4 @@ fabric.properties
 config/
 !config/sample-*
 log/
+jacoco/
