@@ -12,7 +12,7 @@ buildscript {
 }
 
 group "kr.lul.kobalttown"
-version "0.0.9.SNAPSHOT"
+version "0.0.10.SNAPSHOT"
 
 allprojects {
   repositories {
